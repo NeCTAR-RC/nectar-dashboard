@@ -1,0 +1,35 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+
+{% block modal-header %}{% trans "Log In" %}{% endblock %}
+{% block modal_class %}login shibboleth{% endblock %}
+
+{% block form_action %}{{ shibboleth_url }}{% endblock %}
+
+{% block modal-body %} 
+
+  {% include "horizon/_messages.html" %} {% csrf_token %}
+
+  NeCTAR uses the Australian Access Federation (AAF) for its
+  authentication.  There have been some issues with some IdPs not
+  conforming with
+  the <a href="http://www.aaf.edu.au/technical/aaf-core-attributes/">AAF
+  Core Attributes</a>.  If this prevents you from logging on please
+  contact your local help desk.
+
+  <fieldset>
+  {% if next %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ next }}" />{% endif %}
+  {% for hidden in form.hidden_fields %}
+    {{hidden}}
+  {% endfor %}
+  </fieldset>
+{% endblock %}
+
+{% block modal-footer %}
+  <input type="submit" class="btn btn-primary pull-right" value="{% trans "Log In" %}" />
+  <ul id='alternate_links'>
+    <li><a href="{{ HORIZON_CONFIG.help_url }}/login_guide/aaf.html" target="_blank">Having trouble logging in?</a></li>
+    <li>&nbsp;</li>
+  </ul>
+{% endblock %}
+
