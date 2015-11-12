@@ -1,2 +1,4 @@
 theme/* /usr/share/nectar-dashboard/theme
 policy/* /usr/share/nectar-dashboard/policy
+debian/nectar_theme.py /usr/share/openstack-dashboard/openstack_dashboard/local
+enabled/* /usr/share/openstack-dashboard/openstack_dashboard/local/enabled
