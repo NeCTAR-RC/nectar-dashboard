@@ -1,0 +1,27 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load url from future %}
+{% load i18n %}
+
+{% block form_id %}password_reset_form{% endblock %}
+{% block form_action %}{% url 'horizon:settings:password:index' %}{% endblock %}
+
+{% block modal_id %}password_reset_modal{% endblock %}
+{% block modal-header %}{% trans "Password Reset Form" %}{% endblock %}
+
+{% block modal-body %}
+{% if password %}
+<h3>Your new password is:</h3>
+<div class="well">
+<h2>{{ password }}</h2>
+</div>
+{% endif %}
+<div>
+    <h3>{% trans "Description:" %}</h3>
+    <p>{% trans 'To access the NeCTAR Cloud using the OpenStack API you will need to generate a password.  By doing so <b>any existing password will be forgotten</b>.  To generate a new password click "Reset Password" button.' %}</p>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+    <input class="btn btn-primary pull-right" type="submit" value="{% trans "Reset Password" %}" />
+    {% if hide %}<a href="{% url 'horizon:settings:password:index' %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>{% endif %}
+{% endblock %}
