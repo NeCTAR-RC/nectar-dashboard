@@ -1,0 +1,24 @@
+#!/bin/sh
+# vim: set ts=2 et:
+
+set -e
+
+CONF="openstack-dashboard.conf"
+
+if [ "$1" = "configure" ]; then
+
+  (
+    cd /usr/share/openstack-dashboard
+    echo "Collecting and compressing static assets..."
+    rm -rf /usr/share/openstack-dashboard/static/custom/* || :
+    python manage.py collectstatic --noinput 2>&1 > /dev/null
+    python manage.py compress --force 2>&1 > /dev/null
+  )
+
+  if [ -e /usr/share/openstack-dashboard/openstack_dashboard/static ] ; then
+    chown -R horizon:horizon \
+      /usr/share/openstack-dashboard/openstack_dashboard/static
+  fi
+fi
+
+#DEBHELPER#
