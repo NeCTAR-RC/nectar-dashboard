@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Add User to Project" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Add User to Project") %}
+{% endblock page_header %}
+
+{% block main %}
+  {% include 'project-members/_add.html' %}
+{% endblock %}
+
