@@ -1,0 +1,13 @@
+Source: python-nectar-dashboard
+Section: unknown
+Priority: optional
+Maintainer: Sam Morrison <sorrison@gmail.com>
+Build-Depends: debhelper (>= 9), python-all (>= 2.6), python-setuptools, python-pip (>= 1.2)
+Standards-Version: 3.9.5
+Homepage: https://github.com/NeCTAR-RC/nectar-dashboard
+
+Package: python-nectar-dashboard
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Description: NeCTAR openstack dashboard
+ nectar-dashboard, NeCTAR openstack dashboard
