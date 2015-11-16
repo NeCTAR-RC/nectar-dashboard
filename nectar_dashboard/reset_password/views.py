@@ -1,18 +1,18 @@
-import sha
-import random
 import base64
 import logging
+import random
+import sha
 
-from django import forms
-from django.conf import settings
 from django.contrib import messages
+from django.conf import settings
+from django import forms
 from django import shortcuts
 
-from openstack_dashboard import api
-from openstack_auth.user import set_session_from_user
-from openstack_auth.user import create_user_from_token
-from openstack_auth.user import Token as UserToken
 from keystoneclient.v2_0 import client as keystoneclient
+from openstack_dashboard import api
+from openstack_auth.user import create_user_from_token
+from openstack_auth.user import set_session_from_user
+from openstack_auth.user import Token as UserToken
 
 
 LOG = logging.getLogger(__name__)
@@ -42,7 +42,6 @@ def credentials(request):
                                        password=password,
                                        tenant_id=project,
                                        auth_url=endpoint)
-        #import pdb; pdb.set_trace()
 
         token = UserToken(client.auth_ref,
                           unscoped_token=request.user.token.unscoped_token)
@@ -54,5 +53,3 @@ def credentials(request):
                'password': password}
 
     return shortcuts.render(request, 'password/index.html', context)
-
-

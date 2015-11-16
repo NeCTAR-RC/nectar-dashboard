@@ -7,9 +7,9 @@ PANEL_GROUP = 'default'
 
 # Python panel class of the PANEL to be added.
 ADD_PANEL = \
-    'nectar_dashboard.password.panel.PasswordPanel'
+    'nectar_dashboard.reset_password.panel.PasswordPanel'
 
 # A list of applications to be added to INSTALLED_APPS.
 ADD_INSTALLED_APPS = [
-    'nectar_dashboard.password',
+    'nectar_dashboard.reset_password',
 ]
