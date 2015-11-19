@@ -34,5 +34,5 @@ fi
 
 #DEBHELPER#
 
-chown -R www-data:www-data /var/log/nectar-dashboard
+chown -R horizon:horizon /var/log/nectar-dashboard
 chmod -R u+w /var/log/nectar-dashboard
