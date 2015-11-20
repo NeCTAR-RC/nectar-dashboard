@@ -1,4 +1,4 @@
-from rcportal.rcallocation.forms import (AllocationAmendRequestForm,
+from nectar_dashboard.rcallocation.forms import (AllocationAmendRequestForm,
                                          AllocationRequestForm)
 from django.forms import TextInput
 

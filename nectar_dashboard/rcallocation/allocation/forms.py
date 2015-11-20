@@ -1,7 +1,7 @@
 from django.forms import ModelForm, Textarea, TextInput, Select, NumberInput
 
-from rcportal.rcallocation.models import AllocationRequest
-from rcportal.rcallocation.forms import BaseQuotaForm
+from nectar_dashboard.rcallocation.models import AllocationRequest
+from nectar_dashboard.rcallocation.forms import BaseQuotaForm
 
 
 class AllocationApproveForm(ModelForm):

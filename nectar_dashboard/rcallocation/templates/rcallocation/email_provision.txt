@@ -25,7 +25,7 @@ Cores:          {{ request.cores }}
 
 You can view the request at:
 
-https://dashboard.rc.nectar.org.au{% url 'horizon:project:requests:allocation_view' request.id %}
+https://dashboard.rc.nectar.org.au{% url 'horizon:allocation:requests:allocation_view' request.id %}
 
 NOTE {{ request.contact_email }}: you will receive another email once this has been provisioned.
 

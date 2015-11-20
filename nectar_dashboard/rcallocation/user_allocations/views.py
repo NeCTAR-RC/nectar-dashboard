@@ -10,17 +10,17 @@ from horizon import tables
 from horizon.utils.memoized import memoized
 from openstack_dashboard.api.keystone import keystoneclient
 
-from rcportal.rcallocation.models import AllocationRequest, Quota
-from rcportal.rcallocation.views import (AllocationsListView,
+from nectar_dashboard.rcallocation.models import AllocationRequest, Quota
+from nectar_dashboard.rcallocation.views import (AllocationsListView,
                                          AllocationDetailView,
                                          AllocationListTable,
                                          EditRequest)
-from rcportal.rcallocation.views import BaseAllocationView
-from rcportal.rcallocation.forms import QuotaForm
+from nectar_dashboard.rcallocation.views import BaseAllocationView
+from nectar_dashboard.rcallocation.forms import QuotaForm
 
 from .forms import UserAllocationRequestForm
 
-LOG = logging.getLogger('rcportal.rcallocation')
+LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
 class BaseAllocationUpdateView(BaseAllocationView):
@@ -80,7 +80,7 @@ class RestrictedAllocationsDetailsView(AllocationDetailView):
 class UserAmendRequest(tables.LinkAction):
     name = "amend"
     verbose_name = ("Amend/Extend allocation")
-    url = "horizon:project:user_requests:edit_change_request"
+    url = "horizon:allocation:user_requests:edit_change_request"
     classes = ("btn-associate",)
 
     def allowed(self, request, instance):
@@ -90,7 +90,7 @@ class UserAmendRequest(tables.LinkAction):
 class UserEditRequest(EditRequest):
     name = "user_edit"
     verbose_name = ("Edit request")
-    url = "horizon:project:user_requests:edit_request"
+    url = "horizon:allocation:user_requests:edit_request"
 
     def allowed(self, request, instance):
         return instance.can_user_edit()
@@ -99,14 +99,14 @@ class UserEditRequest(EditRequest):
 class UserEditChangeRequest(EditRequest):
     name = "user_edit_change"
     verbose_name = ("Edit amend/extend request")
-    url = "horizon:project:user_requests:edit_change_request"
+    url = "horizon:allocation:user_requests:edit_change_request"
 
     def allowed(self, request, instance):
         return instance.can_user_edit_amendment()
 
 
 class UserAllocationListTable(AllocationListTable):
-    view_url = "horizon:project:user_requests:allocation_view"
+    view_url = "horizon:allocation:user_requests:allocation_view"
 
     class Meta(AllocationListTable.Meta):
         row_actions = (UserEditRequest, UserAmendRequest,

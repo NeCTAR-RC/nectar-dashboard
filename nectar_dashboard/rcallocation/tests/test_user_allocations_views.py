@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.utils.importlib import import_module  # noqa
 
 from openstack_dashboard.test.helpers import TestCase
-from rcportal.rcallocation import models
+from nectar_dashboard.rcallocation import models
 from .factories import AllocationFactory
 
 from .common import allocation_to_dict, request_allocation
@@ -58,14 +58,14 @@ class RequestTestCase(TestCase):
             models.AllocationRequest.objects.get(pk=allocation.pk))
 
         response = self.client.get(
-            reverse('horizon:project:user_requests:edit_request',
+            reverse('horizon:allocation:user_requests:edit_request',
                     args=(allocation.id,)))
         assert response.status_code == 200
         expected_model, form = request_allocation(user=self.user,
                                                   model=allocation)
 
         response = self.client.post(
-            reverse('horizon:project:user_requests:edit_request',
+            reverse('horizon:allocation:user_requests:edit_request',
                     args=(allocation.id,)),
             form)
 
@@ -73,7 +73,7 @@ class RequestTestCase(TestCase):
         # our requests.
         assert response.status_code == 302
         assert response.get('location').endswith(
-            reverse('horizon:project:user_requests:index'))
+            reverse('horizon:allocation:user_requests:index'))
         model = (models.AllocationRequest.objects.get(
             project_name=form['project_name'],
             parent_request_id=None))

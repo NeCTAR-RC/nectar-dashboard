@@ -1,8 +1,8 @@
 from django.conf.urls import url, patterns
-from rcportal.rcallocation.user_allocations.views import RestrictedAllocationsEditView, RestrictedAllocationsDetailsView, UserAllocationsListView
-from rcportal.rcallocation.user_allocations.forms import UserAllocationRequestAmendForm
+from nectar_dashboard.rcallocation.user_allocations.views import RestrictedAllocationsEditView, RestrictedAllocationsDetailsView, UserAllocationsListView
+from nectar_dashboard.rcallocation.user_allocations.forms import UserAllocationRequestAmendForm
 
-urlpatterns = patterns('rcportal.rcallocation.user_allocations',
+urlpatterns = patterns('nectar_dashboard.rcallocation.user_allocations',
     url(r'^$', UserAllocationsListView.as_view(), name='index'),
     url(r'^view/(?P<pk>\d+)/$', RestrictedAllocationsDetailsView.as_view(),
         name='allocation_view'),

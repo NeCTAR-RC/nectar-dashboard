@@ -6,7 +6,7 @@ from django.forms import ModelForm, ValidationError
 from django.forms import TextInput, Select, CharField, Textarea
 from django.forms.forms import NON_FIELD_ERRORS
 from django.utils.safestring import mark_safe
-from rcportal.rcallocation.models import AllocationRequest, Quota, \
+from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
     ChiefInvestigator, Institution, Publication, Grant
 
 
@@ -28,7 +28,7 @@ class BaseAllocationForm(ModelForm):
             'status_explanation': Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'start_date': TextInput(attrs={'class': 'datepicker col-md-12',
+            'start_date': TextInput(attrs={'class': 'datepicker2 col-md-12',
                                            'style': 'border-radius:0;'}),
             'estimated_project_duration': Select(attrs={'class': 'col-md-6'}),
             'convert_trial_project': Select(
@@ -168,7 +168,7 @@ class AllocationRequestForm(BaseAllocationForm):
                     'allocation has been approved already, please go'
                     ' <a href="%s">here</a> '
                     'to amend it. Otherwise, choose a different identifier.'
-                    % reverse('horizon:project:user_requests:index'))]
+                    % reverse('horizon:allocation:user_requests:index'))]
             del cleaned_data["tenant_name"]
 
         return cleaned_data
@@ -184,6 +184,7 @@ class BaseQuotaForm(ModelForm):
 
     class Meta:
         model = Quota
+        fields = '__all__'
 
 
 class QuotaForm(BaseQuotaForm):

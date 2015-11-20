@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.utils.importlib import import_module  # noqa
 
 from openstack_dashboard.test.helpers import TestCase
-from rcportal.rcallocation import models
+from nectar_dashboard.rcallocation import models
 from .common import request_allocation
 
 
@@ -62,17 +62,17 @@ class RequestTestCase(TestCase):
         self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
 
     def test_request_allocation(self):
-        response = self.client.get(reverse('horizon:project:request:request'))
+        response = self.client.get(reverse('horizon:allocation:request:request'))
         expected_model, form = request_allocation(user=self.user)
         response = self.client.post(
-            reverse('horizon:project:request:request'),
+            reverse('horizon:allocation:request:request'),
             form)
 
         # Check to make sure we were redirected back to the index of
         # our requests.
         assert response.status_code == 302
         assert response.get('location').endswith(
-            reverse('horizon:project:user_requests:index'))
+            reverse('horizon:allocation:user_requests:index'))
 
         model = (models.AllocationRequest.objects
                  .get(project_name=form['project_name'],
@@ -82,7 +82,7 @@ class RequestTestCase(TestCase):
     def _test_allocation(self, form_errors={},
                          quotaFormSet_errors=[{}, {}, {}],
                          **kwargs):
-        response = self.client.get(reverse('horizon:project:request:request'))
+        response = self.client.get(reverse('horizon:allocation:request:request'))
         expected_model, form = request_allocation(user=self.user)
         backup_values = {}
 
@@ -92,7 +92,7 @@ class RequestTestCase(TestCase):
             form[field] = value
 
         response = self.client.post(
-            reverse('horizon:project:request:request'),
+            reverse('horizon:allocation:request:request'),
             form)
 
         if form_errors or any(quotaFormSet_errors):
@@ -105,7 +105,7 @@ class RequestTestCase(TestCase):
             for field, value in backup_values.items():
                 form[field] = backup_values[field]
             response = self.client.post(
-                reverse('horizon:project:request:request'),
+                reverse('horizon:allocation:request:request'),
                 form)
         else:
             for field, value in kwargs.items():
@@ -115,7 +115,7 @@ class RequestTestCase(TestCase):
         # our requests.
         assert response.status_code == 302
         assert response.get('location').endswith(
-            reverse('horizon:project:user_requests:index'))
+            reverse('horizon:allocation:user_requests:index'))
 
         model = (models.AllocationRequest.objects
                  .get(project_name=form['project_name'],

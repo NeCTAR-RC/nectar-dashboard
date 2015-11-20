@@ -2,7 +2,7 @@ from datetime import date, timedelta
 import factory
 from factory import fuzzy
 
-from rcportal.rcallocation import for_choices, project_duration_choices, \
+from nectar_dashboard.rcallocation import for_choices, project_duration_choices, \
     allocation_home_choices, grant_type
 
 

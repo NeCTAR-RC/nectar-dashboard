@@ -1,6 +1,6 @@
 from rest_framework import serializers, viewsets
 
-from rcportal.rcallocation.models import AllocationRequest, Quota
+from nectar_dashboard.rcallocation.models import AllocationRequest, Quota
 
 
 class AllocationSerializer(serializers.ModelSerializer):

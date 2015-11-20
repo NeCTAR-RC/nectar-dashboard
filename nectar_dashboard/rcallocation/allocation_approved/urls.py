@@ -1,15 +1,15 @@
 from django.conf.urls import url, patterns
-from rcportal.rcallocation.views import (
+from nectar_dashboard.rcallocation.views import (
     AllocationDetailView,
     AllocationHistoryView,
 )
-from rcportal.rcallocation.allocation.views import (
+from nectar_dashboard.rcallocation.allocation.views import (
     AllocationUpdateView,
 )
 
 from .views import ApprovedAllocationsListView
 
-urlpatterns = patterns('rcportal.rcallocation.allocation_approved',
+urlpatterns = patterns('nectar_dashboard.rcallocation.allocation_approved',
     url(r'^$', ApprovedAllocationsListView.as_view(), name='approved_requests'),
     url(r'^view/(?P<pk>\d+)/$', AllocationDetailView.as_view(),
         name='allocation_view'),

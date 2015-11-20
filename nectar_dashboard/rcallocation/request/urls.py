@@ -3,6 +3,6 @@ from .views import AllocationCreateView
 
 
 urlpatterns = patterns(
-    'rcportal.rcallocation.request',
+    'nectar_dashboard.rcallocation.request',
     url(r'^$', AllocationCreateView.as_view(), name='request'),
 )

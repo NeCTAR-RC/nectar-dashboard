@@ -4,7 +4,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
 
-from rcportal.rcallocation.models import AllocationRequest
+from nectar_dashboard.rcallocation.models import AllocationRequest
 from . import _common as common
 
 

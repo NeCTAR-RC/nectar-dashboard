@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 import horizon
-from openstack_dashboard.dashboards.project import dashboard
+from nectar_dashboard.rcallocation import dashboard
 
 
 class Request(horizon.Panel):
@@ -10,4 +10,4 @@ class Request(horizon.Panel):
     index_url_name = "request"
 
 
-dashboard.Project.register(Request)
+dashboard.AllocationsDashboard.register(Request)

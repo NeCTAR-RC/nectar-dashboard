@@ -3,10 +3,10 @@ from django.forms.models import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.db import transaction
 
-from rcportal.rcallocation.forms import AllocationRequestForm, QuotaForm, \
+from nectar_dashboard.rcallocation.forms import AllocationRequestForm, QuotaForm, \
     ChiefInvestigatorForm, InstitutionForm, PublicationForm, GrantForm
-from rcportal.rcallocation.views import BaseAllocationView
-from rcportal.rcallocation.models import AllocationRequest, Quota, \
+from nectar_dashboard.rcallocation.views import BaseAllocationView
+from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
     ChiefInvestigator, Institution, Publication, Grant
 
 
@@ -44,7 +44,7 @@ class AllocationCreateView(BaseAllocationView):
         return {'contact_email': self.request.user.username}
 
     def get_success_url(self):
-        return reverse('horizon:project:user_requests:index')
+        return reverse('horizon:allocation:user_requests:index')
 
     @transaction.atomic
     def form_valid(self, form, quotaFormSet=None, investigatorFormSet=None,

@@ -27,6 +27,11 @@ LOG = logging.getLogger(__name__)
 #############################################################################
 
 
+def _six_months_from_now():
+    return datetime.date.today() + datetime.timedelta(
+        days=30 * 6),
+
+
 class AllocationRequest(models.Model):
     REQUEST_STATUS_CHOICES = (
         # Request created but nothing else
@@ -128,8 +133,7 @@ class AllocationRequest(models.Model):
     end_date = models.DateField(
         'Estimated end date',
         editable=False,
-        default=lambda: datetime.date.today() + datetime.timedelta(
-            days=30 * 6),
+        default=_six_months_from_now,
         help_text='The day on which your project will end.')
 
     estimated_project_duration = models.IntegerField(

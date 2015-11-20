@@ -16,13 +16,13 @@ from django.utils.safestring import mark_safe
 from django.utils.html import escape
 from horizon import tables
 
-from rcportal.rcallocation.forms import AllocationRequestForm
-from rcportal.rcallocation.models import AllocationRequest, \
+from nectar_dashboard.rcallocation.forms import AllocationRequestForm
+from nectar_dashboard.rcallocation.models import AllocationRequest, \
     ChiefInvestigator, Quota, Institution, Publication, Grant
 from forms import QuotaForm, ChiefInvestigatorForm, InstitutionForm, \
     PublicationForm, GrantForm
 
-LOG = logging.getLogger('rcportal.rcallocation')
+LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
 def user_is_allocation_admin(user):
@@ -60,7 +60,7 @@ class AllocationDetailView(DetailView, ModelFormMixin):
 class EditRequest(tables.LinkAction):
     name = "edit"
     verbose_name = ("Edit request")
-    url = "horizon:project:requests:edit_request"
+    url = "horizon:allocation:requests:edit_request"
     classes = ("btn-associate",)
 
     def allowed(self, request, instance):
@@ -72,7 +72,7 @@ class EditRequest(tables.LinkAction):
 class ApproveRequest(tables.LinkAction):
     name = "approve"
     verbose_name = ("Approve request")
-    url = "horizon:project:requests:approve_request"
+    url = "horizon:allocation:requests:approve_request"
     classes = ("btn-associate",)
 
     def allowed(self, request, instance):
@@ -82,7 +82,7 @@ class ApproveRequest(tables.LinkAction):
 class RejectRequest(tables.LinkAction):
     name = "reject"
     verbose_name = ("Request changes from user")
-    url = "horizon:project:requests:reject_request"
+    url = "horizon:allocation:requests:reject_request"
     classes = ("btn-associate",)
 
     def allowed(self, request, instance):
@@ -92,7 +92,7 @@ class RejectRequest(tables.LinkAction):
 class ApproveChangeRequest(tables.LinkAction):
     name = "approve_change"
     verbose_name = ("Approve change request")
-    url = "horizon:project:requests:approve_change_request"
+    url = "horizon:allocation:requests:approve_change_request"
     classes = ("btn-associate",)
 
     def allowed(self, request, instance):
@@ -102,7 +102,7 @@ class ApproveChangeRequest(tables.LinkAction):
 class ViewHistory(tables.LinkAction):
     name = "view_history"
     verbose_name = "View history"
-    url = "horizon:project:requests:allocation_history"
+    url = "horizon:allocation:requests:allocation_history"
 
 
 def status_icon(allocation):
@@ -120,7 +120,7 @@ def status_icon(allocation):
 
 
 def allocation_title(allocation,
-                     link='horizon:project:requests:allocation_view'):
+                     link='horizon:allocation:requests:allocation_view'):
     url = urlresolvers.reverse(link, args=(allocation.pk,))
     # Escape the data inside while allowing our HTML to render
     data = mark_safe('<a href="%s">%s</a>'
@@ -183,7 +183,7 @@ def get_quota_by_resource(resource):
 
 class AllocationHistoryTable(tables.DataTable):
     project = tables.Column("project_name", verbose_name="Project name",
-                            link="horizon:project:requests:allocation_view")
+                            link="horizon:allocation:requests:allocation_view")
     approver = tables.Column("approver_email", verbose_name="Approver")
     instances = tables.Column(
         get_quota("instances", "instance_quota"),

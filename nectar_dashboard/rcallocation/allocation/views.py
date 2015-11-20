@@ -1,10 +1,10 @@
 from django.forms.models import inlineformset_factory
 
-from rcportal.rcallocation.models import AllocationRequest, Quota, \
+from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
     ChiefInvestigator, Institution, Publication, Grant
-from rcportal.rcallocation.forms import AllocationRequestForm, \
+from nectar_dashboard.rcallocation.forms import AllocationRequestForm, \
     ChiefInvestigatorForm, InstitutionForm, PublicationForm, GrantForm
-from rcportal.rcallocation.views import BaseAllocationView
+from nectar_dashboard.rcallocation.views import BaseAllocationView
 from .forms import (
     AllocationApproveForm,
     AllocationRejectForm,

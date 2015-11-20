@@ -528,7 +528,7 @@ function show_help_message(el, help_title, help_message) {
 
 //date picker
 $(function() {
-    $(".datepicker").datepicker({
+    $(".datepicker2").datepicker({
         autoclose: true,
         changeMonth: true,
         changeYear: true,

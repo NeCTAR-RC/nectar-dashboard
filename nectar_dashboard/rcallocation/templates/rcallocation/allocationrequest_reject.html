@@ -23,4 +23,4 @@
 Reject a request, or specify changes a user needs to make to an allocation request before it can be accepted.
 {% endblock description %}
 
-{% block form_action %}{% url 'horizon:project:requests:reject_request' object.pk %}{% endblock %}
+{% block form_action %}{% url 'horizon:allocation:requests:reject_request' object.pk %}{% endblock %}

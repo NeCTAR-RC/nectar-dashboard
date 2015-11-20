@@ -1,9 +1,9 @@
 import logging
 
-from rcportal.rcallocation.models import AllocationRequest
-from rcportal.rcallocation.views import AllocationsListView
+from nectar_dashboard.rcallocation.models import AllocationRequest
+from nectar_dashboard.rcallocation.views import AllocationsListView
 
-LOG = logging.getLogger('rcportal.rcallocation')
+LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
 class ApprovedAllocationsListView(AllocationsListView):

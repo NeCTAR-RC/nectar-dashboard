@@ -2,7 +2,7 @@ from datetime import date, timedelta
 from django.forms.models import model_to_dict
 from factory import fuzzy
 
-from rcportal.rcallocation import for_choices, project_duration_choices, \
+from nectar_dashboard.rcallocation import for_choices, project_duration_choices, \
     allocation_home_choices, grant_type
 
 FOR_CHOICES = dict(for_choices.FOR_CHOICES)

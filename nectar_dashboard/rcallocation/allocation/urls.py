@@ -1,17 +1,17 @@
 from django.conf.urls import url, patterns
-from rcportal.rcallocation.views import (
+from nectar_dashboard.rcallocation.views import (
     AllocationDetailView,
     AllocationsListView,
     AllocationHistoryView,
 )
-from rcportal.rcallocation.allocation.views import (
+from nectar_dashboard.rcallocation.allocation.views import (
     AllocationUpdateView,
     AllocationApproveView,
     AllocationRejectView,
     AllocationProvisionView,
 )
 
-urlpatterns = patterns('rcportal.rcallocation.allocation',
+urlpatterns = patterns('nectar_dashboard.rcallocation.allocation',
     url(r'^$', AllocationsListView.as_view(), name='allocation_requests'),
     url(r'^view/(?P<pk>\d+)/$', AllocationDetailView.as_view(),
         name='allocation_view'),

@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
 from django.template.loader import render_to_string
 
-from rcportal.rcallocation.models import AllocationRequest
+from nectar_dashboard.rcallocation.models import AllocationRequest
 from . import _common as common
 
 

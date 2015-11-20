@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 import horizon
-from openstack_dashboard.dashboards.project import dashboard
+from nectar_dashboard.rcallocation import dashboard
 
 
 class Requests(horizon.Panel):
@@ -11,4 +11,4 @@ class Requests(horizon.Panel):
     permissions = ('openstack.roles.allocationadmin',)
 
 
-dashboard.Project.register(Requests)
+dashboard.AllocationsDashboard.register(Requests)
