@@ -11,5 +11,7 @@ Architecture: any
 Depends: openstack-dashboard (>= 8.0.0),
          ${misc:Depends},
          ${python:Depends},
+         python-dateutil,
+         python-pymysql,
 Description: NeCTAR openstack dashboard
  NeCTAR modifications and themes for the openstack dashboard
