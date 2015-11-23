@@ -6,10 +6,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-from pip.req import parse_requirements
-
 readme = open('README.rst').read()
-requirements = parse_requirements("requirements.txt")
 
 setup(
     name='nectar-dashboard',
@@ -21,7 +18,9 @@ setup(
     url='https://github.com/NeCTAR-RC/nectar-dashboard',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests', 'local']),
     include_package_data=True,
-    install_requires=[str(r.req) for r in requirements],
+    install_requires=["djangorestframework",
+                      "pymsql",
+                      "python-dateutil"],
     license="GPLv3+",
     zip_safe=False,
     keywords='NeCTAR-RC/nectar-dashboard',
