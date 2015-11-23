@@ -1,11 +1,10 @@
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.importlib import import_module  # noqa
 
-from openstack_dashboard.test.helpers import TestCase
 from nectar_dashboard.rcallocation import models
-from .factories import AllocationFactory
+from openstack_dashboard.test.helpers import TestCase
 
+from .factories import AllocationFactory
 from .common import allocation_to_dict, request_allocation
 
 
@@ -40,19 +39,8 @@ class RequestTestCase(TestCase):
         for i, investigator_model in enumerate(investigators_l):
             assert investigator_model.email == investigators[i]['email']
 
-    def setSessionValues(self, **kwargs):
-        settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
-        engine = import_module(settings.SESSION_ENGINE)
-        store = engine.SessionStore()
-        for key in kwargs:
-            store[key] = kwargs[key]
-            self.request.session[key] = kwargs[key]
-        store.save()
-        self.session = store
-        self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
-
     def test_edit_allocation_request(self):
-        self.setSessionValues(unscoped_token='token')
+
         allocation = AllocationFactory.create(contact_email=self.user.name)
         initial_state = allocation_to_dict(
             models.AllocationRequest.objects.get(pk=allocation.pk))

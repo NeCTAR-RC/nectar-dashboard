@@ -84,8 +84,7 @@ def request_allocation(user, model=None, quotas=None, institutions=None,
 
         grants = [{'id': grant.id,
                    'grant_type': grant_type.fuzz(),
-                   'funding_body': grant.funding_body,
-                   'scheme': grant.scheme,
+                   'funding_body_scheme': grant.funding_body_scheme,
                    'grant_id': grant.grant_id,
                    'first_year_funded': 2015,
                    'total_funding': quota.fuzz()
@@ -135,8 +134,7 @@ def request_allocation(user, model=None, quotas=None, institutions=None,
             grants = [{
                 'id': '',
                 'grant_type': grant_type.fuzz(),
-                'funding_body': 'ARC funding',
-                'scheme': 'ARC scheme',
+                'funding_body_scheme': 'ARC funding scheme',
                 'grant_id': 'arc-grant-0001',
                 'first_year_funded': 2015,
                 'total_funding': quota.fuzz()

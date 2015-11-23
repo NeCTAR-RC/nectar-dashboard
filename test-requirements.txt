@@ -1,0 +1,6 @@
+django_nose
+nose-exclude
+factory_boy
+mox
+mox3
+mock==1.0

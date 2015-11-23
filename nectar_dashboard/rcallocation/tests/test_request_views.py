@@ -34,8 +34,8 @@ class RequestTestCase(TestCase):
         grants_l = model.grants.all()
         for i, g_model in enumerate(grants_l):
             assert g_model.grant_type == grants[i]['grant_type']
-            assert g_model.funding_body == grants[i]['funding_body']
-            assert g_model.scheme == grants[i]['scheme']
+            assert g_model.funding_body_scheme == grants[i][
+                'funding_body_scheme']
             assert g_model.grant_id == grants[i]['grant_id']
             assert g_model.first_year_funded == grants[i]['first_year_funded']
             assert g_model.total_funding == grants[i]['total_funding']
@@ -50,19 +50,10 @@ class RequestTestCase(TestCase):
             assert inv_m.additional_researchers == investigators[i][
                 'additional_researchers']
 
-    def setSessionValues(self, **kwargs):
-        settings.SESSION_ENGINE = 'django.contrib.sessions.backends.file'
-        engine = import_module(settings.SESSION_ENGINE)
-        store = engine.SessionStore()
-        for key in kwargs:
-            store[key] = kwargs[key]
-            self.request.session[key] = kwargs[key]
-        store.save()
-        self.session = store
-        self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
-
     def test_request_allocation(self):
-        response = self.client.get(reverse('horizon:allocation:request:request'))
+        response = self.client.get(
+            reverse('horizon:allocation:request:request'))
+        self.assertStatusCode(response, 200)
         expected_model, form = request_allocation(user=self.user)
         response = self.client.post(
             reverse('horizon:allocation:request:request'),
@@ -70,7 +61,7 @@ class RequestTestCase(TestCase):
 
         # Check to make sure we were redirected back to the index of
         # our requests.
-        assert response.status_code == 302
+        self.assertStatusCode(response, 302)
         assert response.get('location').endswith(
             reverse('horizon:allocation:user_requests:index'))
 
@@ -82,7 +73,8 @@ class RequestTestCase(TestCase):
     def _test_allocation(self, form_errors={},
                          quotaFormSet_errors=[{}, {}, {}],
                          **kwargs):
-        response = self.client.get(reverse('horizon:allocation:request:request'))
+        response = self.client.get(
+            reverse('horizon:allocation:request:request'))
         expected_model, form = request_allocation(user=self.user)
         backup_values = {}
 

@@ -44,8 +44,7 @@ class GrantFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Grant'
     grant_type = grant_types
-    funding_body = 'ARC funding'
-    scheme = 'ARC scheme'
+    funding_body_scheme = 'ARC funding scheme'
     grant_id = 'arc-grant-0001'
     first_year_funded = 2015
     total_funding = 20000
@@ -67,7 +66,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
         model = 'rcallocation.AllocationRequest'
 
     created_by = fuzzy.FuzzyText()
-    contact_email = 'test@test.com'
+    contact_email = 'test@example.com'
     start_date = fuzzy.FuzzyDate(date.today(), _1_year)
     primary_instance_type = ' '
     use_case = fuzzy.FuzzyText()
