@@ -11,7 +11,6 @@ ADD_INSTALLED_APPS = [
     'nectar_dashboard.rcallocation.allocation_approved',
     'nectar_dashboard.rcallocation.request',
     'nectar_dashboard.rcallocation.user_allocations',
-    'rest_framework',
 ]
 
 AUTO_DISCOVER_STATIC_FILES = True
