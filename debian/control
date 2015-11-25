@@ -13,5 +13,6 @@ Depends: openstack-dashboard (>= 8.0.0),
          ${python:Depends},
          python-dateutil,
          python-pymysql,
+         python-django-filters,
 Description: NeCTAR openstack dashboard
  NeCTAR modifications and themes for the openstack dashboard
