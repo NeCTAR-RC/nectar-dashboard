@@ -1,7 +1,7 @@
 from nectar_dashboard.rcallocation.forms import (AllocationAmendRequestForm,
                                          AllocationRequestForm)
 from django.forms import TextInput
-
+import datetime
 
 class UserAllocationRequestForm(AllocationRequestForm):
     next_status = 'E'
@@ -29,8 +29,8 @@ class UserAllocationRequestAmendForm(AllocationAmendRequestForm):
             'tenant_name': TextInput(attrs={'readonly': 'readonly'}),
             'project_name': TextInput(attrs={'readonly': 'readonly'}),
             'contact_email': TextInput(attrs={'readonly': 'readonly'}),
-            'start_date': TextInput(
-                attrs={'readonly': 'readonly', 'style': 'border-radius:0;'}),
+            'start_date': TextInput(attrs={'class': 'datepicker col-md-12',
+                                            'style': 'border-radius:0;'}),
         }
 
     def __init__(self, **kwargs):
@@ -38,6 +38,10 @@ class UserAllocationRequestAmendForm(AllocationAmendRequestForm):
         initial = kwargs['initial']
         initial['cores'] = instance.core_quota
         initial['instances'] = instance.instance_quota
+        initial['start_date'] = datetime.date.today
         # We should be setting initial for storage quotas.
         super(UserAllocationRequestAmendForm, self).__init__(**kwargs)
         self.instance.status = self.next_status
+        self.fields['start_date'].label = 'Extension start date'
+        self.fields['estimated_project_duration'].label = \
+            'Estimated extension duration'
