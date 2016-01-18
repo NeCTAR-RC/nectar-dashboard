@@ -9,6 +9,6 @@ This is a merit-based, project specific allocation to the research cloud. Alloca
 If you have further questions you may reply to this email.
 
 More information on the allocation request process is available at:
-http://support.rc.nectar.org.au/docs/allocations
+https://support.nectar.org.au/support/solutions/articles/6000068044-managing-an-allocation
 
 {% endblock %}
