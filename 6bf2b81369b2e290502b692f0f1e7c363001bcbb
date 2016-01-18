@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bad4c104_1a31adec",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1000105
+      },
+      "writtenOn": "2016-01-18T04:15:36Z",
+      "side": 1,
+      "message": "I don\u0027t think we\u0027ve got a page dedicated to Cinder\nin the new doc.",
+      "revId": "6bf2b81369b2e290502b692f0f1e7c363001bcbb",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
