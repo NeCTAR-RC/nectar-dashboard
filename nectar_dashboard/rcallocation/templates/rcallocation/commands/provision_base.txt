@@ -17,7 +17,7 @@ Expires: {{ expiry }}
     {{ line }} {% endfor %}
 {% endif %}
 For hints on the next steps to access these resources, add users and launch VMs, please visit
-http://support.rc.nectar.org.au/docs/getting-started
+https://support.nectar.org.au/support/solutions/folders/6000190150
 
 Kind Regards,
 The NeCTAR Research Cloud Team.
