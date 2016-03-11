@@ -140,7 +140,7 @@
     "create_pool_health_monitor": "rule:admin_or_owner",
     "delete_pool_health_monitor": "rule:admin_or_owner",
 
-    "create_router": "rule:regular_user",
+    "create_router": "rule:beta_tester",
     "get_router": "rule:admin_or_owner",
     "update_router": "rule:admin_or_owner",
     "add_router_interface": "rule:admin_or_owner",
