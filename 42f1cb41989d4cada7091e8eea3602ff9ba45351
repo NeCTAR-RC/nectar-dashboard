@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bad4c104_5ff5cb81",
+        "filename": "theme/templates/project/instances/_launch_network_help.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000082
+      },
+      "writtenOn": "2016-04-01T01:43:54Z",
+      "side": 1,
+      "message": "missing full stop?",
+      "range": {
+        "startLine": 4,
+        "startChar": 164,
+        "endLine": 4,
+        "endChar": 166
+      },
+      "revId": "42f1cb41989d4cada7091e8eea3602ff9ba45351",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
