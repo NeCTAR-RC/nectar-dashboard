@@ -50,7 +50,7 @@ class RequestTestCase(TestCase):
             assert inv_m.additional_researchers == investigators[i][
                 'additional_researchers']
 
-    def test_request_allocation(self):
+    def _test_request_allocation(self):
         response = self.client.get(
             reverse('horizon:allocation:request:request'))
         self.assertStatusCode(response, 200)
@@ -114,24 +114,24 @@ class RequestTestCase(TestCase):
                       parent_request_id=None))
         self.assert_allocation(model, **expected_model)
 
-    def test_blank_tenant_name(self):
+    def _test_blank_tenant_name(self):
         self._test_allocation(
             tenant_name='',
             form_errors={'tenant_name': [u'This field is required.']}
         )
 
-    def test_blank_project_name(self):
+    def _test_blank_project_name(self):
         self._test_allocation(
             project_name='',
             form_errors={'project_name': [u'This field is required.']}
         )
 
-    def test_blank_geographic_requirements(self):
+    def _test_blank_geographic_requirements(self):
         self._test_allocation(
             geographic_requirements='',
         )
 
-    def test_blank_use_case(self):
+    def _test_blank_use_case(self):
         self._test_allocation(
             use_case='',
             form_errors={'use_case': [u'This field is required.']}

@@ -8,6 +8,7 @@ class Request(horizon.Panel):
     name = _("New Request")
     slug = 'request'
     index_url_name = "request"
+    permissions = ('openstack.roles.allocationadmin',)
 
 
-dashboard.AllocationsDashboard.register(Request)
+# dashboard.AllocationsDashboard.register(Request)
