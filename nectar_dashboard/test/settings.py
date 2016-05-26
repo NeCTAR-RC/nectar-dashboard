@@ -51,11 +51,6 @@ INSTALLED_APPS = (
     'compressor',
     'horizon',
     'openstack_dashboard',
-    'nectar_dashboard.rcallocation',
-    'nectar_dashboard.rcallocation.allocation',
-    'nectar_dashboard.rcallocation.allocation_approved',
-    'nectar_dashboard.rcallocation.request',
-    'nectar_dashboard.rcallocation.user_allocations',
     'nectar_dashboard.reset_password',
     'nectar_dashboard.project_members',
 )
