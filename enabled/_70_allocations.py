@@ -9,6 +9,7 @@ ADD_INSTALLED_APPS = [
     'nectar_dashboard.rcallocation',
     'nectar_dashboard.rcallocation.allocation',
     'nectar_dashboard.rcallocation.allocation_approved',
+    'nectar_dashboard.rcallocation.crams',
     'nectar_dashboard.rcallocation.request',
     'nectar_dashboard.rcallocation.user_allocations',
 ]

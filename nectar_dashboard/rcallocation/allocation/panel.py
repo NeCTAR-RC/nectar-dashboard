@@ -11,4 +11,4 @@ class Requests(horizon.Panel):
     permissions = ('openstack.roles.allocationadmin',)
 
 
-dashboard.AllocationsDashboard.register(Requests)
+# dashboard.AllocationsDashboard.register(Requests)

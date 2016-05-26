@@ -11,4 +11,4 @@ class ApprovedRequests(horizon.Panel):
     permissions = ('openstack.roles.allocationadmin',)
 
 
-dashboard.AllocationsDashboard.register(ApprovedRequests)
+# dashboard.AllocationsDashboard.register(ApprovedRequests)
