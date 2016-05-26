@@ -8,6 +8,6 @@ class UserRequests(horizon.Panel):
     name = _("My Requests")
     slug = 'user_requests'
     #index_url_name = "user_allocation_requests"
-    #permissions = ('openstack.roles.allocationadmin',)
+    permissions = ('openstack.roles.allocationadmin',)
 
 dashboard.AllocationsDashboard.register(UserRequests)
