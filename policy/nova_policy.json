@@ -23,7 +23,7 @@
     "compute:detach_volume" : "rule:default",
     "compute:update": "rule:default",
 
-    "compute:resize": "",
+    "compute:resize": "!",
     "compute:confirm_resize": "rule:default",
     "compute:revert_resize": "rule:default",
 
