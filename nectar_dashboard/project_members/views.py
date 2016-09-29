@@ -14,6 +14,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -31,6 +32,11 @@ from .forms import AddUserToProjectForm
 from .tables import ProjectMembersTable
 
 
+class User(object):
+    def __init__(self, user_dict):
+        for k, v in user_dict.items():
+            setattr(self, k, v)
+
 class ProjectManageMixin(object):
     def _get_project(self):
         if not hasattr(self, "_project"):
@@ -41,9 +47,16 @@ class ProjectManageMixin(object):
     def _get_project_members(self):
         if not hasattr(self, "_project_members"):
             tenant_id = self.request.user.tenant_id
+            member_role_id = getattr(settings, 'KEYSTONE_MEMBER_ROLE_ID', '1')
+            project_members = []
+            assignments = api.keystone.role_assignments_list(self.request,
+                                                             project=tenant_id,
+                                                             role=member_role_id,
+                                                             include_names=True)
+            for a in assignments:
+                project_members.append(User(a.user))
+            self._project_members = project_members
 
-            self._project_members = api.keystone.user_list(self.request,
-                                                           project=tenant_id)
         return self._project_members
 
     def _get_project_non_members(self):
