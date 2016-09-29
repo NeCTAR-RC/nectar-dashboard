@@ -19,17 +19,12 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-import urllib
-
 from openstack_dashboard.api.keystone import keystoneclient
 
 
-LOG = logging.getLogger(__name__)
-
-
 def user_get_by_name(request, name, admin=True):
-    query = "?" + urllib.urlencode({'name': name})
     manager = keystoneclient(request, admin=admin).users
-    user = manager._get("/users%s" % query, "user")
-    return user
+    users = manager.list(name=name)
+    if len(users) != 1:
+        raise
+    return users[0]
