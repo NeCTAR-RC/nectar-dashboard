@@ -8,7 +8,7 @@ from django.conf import settings
 from django import forms
 from django import shortcuts
 
-from keystoneclient.v2_0 import client as keystoneclient
+from keystoneclient.v3 import client as keystoneclient
 from openstack_dashboard import api
 from openstack_auth.user import create_user_from_token
 from openstack_auth.user import set_session_from_user
