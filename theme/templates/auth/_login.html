@@ -6,7 +6,7 @@
 {% block modal-header %}<br/><br/>{% endblock %}
 {% block modal_class %}login {% if hide %}modal{% endif %}{% endblock %}
 
-{% block form_action %}{{ HORIZON_CONFIG.rcshibboleth_url }}{% endblock %}
+{% block form_action %}{{ HORIZON_CONFIG.rcshibboleth_url }}{% if redirect_field_name in request.GET %}%3F{{ redirect_field_name|urlencode }}%3D{{ request.GET.next|urlencode }}{% endif %}{% endblock %}
 {% block ng_controller %}hzLoginController{% endblock %}
 {% block autocomplete %}{{ HORIZON_CONFIG.password_autocomplete }}{% endblock %}
 
