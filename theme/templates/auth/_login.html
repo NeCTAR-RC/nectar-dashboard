@@ -2,11 +2,13 @@
 {% load i18n %}
 {% load url from future %}
 
+{% load urlencode %}
+{% load keyvalue %}
 
 {% block modal-header %}<br/><br/>{% endblock %}
 {% block modal_class %}login {% if hide %}modal{% endif %}{% endblock %}
 
-{% block form_action %}{{ HORIZON_CONFIG.rcshibboleth_url }}{% endblock %}
+{% block form_action %}{{ HORIZON_CONFIG.rcshibboleth_url }}{% if redirect_field_name in request.GET %}{% urlencode %}?{{ redirect_field_name }}={{ request.GET|keyvalue:redirect_field_name }}{% endurlencode %}{% endif %}{% endblock %}
 {% block ng_controller %}hzLoginController{% endblock %}
 {% block autocomplete %}{{ HORIZON_CONFIG.password_autocomplete }}{% endblock %}
 
