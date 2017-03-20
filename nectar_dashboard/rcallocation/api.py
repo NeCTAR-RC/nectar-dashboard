@@ -8,7 +8,7 @@ class AllocationSerializer(serializers.ModelSerializer):
         model = models.AllocationRequest
 
 
-class AllocationViewSet(viewsets.ModelViewSet):
+class AllocationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.AllocationRequest.objects.all()
     serializer_class = AllocationSerializer
     filter_fields = ('status',)
@@ -19,7 +19,7 @@ class QuotaSerializer(serializers.ModelSerializer):
         model = models.Quota
 
 
-class QuotaViewSet(viewsets.ModelViewSet):
+class QuotaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Quota.objects.all()
     serializer_class = QuotaSerializer
     filter_fields = ('allocation', 'resource', 'zone')
@@ -30,7 +30,7 @@ class ChiefInvestigatorSerializer(serializers.ModelSerializer):
         model = models.ChiefInvestigator
 
 
-class ChiefInvestigatorViewSet(viewsets.ModelViewSet):
+class ChiefInvestigatorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.ChiefInvestigator.objects.all()
     serializer_class = ChiefInvestigatorSerializer
     filter_fields = ('allocation',)
@@ -41,7 +41,7 @@ class InstitutionSerializer(serializers.ModelSerializer):
         model = models.Institution
 
 
-class InstitutionViewSet(viewsets.ModelViewSet):
+class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Institution.objects.all()
     serializer_class = InstitutionSerializer
     filter_fields = ('allocation',)
@@ -52,7 +52,7 @@ class PublicationSerializer(serializers.ModelSerializer):
         model = models.Publication
 
 
-class PublicationViewSet(viewsets.ModelViewSet):
+class PublicationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Publication.objects.all()
     serializer_class = PublicationSerializer
     filter_fields = ('allocation',)
@@ -63,7 +63,7 @@ class GrantSerializer(serializers.ModelSerializer):
         model = models.Grant
 
 
-class GrantViewSet(viewsets.ModelViewSet):
+class GrantViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Grant.objects.all()
     serializer_class = GrantSerializer
     filter_fields = ('allocation',)
