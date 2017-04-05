@@ -499,7 +499,7 @@ class AllocationRequest(models.Model):
             email.bcc = bcc_list
 
         if reply_to:
-            email.headers = {'Reply-To': reply_to}
+            email.extra_headers = {'Reply-To': reply_to}
 
         email.send()
 
