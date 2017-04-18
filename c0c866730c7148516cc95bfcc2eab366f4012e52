@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ae8d1ca_6ed03154",
+        "filename": "theme/templates/terms.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2017-04-18T22:59:59Z",
+      "side": 1,
+      "message": "think we should get rid of this line for this version",
+      "range": {
+        "startLine": 16,
+        "startChar": 6,
+        "endLine": 16,
+        "endChar": 159
+      },
+      "revId": "c0c866730c7148516cc95bfcc2eab366f4012e52",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
