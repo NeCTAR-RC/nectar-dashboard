@@ -8,7 +8,7 @@ from django.core.exceptions import PermissionDenied
 
 from horizon import tables
 from horizon.utils.memoized import memoized
-from openstack_dashboard.api.keystone import keystoneclient
+from openstack_dashboard.api import keystone
 
 from nectar_dashboard.rcallocation.models import AllocationRequest, Quota
 from nectar_dashboard.rcallocation.views import (AllocationsListView,
@@ -119,32 +119,19 @@ class UserAllocationListTable(AllocationListTable):
             link=self.view_url)
 
 
-@memoized
-def get_all_user_roles(request):
-    # This is a massive inefficient hack.
-    unscoped_token = request.session['unscoped_token']
-    client = keystoneclient(request)
-    try:
-        projects = client.tenants.list()
-    except:
-        return {}
-
-    roles = defaultdict(set)
-    for project in projects:
-        try:
-            token = client.tokens.authenticate(tenant_id=project.id,
-                                               token=unscoped_token)
-            project_roles = map(lambda r: r['name'], token.user['roles'])
-            roles[project.id] = set(project_roles)
-        except:
-            pass
-    return roles
-
-
 def get_managed_projects(request):
-    projects = get_all_user_roles(request)
-    return [project for project, roles in projects.iteritems()
-            if 'TenantManager' in roles]
+    try:
+        role_assignments = keystone.role_assignments_list(
+            request,
+            project=request.user.project_id,
+            user=request.user.id,
+            include_names=True)
+    except:
+        return []
+
+    for ra in role_assignments:
+        if ra.role['name'] == 'TenantManager':
+            return [request.user.project_id]
 
 
 class UserAllocationsListView(AllocationsListView):
