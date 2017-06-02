@@ -8,7 +8,9 @@
             var zone = zone_select.find("option:selected").val();
             if (resource) {
                 zone_select.empty();
-                zone_select.append("<option value=\"\">---------</option>");
+                if (resource !== 'volume') {
+                    zone_select.append("<option value=\"\">---------</option>");
+                }
                 $(opts.storage_zones[resource]).each(function (i, item) {
                     var value = item[0],
                         text = item[1];
