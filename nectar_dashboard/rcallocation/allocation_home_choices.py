@@ -7,5 +7,4 @@ ALLOC_HOME_CHOICE = (
     ("tpac", "Tasmania (TPAC)"),
     ("uom", "Victoria (Melbourne)"),
     ("monash", "Victoria (Monash)"),
-    ("pawsey", "Western Australia (Pawsey)"),
 )
