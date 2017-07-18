@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.forms import ModelForm, ValidationError
-from django.forms import TextInput, Select, CharField, Textarea
+from django.forms import TextInput, Select, CharField, Textarea, HiddenInput
 from django.forms.forms import NON_FIELD_ERRORS
 from django.utils.safestring import mark_safe
 from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
@@ -39,6 +39,7 @@ class BaseAllocationForm(ModelForm):
                            'this new project.'),
                 ]),
             'project_name': TextInput(attrs={'class': 'col-md-12'}),
+            'tenant_uuid': HiddenInput(),
             'contact_email': TextInput(attrs={'readonly': 'readonly'}),
             'use_case': Textarea(attrs={'class': 'col-md-6',
                                         'style': 'height:120px; width:420px'}),
