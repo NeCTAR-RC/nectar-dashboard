@@ -125,6 +125,7 @@ def get_managed_projects(request):
             request,
             project=request.user.project_id,
             user=request.user.id,
+            include_subtree=False,
             include_names=True)
     except:
         role_assignments = []

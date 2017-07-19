@@ -53,6 +53,7 @@ class ProjectManageMixin(object):
                 self.request,
                 project=tenant_id,
                 role=member_role_id,
+                include_subtree=False,
                 include_names=True)
             for a in assignments:
                 project_members.append(User(a.user))
