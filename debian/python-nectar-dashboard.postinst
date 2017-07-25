@@ -15,11 +15,6 @@ if [ "$1" = "configure" ]; then
     python manage.py compress --force 2>&1 > /dev/null
   )
 
-  if [ -e /usr/share/openstack-dashboard/openstack_dashboard/static ] ; then
-    chown -R horizon:horizon \
-      /usr/share/openstack-dashboard/openstack_dashboard/static
-  fi
-
   A22_STATE=$(dpkg-query -f '${Status}' -W 'apache2.2-common' 2>/dev/null | awk '{print $3}' || true)
 
   if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
@@ -34,5 +29,5 @@ fi
 
 #DEBHELPER#
 
-chown -R horizon:horizon /var/log/nectar-dashboard
+chown -R www-data:www-data /var/log/nectar-dashboard
 chmod -R u+w /var/log/nectar-dashboard
