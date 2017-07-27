@@ -1,0 +1,35 @@
+<div ng-controller="FlavorController as ctrl">
+  <p class="step-description" translate>
+    Flavors manage the sizing for the compute, memory and storage capacity of the instance.
+  </p>
+  <div class="form-group">
+    <label class="control-label" translate for="flavor">Flavor</label>
+    <div class="alert alert-warning"
+         ng-if="model.flavors.length === 0"
+         translate>There are no Flavors.</div>
+    <select ng-if="model.flavors.length !== 0"
+            class="form-control"
+            id="flavor"
+            ng-model="model.newInstanceSpec.flavor"
+            ng-options="flavor as flavor.name group by flavor.extras['flavor_class:name'] for flavor in model.flavors">
+      <option value="" disabled selected hidden>Select flavor...</option>
+    </select>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <pie-chart ng-if="ctrl.instancesChartData !== undefined"
+                 chart-data="ctrl.instancesChartData"
+                 chart-settings="chartSettings"></pie-chart>
+    </div>
+    <div class="col-xs-4">
+      <pie-chart ng-if="ctrl.vcpusChartData !== undefined"
+                 chart-data="ctrl.vcpusChartData"
+                 chart-settings="chartSettings"></pie-chart>
+    </div>
+    <div class="col-xs-4">
+      <pie-chart ng-if="ctrl.ramChartData !== undefined"
+                 chart-data="ctrl.ramChartData"
+                 chart-settings="chartSettings"></pie-chart>
+    </div>
+  </div>
+</div>
