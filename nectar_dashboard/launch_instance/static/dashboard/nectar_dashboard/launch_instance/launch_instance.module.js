@@ -26,5 +26,6 @@
       helpUrl: '/static/dashboard/nectar_dashboard/launch_instance/az/az.help.html',
       title: 'Availability Zone'
     });
+    workflow.addController('NetworksController');
   }
 })();
