@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load quota_title %}
 
 {% block sidebar %}
     {% with current_sidebar="allocation" %}
@@ -120,7 +121,8 @@
                     </div>
                 {% endif %}
                 {% if quotaFormSet %}
-                    <h3>Quotas</h3>
+                    <h2>Quota</h2>
+		    <h4>Compute</h4>
                     <div class="row">
                         <div class="col-md-4">
                             {% include "rcallocation/nohelp_field.html" with field=form.instances %}
@@ -143,10 +145,10 @@
                         {{ quota_form.allocation_resource }}
                         <div class="row">
                             <div class="col-md-4">
-                                <h3>
-                                    {{ quota_form.instance.resource|title }} Storage
+                                <h4>
+                                    {{ quota_form.instance.resource|quota_title }}
                                     ({{ quota_form.instance.zone|title }})
-                                </h3>
+                                </h4>
                             </div>
                         </div>
                         <div class="row">
