@@ -191,7 +191,7 @@ class BaseQuotaForm(ModelForm):
 class QuotaForm(BaseQuotaForm):
     class Meta(BaseQuotaForm.Meta):
         model = Quota
-        exclude = ('allocation_request', 'units', 'quota')
+        exclude = ('allocation_request', 'quota')
 
     zone = forms.ChoiceField()
 
@@ -211,6 +211,13 @@ class QuotaForm(BaseQuotaForm):
                 self.fields['zone']._set_choices(
                     ((u'', u'---------'),) +
                     storage_zones[self.instance.resource])
+
+    def clean(self):
+        resource_units = getattr(settings, 'ALLOCATION_QUOTA_UNITS', None)
+        if resource_units:
+            resource = self.cleaned_data.get('resource')
+            self.cleaned_data['units'] = resource_units.get(resource)
+        return self.cleaned_data
 
 
 # Base ModelForm
