@@ -632,11 +632,11 @@ class Quota(models.Model):
         max_length=64,
         help_text="""The location to of the resource.""")
 
-    requested_quota = models.IntegerField(
+    requested_quota = models.PositiveIntegerField(
         'Requested quota',
         default='0')
 
-    quota = models.IntegerField(
+    quota = models.PositiveIntegerField(
         "Allocated quota",
         default='0')
 
