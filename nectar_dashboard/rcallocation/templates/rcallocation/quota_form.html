@@ -5,10 +5,9 @@
   {{ quota_form.id }}
   {{ quota_form.allocation_resource }}
   {{ quota_form.DELETE.as_hidden }}
-  {{ quota_form.units.as_hidden }}
   <div class="row">
     <div class="col-md-4">
-      <h4>Storage Quota
+      <h4>Quota
         {% if quota_form.DELETE %}
           <button type="button" class="pull-right btn btn-default"><i class="icon-trash"></i>Delete</button>
         {% endif %}
