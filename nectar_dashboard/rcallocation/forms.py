@@ -191,7 +191,7 @@ class BaseQuotaForm(ModelForm):
 class QuotaForm(BaseQuotaForm):
     class Meta(BaseQuotaForm.Meta):
         model = Quota
-        exclude = ('allocation_request', 'units', 'quota')
+        exclude = ('allocation_request', 'quota')
 
     zone = forms.ChoiceField()
 
