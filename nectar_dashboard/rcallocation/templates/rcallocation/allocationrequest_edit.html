@@ -96,13 +96,13 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <h2>Storage Resources</h2>
-          There are 2 types of storage quota currently available on
-          the NeCTAR Research Cloud.  They are Volume and Object.
-
+          <h2>Cloud Resources</h2>
+          There are supplementary cloud resources offered by the NeCTAR
+          Research Cloud that you may wish to use. Each of these resources
+          has its own quota that you can apply for.
           <table class="table">
             <tr>
-              <th>Volume</th>
+              <th>Volume storage</th>
               <td>
                 A persistent volume looks and acts like a hard
                 drive that can be attached to your virtual
@@ -112,7 +112,7 @@
                 need. More information is available on the <a href="https://support.nectar.org.au/support/solutions/articles/6000055382-introduction-to-cloud-storage">Introduction to Cloud Storage support page</a>.</td>
             </tr>
             <tr>
-              <th>Object</th>
+              <th>Object storage</th>
               <td>
                 Object Storage is a large accessible online
                 storage location that you can reach from most
@@ -120,6 +120,12 @@
                 requires cloud native applications for access. Specify the
                 total size in gigabytes that the project will need. More
                 information is available on the <a href="https://support.nectar.org.au/support/solutions/articles/6000061932-introduction-to-object-storage">Object Storage support page</a>.</td>
+            </tr>
+            <tr>
+              <th>Database</th>
+              <td>
+                The database service provides a scalable and reliable Cloud Database as a Service provisioning functionality for MySQL, with other database engines to be supported in the future. Specify the number of database servers your project will need.
+                More information is available on the <a href="https://support.ehelp.edu.au/solution/articles/6000175534-trove-documentation">Database support page</a>.</td>
             </tr>
           </table>
         </div>
@@ -131,8 +137,8 @@
             {% include "rcallocation/quota_form.html" %}
           {% endfor %}
         </div>
-        <div class="col-md-12">
-            <input type="button" value="Add storage quota" id="add_more"/>
+        <div>
+            <input type="button" value="Add quota" id="add_more"/>
         </div>
       </div>
       <div class="row">&nbsp;</div>
