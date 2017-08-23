@@ -622,10 +622,18 @@ class Quota(models.Model):
     units = models.CharField(
         "The units the quota is stored in.",
         default='GB',
-        max_length=64)
+        max_length=64,
+        blank=True)
+
 
     class Meta:
         unique_together = ("allocation", "resource", "zone")
+
+    def save(self, *args, **kwargs):
+        resource_units = getattr(settings, 'ALLOCATION_QUOTA_UNITS', None)
+        if resource_units:
+            self.units = resource_units.get(self.resource)
+        super(Quota, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return '{0} {1} {2}'.format(self.allocation.id,
