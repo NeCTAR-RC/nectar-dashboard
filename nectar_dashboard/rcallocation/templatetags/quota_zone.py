@@ -5,7 +5,7 @@ from django.template.defaultfilters import stringfilter
 register = template.Library()
 
 QUOTA_ZONES = dict(
-    getattr(settings, 'ALLOCATION_OBJECT_AZ_CHOICES', tuple()) +
+    getattr(settings, 'ALLOCATION_NECTAR_AZ_CHOICES', tuple()) +
     getattr(settings, 'ALLOCATION_VOLUME_AZ_CHOICES', tuple()))
 
 

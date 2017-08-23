@@ -642,7 +642,9 @@ class Quota(models.Model):
     units = models.CharField(
         "The units the quota is stored in.",
         default='GB',
-        max_length=64)
+        max_length=64,
+        blank=True)
+
 
     class Meta:
         unique_together = ("allocation", "resource", "zone")
