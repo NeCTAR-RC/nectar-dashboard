@@ -22,6 +22,30 @@
       "revId": "a949be54cdf9025bb5f8b08fbc2fa58ad15285c1",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_ced04f56",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2017-08-23T23:51:53Z",
+      "side": 1,
+      "message": "That\u0027s the plan.",
+      "parentUuid": "1ae5cdf2_cee92f1c",
+      "range": {
+        "startLine": 127,
+        "startChar": 192,
+        "endLine": 127,
+        "endChar": 221
+      },
+      "revId": "a949be54cdf9025bb5f8b08fbc2fa58ad15285c1",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
