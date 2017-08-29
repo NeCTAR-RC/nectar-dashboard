@@ -24,6 +24,7 @@ LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
 class BaseAllocationUpdateView(BaseAllocationView):
+    page_title = 'Update'
     editor_attr = 'contact_email'
     formset_quota_class = inlineformset_factory(
         AllocationRequest, Quota, form=QuotaForm, extra=0)
@@ -52,6 +53,7 @@ class BaseAllocationUpdateView(BaseAllocationView):
 
 
 class RestrictedAllocationsEditView(BaseAllocationUpdateView):
+    page_title = 'Update'
     template_name = "rcallocation/allocationrequest_user_update.html"
     model = AllocationRequest
     form_class = UserAllocationRequestForm
@@ -60,6 +62,7 @@ class RestrictedAllocationsEditView(BaseAllocationUpdateView):
 
 class RestrictedAllocationsDetailsView(AllocationDetailView):
     template_name = "rcallocation/allocationrequest_user_detail.html"
+    page_title = 'Details'
 
     def get(self, request, **kwargs):
         """
@@ -146,6 +149,7 @@ class UserAllocationsListView(AllocationsListView):
     context_object_name = "allocation_list"
     table_class = UserAllocationListTable
     template_name = 'rcallocation/allocationrequest_user_list.html'
+    page_title = 'My Requests'
 
     def get_data(self):
         contact_email = self.request.user.username

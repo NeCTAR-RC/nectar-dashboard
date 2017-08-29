@@ -7,6 +7,7 @@ LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
 class ApprovedAllocationsListView(AllocationsListView):
+    page_title = 'Approved Requests'
     def get_data(self):
         return [ar for ar in
                 AllocationRequest.objects.filter(
