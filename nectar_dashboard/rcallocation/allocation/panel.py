@@ -5,7 +5,7 @@ from nectar_dashboard.rcallocation import dashboard
 
 
 class Requests(horizon.Panel):
-    name = _("Requests")
+    name = _("Pending")
     slug = 'requests'
     index_url_name = "allocation_requests"
     permissions = ('openstack.roles.allocationadmin',)
