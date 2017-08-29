@@ -145,8 +145,7 @@ class AllocationListTable(tables.DataTable):
                                   verbose_name="Last Updated",
                                   filters=[lambda d: d.date()])
     end_date = tables.Column("end_date",
-                             verbose_name="Expiry Date",
-                             filters=[lambda d: d.date()])
+                             verbose_name="Expiry Date")
 
     class Meta:
         verbose_name = "Requests"
