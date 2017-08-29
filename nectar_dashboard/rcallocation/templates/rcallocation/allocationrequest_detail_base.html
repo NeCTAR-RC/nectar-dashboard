@@ -65,11 +65,11 @@
                   {% if allocation.status == 'A' or allocation.status == 'X' or allocation.tenant_name %}
                     <tr>
                       <th width="200">Project Identifier</th>
-                      <td>{{ allocation.tenant_name|default:"(Tenant not linked)" }}</td>
+                      <td>{{ allocation.tenant_name|default:"(Project not linked)" }}</td>
                     </tr>
                     <tr>
-                      <th>Tenant ID</th>
-                      <td>{{ allocation.tenant_uuid|default:"(Tenant not linked)" }}</td>
+                      <th>Project ID</th>
+                      <td>{{ allocation.tenant_uuid|default:"(Project not linked)" }}</td>
                     </tr>
                   {% endif %}
             </tbody>
