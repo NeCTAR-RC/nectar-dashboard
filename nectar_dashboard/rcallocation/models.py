@@ -510,10 +510,9 @@ class AllocationRequest(models.Model):
         ctx = Context({'request': self})
         text = template.render(ctx)
         to = [settings.ALLOCATION_EMAIL_PROVISIONER]
-        cc = [self.contact_email]
         sender = self.approver_email
         subject, body = text.split('')
-        email = EmailMessage(subject.strip(), body, sender, to, cc=cc)
+        email = EmailMessage(subject.strip(), body, sender, to)
         email.send()
 
     def notify_user(self, template):
