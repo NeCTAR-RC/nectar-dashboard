@@ -217,6 +217,7 @@ class AllocationsListView(tables.DataTableView):
     context_object_name = "allocation_list"
     table_class = AllocationListTable
     template_name = 'rcallocation/allocationrequest_list.html'
+    page_title = 'Requests'
 
     def get_data(self):
         return [ar for ar in
@@ -237,6 +238,7 @@ class AllocationHistoryView(tables.DataTableView):
     context_object_name = "allocation_list"
     table_class = AllocationHistoryTable
     template_name = 'rcallocation/allocationrequest_list.html'
+    page_title = 'History'
 
     def get_data(self):
         pk = self.kwargs['pk']
@@ -252,6 +254,7 @@ class AllocationHistoryView(tables.DataTableView):
 class BaseAllocationView(UpdateView):
     model = AllocationRequest
     form_class = AllocationRequestForm
+    page_title = "Update"
 
     # quota
     formset_quota_class = inlineformset_factory(

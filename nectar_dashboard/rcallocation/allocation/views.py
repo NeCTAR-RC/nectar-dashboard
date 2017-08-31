@@ -18,9 +18,10 @@ class AllocationUpdateView(BaseAllocationView):
     model = AllocationRequest
     form_class = AllocationRequestForm
     success_url = "../../"
-
+    page_title = 'Update'
 
 class AllocationApproveView(BaseAllocationView):
+    page_title = 'Approve'
     template_name = "rcallocation/allocationrequest_approve.html"
     model = AllocationRequest
     form_class = AllocationApproveForm
@@ -41,6 +42,7 @@ class AllocationApproveView(BaseAllocationView):
 
 
 class AllocationRejectView(BaseAllocationView):
+    page_title = "Decline"
     template_name = "rcallocation/allocationrequest_reject.html"
     model = AllocationRequest
     form_class = AllocationRejectForm

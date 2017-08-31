@@ -21,6 +21,7 @@ class AllocationCreateView(BaseAllocationView):
     template_name = "rcallocation/allocationrequest_edit.html"
     form_class = UserAllocationRequestForm
     editor_attr = 'contact_email'
+    page_title = 'New Request'
     formset_quota_class = inlineformset_factory(
         AllocationRequest, Quota, form=QuotaForm, extra=0)
 
