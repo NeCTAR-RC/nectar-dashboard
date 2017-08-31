@@ -8,4 +8,5 @@ ALLOC_HOME_CHOICE = (
     ("uom", "Victoria (Melbourne)"),
     ("monash", "Victoria (Monash)"),
     ("swinburne", "Victoria (Swinburne)"),
+    ("auckland", "Auckland Uni (New Zealand)"),
 )
