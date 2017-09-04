@@ -21,6 +21,8 @@
   </div>
   {%endif%}
   {% include "auth/_description.html" %}
+  <a href="https://reannz.co.nz/services/network-cloud-services/tuakiri/"><img src="https://rapidconnect.tuakiri.ac.nz/REANNZ_Tuakiri_service_120x42.png" class="pull-left"/></a>
+  <a href="https://aaf.edu.au/"><img src="https://aaf.edu.au/images/Service-Button-white-223x54.png" class="pull-right"/></a>
   <fieldset hz-login-finder>
     {% if request.user.is_authenticated and 'next' in request.GET %}
     <div class="form-group clearfix error">
@@ -40,8 +42,10 @@
 {% endblock %}
 
 {% block modal-footer %}
-  <button id="loginBtn" type="submit" class="btn btn-primary pull-right">
-    <span ng-show="auth_type==='credentials'">{% trans "Sign In" %}</span>
-    <span ng-hide="auth_type==='credentials'" ng-cloak>{% trans "Log In" %}</span>
+  <a href="{{ HORIZON_CONFIG.rcshibboleth_url_nz }}" id="loginBtn" type="submit" class="btn btn-info pull-left">
+    <span>NZ Log In via Tuakiri</span>
+  </a>
+  <button id="loginBtn" type="submit" class="btn btn-warning pull-right">
+    <span>Australian Log In via AAF</span>
   </button>
 {% endblock %}
