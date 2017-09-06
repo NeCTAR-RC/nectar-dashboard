@@ -60,11 +60,15 @@
 
     <div class="panel-footer">
       {% block login_footer %}
-        <button id="loginBtn" type="submit" class="btn btn-primary pull-right">
-          <span ng-show="auth_type==='credentials'">{% trans "Sign In" %}</span>
-          <span ng-hide="auth_type==='credentials'" ng-cloak>{% trans "Log In" %}</span>
-        </button>
-        <div class="clearfix"></div>
+      {% if HORIZON_CONFIG.rcshibboleth_url_nz %}
+      <a href="{{ HORIZON_CONFIG.rcshibboleth_url_nz }}" id="nzloginBtn" type="submit" class="btn btn-info pull-left">
+        <span>NZ Log In via Tuakiri</span>
+      </a>
+      {% endif %}
+      <button id="loginBtn" type="submit" class="btn btn-warning pull-right">
+        <span>Australian Log In via AAF</span>
+      </button>
+      <div class="clearfix"></div>
       {% endblock %}
     </div>
   </div>
