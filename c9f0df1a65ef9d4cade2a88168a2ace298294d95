@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a104f17e",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2017-09-07T05:02:49Z",
+      "side": 1,
+      "message": "this is a bit od a dodgy way of doing this. The proper way would be to override the save method and do it there. This way it will work no matter how you\u0027re doing it (eg in the provisioning code we would also need this logic unless it was in the save method)",
+      "range": {
+        "startLine": 215,
+        "startChar": 0,
+        "endLine": 220,
+        "endChar": 32
+      },
+      "revId": "c9f0df1a65ef9d4cade2a88168a2ace298294d95",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_0104c579",
+        "filename": "nectar_dashboard/rcallocation/templatetags/quota_title.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2017-09-07T05:02:49Z",
+      "side": 1,
+      "message": "_TYPES or _UNITS ?",
+      "range": {
+        "startLine": 7,
+        "startChar": 33,
+        "endLine": 7,
+        "endChar": 55
+      },
+      "revId": "c9f0df1a65ef9d4cade2a88168a2ace298294d95",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_21f8e17b",
+        "filename": "nectar_dashboard/rcallocation/templatetags/quota_zone.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2017-09-07T05:02:49Z",
+      "side": 1,
+      "message": "this right?",
+      "range": {
+        "startLine": 8,
+        "startChar": 23,
+        "endLine": 8,
+        "endChar": 51
+      },
+      "revId": "c9f0df1a65ef9d4cade2a88168a2ace298294d95",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
