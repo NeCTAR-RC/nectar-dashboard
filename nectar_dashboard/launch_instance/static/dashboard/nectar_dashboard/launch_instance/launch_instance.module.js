@@ -19,5 +19,12 @@
       helpUrl: '/static/dashboard/nectar_dashboard/launch_instance/flavor/flavor.help.html',
       title: 'Flavor'
     });
+    workflow.after('details', {
+      id: 'nectar-az',
+      formName: 'launchInstanceNectarAvailabilityZoneForm',
+      templateUrl: '/static/dashboard/nectar_dashboard/launch_instance/az/az.html',
+      helpUrl: '/static/dashboard/nectar_dashboard/launch_instance/az/az.help.html',
+      title: 'Availability Zone'
+    });
   }
 })();
