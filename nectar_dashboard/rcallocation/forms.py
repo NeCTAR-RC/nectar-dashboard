@@ -22,7 +22,7 @@ class BaseAllocationForm(ModelForm):
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'modified_time', 'parent_request', 'primary_instance_type',
                    'volume_zone', 'object_storage_zone',
-                   'funding_national_percent', 'funding_node',
+                   'funding_national_percent', 'funding_node', 'provisioned',
                    )
         widgets = {
             'status_explanation': Textarea(
