@@ -397,6 +397,8 @@ class AllocationRequest(models.Model):
                     the National Funding."""
     )
 
+    provisioned = models.BooleanField(default=False)
+
     def set_status(self, status):
         status = status.upper()
         status_abbreviations = [abbr for abbr, full_name in
@@ -503,18 +505,6 @@ class AllocationRequest(models.Model):
 
         email.send()
 
-    def notify_provisioner(self):
-        if not self.can_be_provisioned():
-            return
-        template = get_template('rcallocation/email_provision.txt')
-        ctx = Context({'request': self})
-        text = template.render(ctx)
-        to = [settings.ALLOCATION_EMAIL_PROVISIONER]
-        sender = self.approver_email
-        subject, body = text.split('')
-        email = EmailMessage(subject.strip(), body, sender, to)
-        email.send()
-
     def notify_user(self, template):
         to = [self.contact_email]
         cc = settings.ALLOCATION_EMAIL_RECIPIENTS
@@ -551,9 +541,6 @@ class AllocationRequest(models.Model):
                 # request has been created but no email has
                 # been sent. Progress it once it's been sent.
                 self.status = 'E'
-        elif self.can_be_provisioned():
-            # User is cc'd on the support email to create the tenant.
-            self.notify_provisioner()
         elif self.is_rejected():
             template = 'rcallocation/email_alert_rejected.txt'
             self.notify_user(template)

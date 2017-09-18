@@ -4,6 +4,5 @@ git+https://github.com/NeCTAR-RC/horizon.git@nectar/liberty#egg=openstack_dashbo
 
 python-dateutil
 pymysql
-rt
-djangorestframework>=3.2.3,<3.3.0
+djangorestframework
 django-filter
