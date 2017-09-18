@@ -18,14 +18,6 @@
         </a>
       </div>
     {% endif %}
-  {% elif allocation.is_decided %}
-    {% if allocation.can_be_provisioned and request.user.is_superuser %}
-      <a href="{% url 'horizon:allocation:requests:provision_request' allocation.pk %}"
-         class="btn btn-success"
-         id="provision_view">
-        Provision request
-      </a>
-    {% endif %}
   {% elif allocation.can_be_approved %}
     <div class="col-sm-2">
       <a href="{% url 'horizon:allocation:requests:approve_request' allocation.pk %}"

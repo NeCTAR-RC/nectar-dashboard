@@ -3,22 +3,10 @@ from rest_framework import serializers, viewsets
 from nectar_dashboard.rcallocation import models
 
 
-class AllocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.AllocationRequest
-
-
-class AllocationViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.AllocationRequest.objects.all()
-    serializer_class = AllocationSerializer
-    filter_fields = ('status', 'parent_request_id', 'tenant_uuid',
-                     'tenant_name')
-
-
 class QuotaSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Quota
-
+        fields = '__all__'
 
 class QuotaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Quota.objects.all()
@@ -26,10 +14,25 @@ class QuotaViewSet(viewsets.ReadOnlyModelViewSet):
     filter_fields = ('allocation', 'resource', 'zone')
 
 
+class AllocationSerializer(serializers.ModelSerializer):
+    quotas = QuotaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.AllocationRequest
+        fields = '__all__'
+
+
+class AllocationViewSet(viewsets.ModelViewSet):
+    queryset = models.AllocationRequest.objects.all()
+    serializer_class = AllocationSerializer
+    filter_fields = ('id', 'status', 'parent_request_id', 'tenant_uuid',
+                     'tenant_name', 'provisioned')
+
+
 class ChiefInvestigatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ChiefInvestigator
-
+        fields = '__all__'
 
 class ChiefInvestigatorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.ChiefInvestigator.objects.all()
@@ -40,7 +43,7 @@ class ChiefInvestigatorViewSet(viewsets.ReadOnlyModelViewSet):
 class InstitutionSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Institution
-
+        fields = '__all__'
 
 class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Institution.objects.all()
@@ -51,7 +54,7 @@ class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
 class PublicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Publication
-
+        fields = '__all__'
 
 class PublicationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Publication.objects.all()
@@ -62,7 +65,7 @@ class PublicationViewSet(viewsets.ReadOnlyModelViewSet):
 class GrantSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Grant
-
+        fields = '__all__'
 
 class GrantViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Grant.objects.all()
