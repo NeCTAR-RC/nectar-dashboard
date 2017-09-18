@@ -514,7 +514,7 @@ class BaseAllocationView(UpdateView):
 
         # Set the editor attribute
         setattr(object, self.editor_attr, self.request.user.username)
-
+        object.provisioned = False
         object.save()
         if quotaFormSet:
             quotaFormSet.save()
