@@ -19,6 +19,7 @@ setup(
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests', 'local']),
     include_package_data=True,
     install_requires=["djangorestframework",
+                      "django-filter",
                       "pymysql",
                       "python-dateutil"],
     license="GPLv3+",
