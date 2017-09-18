@@ -3,18 +3,6 @@ from rest_framework import serializers, viewsets
 from nectar_dashboard.rcallocation import models
 
 
-class AllocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.AllocationRequest
-
-
-class AllocationViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.AllocationRequest.objects.all()
-    serializer_class = AllocationSerializer
-    filter_fields = ('status', 'parent_request_id', 'tenant_uuid',
-                     'tenant_name')
-
-
 class QuotaSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Quota
@@ -24,6 +12,20 @@ class QuotaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Quota.objects.all()
     serializer_class = QuotaSerializer
     filter_fields = ('allocation', 'resource', 'zone')
+
+
+class AllocationSerializer(serializers.ModelSerializer):
+    quotas = QuotaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.AllocationRequest
+
+
+class AllocationViewSet(viewsets.ModelViewSet):
+    queryset = models.AllocationRequest.objects.all()
+    serializer_class = AllocationSerializer
+    filter_fields = ('id', 'status', 'parent_request_id', 'tenant_uuid',
+                     'tenant_name')
 
 
 class ChiefInvestigatorSerializer(serializers.ModelSerializer):
