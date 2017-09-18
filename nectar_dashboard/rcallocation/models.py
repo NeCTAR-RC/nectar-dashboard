@@ -61,10 +61,6 @@ class AllocationRequest(models.Model):
         # User can: Edit, Extend
         ('J', 'Update/extension declined'),
 
-        # Admin has provisioned an approved request
-        # User can: Amend, Extend
-        ('P', 'Provisioned'),
-
         # Requests in above status can be viewed by both user
         # and admin at all times.
 
@@ -397,6 +393,8 @@ class AllocationRequest(models.Model):
                     the National Funding."""
     )
 
+    provisioned = models.BooleanField(default=False)
+
     def set_status(self, status):
         status = status.upper()
         status_abbreviations = [abbr for abbr, full_name in
@@ -408,10 +406,10 @@ class AllocationRequest(models.Model):
 
     def is_active(self):
         """
-        Return True if the allocation has either been accepted or provisioned,
+        Return True if the allocation has either been approved,
         false otherwise.
         """
-        return self.status.lower() in ('a', 'p')
+        return self.status.lower() == 'a'
 
     def is_decided(self):
         """
@@ -470,9 +468,6 @@ class AllocationRequest(models.Model):
     def can_approve_change(self):
         return self.amendment_requested() and not self.is_archived()
 
-    def can_be_provisioned(self):
-        return self.status.lower() == 'a' and not self.is_archived()
-
     def notify_via_e_mail(self, sender, recipient_list, template, cc_list=[],
                           bcc_list=[], reply_to=None):
         """
@@ -501,18 +496,6 @@ class AllocationRequest(models.Model):
         if reply_to:
             email.extra_headers = {'Reply-To': reply_to}
 
-        email.send()
-
-    def notify_provisioner(self):
-        if not self.can_be_provisioned():
-            return
-        template = get_template('rcallocation/email_provision.txt')
-        ctx = Context({'request': self})
-        text = template.render(ctx)
-        to = [settings.ALLOCATION_EMAIL_PROVISIONER]
-        sender = self.approver_email
-        subject, body = text.split('')
-        email = EmailMessage(subject.strip(), body, sender, to)
         email.send()
 
     def notify_user(self, template):
@@ -551,9 +534,6 @@ class AllocationRequest(models.Model):
                 # request has been created but no email has
                 # been sent. Progress it once it's been sent.
                 self.status = 'E'
-        elif self.can_be_provisioned():
-            # User is cc'd on the support email to create the tenant.
-            self.notify_provisioner()
         elif self.is_rejected():
             template = 'rcallocation/email_alert_rejected.txt'
             self.notify_user(template)
