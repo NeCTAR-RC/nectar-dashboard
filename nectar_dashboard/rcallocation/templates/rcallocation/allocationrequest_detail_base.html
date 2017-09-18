@@ -71,6 +71,10 @@
                       <th>Project ID</th>
                       <td>{{ allocation.tenant_uuid|default:"(Project not linked)" }}</td>
                     </tr>
+                    <tr>
+                      <th>Provisioned</th>
+                      <td>{{ allocation.provisioned|yesno }}</td>
+                    </tr>
                   {% endif %}
             </tbody>
           </table>

@@ -1,5 +1,0 @@
-{% extends 'rcallocation/commands/provision_base.txt' %}
-{% block message %}
-Thanks for your continued use of the NeCTAR Research Cloud.  Your
-request has been processed and the details are below.
-{% endblock message %}
