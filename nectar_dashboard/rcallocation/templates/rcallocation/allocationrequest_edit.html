@@ -134,6 +134,9 @@
           </table>
         </div>
       </div>
+      {% if quotaFormSet.errors %}
+      <div class="alert alert-danger" role="alert">{{ quotaFormSet.non_form_errors }}</div>
+      {% endif %}
       <div id="quota_formset">
         {{ quotaFormSet.management_form }}
         <div class="quotas">

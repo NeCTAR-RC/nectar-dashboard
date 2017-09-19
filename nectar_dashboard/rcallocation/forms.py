@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
-from django.forms import ModelForm, ValidationError
+from django.forms import ModelForm, ValidationError, BaseInlineFormSet
 from django.forms import TextInput, Select, CharField, Textarea, HiddenInput
 from django.forms.forms import NON_FIELD_ERRORS
 from django.utils.safestring import mark_safe
@@ -80,8 +80,8 @@ class BaseAllocationForm(ModelForm):
 
     def visible_fields(self):
         return [field for field in self
-                if (not field.is_hidden
-                    and not self._in_groups(field))]
+                if (not field.is_hidden and
+                    not self._in_groups(field))]
 
     def grouped_fields(self):
         grouped_fields = []
@@ -186,6 +186,34 @@ class BaseQuotaForm(ModelForm):
     class Meta:
         model = Quota
         fields = '__all__'
+
+
+class QuotaInlineFormSet(BaseInlineFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+
+        zone_resources = []
+        for form in self.forms:
+            if form.cleaned_data:
+                zone = form.cleaned_data['zone']
+                resource = form.cleaned_data['resource']
+                zr = (zone, resource)
+                if zr in zone_resources:
+                    quota_zones = dict(
+                        getattr(settings, 'ALLOCATION_NECTAR_AZ_CHOICES',
+                                tuple()) +
+                        getattr(settings, 'ALLOCATION_OBJECT_AZ_CHOICES',
+                                tuple()) +
+                        getattr(settings, 'ALLOCATION_VOLUME_AZ_CHOICES',
+                                tuple()))
+                    quota_types = dict(
+                        getattr(settings, 'ALLOCATION_QUOTA_TYPES', tuple()))
+                    raise forms.ValidationError(
+                        'You have a duplicate request for %s in the %s zone. '
+                        'Please amend your quota request.' % (
+                            quota_types[resource], quota_zones[zone]))
+                zone_resources.append(zr)
 
 
 class QuotaForm(BaseQuotaForm):
