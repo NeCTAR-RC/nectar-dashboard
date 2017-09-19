@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
-from django.forms import ModelForm, ValidationError
+from django.forms import ModelForm, ValidationError, BaseInlineFormSet
 from django.forms import TextInput, Select, CharField, Textarea, HiddenInput
 from django.forms.forms import NON_FIELD_ERRORS
 from django.utils.safestring import mark_safe
@@ -80,8 +80,8 @@ class BaseAllocationForm(ModelForm):
 
     def visible_fields(self):
         return [field for field in self
-                if (not field.is_hidden
-                    and not self._in_groups(field))]
+                if (not field.is_hidden and
+                    not self._in_groups(field))]
 
     def grouped_fields(self):
         grouped_fields = []
@@ -186,6 +186,22 @@ class BaseQuotaForm(ModelForm):
     class Meta:
         model = Quota
         fields = '__all__'
+
+
+class QuotaInlineFormSet(BaseInlineFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+
+        zone_resources = []
+        for form in self.forms:
+            if form.cleaned_data:
+                zr = (form.cleaned_data['zone'], form.cleaned_data['resource'])
+                if zr in zone_resources:
+                    raise forms.ValidationError(
+                        'Please correct the duplicate data for resource '
+                        'and zone, which must be unique.')
+                zone_resources.append(zr)
 
 
 class QuotaForm(BaseQuotaForm):
