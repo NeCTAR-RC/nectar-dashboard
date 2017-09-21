@@ -137,9 +137,9 @@ class AllocationListTable(tables.DataTable):
                            classes=['text-center'],
                            verbose_name="State")
     project = tables.Column(allocation_title,
-                            verbose_name="Research Description", )
+                            verbose_name="Description", )
     allocation_home = tables.Column('allocation_home',
-                                    verbose_name='Allocation Home Location')
+                                    verbose_name='Home Location')
     contact = tables.Column("contact_email", verbose_name="Contact")
     modified_time = tables.Column("modified_time",
                                   verbose_name="Last Updated",
@@ -149,6 +149,7 @@ class AllocationListTable(tables.DataTable):
 
     class Meta:
         verbose_name = "Requests"
+        table_actions = (tables.NameFilterAction,)
         row_actions = (EditRequest, ViewHistory,)
 
 
