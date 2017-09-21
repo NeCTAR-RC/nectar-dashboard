@@ -246,24 +246,6 @@ class AllocationRequest(models.Model):
 
     approver_email = models.EmailField('Approver email', blank=True)
 
-    volume_zone = models.CharField(
-        "Persistent Volume location",
-        blank=True,
-        null=True,  # To work around south/sqlite failures.
-        default='',
-        max_length=64,
-        help_text="""Optional. Select a location here if you need volumes
-                     located at a specific node.""")
-
-    object_storage_zone = models.CharField(
-        "Object Storage location",
-        blank=True,
-        null=True,  # To work around south/sqlite failures.
-        default='',
-        max_length=64,
-        help_text="""Optional. Select a location here if you need
-                     object storage located at a specific node.""")
-
     use_case = models.TextField(
         "Research use case",
         max_length=4096,
@@ -601,18 +583,46 @@ class AllocationRequest(models.Model):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
 
 
+class Zone(models.Model):
+    name = models.CharField(primary_key=True, max_length=32)
+    display_name = models.CharField(max_length=64)
+
+    def __unicode__(self):
+        return self.display_name
+
+
+class ServiceType(models.Model):
+    catalog_name = models.CharField(primary_key=True, max_length=32)
+    name = models.CharField(max_length=64)
+    description = models.TextField(null=True, blank=True)
+    zones = models.ManyToManyField(Zone)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Resource(models.Model):
+    name = models.CharField(max_length=64)
+    service_type = models.ForeignKey(ServiceType)
+    quota_name = models.CharField(max_length=32)
+    unit = models.CharField(max_length=32)
+
+    def __unicode__(self):
+        return self.name
+
+    def codename(self):
+        return "%s.%s" % (self.service_type, self.quota_name)
+
+    class Meta:
+        unique_together = ('service_type', 'quota_name')
+
+
 class Quota(models.Model):
     allocation = models.ForeignKey(AllocationRequest, related_name='quotas')
 
-    resource = models.CharField(
-        choices=getattr(settings, 'ALLOCATION_QUOTA_TYPES', ()),
-        max_length=64,
-    )
+    resource = models.ForeignKey(Resource)
 
-    zone = models.CharField(
-        "Availability Zone",
-        max_length=64,
-        help_text="""The location to of the resource.""")
+    zone = models.ForeignKey(Zone)
 
     requested_quota = models.PositiveIntegerField(
         'Requested quota',
@@ -622,21 +632,8 @@ class Quota(models.Model):
         "Allocated quota",
         default='0')
 
-    units = models.CharField(
-        "The units the quota is stored in.",
-        default='GB',
-        max_length=64,
-        blank=True)
-
-
     class Meta:
         unique_together = ("allocation", "resource", "zone")
-
-    def save(self, *args, **kwargs):
-        resource_units = getattr(settings, 'ALLOCATION_QUOTA_UNITS', None)
-        if resource_units:
-            self.units = resource_units.get(self.resource)
-        super(Quota, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return '{0} {1} {2}'.format(self.allocation.id,
