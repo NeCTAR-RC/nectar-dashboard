@@ -25,8 +25,8 @@ class AllocationSerializer(serializers.ModelSerializer):
 class AllocationViewSet(viewsets.ModelViewSet):
     queryset = models.AllocationRequest.objects.all()
     serializer_class = AllocationSerializer
-    filter_fields = ('id', 'status', 'parent_request_id', 'tenant_uuid',
-                     'tenant_name', 'provisioned')
+    filter_fields = ('id', 'status', 'parent_request_id', 'project_id',
+                     'project_name', 'provisioned')
 
 
 class ChiefInvestigatorSerializer(serializers.ModelSerializer):

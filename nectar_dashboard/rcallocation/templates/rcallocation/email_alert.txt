@@ -1,4 +1,4 @@
-Allocation request [{{ request.project_name }}]
+Allocation request [{{ request.project_description }}]
 
 {% block preamble %}{% endblock %}
 Allocation Request Received
@@ -11,14 +11,14 @@ on {{request.submit_date}}.
 {% elif request.status == 'E' %}
 An allocation request has been edited by "{{request.contact_email}}".
 {% elif request.status == 'X' %}
-A request for an extension/change to the allocation for project {{request.project_name}} on the tenant {{ request.tenant_name }} ({{request.tenant_uuid}}) has been created by "{{request.contact_email}}".
+A request for an extension/change to the allocation for project {{request.project_description}} on the project {{ request.project_name }} ({{request.project_id}}) has been created by "{{request.contact_email}}".
 {% else %}
 An allocation request has been created by "{{request.contact_email}}".
 {% endif %}{% endspaceless %}
 {% if request_link %}You can view the request at:
 {{ request_link }}{% endif %}
 
-Project name: {{ request.project_name }}
+Project name: {{ request.project_description }}
 Start date:   {{ request.start_date }}
 End date:     {{ request.end_date }}
 
