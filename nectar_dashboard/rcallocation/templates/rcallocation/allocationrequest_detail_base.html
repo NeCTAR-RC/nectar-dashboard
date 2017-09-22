@@ -18,7 +18,7 @@
 {% block main %}
   <div class="dash_block">
     <div class="allocation content_body">
-      <h2>{{ allocation.project_name }}</h2>
+      <h2>{{ allocation.project_description }}</h2>
       <br/>
       <div class="row">
         <div class="col-md-8">
@@ -63,14 +63,14 @@
                       <td>{{ allocation.approver_email }}</td>
                     </tr>
                   {% endif %}
-                  {% if allocation.status == 'A' or allocation.status == 'X' or allocation.tenant_name %}
+                  {% if allocation.status == 'A' or allocation.status == 'X' or allocation.project_name %}
                     <tr>
                       <th width="200">Project Identifier</th>
-                      <td>{{ allocation.tenant_name|default:"(Project not linked)" }}</td>
+                      <td>{{ allocation.project_name|default:"(Project not linked)" }}</td>
                     </tr>
                     <tr>
                       <th>Project ID</th>
-                      <td>{{ allocation.tenant_uuid|default:"(Project not linked)" }}</td>
+                      <td>{{ allocation.project_id|default:"(Project not linked)" }}</td>
                     </tr>
                     <tr>
                       <th>Provisioned</th>

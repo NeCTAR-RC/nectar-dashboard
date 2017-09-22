@@ -63,7 +63,7 @@ class RequestTestCase(TestCase):
         assert response.get('location').endswith(
             reverse('horizon:allocation:user_requests:index'))
         model = (models.AllocationRequest.objects.get(
-            project_name=form['project_name'],
+            project_description=form['project_description'],
             parent_request_id=None))
         self.assert_allocation(model, **expected_model)
 

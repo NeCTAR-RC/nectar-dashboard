@@ -10,7 +10,7 @@ class AllocationApproveForm(ModelForm):
     class Meta:
         model = AllocationRequest
         fields = (
-            'tenant_name', 'project_name', 'start_date',
+            'project_name', 'project_description', 'start_date',
             'estimated_project_duration', 'cores', 'instances',
             'core_quota', 'instance_quota', 'status_explanation',
             'funding_national_percent', 'funding_node',
@@ -19,8 +19,8 @@ class AllocationApproveForm(ModelForm):
         exclude = ('ram_quota', 'nectar_support', 'ncris_support',)
 
         widgets = {
-            'tenant_name': TextInput(attrs={'readonly': 'readonly'}),
             'project_name': TextInput(attrs={'readonly': 'readonly'}),
+            'project_description': TextInput(attrs={'readonly': 'readonly'}),
             'start_date': TextInput(attrs={'readonly': 'readonly'}),
             'status_explanation': Textarea(
                 attrs={'class': 'col-md-6 form-control',
@@ -33,9 +33,10 @@ class AllocationApproveForm(ModelForm):
 
     def __init__(self, **kwargs):
         super(AllocationApproveForm, self).__init__(**kwargs)
-        self.fields['tenant_name'].widget.attrs['class'] = 'form-control'
         self.fields['project_name'].widget.attrs['class'] = 'form-control'
-        self.fields['project_name'].required = False
+        self.fields['project_description'].widget.attrs[
+            'class'] = 'form-control'
+        self.fields['project_description'].required = False
         self.fields['start_date'].widget.attrs['class'] = 'form-control'
         self.fields['start_date'].widget.attrs['style'] = 'border-radius:0;'
         self.fields['start_date'].required = False
@@ -81,12 +82,13 @@ class AllocationRejectForm(ModelForm):
 
     class Meta:
         model = AllocationRequest
-        fields = ('tenant_name', 'project_name', 'status_explanation',)
+        fields = ('project_name', 'project_description', 'status_explanation',)
         widgets = {
-            'tenant_name': TextInput(attrs={'class': 'form-control col-md-6',
-                                            'readonly': 'readonly'}),
             'project_name': TextInput(attrs={'class': 'form-control col-md-6',
                                              'readonly': 'readonly'}),
+            'project_description': TextInput(
+                attrs={'class': 'form-control col-md-6',
+                       'readonly': 'readonly'}),
             'status_explanation': Textarea(
                 attrs={'class': 'form-control col-md-6',
                        'style': 'height:120px; width:420px'})
@@ -101,7 +103,7 @@ class AllocationRejectForm(ModelForm):
             self.instance.status = 'J'
         else:
             self.instance.status = 'R'
-        self.fields['project_name'].required = False
+        self.fields['project_description'].required = False
 
 
 class AllocationProvisionForm(ModelForm):
@@ -111,13 +113,13 @@ class AllocationProvisionForm(ModelForm):
         model = AllocationRequest
 
         fields = ('project_name', 'contact_email', 'start_date',
-                  'estimated_project_duration', 'tenant_name')
+                  'estimated_project_duration', 'project_description')
         exclude = ('nectar_support', 'ncris_support',
-                   'core_quota', 'instance_quota', 'ram_quota', 'tenant_uuid')
+                   'core_quota', 'instance_quota', 'ram_quota', 'project_id')
         widgets = {
             'project_name': TextInput(attrs={'class': 'form-control col-md-6',
                                              'readonly': 'readonly'}),
-            'tenant_name': TextInput(attrs={'class': 'form-control col-md-6',
+            'project_description': TextInput(attrs={'class': 'form-control col-md-6',
                                             'readonly': 'readonly'}),
             'start_date': TextInput(attrs={'class': 'form-control col-md-6',
                                            'readonly': 'readonly',
@@ -137,12 +139,8 @@ class AllocationProvisionForm(ModelForm):
             self.fields[field_name].widget.attrs['readonly'] = True
             self.fields[field_name].required = False
 
-        self.fields['contact_email'].label = 'Tenant manager'
-        # self.fields['contact_email'].help_text = None
-        # self.fields['tenant_uuid'].label = 'Tenant ID'
-        # self.fields['tenant_uuid'].required = True
-        self.fields['tenant_name'].required = False
-        # self.fields['tenant_name'].help_text = None
+        self.fields['contact_email'].label = 'Project manager'
+        self.fields['project_name'].required = False
         self.fields['estimated_project_duration'].label = \
             'Estimated project duration - month(s)'
         self.instance.status = 'P'
