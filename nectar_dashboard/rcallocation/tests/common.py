@@ -43,8 +43,8 @@ def request_allocation(user, model=None, quotas=None, institutions=None,
     alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
     grant_type = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
 
-    model_dict = {'tenant_name': fuzzy.FuzzyText().fuzz(),
-                  'project_name': fuzzy.FuzzyText().fuzz(),
+    model_dict = {'project_name': fuzzy.FuzzyText().fuzz(),
+                  'project_description': fuzzy.FuzzyText().fuzz(),
                   'start_date': start_date,  # only used for asserting
                   'estimated_project_duration': duration,
                   'field_of_research_1': for_code.fuzz(),

@@ -29,7 +29,7 @@
                 {% endfor %}
                 <div class="row">
                     <div class="col-md-6">
-                        {% include "rcallocation/field.html" with field=form.tenant_name %}
+                        {% include "rcallocation/field.html" with field=form.project_name %}
                     </div>
                     <div class="col-md-6">
                         {% include "rcallocation/field.html" with field=form.contact_email %}
@@ -37,7 +37,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {% include "rcallocation/field.html" with field=form.project_name %}
+                        {% include "rcallocation/field.html" with field=form.project_description %}
                     </div>
                 </div>
                 <div class="row">
@@ -186,7 +186,7 @@
             <script>
                 /* For browsers that don't recognize the autofocus attribute... */
                 if (!("autofocus" in document.createElement("input"))) {
-                    document.getElementById("id_project_name").focus();
+                    document.getElementById("id_project_description").focus();
                 }
             </script>
         </form>

@@ -7,7 +7,7 @@ class UserAllocationRequestForm(AllocationRequestForm):
     next_status = 'E'
 
     class Meta(AllocationRequestForm.Meta):
-        exclude = ('tenant_uuid',
+        exclude = ('project_id',
                    'ram_quota', 'core_quota', 'instance_quota',
                    'status_explanation',) + AllocationRequestForm.Meta.exclude
 
@@ -20,14 +20,14 @@ class UserAllocationRequestAmendForm(AllocationAmendRequestForm):
     next_status = 'X'
 
     class Meta(AllocationAmendRequestForm.Meta):
-        exclude = ('tenant_uuid', 'ram_quota', 'core_quota', 'instance_quota',
+        exclude = ('project_id', 'ram_quota', 'core_quota', 'instance_quota',
                    'funding_national_percent', 'funding_node',
                    'status_explanation', 'convert_project_trial'
                    ) + AllocationAmendRequestForm.Meta.exclude
 
         widgets = {
-            'tenant_name': TextInput(attrs={'readonly': 'readonly'}),
             'project_name': TextInput(attrs={'readonly': 'readonly'}),
+            'project_description': TextInput(attrs={'readonly': 'readonly'}),
             'contact_email': TextInput(attrs={'readonly': 'readonly'}),
             'start_date': TextInput(attrs={'class': 'datepicker col-md-12',
                                            'style': 'border-radius:0;'}),
