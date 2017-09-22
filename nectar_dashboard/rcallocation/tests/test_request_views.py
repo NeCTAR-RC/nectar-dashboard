@@ -66,7 +66,7 @@ class RequestTestCase(TestCase):
             reverse('horizon:allocation:user_requests:index'))
 
         model = (models.AllocationRequest.objects
-                 .get(project_name=form['project_name'],
+                 .get(project_description=form['project_description'],
                       parent_request_id=None))
         self.assert_allocation(model, **expected_model)
 
@@ -110,20 +110,20 @@ class RequestTestCase(TestCase):
             reverse('horizon:allocation:user_requests:index'))
 
         model = (models.AllocationRequest.objects
-                 .get(project_name=form['project_name'],
+                 .get(project_description=form['project_description'],
                       parent_request_id=None))
         self.assert_allocation(model, **expected_model)
-
-    def test_blank_tenant_name(self):
-        self._test_allocation(
-            tenant_name='',
-            form_errors={'tenant_name': [u'This field is required.']}
-        )
 
     def test_blank_project_name(self):
         self._test_allocation(
             project_name='',
             form_errors={'project_name': [u'This field is required.']}
+        )
+
+    def test_blank_project_description(self):
+        self._test_allocation(
+            project_description='',
+            form_errors={'project_description': [u'This field is required.']}
         )
 
     def test_blank_geographic_requirements(self):
