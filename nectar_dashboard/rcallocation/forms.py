@@ -21,7 +21,6 @@ class BaseAllocationForm(ModelForm):
         model = AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'modified_time', 'parent_request', 'primary_instance_type',
-                   'volume_zone', 'object_storage_zone',
                    'funding_national_percent', 'funding_node', 'provisioned',
                    )
         widgets = {
@@ -39,7 +38,7 @@ class BaseAllocationForm(ModelForm):
                            'this new project.'),
                 ]),
             'project_name': TextInput(attrs={'class': 'col-md-12'}),
-            'tenant_uuid': HiddenInput(),
+            'project_id': HiddenInput(),
             'contact_email': TextInput(attrs={'readonly': 'readonly'}),
             'use_case': Textarea(attrs={'class': 'col-md-6',
                                         'style': 'height:120px; width:420px'}),
@@ -100,8 +99,8 @@ class BaseAllocationForm(ModelForm):
     def get_for_errors(self):
         return self._errors.get('FOR_ERRORS', [])
 
-    def clean_tenant_name(self):
-        data = self.cleaned_data['tenant_name']
+    def clean_project_name(self):
+        data = self.cleaned_data['project_name']
         if data.startswith('pt-'):
             raise ValidationError("Projects can not start with pt-")
 
@@ -138,7 +137,7 @@ class AllocationRequestForm(BaseAllocationForm):
                    'core_quota'
                    ) + BaseAllocationForm.Meta.exclude
 
-    tenant_name = CharField(
+    project_name = CharField(
         validators=[
             RegexValidator(regex=r'^[a-zA-Z][-_a-zA-Z0-9]{1,31}$',
                            message='Letters, numbers, underscore and '
@@ -153,24 +152,24 @@ class AllocationRequestForm(BaseAllocationForm):
 
     def clean(self):
         cleaned_data = super(AllocationRequestForm, self).clean()
-        if 'tenant_name' in self._errors:
+        if 'project_name' in self._errors:
             return cleaned_data
 
         allocations = (AllocationRequest.objects
-                       .filter(tenant_name=cleaned_data['tenant_name'],
+                       .filter(project_name=cleaned_data['project_name'],
                                parent_request_id=None))
         if self.instance:
             allocations = allocations.exclude(pk=self.instance.pk)
 
         if allocations:
-            self._errors["tenant_name"] = \
+            self._errors["project_name"] = \
                 [mark_safe(
                     'That project identifier already exists. If your '
                     'allocation has been approved already, please go'
                     ' <a href="%s">here</a> '
                     'to amend it. Otherwise, choose a different identifier.'
                     % reverse('horizon:allocation:user_requests:index'))]
-            del cleaned_data["tenant_name"]
+            del cleaned_data["project_name"]
 
         return cleaned_data
 

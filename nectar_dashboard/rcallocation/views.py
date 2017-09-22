@@ -127,8 +127,8 @@ def allocation_title(allocation,
                      '<br/>'
                      '<small class="muted">%s</small>' %
                      (escape(url),
-                      escape(unicode(allocation.project_name)),
-                      escape(unicode(allocation.tenant_name))))
+                      escape(unicode(allocation.project_description)),
+                      escape(unicode(allocation.project_name))))
     return data
 
 
@@ -185,7 +185,7 @@ def get_quota_by_resource(resource):
 
 
 class AllocationHistoryTable(tables.DataTable):
-    project = tables.Column("project_name", verbose_name="Project name",
+    project = tables.Column("project_description", verbose_name="Project name",
                             link="horizon:allocation:requests:allocation_view")
     approver = tables.Column("approver_email", verbose_name="Approver")
     instances = tables.Column(
