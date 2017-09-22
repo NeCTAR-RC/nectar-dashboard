@@ -12,7 +12,7 @@ from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
 
 class UserAllocationRequestForm(AllocationRequestForm):
     class Meta(AllocationRequestForm.Meta):
-        exclude = ('tenant_uuid', 'status_explanation',
+        exclude = ('project_id', 'status_explanation',
                    'instance_quota', 'core_quota', 'ram_quota',
                    ) + AllocationRequestForm.Meta.exclude
 

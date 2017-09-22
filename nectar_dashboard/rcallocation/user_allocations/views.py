@@ -35,7 +35,7 @@ class BaseAllocationUpdateView(BaseAllocationView):
             raise PermissionDenied()
         if not self.object.contact_email == request.user.username:
             managed_projects = get_managed_projects(self.request)
-            if self.object.tenant_uuid not in managed_projects:
+            if self.object.project_id not in managed_projects:
                 raise PermissionDenied()
         return super(BaseAllocationUpdateView, self) \
             .get(request, *args, **kwargs)
@@ -46,7 +46,7 @@ class BaseAllocationUpdateView(BaseAllocationView):
             raise PermissionDenied()
         if not self.object.contact_email == request.user.username:
             managed_projects = get_managed_projects(self.request)
-            if self.object.tenant_uuid not in managed_projects:
+            if self.object.project_id not in managed_projects:
                 raise PermissionDenied()
         return super(BaseAllocationUpdateView, self) \
             .post(request, *args, **kwargs)
@@ -74,7 +74,7 @@ class RestrictedAllocationsDetailsView(AllocationDetailView):
         if not self.object.contact_email == request.user.username \
                 and not request.user.is_staff:
             managed_projects = get_managed_projects(self.request)
-            if self.object.tenant_uuid not in managed_projects:
+            if self.object.project_id not in managed_projects:
                 raise PermissionDenied()
         return super(RestrictedAllocationsDetailsView, self) \
             .get(request, **kwargs)
@@ -157,7 +157,7 @@ class UserAllocationsListView(AllocationsListView):
         return (AllocationRequest.objects.all()
                 .exclude(status='L')
                 .filter(parent_request=None)
-                .filter(Q(tenant_uuid__in=managed_projects) |
+                .filter(Q(project_id__in=managed_projects) |
                         Q(contact_email__exact=contact_email))
                 .order_by('status')
                 .prefetch_related('quotas'))
