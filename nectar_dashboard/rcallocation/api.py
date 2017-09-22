@@ -11,8 +11,8 @@ class AllocationSerializer(serializers.ModelSerializer):
 class AllocationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.AllocationRequest.objects.all()
     serializer_class = AllocationSerializer
-    filter_fields = ('status', 'parent_request_id', 'tenant_uuid',
-                     'tenant_name')
+    filter_fields = ('status', 'parent_request_id', 'project_id',
+                     'project_name')
 
 
 class QuotaSerializer(serializers.ModelSerializer):

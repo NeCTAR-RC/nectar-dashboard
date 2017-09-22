@@ -97,7 +97,7 @@ class AllocationRequest(models.Model):
 
     # The ordering of the following fields are important, as it
     # governs the order they appear on the forms
-    tenant_name = models.CharField(
+    project_name = models.CharField(
         'Project identifier',
         max_length=64,
         blank=True,
@@ -106,7 +106,7 @@ class AllocationRequest(models.Model):
                   'Must contain only letters and numbers.<br>'
                   '16 characters max.')
 
-    project_name = models.CharField(
+    project_description = models.CharField(
         'Project allocation title',
         max_length=200,
         help_text='A human-friendly descriptive name for your research '
@@ -303,7 +303,7 @@ class AllocationRequest(models.Model):
                 locations is normal functionality and not a
                 special requirement.""")
 
-    tenant_uuid = models.CharField(max_length=36, blank=True, null=True)
+    project_id = models.CharField(max_length=36, blank=True, null=True)
 
     estimated_number_users = models.IntegerField(
         'Estimated number of users',
