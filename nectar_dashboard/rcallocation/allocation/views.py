@@ -8,7 +8,6 @@ from nectar_dashboard.rcallocation.views import BaseAllocationView
 from .forms import (
     AllocationApproveForm,
     AllocationRejectForm,
-    AllocationProvisionForm,
     QuotaForm,
 )
 
@@ -44,13 +43,5 @@ class AllocationRejectView(BaseAllocationView):
     template_name = "rcallocation/allocationrequest_reject.html"
     model = AllocationRequest
     form_class = AllocationRejectForm
-    formset_quota_class = None
-    success_url = "../../"
-
-
-class AllocationProvisionView(BaseAllocationView):
-    template_name = "rcallocation/allocationrequest_provision.html"
-    model = AllocationRequest
-    form_class = AllocationProvisionForm
     formset_quota_class = None
     success_url = "../../"

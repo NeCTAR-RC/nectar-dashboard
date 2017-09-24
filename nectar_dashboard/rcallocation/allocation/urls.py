@@ -8,7 +8,6 @@ from nectar_dashboard.rcallocation.allocation.views import (
     AllocationUpdateView,
     AllocationApproveView,
     AllocationRejectView,
-    AllocationProvisionView,
 )
 
 urlpatterns = patterns('nectar_dashboard.rcallocation.allocation',
@@ -25,6 +24,4 @@ urlpatterns = patterns('nectar_dashboard.rcallocation.allocation',
         name='reject_request'),
     url(r'^approve_change_request/(?P<pk>\d+)/$', AllocationApproveView.as_view(),
         name='approve_change_request'),
-    url(r'^provision_request/(?P<pk>\d+)/$', AllocationProvisionView.as_view(),
-        name='provision_request'),
 )
