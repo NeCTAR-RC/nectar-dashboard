@@ -10,24 +10,20 @@ from horizon import tables
 from horizon.utils.memoized import memoized
 from openstack_dashboard.api import keystone
 
-from nectar_dashboard.rcallocation.models import AllocationRequest, Quota
-from nectar_dashboard.rcallocation.views import (AllocationsListView,
-                                         AllocationDetailView,
-                                         AllocationListTable,
-                                         EditRequest)
-from nectar_dashboard.rcallocation.views import BaseAllocationView
-from nectar_dashboard.rcallocation.forms import QuotaForm
+from nectar_dashboard.rcallocation import forms
+from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import views
 
 from .forms import UserAllocationRequestForm
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
-class BaseAllocationUpdateView(BaseAllocationView):
+class BaseAllocationUpdateView(views.BaseAllocationView):
     page_title = 'Update'
     editor_attr = 'contact_email'
     formset_quota_class = inlineformset_factory(
-        AllocationRequest, Quota, form=QuotaForm, extra=0)
+        models.AllocationRequest, models.Quota, form=forms.QuotaForm, extra=0)
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -55,12 +51,12 @@ class BaseAllocationUpdateView(BaseAllocationView):
 class RestrictedAllocationsEditView(BaseAllocationUpdateView):
     page_title = 'Update'
     template_name = "rcallocation/allocationrequest_user_update.html"
-    model = AllocationRequest
+    model = models.AllocationRequest
     form_class = UserAllocationRequestForm
     success_url = "../../"
 
 
-class RestrictedAllocationsDetailsView(AllocationDetailView):
+class RestrictedAllocationsDetailsView(views.AllocationDetailView):
     template_name = "rcallocation/allocationrequest_user_detail.html"
     page_title = 'Details'
 
@@ -90,7 +86,7 @@ class UserAmendRequest(tables.LinkAction):
         return instance.can_be_amended()
 
 
-class UserEditRequest(EditRequest):
+class UserEditRequest(views.EditRequest):
     name = "user_edit"
     verbose_name = ("Edit request")
     url = "horizon:allocation:user_requests:edit_request"
@@ -99,7 +95,7 @@ class UserEditRequest(EditRequest):
         return instance.can_user_edit()
 
 
-class UserEditChangeRequest(EditRequest):
+class UserEditChangeRequest(views.EditRequest):
     name = "user_edit_change"
     verbose_name = ("Edit amend/extend request")
     url = "horizon:allocation:user_requests:edit_change_request"
@@ -108,10 +104,10 @@ class UserEditChangeRequest(EditRequest):
         return instance.can_user_edit_amendment()
 
 
-class UserAllocationListTable(AllocationListTable):
+class UserAllocationListTable(views.AllocationListTable):
     view_url = "horizon:allocation:user_requests:allocation_view"
 
-    class Meta(AllocationListTable.Meta):
+    class Meta(views.AllocationListTable.Meta):
         row_actions = (UserEditRequest, UserAmendRequest,
                        UserEditChangeRequest)
 
@@ -140,7 +136,7 @@ def get_managed_projects(request):
     return []
 
 
-class UserAllocationsListView(AllocationsListView):
+class UserAllocationsListView(views.AllocationsListView):
     """
     A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
@@ -154,7 +150,7 @@ class UserAllocationsListView(AllocationsListView):
     def get_data(self):
         contact_email = self.request.user.username
         managed_projects = get_managed_projects(self.request)
-        return (AllocationRequest.objects.all()
+        return (models.AllocationRequest.objects.all()
                 .exclude(status='L')
                 .filter(parent_request=None)
                 .filter(Q(project_id__in=managed_projects) |
