@@ -3,8 +3,9 @@ from django.forms.models import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.db import transaction
 
-from nectar_dashboard.rcallocation.forms import AllocationRequestForm, QuotaForm, \
-    ChiefInvestigatorForm, InstitutionForm, PublicationForm, GrantForm
+from nectar_dashboard.rcallocation.forms import AllocationRequestForm, \
+    QuotaForm, QuotaInlineFormSet, ChiefInvestigatorForm, InstitutionForm, \
+    PublicationForm, GrantForm
 from nectar_dashboard.rcallocation.views import BaseAllocationView
 from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
     ChiefInvestigator, Institution, Publication, Grant
@@ -22,7 +23,8 @@ class AllocationCreateView(BaseAllocationView):
     form_class = UserAllocationRequestForm
     editor_attr = 'contact_email'
     formset_quota_class = inlineformset_factory(
-        AllocationRequest, Quota, form=QuotaForm, extra=0)
+        AllocationRequest, Quota, form=QuotaForm,
+        formset=QuotaInlineFormSet, extra=0)
 
     formset_investigator_class = inlineformset_factory(
         AllocationRequest, ChiefInvestigator, form=ChiefInvestigatorForm,
