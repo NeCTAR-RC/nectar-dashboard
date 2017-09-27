@@ -67,6 +67,9 @@ class AllocationRequest(models.Model):
         # Not visible to users
         ('L', 'Legacy submission'),
 
+        # Allocation has been deleted
+        ('D', 'Deleted'),
+
         # Avoid sending emails for legacy approvals/rejections.
         # Set to A/R during model save.
         ('M', 'Legacy approved'),
