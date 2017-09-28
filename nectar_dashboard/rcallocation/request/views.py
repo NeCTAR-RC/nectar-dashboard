@@ -3,40 +3,42 @@ from django.forms.models import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.db import transaction
 
-from nectar_dashboard.rcallocation.forms import AllocationRequestForm, QuotaForm, \
-    ChiefInvestigatorForm, InstitutionForm, PublicationForm, GrantForm
-from nectar_dashboard.rcallocation.views import BaseAllocationView
-from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
-    ChiefInvestigator, Institution, Publication, Grant
+from nectar_dashboard.rcallocation import forms
+from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import views
 
 
-class UserAllocationRequestForm(AllocationRequestForm):
-    class Meta(AllocationRequestForm.Meta):
+class UserAllocationRequestForm(forms.AllocationRequestForm):
+    class Meta(forms.AllocationRequestForm.Meta):
         exclude = ('project_id', 'status_explanation',
                    'instance_quota', 'core_quota', 'ram_quota',
-                   ) + AllocationRequestForm.Meta.exclude
+                   ) + forms.AllocationRequestForm.Meta.exclude
 
 
-class AllocationCreateView(BaseAllocationView):
+class AllocationCreateView(views.BaseAllocationView):
     template_name = "rcallocation/allocationrequest_edit.html"
     form_class = UserAllocationRequestForm
     editor_attr = 'contact_email'
     page_title = 'New Request'
     formset_quota_class = inlineformset_factory(
-        AllocationRequest, Quota, form=QuotaForm, extra=0)
+        models.AllocationRequest, models.Quota,
+        form=forms.QuotaForm, extra=0)
 
     formset_investigator_class = inlineformset_factory(
-        AllocationRequest, ChiefInvestigator, form=ChiefInvestigatorForm,
-        extra=1)
+        models.AllocationRequest, models.ChiefInvestigator,
+        form=forms.ChiefInvestigatorForm, extra=1)
 
     formset_institution_class = inlineformset_factory(
-        AllocationRequest, Institution, form=InstitutionForm, extra=1)
+        models.AllocationRequest, models.Institution,
+        form=forms.InstitutionForm, extra=1)
 
     formset_publication_class = inlineformset_factory(
-        AllocationRequest, Publication, form=PublicationForm, extra=0)
+        models.AllocationRequest, models.Publication,
+        form=forms.PublicationForm, extra=0)
 
     formset_grant_class = inlineformset_factory(
-        AllocationRequest, Grant, form=GrantForm, extra=0)
+        models.AllocationRequest, models.Grant,
+        form=forms.GrantForm, extra=0)
 
     def get_object(self):
         return None
