@@ -1,14 +1,14 @@
 from django.forms import ModelForm, Textarea, TextInput, Select, NumberInput
 
-from nectar_dashboard.rcallocation.models import AllocationRequest
-from nectar_dashboard.rcallocation.forms import BaseQuotaForm
+from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import forms
 
 
 class AllocationApproveForm(ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
-        model = AllocationRequest
+        model = models.AllocationRequest
         fields = (
             'project_name', 'project_description', 'start_date',
             'estimated_project_duration', 'cores', 'instances',
@@ -81,7 +81,7 @@ class AllocationRejectForm(ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
-        model = AllocationRequest
+        model = models.AllocationRequest
         fields = ('project_name', 'project_description', 'status_explanation',)
         widgets = {
             'project_name': TextInput(attrs={'class': 'form-control col-md-6',
@@ -110,7 +110,7 @@ class AllocationProvisionForm(ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
-        model = AllocationRequest
+        model = models.AllocationRequest
 
         fields = ('project_name', 'contact_email', 'start_date',
                   'estimated_project_duration', 'project_description')
@@ -147,8 +147,8 @@ class AllocationProvisionForm(ModelForm):
         self.instance.status = 'P'
 
 
-class QuotaForm(BaseQuotaForm):
-    class Meta(BaseQuotaForm.Meta):
+class QuotaForm(forms.BaseQuotaForm):
+    class Meta(forms.BaseQuotaForm.Meta):
         exclude = ('allocation_request',
                    'units',
                    'resource',
@@ -168,5 +168,5 @@ class QuotaForm(BaseQuotaForm):
         Overriding this, as the initial data passed to the form does not get
         noticed, and so does not get saved, unless it actually changes
         """
-        changed_data = super(BaseQuotaForm, self).has_changed()
+        changed_data = super(forms.BaseQuotaForm, self).has_changed()
         return bool(self.initial or changed_data)
