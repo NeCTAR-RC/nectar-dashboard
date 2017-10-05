@@ -612,6 +612,40 @@ class AllocationRequest(models.Model):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
 
 
+class Zone(models.Model):
+    name = models.CharField(primary_key=True, max_length=32)
+    display_name = models.CharField(max_length=64)
+
+    def __unicode__(self):
+        return self.display_name
+
+
+class ServiceType(models.Model):
+    catalog_name = models.CharField(primary_key=True, max_length=32)
+    name = models.CharField(max_length=64)
+    description = models.TextField(null=True, blank=True)
+    zones = models.ManyToManyField(Zone)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Resource(models.Model):
+    name = models.CharField(max_length=64)
+    service_type = models.ForeignKey(ServiceType)
+    quota_name = models.CharField(max_length=32)
+    unit = models.CharField(max_length=32)
+
+    def __unicode__(self):
+        return self.name
+
+    def codename(self):
+        return "%s.%s" % (self.service_type.catalog_name, self.quota_name)
+
+    class Meta:
+        unique_together = ('service_type', 'quota_name')
+
+
 class Quota(models.Model):
     allocation = models.ForeignKey(AllocationRequest, related_name='quotas')
 
