@@ -33,54 +33,65 @@ def _six_months_from_now():
 
 
 class AllocationRequest(models.Model):
+    NEW = 'N'
+    SUBMITTED = 'E'
+    APPROVED = 'A'
+    DECLINED = 'R'
+    UPDATE_PENDING = 'X'
+    UPDATE_DECLINED = 'J'
+    LEGACY = 'L'
+    LEGACY_APPROVED = 'M'
+    LEGACY_REJECTED = 'O'
+    DELETED = 'D'
+
     REQUEST_STATUS_CHOICES = (
         # Request created but nothing else
         # User can: Submit
-        ('N', 'New'),
+        (NEW, 'New'),
 
         # Request has been emailed
         # Admin can: Approve, Reject, Edit
         # User can: Edit
-        ('E', 'Submitted'),
+        (SUBMITTED, 'Submitted'),
 
         # Admin has approved the request
         # Admin can: Provision, Edit
         # User can: Amend, Extend
-        ('A', 'Approved'),
+        (APPROVED, 'Approved'),
 
         # Admin has rejected the request
         # User can: Edit, Submit
-        ('R', 'Declined'),
+        (DECLINED, 'Declined'),
 
         # User has requested an extension
         # Admin can: Approve, Reject, Edit
         # User can: Edit
-        ('X', 'Update/extension requested'),
+        (UPDATE_PENDING, 'Update requested'),
 
         # Admin has rejected an extension
         # User can: Edit, Extend
-        ('J', 'Update/extension declined'),
+        (UPDATE_DECLINED, 'Update declined'),
 
         # Requests in above status can be viewed by both user
         # and admin at all times.
 
         # Not visible to users
-        ('L', 'Legacy submission'),
+        (LEGACY, 'Legacy submission'),
 
         # Allocation has been deleted
-        ('D', 'Deleted'),
+        (DELETED, 'Deleted'),
 
         # Avoid sending emails for legacy approvals/rejections.
         # Set to A/R during model save.
-        ('M', 'Legacy approved'),
-        ('O', 'Legacy rejected'),
+        (LEGACY_APPROVED, 'Legacy approved'),
+        (LEGACY_REJECTED, 'Legacy rejected'),
     )
     parent_request = models.ForeignKey('AllocationRequest', null=True,
                                        blank=True)
 
     status = models.CharField(max_length=1, blank=False,
                               choices=REQUEST_STATUS_CHOICES,
-                              default='N')
+                              default=self.NEW)
 
     status_explanation = models.TextField(
         null=True, blank=True,
