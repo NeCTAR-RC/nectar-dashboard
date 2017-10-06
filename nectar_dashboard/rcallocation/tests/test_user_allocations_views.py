@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from django.core.urlresolvers import reverse
 from django.utils.importlib import import_module  # noqa
 
@@ -17,9 +19,11 @@ class RequestTestCase(TestCase):
             assert getattr(model, field) == value
         assert model.contact_email == self.user.name
         quotas_l = model.quotas.all()
+        quotas = sorted(quotas, key=itemgetter('id'))
+
         for i, quota_model in enumerate(quotas_l):
-            assert quota_model.zone == quotas[i]['zone']
-            assert quota_model.resource == quotas[i]['resource']
+            assert quota_model.zone.name == quotas[i]['zone']
+            assert quota_model.resource.id == quotas[i]['resource']
             assert quota_model.requested_quota == quotas[i]['requested_quota']
             assert quota_model.quota == quotas[i]['quota']
 
@@ -59,6 +63,7 @@ class RequestTestCase(TestCase):
 
         # Check to make sure we were redirected back to the index of
         # our requests.
+
         assert response.status_code == 302
         assert response.get('location').endswith(
             reverse('horizon:allocation:user_requests:index'))
