@@ -106,53 +106,9 @@ class AllocationRejectForm(ModelForm):
         self.fields['project_description'].required = False
 
 
-class AllocationProvisionForm(ModelForm):
-    error_css_class = 'has-error'
-
-    class Meta:
-        model = models.AllocationRequest
-
-        fields = ('project_name', 'contact_email', 'start_date',
-                  'estimated_project_duration', 'project_description')
-        exclude = ('nectar_support', 'ncris_support',
-                   'core_quota', 'instance_quota', 'ram_quota', 'project_id')
-        widgets = {
-            'project_name': TextInput(attrs={'class': 'form-control col-md-6',
-                                             'readonly': 'readonly'}),
-            'project_description': TextInput(
-                attrs={'class': 'form-control col-md-6',
-                       'readonly': 'readonly'}),
-            'start_date': TextInput(attrs={'class': 'form-control col-md-6',
-                                           'readonly': 'readonly',
-                                           'style': 'border-radius:0;'}),
-            'contact_email': TextInput(attrs={'class': 'form-control col-md-6',
-                                              'readonly': 'readonly'}),
-            'estimated_project_duration': TextInput(
-                attrs={'class': 'form-control col-md-6',
-                       'readonly': 'readonly'}),
-        }
-
-    def __init__(self, **kwargs):
-        super(AllocationProvisionForm, self).__init__(**kwargs)
-        read_only_fields = ('project_name', 'contact_email', 'start_date',
-                            'estimated_project_duration',)
-        for field_name in read_only_fields:
-            self.fields[field_name].widget.attrs['readonly'] = True
-            self.fields[field_name].required = False
-
-        self.fields['contact_email'].label = 'Project manager'
-        self.fields['project_name'].required = False
-        self.fields['estimated_project_duration'].label = \
-            'Estimated project duration - month(s)'
-        self.instance.status = 'P'
-
-
 class QuotaForm(forms.BaseQuotaForm):
     class Meta(forms.BaseQuotaForm.Meta):
-        exclude = ('allocation_request',
-                   'units',
-                   'resource',
-                   'zone')
+        exclude = ('allocation', 'resource', 'zone')
 
     def __init__(self, **kwargs):
         super(QuotaForm, self).__init__(**kwargs)
