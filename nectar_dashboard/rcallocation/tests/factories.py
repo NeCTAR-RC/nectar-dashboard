@@ -20,11 +20,43 @@ alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
 grant_types = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
 
 
+class ZoneFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.Zone'
+    display_name = fuzzy.FuzzyText()
+
+
+class ServiceTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.ServiceType'
+        #django_get_or_create = ('catalog_name',)
+    name = fuzzy.FuzzyText()
+    description = fuzzy.FuzzyText()
+
+    @factory.post_generation
+    def zones(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of groups were passed in, use them
+            for zone in extracted:
+                self.zones.add(zone)
+
+
+class ResourceFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.Resource'
+    name = fuzzy.FuzzyText()
+    service_type = factory.SubFactory(ServiceTypeFactory)
+    unit = fuzzy.FuzzyText()
+
+
 class QuotaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Quota'
     requested_quota = fuzzy.FuzzyInteger(1, 100000)
-    resource = 'volume'
     quota = 0
 
 
@@ -88,9 +120,12 @@ class AllocationFactory(factory.django.DjangoModelFactory):
 
     @classmethod
     def create(cls, **kwargs):
-        zones = ['melbourne', 'qld', 'monash']
+        zones = [fuzzy.FuzzyText(), fuzzy.FuzzyText(), fuzzy.FuzzyText()]
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
+        st = ServiceTypeFactory(catalog_name=fuzzy.FuzzyText())
+        r = ResourceFactory(quota_name='volumes')
         for zone in zones:
-            QuotaFactory(allocation=allocation, zone=zone)
+            z = ZoneFactory(name=zone)
+            QuotaFactory(allocation=allocation, zone=z, resource=r)
         return allocation
