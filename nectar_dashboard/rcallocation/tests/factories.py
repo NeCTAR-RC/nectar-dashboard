@@ -20,11 +20,45 @@ alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
 grant_types = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
 
 
+class ZoneFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.Zone'
+        django_get_or_create = ('name',)
+    display_name = fuzzy.FuzzyText()
+
+
+class ServiceTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.ServiceType'
+        django_get_or_create = ('catalog_name',)
+    name = fuzzy.FuzzyText()
+    description = fuzzy.FuzzyText()
+
+    @factory.post_generation
+    def zones(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of groups were passed in, use them
+            for zone in extracted:
+                self.zones.add(zone)
+
+
+class ResourceFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.Resource'
+        django_get_or_create = ('service_type', 'quota_name')
+    name = fuzzy.FuzzyText()
+    service_type = factory.SubFactory(ServiceTypeFactory)
+    unit = fuzzy.FuzzyText()
+
+
 class QuotaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Quota'
     requested_quota = fuzzy.FuzzyInteger(1, 100000)
-    resource = 'volume'
     quota = 0
 
 
@@ -88,9 +122,25 @@ class AllocationFactory(factory.django.DjangoModelFactory):
 
     @classmethod
     def create(cls, **kwargs):
-        zones = ['melbourne', 'qld', 'monash']
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
-        for zone in zones:
-            QuotaFactory(allocation=allocation, zone=zone)
+
+        melbourne = ZoneFactory(name='melbourne')
+        monash = ZoneFactory(name='monash')
+        nectar = ZoneFactory(name='nectar')
+
+        volume_st = ServiceTypeFactory(catalog_name='volume')
+        object_st = ServiceTypeFactory(catalog_name='object')
+        volume_st.zones.add(melbourne)
+        volume_st.zones.add(monash)
+        object_st.zones.add(nectar)
+
+        objects = ResourceFactory(quota_name='object', service_type=object_st)
+        volumes = ResourceFactory(quota_name='gigabytes',
+                                  service_type=volume_st)
+
+        QuotaFactory(allocation=allocation, zone=nectar, resource=objects)
+        QuotaFactory(allocation=allocation, zone=monash, resource=volumes)
+        QuotaFactory(allocation=allocation, zone=melbourne, resource=volumes)
+
         return allocation
