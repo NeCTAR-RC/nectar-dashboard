@@ -71,7 +71,6 @@ class RequestTestCase(TestCase):
         self.assert_allocation(model, **expected_model)
 
     def _test_allocation(self, form_errors={},
-                         quotaFormSet_errors=[{}, {}, {}],
                          **kwargs):
         response = self.client.get(
             reverse('horizon:allocation:request:request'))
@@ -87,12 +86,10 @@ class RequestTestCase(TestCase):
             reverse('horizon:allocation:request:request'),
             form)
 
-        if form_errors or any(quotaFormSet_errors):
+        if form_errors:
             # No redirect invalid fields
             assert response.status_code == 200
             assert response.context['form'].errors == form_errors
-            assert (response.context['quotaFormSet'].errors ==
-                    quotaFormSet_errors)
 
             for field, value in backup_values.items():
                 form[field] = backup_values[field]

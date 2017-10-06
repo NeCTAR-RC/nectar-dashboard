@@ -1,4 +1,4 @@
-{% if publicationFormSet.forms %}
+{% if publication_formset.forms %}
     <div class="label_header">
 {% else %}
     <div class="label_header hidden">
@@ -22,7 +22,7 @@
 
 <table class="more_fields_tab">
     <tbody>
-    {% for publication_form in publicationFormSet.forms %}
+    {% for publication_form in publication_formset.forms %}
         <tr>
             {% if publication_form.non_field_errors %}
                 <div class="alert alert-danger" role="alert">{{ publication_form.non_field_errors }}</div>
@@ -38,7 +38,7 @@
     <tfoot>
         <tr>
             <td></td>
-            <td class="add_another_row"><input type="button" value="Add publication" id="add_another"></td>
+            <td class="add_another_row"><input type="button" class="btn btn-default" value="Add publication" id="add_another"></td>
             <td></td>
         </tr>
     </tfoot>

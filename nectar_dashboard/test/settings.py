@@ -246,32 +246,3 @@ ALLOCATION_EMAIL_FROM = "allocations@nectar.org.au"
 ALLOCATION_EMAIL_PROVISIONER = "sorrison@gmail.com"
 ALLOCATION_EMAIL_BCC_RECIPIENTS = []
 ALLOCATION_EMAIL_REPLY_TO = 'noreply@nectar.org.au'
-
-ALLOCATION_OBJECT_AZ_CHOICES = (
-    ('nectar', 'NeCTAR'),
-)
-
-ALLOCATION_VOLUME_AZ_CHOICES = (
-    ('intersect', 'Intersect (NSW)'),
-    ('melbourne', 'Melbourne'),
-    ('monash', 'Monash (VIC)'),
-    ('NCI', 'NCI (ACT)'),
-    ('pawsey', 'Pawsey (WA)'),
-    ('qld', 'Queensland'),
-    ('sa', 'South Australia'),
-    ('tasmania', 'Tasmania'),
-)
-
-ALLOCATION_QUOTA_AZ_CHOICES = {
-    'volume': ALLOCATION_VOLUME_AZ_CHOICES,
-    'object': ALLOCATION_OBJECT_AZ_CHOICES,
-}
-ALLOCATION_QUOTA_UNITS = {
-    'volume': 'GB',
-    'object': 'GB',
-}
-
-ALLOCATION_QUOTA_TYPES = (
-    ('volume', 'Volume'),
-    ('object', 'Object'),
-)

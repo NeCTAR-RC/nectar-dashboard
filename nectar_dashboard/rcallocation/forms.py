@@ -5,6 +5,7 @@ from django.core.validators import RegexValidator
 from django.forms import ModelForm, ValidationError, BaseInlineFormSet
 from django.forms import TextInput, Select, CharField, Textarea, HiddenInput
 from django.forms.forms import NON_FIELD_ERRORS
+from django.forms.formsets import DELETION_FIELD_NAME
 from django.utils.safestring import mark_safe
 from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
     ChiefInvestigator, Institution, Publication, Grant
@@ -22,7 +23,7 @@ class BaseAllocationForm(ModelForm):
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'modified_time', 'parent_request', 'primary_instance_type',
                    'funding_national_percent', 'funding_node', 'provisioned',
-                   )
+                   'project_id')
         widgets = {
             'status_explanation': Textarea(
                 attrs={'class': 'col-md-6',
@@ -38,7 +39,6 @@ class BaseAllocationForm(ModelForm):
                            'this new project.'),
                 ]),
             'project_name': TextInput(attrs={'class': 'col-md-12'}),
-            'project_id': HiddenInput(),
             'contact_email': TextInput(attrs={'readonly': 'readonly'}),
             'use_case': Textarea(attrs={'class': 'col-md-6',
                                         'style': 'height:120px; width:420px'}),
@@ -186,14 +186,45 @@ class BaseQuotaForm(ModelForm):
         model = Quota
         fields = '__all__'
 
+        widgets = {
+            'resource': HiddenInput(),
+        }
 
-class QuotaInlineFormSet(BaseInlineFormSet):
+
+class QuotaForm(BaseQuotaForm):
+    class Meta(BaseQuotaForm.Meta):
+        model = Quota
+        exclude = ('allocation', 'quota',)
+
+    def __init__(self, **kwargs):
+        super(QuotaForm, self).__init__(**kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = (
+                field.widget.attrs.get('class', '') + 'form-control')
+        self.fields['zone'].required = False
+
+    def clean(self):
+        cleaned_data = super(QuotaForm, self).clean()
+        requested_quota = cleaned_data.get("requested_quota")
+        zone = cleaned_data.get("zone")
+        if requested_quota > 0 and not zone:
+            raise forms.ValidationError("Please specify a zone")
+
+
+class QuotaInlineFormSet(forms.BaseInlineFormSet):
+
+    def add_fields(self, form, index):
+        super(QuotaInlineFormSet, self).add_fields(form, index)
+        form.fields[DELETION_FIELD_NAME].widget = forms.HiddenInput()
+
     def clean(self):
         if any(self.errors):
             return
 
         zone_resources = []
         for form in self.forms:
+            if form.cleaned_data.get(DELETION_FIELD_NAME, False):
+                continue
             if form.cleaned_data:
                 zr = (form.cleaned_data['zone'], form.cleaned_data['resource'])
                 if zr in zone_resources:
@@ -201,31 +232,6 @@ class QuotaInlineFormSet(BaseInlineFormSet):
                         'Please correct the duplicate data for resource '
                         'and zone, which must be unique.')
                 zone_resources.append(zr)
-
-
-class QuotaForm(BaseQuotaForm):
-    class Meta(BaseQuotaForm.Meta):
-        model = Quota
-        exclude = ('allocation_request', 'quota')
-
-    zone = forms.ChoiceField()
-
-    def __init__(self, **kwargs):
-        super(QuotaForm, self).__init__(**kwargs)
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
-        # Set the storage choices for each quota
-        storage_zones = getattr(settings, 'ALLOCATION_QUOTA_AZ_CHOICES', ())
-        if 'resource' in self.fields and 'zone' in self.fields:
-            if self._raw_value('resource'):
-                self.fields['zone']._set_choices(
-                    ((u'', u'---------'),) +
-                    storage_zones[self._raw_value('resource')])
-            elif self.instance.resource:
-                self.fields['zone']._set_choices(
-                    ((u'', u'---------'),) +
-                    storage_zones[self.instance.resource])
 
 
 # Base ModelForm
