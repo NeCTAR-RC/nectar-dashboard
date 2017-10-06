@@ -1,20 +1,20 @@
 import logging
 from collections import defaultdict
-from functools import partial
 
 from django.db.models import Q
 from django.forms.models import inlineformset_factory
 from django.core.exceptions import PermissionDenied
 
-from horizon import tables
 from horizon.utils.memoized import memoized
 from openstack_dashboard.api import keystone
 
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import utils
 from nectar_dashboard.rcallocation import views
 
 from .forms import UserAllocationRequestForm
+from .tables import UserAllocationListTable
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
@@ -31,7 +31,8 @@ class BaseAllocationUpdateView(views.BaseAllocationView):
             raise PermissionDenied()
         if not self.object.contact_email == request.user.username:
             managed_projects = get_managed_projects(self.request)
-            if self.object.project_id not in managed_projects:
+            if self.object.project_id not in managed_projects and \
+               not utils.user_is_allocation_admin(request.user):
                 raise PermissionDenied()
         return super(BaseAllocationUpdateView, self) \
             .get(request, *args, **kwargs)
@@ -42,7 +43,8 @@ class BaseAllocationUpdateView(views.BaseAllocationView):
             raise PermissionDenied()
         if not self.object.contact_email == request.user.username:
             managed_projects = get_managed_projects(self.request)
-            if self.object.project_id not in managed_projects:
+            if self.object.project_id not in managed_projects and \
+               not utils.user_is_allocation_admin(request.user):
                 raise PermissionDenied()
         return super(BaseAllocationUpdateView, self) \
             .post(request, *args, **kwargs)
@@ -74,48 +76,6 @@ class RestrictedAllocationsDetailsView(views.AllocationDetailView):
                 raise PermissionDenied()
         return super(RestrictedAllocationsDetailsView, self) \
             .get(request, **kwargs)
-
-
-class UserAmendRequest(tables.LinkAction):
-    name = "amend"
-    verbose_name = ("Amend/Extend allocation")
-    url = "horizon:allocation:user_requests:edit_change_request"
-    classes = ("btn-associate",)
-
-    def allowed(self, request, instance):
-        return instance.can_be_amended()
-
-
-class UserEditRequest(views.EditRequest):
-    name = "user_edit"
-    verbose_name = ("Edit request")
-    url = "horizon:allocation:user_requests:edit_request"
-
-    def allowed(self, request, instance):
-        return instance.can_user_edit()
-
-
-class UserEditChangeRequest(views.EditRequest):
-    name = "user_edit_change"
-    verbose_name = ("Edit amend/extend request")
-    url = "horizon:allocation:user_requests:edit_change_request"
-
-    def allowed(self, request, instance):
-        return instance.can_user_edit_amendment()
-
-
-class UserAllocationListTable(views.AllocationListTable):
-    view_url = "horizon:allocation:user_requests:allocation_view"
-
-    class Meta(views.AllocationListTable.Meta):
-        row_actions = (UserEditRequest, UserAmendRequest,
-                       UserEditChangeRequest)
-
-    def __init__(self, *args, **kwargs):
-        super(UserAllocationListTable, self).__init__(*args, **kwargs)
-        self.columns['project'].transform = partial(
-            self.columns['project'].transform,
-            link=self.view_url)
 
 
 def get_managed_projects(request):
@@ -151,7 +111,7 @@ class UserAllocationsListView(views.AllocationsListView):
         contact_email = self.request.user.username
         managed_projects = get_managed_projects(self.request)
         return (models.AllocationRequest.objects.all()
-                .exclude(status='L')
+                .exclude(status=models.AllocationRequest.LEGACY)
                 .filter(parent_request=None)
                 .filter(Q(project_id__in=managed_projects) |
                         Q(contact_email__exact=contact_email))

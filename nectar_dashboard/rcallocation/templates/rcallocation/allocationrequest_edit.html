@@ -12,12 +12,19 @@
 {% block page_header %}
   {{ block.super }}
   {% include "horizon/common/_page_header.html" with title="Allocation Request" %}
+  <style>
+    .panel-default > .panel-heading {
+      background-color: #f5f5f5;
+  }
+  </style>
+
 {% endblock page_header %}
 
 {% block js %}
   {{ block.super }}
   <script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
   <script src='{{ STATIC_URL }}rcportal/js/jquery.mDialog.js' type='text/javascript' charset='utf-8'></script>
+  <script src='{{ STATIC_URL }}rcportal/js/bootstrap-toggle.min.js"></script>
 {% endblock %}
 
 {% block main %}
@@ -46,7 +53,7 @@
       Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-primary"></span>
       sign.
     </blockquote>
-    {% if form.errors or quotaFormSet.errors or institutionFormSet.errors or investigatorFormSet.errors or publicationFormSet.errors or grantFormSet.errors%}
+    {% if form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors%}
     <div class="alert alert-danger" role="alert">Please fix up the below errors</div>
     {% endif %}
     <form id="new-allocation"
@@ -94,57 +101,66 @@
           {% include "rcallocation/field.html" with field=form.core_hours %}
         </div>
       </div>
+
       <div class="row">
         <div class="col-md-12">
           <h2>Cloud Resources</h2>
-          There are supplementary cloud resources offered by the NeCTAR
-          Research Cloud that you may wish to use. Each of these resources
-          has its own quota that you can apply for.
-          <table class="table">
-            <tr>
-              <th>Volume storage</th>
-              <td>
-                A persistent volume looks and acts like a hard
-                drive that can be attached to your virtual
-                machines. The data on it will persist between
-                runs of your virtual machine. Specify the total
-                size in gigabytes that the project will
-                need. More information is available on the <a href="https://support.nectar.org.au/support/solutions/articles/6000055382-introduction-to-cloud-storage">Introduction to Cloud Storage support page</a>.</td>
-            </tr>
-            <tr>
-              <th>Object storage</th>
-              <td>
-                Object Storage is a large accessible online
-                storage location that you can reach from most
-                machines with internet connectivity. Object Storage
-                requires cloud native applications for access. Specify the
-                total size in gigabytes that the project will need. More
-                information is available on the <a href="https://support.nectar.org.au/support/solutions/articles/6000061932-introduction-to-object-storage">Object Storage support page</a>.</td>
-            </tr>
-            <tr>
-              <th>Database</th>
-              <td>
-                The Nectar database service provides a simple interface for
-                provisioning and managing database engines supporting MySQL,
-                with PostgreSQL and MongoDB coming soon.
-                You can specify the number of database servers, the total
-                database storage your project would require, or both.
-                More information is available on the <a href="https://support.ehelp.edu.au/solution/articles/6000178670-nectar-database-service">Database service support page</a>.</td>
-            </tr>
-          </table>
-        </div>
+          <p>There are supplementary cloud resources offered by the NeCTAR
+             Research Cloud that you may wish to use. Each of these resources
+             has its own quota that you can apply for.</p>
+
+          <div id="quota_formset">
+            {% for service_type, formset in quota_formsets %}
+              
+              <div id="panel-quota-{{ service_type.catalog_name }}" class="col-md-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading" style="display:flex;">
+
+                    <div style="flex: 1;">
+                      <h4 class="list-group-item-heading">{{ service_type.name }}</h4>
+                      <p class="list-group-item-text">{{ service_type.description|safe }}</p>
+                    </div>
+
+                    <div>
+                      <input id="check-{{ service_type.catalog_name }}" class="toggle-quota" type="checkbox" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+                    </div>
+
+                    <div style="clear: both;"></div>
+                  </div>
+                  <div class="panel-collapse collapse in">
+                    <div id="panel-{{ service_type.catalog_name }}" class="panel-body panel-quota">
+                      {{ formset.management_form }}
+                      <div id="empty-quotas-{{ service_type.catalog_name }}" style="display: none;">
+                      {% with formset.empty_form as form %}
+                        {% include "rcallocation/quota_form.html" %}
+                      {% endwith %}
+                      </div>
+                      <div id="quotas-{{ service_type.catalog_name }}" class="quotas">
+			{% if formset.non_form_errors %}
+			<div class="form-group has-error">
+			  <span class="help-block">{{ formset.non_form_errors }}</span>
+			</div>
+			{% endif %}
+			
+                      {% for form in formset.forms %}
+                        {% include "rcallocation/quota_form.html" %}
+                      {% endfor %}
+                      </div>
+
+      <div class="form-actions">
+        <input id="add-quota-{{ service_type.catalog_name }}" type="button" value="Add more" class="btn btn-default"/>
       </div>
-      <div id="quota_formset">
-        {{ quotaFormSet.management_form }}
-        <div class="quotas">
-          {% for quota_form in quotaFormSet.forms %}
-            {% include "rcallocation/quota_form.html" %}
-          {% endfor %}
-        </div>
-        <div>
-            <input type="button" value="Add quota" id="add_more"/>
-        </div>
-      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div> <!-- quota_formset -->
+        </div> <!-- col-md-12 -->
+      </div> <!-- row -->
+
+
       <div class="row">&nbsp;</div>
       <div class="row">
         <div class="col-md-12">
@@ -203,9 +219,9 @@
                  be supported by the application or specify 'all'.
                  <br/>
                  <br/>
-                 {{ institutionFormSet.management_form }}
-                 {% if institutionFormSet.forms %}
-                     {% include "rcallocation/institution_form.html" with field=institutionFormSet.forms.0.name %}
+                 {{ institution_formset.management_form }}
+                 {% if institution_formset.forms %}
+                     {% include "rcallocation/institution_form.html" with field=institution_formset.forms.0.name %}
                  {% endif %}
              </div>
           </div>
@@ -213,8 +229,8 @@
 
       <div class="row">
           <div id="investigator_formset">
-              {{ investigatorFormSet.management_form }}
-              {% for investigator_form in investigatorFormSet.forms %}
+              {{ investigator_formset.management_form }}
+              {% for investigator_form in investigator_formset.forms %}
                 {% include "rcallocation/investigator_form.html" %}
               {% endfor %}
           </div>
@@ -230,7 +246,7 @@
                  traditional publications and non-traditional outputs.
                  <br/>
                  <br/>
-                   {{ publicationFormSet.management_form }}
+                   {{ publication_formset.management_form }}
                    {% include "rcallocation/publication_form.html"%}
              </div>
           </div>
@@ -246,7 +262,7 @@
           <br/>
           <br/>
           <div class="grant_formset">
-              {{ grantFormSet.management_form }}
+              {{ grant_formset.management_form }}
               {% include "rcallocation/grant_form.html" %}
           </div>
         </div>
@@ -267,9 +283,9 @@
        $(document).ready(function() {
          $('div#quota_formset').formset({
            prefix: 'quotas',
-           storage_zones: {{ storage_zones|safe }},
-           storage_units: {{ storage_units|safe }},
-           form_tmpl: '{{quotaFormTmpl|escapejs}}'
+           service_types: {{ service_types|safe }},
+           resources: {{ resources|safe }},
+           zones: {{ zones|safe }},
          });
        });
 
