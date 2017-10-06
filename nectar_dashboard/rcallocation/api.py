@@ -1,12 +1,64 @@
 from rest_framework import serializers, viewsets
-
 from nectar_dashboard.rcallocation import models
 
 
+class ZoneSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Zone
+        fields = '__all__'
+
+
+class ZoneViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.Zone.objects.all()
+    serializer_class = ZoneSerializer
+
+
+class ResourceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Resource
+        fields = '__all__'
+
+
+class ServiceTypeSerializer(serializers.ModelSerializer):
+    zones = ZoneSerializer(many=True, read_only=True)
+    resource_set = ResourceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.ServiceType
+        fields = '__all__'
+
+
+class ServiceTypeViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.ServiceType.objects.all()
+    serializer_class = ServiceTypeSerializer
+
+
+class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.Resource.objects.all()
+    serializer_class = ResourceSerializer
+
+
+class CodeNameField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.codename()
+
+
 class QuotaSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.Quota
         fields = '__all__'
+
+
+class InlineQuotaSerializer(serializers.ModelSerializer):
+    resource = CodeNameField(read_only=True)
+
+    class Meta:
+        model = models.Quota
+        fields = ('resource', 'zone', 'quota')
+
 
 class QuotaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Quota.objects.all()
@@ -15,7 +67,7 @@ class QuotaViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class AllocationSerializer(serializers.ModelSerializer):
-    quotas = QuotaSerializer(many=True, read_only=True)
+    quotas = InlineQuotaSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.AllocationRequest

@@ -1,6 +1,4 @@
 {% extends 'base.html' %}
-{% load quota_zone %}
-{% load quota_title %}
 
 {% block title %}View allocation request{% endblock title %}
 
@@ -99,7 +97,7 @@
             </tr>
             {% for quota in allocation.quotas.all %}
               <tr>
-                <th>{{ quota.resource|quota_title }} ({{ quota.zone|quota_zone }})</th>
+                <th>{{ quota.resource }} ({{ quota.zone }})</th>
                 <td>{{ quota.requested_quota }} {{ quota.units }}</td>
               </tr>
             {% endfor %}
@@ -123,7 +121,7 @@
             </tr>
             {% for quota in previous_allocation.quotas.all %}
               <tr>
-                <th>{{ quota.resource|quota_title }} ({{ quota.zone|quota_zone }})</th>
+                <th>{{ quota.resource }} ({{ quota.zone }})</th>
                 <td>{{ quota.quota }} {{ quota.units }}</td>
               </tr>
             {% endfor %}
