@@ -12,7 +12,7 @@
 </div>
 <table class="more_fields_tab">
     <tbody>
-    {% for institution_form in institutionFormSet.forms %}
+    {% for institution_form in institution_formset.forms %}
         <tr>
             {% if institution_form.non_field_errors %}
                 <div class="alert alert-danger" role="alert">{{ institution_form.non_field_errors }}</div>
@@ -32,7 +32,7 @@
     <tfoot>
         <tr>
             <td></td>
-            <td class="add_another_row"><input type="button" value="Add Institution" id="add_another"></td>
+            <td class="add_another_row"><input type="button" class="btn btn-default" value="Add Institution" id="add_another"></td>
             <td></td>
         </tr>
     </tfoot>

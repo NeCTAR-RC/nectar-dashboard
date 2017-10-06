@@ -1,127 +1,143 @@
 (function($) {
 
-    function choose_resource_type (opts) {
-        return function (handler) {
-            var resource_select = $(this).parents(".quota").find(".resource select");
-            var zone_select = $(this).parents(".quota").find(".zone select");
-            var resource = resource_select.find("option:selected").val();
-            var zone = zone_select.find("option:selected").val();
-            if (resource) {
-                zone_select.empty();
-                zone_select.append("<option value=\"\">---------</option>");
-                $(opts.storage_zones[resource]).each(function (i, item) {
-                    var value = item[0],
-                        text = item[1];
-                    if (zone === value) {
-                        zone_select.append("<option value=\"" + value + "\" selected=\"selected\">" + text + "</option>");
-                    } else {
-                        zone_select.append("<option value=\"" + value + "\">" + text + "</option>");
-                    }
-                });
-
-                /* Only remove disabled value on change. Skip on page load */
-                if (handler.type === 'change') {
-                    zone_select.removeAttr('disabled');
-                }
-
-                /* Append units to the field if it doesn't have any */
-                var units = opts.storage_units[resource];
-                var units_widget = $(this).parents(".quota").find(".requested_quota .input-group-addon");
-                if (units_widget.length) {
-                    units_widget.text(opts.storage_units[resource]);
-                } else {
-                    if (opts.storage_units[resource]) {
-                        $(this).parents(".quota")
-                            .find('.requested_quota .input-group')
-                            .append('<div class="input-group-addon">' + units + '</div>');
-                    }
-                }
-            } else {
-                zone_select.attr('disabled','disabled');
-            }
-        };
+    function renumber_forms(forms) {
+      var match = new RegExp('-\\d+-', 'g');
+      forms.each(function (i, item) {
+        $(item).find('input, label').each(function() {
+          var name = $(this).attr('name');
+          if (name) {'.quota-resource'
+            $(this).attr('name', name.replace(match, '-' + i + '-'));
+            $(this).attr('id', name.replace(match, '-' + i + '-'));
+          }
+        });
+      });
     };
 
-    function renumber_forms(forms, opts) {
-        var match = new RegExp(opts.prefix + '-\\d+-', 'g');
+    function delete_form(item) {
+      var form = $(item).closest('.quota-resource');
+      form.hide();
+      form.find('input[id$="-DELETE"]').val(true);
+      form.find('input.requested-quota').val(0);
+    };
 
-        forms.each(function (i, element) {
-            $(element).find(':input').each(function() {
-                var name = $(this).attr('name');
-                if (name) {
-                    $(this).attr('name', name.replace(match, opts.prefix + '-' + i + '-'));
-                    $(this).attr('id', name.replace(match, opts.prefix + '-' + i + '-'));
-                }
-            });
-            $(element).find('label').each(function() {
-                var newFor = $(this).attr('for').replace(match, opts.prefix +'-' + i + '-');
-                $(this).attr('for', newFor);
-            });
-        });
-    }
+    function create_form(formset, opts, service_type, resource) {
+      var total = $('#id_' + service_type + '-TOTAL_FORMS').val();
+      var newElement = $('#empty-quotas-' + service_type).find('.row').first().clone();
 
-    function delete_form(formset, opts, form) {
-        var quota_form = $(form).parents('.quota');
-        var id_regexp = new RegExp(opts.prefix + '-\\d+-id$', 'g');
-        var id_field = null;
-        var delete_regexp = new RegExp(opts.prefix + '-\\d+-DELETE$', 'g');
-        var delete_field = null;
-
-        $(":input[type='hidden']", quota_form).each(
-            function (i, element) {
-                var id = element.id;
-                if (id.match(id_regexp)) {
-                    id_field = $(element);
-                }
-                if (id.match(delete_regexp)) {
-                    delete_field = $(element);
-                }
-            });
-        if (id_field.val()) {
-            delete_field.val(true);
-            quota_form.toggleClass('hidden');
-        } else {
-            $(form).parents('.quota').remove();
-            var total = $('.quota', formset).length;
-            $('#id_' + opts.prefix + '-TOTAL_FORMS').val(total);
-            renumber_forms($('.quota', formset), opts);
+      newElement.find('input, label, select').each(function() {
+        var name = $(this).attr('name');
+        if (name) {
+          $(this).attr('name', name.replace(/__prefix__/g, total));
+          $(this).attr('id', name.replace(/__prefix__/g, total));
         }
+      });
+
+      process_resource(newElement, opts, resource);
+      newElement.find('input[id$="-resource"]').attr('value', resource['id']);
+      newElement.find('.quota-resource-delete').show();
+      newElement.show();
+
+      $('#quotas-' + service_type).append(newElement);
+      var total = $('#quotas-' + service_type).children().length;
+      $('#id_' + service_type + '-TOTAL_FORMS').val(total);
     };
 
-    function create_form(formset, opts) {
-        var total = $('#id_' + opts.prefix + '-TOTAL_FORMS').val();
-        var newElement = $(opts.form_tmpl.replace(/__prefix__/g, total));
+    function process_resource(item, opts, resource) {
+     $(item).find('#label-resource-name').text(resource['name']);
+     $(item).find("#label-resource-unit").text(resource['unit']);
 
-        /* hook up the zone selector */
-        newElement.find(".zone select").attr('disabled','disabled').empty();
-        $('.resource select', newElement).change(choose_resource_type(opts));
-        newElement.find("button").click(function() {
-            delete_form(formset, opts, this);
-        });
-        $('.quotas', formset).append(newElement);
-        $('#id_' + opts.prefix + '-TOTAL_FORMS').val($('div.quota').length);
+     var zone_select = $(item).find('.zone select');
+     var service_type = resource['service_type']
+     var zones = opts['service_types'][service_type]['zones']
+     var selected_zone = zone_select.val();
+     zone_select.empty();
+
+     // only show zones select when >1 zone
+     if (zones.length > 1) {
+       zone_select.append($('<option></option>')
+         .attr('selected', 'selected')
+         .text('Select Zone...'));
+       zone_select.show();
+       $(item).find('.quota-resource-delete').show();
+     } else {
+       zone_select.hide();
+     }
+
+     // add the specific zones to the resource and optionally set
+     // the selected zone if it's a returned form
+     $.each(zones, function(z) {
+       var option = $('<option></option>')
+         .attr('value', zones[z]['name'])
+         .text(zones[z]['display_name']);
+       if (zones[z]['name'] == selected_zone) {
+         option.attr('selected', 'selected');
+       }
+       zone_select.append(option);
+     });
+
+     $(item).find('.quota-resource-delete').click(function() {
+       delete_form(this);
+     });
     };
 
     $.fn.formset = function(options) {
-        var opts = $.extend( {}, $.fn.formset.defaults, options );
-        return this.each(function() {
-            /* only show the correct zones for each resource type*/
-            $('.resource select', this).change(choose_resource_type(opts));
-            $('.zone select', this).each(choose_resource_type(opts));
-            var formset = this;
-            $('#add_more', this).click(function() {
-                create_form(formset, opts);
-            });
-            $('div.quotas button').click(function() {
-                delete_form(formset, opts, this);
-            });
+      var opts = $.extend({}, $.fn.formset.defaults, options);
+      return this.each(function() {
+
+        $('div[id^="quota-resource-"]').each(function() {
+          var resource_id = $(this).attr('id').match(/[\d]+$/);
+          if (resource_id == null) {
+            return
+          }
+          var resource = opts['resources'][resource_id];
+          process_resource(this, opts, resource);
         });
+
+        $('input:checkbox.toggle-quota').change(function() {
+          var panel = $(this).closest('.panel');
+          panel.find('.panel-collapse').collapse(this.checked ? 'show' : 'hide');
+
+          if (!this.checked) {
+            $(this).closest('.panel').find('input.requested-quota').each(function() {
+              $(this).val(0);
+            });
+          }
+        });
+
+        $(this).find('div[id^="panel-quota-"]').each(function() {
+          var service_type = $(this).attr('id').match(/[\w]+$/);
+          var zones = opts['service_types'][service_type]['zones']
+
+          if (zones.length > 1) {
+            $('input[id^="add-quota-' + service_type + '"]').show();
+          } else {
+            $('input[id^="add-quota-' + service_type + '"]').hide();
+          }
+
+          var is_enabled = false;
+          $(this).find('input.requested-quota').each(function() {
+            if (this.value > 0) {
+              is_enabled = true;
+            }
+          });
+          $(this).find('input:checkbox.toggle-quota').prop('checked', is_enabled).change();
+        });
+
+        $('input[id^="add-quota-"]').click(function() {
+          var service_type = $(this).attr('id').match(/[\w]+$/);
+          var resources = opts['resources'];
+          for (var k in resources) {
+            if (resources[k]['service_type'] == service_type) {
+              create_form(this, opts, service_type, resources[k]);
+            }
+          }
+        });
+      });
     };
 
     // Plugin defaults – added as a property on our plugin function.
     $.fn.formset.defaults = {
-        storage_units: {},
-        storage_zones: {},
+        service_types: {},
         form_tmpl: "",
         prefix: ""
     };

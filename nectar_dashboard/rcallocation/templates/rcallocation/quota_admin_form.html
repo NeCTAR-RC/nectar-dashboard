@@ -1,0 +1,24 @@
+{% load quota_title %}
+  {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+  {% endfor %}
+  {% if form.non_field_errors %}
+  <div class="form-group has-error">
+    <span class="help-block">{{ form.non_field_errors }}</span>
+  </div>
+  {% endif %}
+<div class="row">
+  <div class="col-md-4">
+    <h4>
+      {{ form.instance.zone|title }} {{ form.instance.resource|quota_title }}
+    </h4>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4 requested_quota">
+    {% include "rcallocation/quota_field.html" with field=form.requested_quota %}
+  </div>
+  <div class="col-md-4 quota">
+    {% include "rcallocation/quota_field.html" with field=form.quota %}
+  </div>
+</div>
