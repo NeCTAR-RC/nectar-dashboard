@@ -1,0 +1,130 @@
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
+from django.core import urlresolvers
+
+from horizon import tables
+
+from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import utils
+
+
+# Actions
+class EditRequest(tables.LinkAction):
+    name = "edit"
+    verbose_name = ("Edit request")
+    url = "horizon:allocation:requests:edit_request"
+    classes = ("btn-associate",)
+
+    def allowed(self, request, instance):
+        return instance.can_be_edited() or (
+            instance.can_admin_edit() and
+            utils.user_is_allocation_admin(request.user))
+
+
+class ViewHistory(tables.LinkAction):
+    name = "view_history"
+    verbose_name = "View history"
+    url = "horizon:allocation:requests:allocation_history"
+
+
+def status_icon(allocation):
+    css_style = 'alloc-icon-wip'
+    title = allocation.get_status_display()
+    text = allocation
+    if allocation.status == models.AllocationRequest.APPROVED:
+        css_style = 'alloc-icon-ok'
+    data = mark_safe('<p'
+                     ' title="%s"'
+                     ' class="alloc-icon %s">'
+                     '<strong>%s</strong></p>'
+                     % (title, css_style, text))
+    return data
+
+
+def allocation_title(allocation,
+                     link='horizon:allocation:requests:allocation_view'):
+    url = urlresolvers.reverse(link, args=(allocation.pk,))
+    # Escape the data inside while allowing our HTML to render
+    data = mark_safe('<a href="%s">%s</a>'
+                     '<br/>'
+                     '<small class="muted">%s</small>' %
+                     (escape(url),
+                      escape(unicode(allocation.project_name)),
+                      escape(unicode(allocation.project_description))))
+    return data
+
+
+class AllocationListTable(tables.DataTable):
+    status = tables.Column(status_icon,
+                           classes=['text-center'],
+                           verbose_name="State")
+    project = tables.Column(allocation_title,
+                            verbose_name="Name", )
+    allocation_home = tables.Column('allocation_home',
+                                    verbose_name='Home Location')
+    contact = tables.Column("contact_email", verbose_name="Contact")
+    modified_time = tables.Column("modified_time",
+                                  verbose_name="Last Updated",
+                                  filters=[lambda d: d.date()])
+    end_date = tables.Column("end_date",
+                             verbose_name="Expiry Date")
+
+    class Meta:
+        verbose_name = "Requests"
+        table_actions = (tables.NameFilterAction,)
+        row_actions = (EditRequest, ViewHistory,)
+
+
+def delta_quota(allocation, want, have):
+    if allocation.status in ('X', 'J'):
+        return "%+d" % (int(want) - int(have))
+    elif allocation.status == 'A':
+        return have or '-'
+    elif allocation.status in ('E', 'R'):
+        return want or '-'
+    return "Requested %s, currently have %s" % (want, have)
+
+
+def get_quota(wanted, actual=None):
+    def quota(allocation):
+        want = getattr(allocation, wanted)
+        have = getattr(allocation, actual, want)
+        return delta_quota(allocation, want, have)
+    return quota
+
+
+def get_quota_by_resource(resource):
+    def quota(allocation):
+        want = 0
+        have = 0
+        for quota in allocation.quotas.all():
+            if quota.resource.quota_name != resource:
+                continue
+            want += quota.requested_quota
+            have += quota.quota
+        return delta_quota(allocation, want, have)
+    return quota
+
+
+class AllocationHistoryTable(tables.DataTable):
+    project = tables.Column("project_description", verbose_name="Project name",
+                            link="horizon:allocation:requests:allocation_view")
+    approver = tables.Column("approver_email", verbose_name="Approver")
+    instances = tables.Column(
+        get_quota("instances", "instance_quota"),
+        verbose_name="Instances")
+    cores = tables.Column(
+        get_quota("cores", "core_quota"),
+        verbose_name="Cores")
+    object_store = tables.Column(
+        get_quota_by_resource("object"),
+        verbose_name="Object Storage")
+    volume_storage = tables.Column(
+        get_quota_by_resource("volume"),
+        verbose_name="Volume Storage")
+    status = tables.Column("get_status_display", verbose_name="Status")
+    modified_time = tables.Column(
+        "modified_time", verbose_name="Modification time")
+
+    class Meta:
+        verbose_name = "Request History"
