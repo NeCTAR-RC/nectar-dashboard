@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c324da24_d2c887bb",
+        "filename": "nectar_dashboard/rcallocation/request/forms.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2017-10-09T03:11:00Z",
+      "side": 1,
+      "message": "should maybe import AllocationRequestForm directly?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 47
+      },
+      "revId": "0f18dc7489924e79d554bb0df86ab0db5be04cb8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "947f8cdd_3ed64d02",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_base.html",
+        "patchSetId": 5
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2017-10-09T03:11:00Z",
+      "side": 1,
+      "message": "tabs",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 3
+      },
+      "revId": "0f18dc7489924e79d554bb0df86ab0db5be04cb8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "334a782b_e14ec401",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_base.html",
+        "patchSetId": 5
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2017-10-09T03:11:00Z",
+      "side": 1,
+      "message": "indent is off",
+      "range": {
+        "startLine": 149,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 10
+      },
+      "revId": "0f18dc7489924e79d554bb0df86ab0db5be04cb8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "af09bbdd_b9e5a2fb",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2017-10-09T03:11:00Z",
+      "side": 1,
+      "message": "ws and tabs",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 144,
+        "endChar": 3
+      },
+      "revId": "0f18dc7489924e79d554bb0df86ab0db5be04cb8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
