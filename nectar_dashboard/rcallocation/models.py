@@ -633,7 +633,7 @@ class Quota(models.Model):
 
     resource = models.ForeignKey(Resource)
 
-    zone = models.ForeignKey(Zone)
+    zone = models.ForeignKey(Zone, null=True, blank=True)
 
     requested_quota = models.PositiveIntegerField(
         'Requested quota',
