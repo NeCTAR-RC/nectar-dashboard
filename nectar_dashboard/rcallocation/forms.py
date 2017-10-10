@@ -225,7 +225,7 @@ class QuotaInlineFormSet(forms.BaseInlineFormSet):
         for form in self.forms:
             if form.cleaned_data.get(DELETION_FIELD_NAME, False):
                 continue
-            if form.cleaned_data:
+            if form.cleaned_data and form.cleaned_data.get('zone'):
                 zr = (form.cleaned_data['zone'], form.cleaned_data['resource'])
                 if zr in zone_resources:
                     raise forms.ValidationError(
