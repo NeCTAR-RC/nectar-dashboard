@@ -121,8 +121,11 @@
               is_enabled = true;
             }
           });
-          $(this).find('.panel-collapse').collapse(is_enabled ? 'show' : 'hide');
-          $(this).find('input:checkbox.toggle-quota').prop('checked', is_enabled).change();
+          var toggle = $(this).find('input:checkbox.toggle-quota');
+          if (toggle.length) {
+            $(this).find('div.panel-collapse').collapse(is_enabled ? 'show' : 'hide');
+            toggle.prop('checked', is_enabled).change();
+          }
         });
 
         $('input[id^="add-quota-"]').click(function() {
