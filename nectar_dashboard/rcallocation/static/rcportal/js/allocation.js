@@ -121,6 +121,7 @@
               is_enabled = true;
             }
           });
+          $(this).find('.panel-collapse').collapse(is_enabled ? 'show' : 'hide');
           $(this).find('input:checkbox.toggle-quota').prop('checked', is_enabled).change();
         });
 
