@@ -13,14 +13,14 @@
     {% include "horizon/common/_page_header.html" with title="Decline or request amendment from user" %}
 {% endblock page_header %}
 
-{% block js %}
-  {{ block.super }}
-  <script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
-  <script src='{{ STATIC_URL }}rcportal/js/jquery.mDialog.js' type='text/javascript' charset='utf-8'></script>
-{% endblock %}
-
 {% block description %}
 Reject a request, or specify changes a user needs to make to an allocation request before it can be accepted.
 {% endblock description %}
 
 {% block form_action %}{% url 'horizon:allocation:requests:reject_request' object.pk %}{% endblock %}
+
+{% block compute_quota %}
+{% endblock compute_quota %}
+
+{% block quotas %}
+{% endblock quotas %}

@@ -10,7 +10,6 @@ from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.template import loader
-from django.conf import settings
 from horizon import tables as horizon_tables
 
 from nectar_dashboard.rcallocation import models
@@ -222,6 +221,9 @@ class BaseAllocationView(UpdateView):
                        **kwargs)
 
     def get_quota_formsets(self):
+        if not self.quota_form_class:
+            return []
+
         quota_formsets = []
         for service_type in models.ServiceType.objects.all():
             initial = []
@@ -299,7 +301,6 @@ class BaseAllocationView(UpdateView):
                                   zones=json.dumps(zones),
                                   **kwargs))
 
-
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
@@ -358,7 +359,6 @@ class BaseAllocationView(UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         kwargs = {'form': form}
-        quota_formsets = self.get_quota_formsets()
 
         formset_investigator_class = self.get_formset_investigator_class()
         if formset_investigator_class:
@@ -379,6 +379,7 @@ class BaseAllocationView(UpdateView):
             kwargs['grant_formset'] = self.get_formset(formset_grant_class)
 
         quota_valid = True
+        quota_formsets = self.get_quota_formsets()
         for service_type, formset in quota_formsets:
             if not formset.is_valid():
                 quota_valid = False
@@ -391,7 +392,7 @@ class BaseAllocationView(UpdateView):
     @transaction.atomic
     def form_valid(self, form, investigator_formset=None,
                    institution_formset=None, publication_formset=None,
-                   grant_formset=None, quota_formsets=None):
+                   grant_formset=None, quota_formsets=[]):
         # Create a new historical object based on the original.
         if self.object:
             copy_allocation(self.object)
