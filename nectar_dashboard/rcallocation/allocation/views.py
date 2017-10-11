@@ -35,7 +35,7 @@ class AllocationRejectView(views.BaseAllocationView):
     template_name = "rcallocation/allocationrequest_reject.html"
     model = models.AllocationRequest
     form_class = allocation_forms.AllocationRejectForm
-    formset_quota_class = None
+    quota_form_class = None
     success_url = "../../"
 
     formset_investigator_class = None
