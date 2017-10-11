@@ -326,7 +326,8 @@ class BaseAllocationView(UpdateView):
 
         kwargs = {'form': form}
         # quota
-        kwargs['quota_formsets'] = self.get_quota_formsets()
+        if self.quota_form_class:
+            kwargs['quota_formsets'] = self.get_quota_formsets()
 
         # investigator
         formset_investigator_class = self.get_formset_investigator_class()
@@ -358,7 +359,6 @@ class BaseAllocationView(UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         kwargs = {'form': form}
-        quota_formsets = self.get_quota_formsets()
 
         formset_investigator_class = self.get_formset_investigator_class()
         if formset_investigator_class:
@@ -379,9 +379,12 @@ class BaseAllocationView(UpdateView):
             kwargs['grant_formset'] = self.get_formset(formset_grant_class)
 
         quota_valid = True
-        for service_type, formset in quota_formsets:
-            if not formset.is_valid():
-                quota_valid = False
+        quota_formsets = []
+        if self.quota_form_class:
+            quota_formsets = self.get_quota_formsets()
+            for service_type, formset in quota_formsets:
+                if not formset.is_valid():
+                    quota_valid = False
 
         if quota_valid and all(map(methodcaller('is_valid'), kwargs.values())):
             return self.form_valid(quota_formsets=quota_formsets, **kwargs)
@@ -391,7 +394,7 @@ class BaseAllocationView(UpdateView):
     @transaction.atomic
     def form_valid(self, form, investigator_formset=None,
                    institution_formset=None, publication_formset=None,
-                   grant_formset=None, quota_formsets=None):
+                   grant_formset=None, quota_formsets=[]):
         # Create a new historical object based on the original.
         if self.object:
             copy_allocation(self.object)
