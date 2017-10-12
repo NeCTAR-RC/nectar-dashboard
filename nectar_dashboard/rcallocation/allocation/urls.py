@@ -23,4 +23,7 @@ urlpatterns = [
     url(r'^approve_change_request/(?P<pk>\d+)/$',
         allocation_views.AllocationApproveView.as_view(),
         name='approve_change_request'),
+    url(r'^edit_notes/(?P<pk>\d+)/$',
+        allocation_views.AllocationNotesEdit.as_view(),
+        name='edit_notes'),
 ]

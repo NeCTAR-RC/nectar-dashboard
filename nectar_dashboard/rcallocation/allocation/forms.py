@@ -126,3 +126,11 @@ class QuotaForm(forms.BaseQuotaForm):
         """
         changed_data = super(forms.BaseQuotaForm, self).has_changed()
         return bool(self.initial or changed_data)
+
+
+class EditNotesForm(ModelForm):
+    error_css_class = 'has-error'
+
+    class Meta:
+        model = models.AllocationRequest
+        fields = ('notes',)

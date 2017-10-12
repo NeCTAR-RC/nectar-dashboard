@@ -1,5 +1,24 @@
 {% extends 'rcallocation/allocationrequest_detail_base.html' %}
 {% load url from future %}
+
+{% block extra_details %}
+<div class="row">
+  <div class="col-md-12">
+    <h3>Allocation admin notes</h3>
+    <p>
+      {{ allocation.notes }}
+    </p>
+  </div>
+  <div class="col-md-12">
+    <a href="{% url 'horizon:allocation:requests:edit_notes' allocation.pk %}"
+       class="btn btn-default"
+       id="allocation_reject_view">
+      Add/edit admin notes
+    </a>
+  </div>
+</div>
+{% endblock %}
+
 {% block detail_actions %}
   {% if allocation.amendment_requested %}
     {% if allocation.can_approve_change %}
@@ -19,16 +38,14 @@
       </div>
     {% endif %}
   {% elif allocation.can_be_approved %}
-    <div class="col-sm-2">
+    <div class="col-md-6 col-md-offset-2">
       <a href="{% url 'horizon:allocation:requests:approve_request' allocation.pk %}"
-         class="btn btn-success"
+         class="btn btn-success btn-lg"
          id="allocation_accept_view">
         Approve request
       </a>
-    </div>
-    <div class="col-sm-offset-4">
       <a href="{% url 'horizon:allocation:requests:reject_request' allocation.pk %}"
-         class="btn btn-danger"
+         class="btn btn-danger btn-lg"
          id="allocation_reject_view">
         Decline request (or ask for more detail)
       </a>
