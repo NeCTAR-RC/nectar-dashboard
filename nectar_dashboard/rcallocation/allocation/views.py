@@ -1,3 +1,5 @@
+from django.views.generic.edit import UpdateView
+
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import views
@@ -11,6 +13,13 @@ class AllocationUpdateView(views.BaseAllocationView):
     form_class = forms.AllocationRequestForm
     success_url = "../../"
     page_title = 'Update'
+
+
+class AllocationNotesEdit(UpdateView):
+    template_name = "rcallocation/allocationrequest_edit_notes.html"
+    model = models.AllocationRequest
+    form_class = allocation_forms.EditNotesForm
+    page_title = 'Update Notes'
 
 
 class AllocationApproveView(views.BaseAllocationView):
