@@ -7,6 +7,7 @@ import logging
 
 from django.core.mail import EmailMessage
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.loader import get_template
 from django.template import Context
@@ -390,6 +391,14 @@ class AllocationRequest(models.Model):
     )
 
     provisioned = models.BooleanField(default=False)
+
+    notes = models.TextField("Private notes for admins",
+        null=True, blank=True,
+        help_text="These notes are only visible to allocation admins")
+
+    def get_absolute_url(self):
+        return reverse('horizon:allocation:requests:allocation_view',
+                       args=[str(self.id)])
 
     def set_status(self, status):
         status = status.upper()
