@@ -15,6 +15,7 @@
       'horizon.dashboard.nectar_dashboard.launch_instance.loginTestPath',
       '/api/keystone/version')
     .config(addInterceptor)
+    .directive('transferTable', transferTable)
     .run(testLoggedIn);
 
   /**
@@ -123,5 +124,41 @@
       helpUrl: s + 'dashboard/nectar_dashboard/launch_instance/az/az.help.html',
       title: 'Availability Zone'
     });
+  }
+
+  transferTable.$inject = [
+    '$compile'
+  ];
+  function transferTable($compile) {
+    return {
+      restrict: 'E',
+      link: function(scope, element, attrs) {
+        // match only the boot source transfer-table
+        if(element.parent()[0].querySelector('#boot-source-type') === null) {
+          // these aren't the transfer-tables you're looking for
+          return;
+        }
+        var nis = angular.element('<nectar-image-selector model="model"></nectar-image-selector>');
+        element.after($compile(nis)(scope));
+
+        // FIXME maybe this should be in this directive's controller
+        scope.$watchCollection(
+          function() { return scope.model.newInstanceSpec.source_type; },
+          function(source_type) {
+            if(source_type === null) {
+              return;
+            }
+            // FIXME might be a cleaner way to do this by adding ng-show directive
+            if(source_type.type === 'image') {
+              element.css('display', 'none');
+              nis.css('display', '');
+            } else {
+              element.css('display', '');
+              nis.css('display', 'none');
+            }
+          }
+        );
+      }
+    };
   }
 })();
