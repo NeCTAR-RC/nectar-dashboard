@@ -84,7 +84,7 @@
           <h3>Requested Quota</h3>
           <table class="table table-hover">
             <tr>
-              <th width="200">Number of instances</th>
+              <th>Number of instances</th>
               <td>{{ allocation.instances }}</td>
             </tr>
             <tr>
@@ -97,7 +97,7 @@
             </tr>
             {% for quota in allocation.quotas.all %}
               <tr>
-                <th>{{ quota.resource }} ({{ quota.zone }})</th>
+                <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.zone }}</span></th>
                 <td>{{ quota.requested_quota }} {{ quota.units }}</td>
               </tr>
             {% endfor %}
@@ -108,7 +108,7 @@
           <h3>Current Quota</h3>
           <table class="table table-hover">
             <tr>
-              <th width="200">Instance quota</th>
+              <th>Instance quota</th>
               <td>{{ previous_allocation.instance_quota }}</td>
             </tr>
             <tr>
@@ -121,7 +121,7 @@
             </tr>
             {% for quota in previous_allocation.quotas.all %}
               <tr>
-                <th>{{ quota.resource }} ({{ quota.zone }})</th>
+                <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.zone }}</span></th>
                 <td>{{ quota.quota }} {{ quota.units }}</td>
               </tr>
             {% endfor %}
