@@ -11,22 +11,6 @@
   angular
   angular
     .module('horizon.dashboard.nectar_dashboard.launch_instance')
-    .constant(
-      'horizon.dashboard.nectar_dashboard.launch_instance.imagesListCategories',
-      [  // nectarImageSelectorController prepends "My Images" to this
-        {
-          text: 'Nectar official',
-          predicate: matchProject('project id'),
-        },
-        {
-          text: 'Contributed',
-          predicate: matchProject('project id'),
-        },
-        {
-          text: 'Public',
-          predicate: function() { return true; },
-        },
-      ])
     .directive('nectarImageSelector', nectarImageSelector);
 
   nectarImageSelector.$inject = [
@@ -43,15 +27,22 @@
 
   nectarImageSelectorController.$inject = [
     '$scope',
-    'horizon.dashboard.nectar_dashboard.launch_instance.imagesListCategories',
-    'horizon.app.core.openstack-service-api.keystone'
+    'horizon.app.core.openstack-service-api.keystone',
+    'horizon.app.core.openstack-service-api.settings'
   ];
-  function nectarImageSelectorController($scope, categories, keystone) {
+  function nectarImageSelectorController($scope, keystone, settings) {
+    // placeholder: predicate gets set correctly when project id is known
     $scope.categories = [{
         text: 'My Images',
-        predicate: function() { return false; },
-    }].concat(categories);
+        predicate: function() { return false; }
+    }];
     $scope.categoryIndex = 0;  // index into $scope.categories
+    settings.getSetting('IMAGES_LIST_FILTER_TENANTS').then(function(fs) {
+      // {text, tenant, icon}
+      $scope.categories = $scope.categories.concat(fs.map(function(f) {
+        return {text: f.text, predicate: matchProject(f.tenant)};
+      }));
+    });
     $scope.activeImage = null;  // image object currently selected
 
     // get user's project and update My Images to match

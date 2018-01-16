@@ -1,6 +1,12 @@
 ;(function() {
   'use strict';
 
+  /**
+   * TODO
+   * - need scroll bars (too many images in prod)
+   * - apparently(?) delayed appearence of "Boot from image" <option>
+   */
+
   var onAuthenticated = null;  // gets set in run block
   var getTestURL = function($window, testPath) {
     return ($window.WEBROOT + '/' + testPath).replace(/\/+/g, '/');
