@@ -1,6 +1,6 @@
 
-git+https://github.com/NeCTAR-RC/horizon.git@nectar/liberty#egg=horizon
-git+https://github.com/NeCTAR-RC/horizon.git@nectar/liberty#egg=openstack_dashboard
+git+https://github.com/NeCTAR-RC/horizon.git@nectar/queens#egg=horizon
+git+https://github.com/NeCTAR-RC/horizon.git@nectar/queens#egg=openstack_dashboard
 
 python-dateutil
 pymysql

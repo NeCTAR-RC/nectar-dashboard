@@ -1,11 +1,10 @@
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 from nectar_dashboard.rcallocation.user_allocations.views import RestrictedAllocationsEditView  # noqa
 from nectar_dashboard.rcallocation.user_allocations.views import RestrictedAllocationsDetailsView  # noqa
 from nectar_dashboard.rcallocation.user_allocations.views import UserAllocationsListView  # noqa
 from nectar_dashboard.rcallocation.user_allocations.forms import UserAllocationRequestAmendForm  # noqa
 
-urlpatterns = patterns(
-    'nectar_dashboard.rcallocation.user_allocations',
+urlpatterns = [
     url(r'^$',
         UserAllocationsListView.as_view(), name='index'),
     url(r'^view/(?P<pk>\d+)/$', RestrictedAllocationsDetailsView.as_view(),
@@ -18,4 +17,4 @@ urlpatterns = patterns(
             form_class=UserAllocationRequestAmendForm,
             template_name='rcallocation/allocationrequest_extend.html'),
         name='edit_change_request'),
-)
+]

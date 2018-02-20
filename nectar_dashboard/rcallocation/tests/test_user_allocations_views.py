@@ -1,7 +1,6 @@
 from operator import itemgetter
 
 from django.core.urlresolvers import reverse
-from django.utils.importlib import import_module  # noqa
 
 from nectar_dashboard.rcallocation import models
 from openstack_dashboard.test.helpers import TestCase
@@ -65,8 +64,7 @@ class RequestTestCase(TestCase):
         # our requests.
 
         assert response.status_code == 302
-        assert response.get('location').endswith(
-            reverse('horizon:allocation:user_requests:index'))
+        assert response.get('location') == '../../'
         model = (models.AllocationRequest.objects.get(
             project_description=form['project_description'],
             parent_request_id=None))
