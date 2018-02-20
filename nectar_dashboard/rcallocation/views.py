@@ -30,6 +30,7 @@ class AllocationDetailView(DetailView, ModelFormMixin):
     context_object_name = "allocation"
     model = models.AllocationRequest
     success_url = "../../"
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()

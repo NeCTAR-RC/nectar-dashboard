@@ -1,7 +1,7 @@
+from importlib import import_module
 from operator import itemgetter
 
 from django.core.urlresolvers import reverse
-from django.utils.importlib import import_module  # noqa
 
 from nectar_dashboard.rcallocation import models
 from openstack_dashboard.test.helpers import TestCase
