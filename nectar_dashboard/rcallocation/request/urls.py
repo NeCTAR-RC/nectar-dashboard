@@ -1,8 +1,7 @@
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 from .views import AllocationCreateView
 
 
-urlpatterns = patterns(
-    'nectar_dashboard.rcallocation.request',
+urlpatterns = [
     url(r'^$', AllocationCreateView.as_view(), name='request'),
-)
+]
