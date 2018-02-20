@@ -20,6 +20,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.template import defaultfilters
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import tables
 
@@ -64,6 +65,22 @@ class RemoveMembers(tables.DeleteAction):
                                              project=project_id,
                                              user=user_obj.id,
                                              role=role_id)
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Remove Member",
+            u"Remove Members",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Removed Member",
+            u"Removed Members",
+            count
+        )
 
 
 class AddMembersLink(tables.LinkAction):

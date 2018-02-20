@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.utils.importlib import import_module  # noqa
 
 from openstack_dashboard.test.helpers import TestCase
 from nectar_dashboard.rcallocation import models
