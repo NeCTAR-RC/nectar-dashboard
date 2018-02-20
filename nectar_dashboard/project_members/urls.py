@@ -14,14 +14,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls import patterns
 from django.conf.urls import url
 
 from .views import ManageMembersView
 from .views import AddUserToProjectView
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', ManageMembersView.as_view(), name='index'),
     url(r'^add/$', AddUserToProjectView.as_view(), name='add_member'),
-)
+]
