@@ -21,7 +21,7 @@ class BaseAllocationForm(ModelForm):
     class Meta:
         model = AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
-                   'modified_time', 'parent_request', 'primary_instance_type',
+                   'modified_time', 'parent_request',
                    'funding_national_percent', 'funding_node', 'provisioned',
                    'project_id', 'notes')
 
@@ -133,10 +133,6 @@ class BaseAllocationForm(ModelForm):
 
 
 class AllocationRequestForm(BaseAllocationForm):
-    class Meta(BaseAllocationForm.Meta):
-        exclude = ('ram_quota', 'instance_quota',
-                   'core_quota'
-                   ) + BaseAllocationForm.Meta.exclude
 
     project_name = CharField(
         validators=[
