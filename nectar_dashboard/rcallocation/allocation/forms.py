@@ -11,12 +11,11 @@ class AllocationApproveForm(ModelForm):
         model = models.AllocationRequest
         fields = (
             'project_name', 'project_description', 'start_date',
-            'estimated_project_duration', 'cores', 'instances',
-            'core_quota', 'instance_quota', 'status_explanation',
+            'estimated_project_duration', 'status_explanation',
             'funding_national_percent', 'funding_node',
         )
 
-        exclude = ('ram_quota', 'nectar_support', 'ncris_support',)
+        exclude = ('nectar_support', 'ncris_support',)
 
         widgets = {
             'project_name': TextInput(attrs={'readonly': 'readonly'}),
@@ -45,24 +44,9 @@ class AllocationApproveForm(ModelForm):
         self.fields['estimated_project_duration'].widget.attrs[
             'readonly'] = True
         self.fields['estimated_project_duration'].required = False
-        self.fields['cores'].widget.attrs['readonly'] = True
-        self.fields['cores'].widget.attrs['class'] = 'form-control'
-        self.fields['cores'].help_text = ''
-        self.fields['cores'].label = 'Requested cores'
-        self.fields['cores'].required = False
-        self.fields['instances'].widget.attrs['readonly'] = True
-        self.fields['instances'].widget.attrs['class'] = 'form-control'
-        self.fields['instances'].help_text = ''
-        self.fields['instances'].label = 'Requested instances'
-        self.fields['instances'].required = False
         self.fields['status_explanation'].required = False
         self.fields['status_explanation'].help_text = 'Reviewer Comment'
         self.fields['status_explanation'].label = 'Comment'
-        self.fields['instance_quota'].widget.attrs['class'] = 'form-control'
-        self.fields['core_quota'].widget.attrs['class'] = 'form-control'
-        self.initial['core_quota'] = self.instance.cores
-        self.initial['instance_quota'] = self.instance.instances
-        self.initial['ram_quota'] = self.instance.cores * 4
         self.initial['status_explanation'] = ''
         self.fields['funding_national_percent'].required = True
         self.fields['funding_node'].required = False
@@ -72,9 +56,6 @@ class AllocationApproveForm(ModelForm):
             self.instance.status = 'M'
         else:
             self.instance.status = 'A'
-
-    def clean_ram_quota(self):
-        return self.cleaned_data['core_quota'] * 4
 
 
 class AllocationRejectForm(ModelForm):
