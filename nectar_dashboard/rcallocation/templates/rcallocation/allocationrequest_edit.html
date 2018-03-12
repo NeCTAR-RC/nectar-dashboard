@@ -94,22 +94,6 @@
         {% endblock %}
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <h2>Compute Resources</h2>
-        <hr/>
-        <span class="label label-info">Note:</span> Specify the maximum
-        compute infrastructure that your project will need access to.
-        This quota can be extended at a later date if more resources
-        are required. The overall availability of resources may vary
-        over time and at different locations. Resource may not always
-        be available.
-        <br/><br/>
-        {% include "rcallocation/field.html" with field=form.instances %}
-        {% include "rcallocation/field.html" with field=form.cores %}
-        {% include "rcallocation/field.html" with field=form.core_hours %}
-      </div>
-    </div>
 
     <div class="row">
       <div class="col-md-12">
