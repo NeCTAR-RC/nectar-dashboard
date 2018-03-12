@@ -66,33 +66,10 @@
         <span class="help-inline">{{ error }}</span>
       </div>
       {% endfor %}
-      {% block compute_quota %}
-      <h2>Quota</h2>
-      <h4>Compute</h4>
-      <div class="row">
-        <div class="col-md-4">
-          {% include "rcallocation/nohelp_field.html" with field=form.instances %}
-        </div>
-        <div class="col-md-4">
-          {% include "rcallocation/nohelp_field.html" with field=form.instance_quota %}
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          {% include "rcallocation/nohelp_field.html" with field=form.cores %}
-        </div>
-        <div class="col-md-4">
-          {% include "rcallocation/nohelp_field.html" with field=form.core_quota %}
-        </div>
-      </div>
-      {% endblock %}
       {% block quotas %}
       <div class="row">
         <div class="col-md-12">
           <h2>Cloud Resources</h2>
-          <p>There are supplementary cloud resources offered by the NeCTAR
-            Research Cloud that you may wish to use. Each of these resources
-            has its own quota that you can apply for.</p>
           <div id="quota_formset">
             {% for service_type, formset in quota_formsets %}
             {{ formset.management_form }}
