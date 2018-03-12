@@ -24,8 +24,6 @@ End date:     {{ request.end_date }}
 
 Quota
 -----
-Instances:      {{ request.instances }}
-Cores:          {{ request.cores }}
 {% spaceless %}
 {% for quota in request.quotas.all %}
 {{ quota.resource|title }} ({{ quota.zone }}): {{ quota.requested_quota }} {{ quota.units }}{% endfor %}
@@ -33,9 +31,6 @@ Cores:          {{ request.cores }}
 
 Use Case Details
 ----------------
-
-Hours:          {{ request.core_hours }}
-Primary instance type: {{ request.get_primary_instance_type_display }}
 
 Use Case:
 {{ request.use_case }}
