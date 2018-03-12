@@ -102,7 +102,6 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     created_by = fuzzy.FuzzyText()
     contact_email = 'test@example.com'
     start_date = fuzzy.FuzzyDate(date.today(), _1_year)
-    primary_instance_type = ' '
     use_case = fuzzy.FuzzyText()
     usage_patterns = fuzzy.FuzzyText()
     geographic_requirements = fuzzy.FuzzyText()
@@ -131,16 +130,20 @@ class AllocationFactory(factory.django.DjangoModelFactory):
 
         volume_st = ServiceTypeFactory(catalog_name='volume')
         object_st = ServiceTypeFactory(catalog_name='object')
+        compute_st = ServiceTypeFactory(catalog_name='compute')
         volume_st.zones.add(melbourne)
         volume_st.zones.add(monash)
         object_st.zones.add(nectar)
+        compute_st.zones.add(nectar)
 
         objects = ResourceFactory(quota_name='object', service_type=object_st)
         volumes = ResourceFactory(quota_name='gigabytes',
                                   service_type=volume_st)
+        cores = ResourceFactory(quota_name='cores', service_type=compute_st)
 
         QuotaFactory(allocation=allocation, zone=nectar, resource=objects)
         QuotaFactory(allocation=allocation, zone=monash, resource=volumes)
         QuotaFactory(allocation=allocation, zone=melbourne, resource=volumes)
+        QuotaFactory(allocation=allocation, zone=nectar, resource=cores)
 
         return allocation

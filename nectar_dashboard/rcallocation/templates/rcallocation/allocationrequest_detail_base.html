@@ -42,9 +42,6 @@
             </tr><tr>
               <th>Convert trial?</th>
               <td>{{ allocation.convert_trial_project|yesno|title }}</td>
-            </tr><tr>
-              <th>Core hours</th>
-              <td>{{ allocation.core_hours }}</td>
             </tr>
           </table>
         </div>
@@ -83,22 +80,10 @@
         <div class="col-md-6">
           <h3>Requested Quota</h3>
           <table class="table table-hover">
-            <tr>
-              <th>Number of instances</th>
-              <td>{{ allocation.instances }}</td>
-            </tr>
-            <tr>
-              <th>Number of cores</th>
-              <td>{{ allocation.cores }}</td>
-            </tr>
-            <tr>
-              <th>RAM</th>
-              <td>Users can't currenly request RAM quota.</td>
-            </tr>
             {% for quota in allocation.quotas.all %}
               <tr>
                 <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.zone }}</span></th>
-                <td>{{ quota.requested_quota }} {{ quota.units }}</td>
+                <td>{{ quota.requested_quota }} {{ quota.resource.unit }}</td>
               </tr>
             {% endfor %}
           </table>
@@ -107,22 +92,10 @@
           {% if previous_allocation and not allocation.is_archived %}
           <h3>Current Quota</h3>
           <table class="table table-hover">
-            <tr>
-              <th>Instance quota</th>
-              <td>{{ previous_allocation.instance_quota }}</td>
-            </tr>
-            <tr>
-              <th>Core quota</th>
-              <td>{{ previous_allocation.core_quota }}</td>
-            </tr>
-            <tr>
-              <th>RAM quota</th>
-              <td>{{ previous_allocation.ram_quota }} GB</td>
-            </tr>
             {% for quota in previous_allocation.quotas.all %}
               <tr>
                 <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.zone }}</span></th>
-                <td>{{ quota.quota }} {{ quota.units }}</td>
+                <td>{{ quota.quota }} {{ quota.resource.unit }}</td>
               </tr>
             {% endfor %}
           </table>
