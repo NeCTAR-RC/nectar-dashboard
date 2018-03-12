@@ -8,7 +8,6 @@ class UserAllocationRequestForm(AllocationRequestForm):
 
     class Meta(AllocationRequestForm.Meta):
         exclude = ('project_id',
-                   'ram_quota', 'core_quota', 'instance_quota',
                    'status_explanation',) + AllocationRequestForm.Meta.exclude
 
     def __init__(self, **kwargs):
@@ -20,7 +19,7 @@ class UserAllocationRequestAmendForm(AllocationAmendRequestForm):
     next_status = 'X'
 
     class Meta(AllocationAmendRequestForm.Meta):
-        exclude = ('project_id', 'ram_quota', 'core_quota', 'instance_quota',
+        exclude = ('project_id',
                    'funding_national_percent', 'funding_node',
                    'status_explanation', 'convert_project_trial'
                    ) + AllocationAmendRequestForm.Meta.exclude
@@ -36,10 +35,7 @@ class UserAllocationRequestAmendForm(AllocationAmendRequestForm):
     def __init__(self, **kwargs):
         instance = kwargs['instance']
         initial = kwargs['initial']
-        initial['cores'] = instance.core_quota
-        initial['instances'] = instance.instance_quota
         initial['start_date'] = datetime.date.today
-        # We should be setting initial for storage quotas.
         super(UserAllocationRequestAmendForm, self).__init__(**kwargs)
         self.instance.status = self.next_status
         self.fields['start_date'].label = 'Extension start date'

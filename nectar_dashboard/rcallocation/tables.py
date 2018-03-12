@@ -97,9 +97,7 @@ def get_quota_by_resource(resource):
     def quota(allocation):
         want = 0
         have = 0
-        for quota in allocation.quotas.all():
-            if quota.resource.quota_name != resource:
-                continue
+        for quota in allocation.quotas.filter(resource__quota_name=resource):
             want += quota.requested_quota
             have += quota.quota
         return delta_quota(allocation, want, have)
@@ -110,12 +108,12 @@ class AllocationHistoryTable(tables.DataTable):
     project = tables.Column("project_description", verbose_name="Project name",
                             link="horizon:allocation:requests:allocation_view")
     approver = tables.Column("approver_email", verbose_name="Approver")
-    instances = tables.Column(
-        get_quota("instances", "instance_quota"),
-        verbose_name="Instances")
     cores = tables.Column(
-        get_quota("cores", "core_quota"),
+        get_quota_by_resource("cores"),
         verbose_name="Cores")
+    ram = tables.Column(
+        get_quota_by_resource("ram"),
+        verbose_name="RAM")
     object_store = tables.Column(
         get_quota_by_resource("object"),
         verbose_name="Object Storage")
