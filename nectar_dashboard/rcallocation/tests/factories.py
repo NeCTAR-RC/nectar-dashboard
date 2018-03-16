@@ -55,6 +55,11 @@ class ResourceFactory(factory.django.DjangoModelFactory):
     unit = fuzzy.FuzzyText()
 
 
+class QuotaGroupFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.QuotaGroup'
+
+
 class QuotaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Quota'
@@ -126,6 +131,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
 
         melbourne = ZoneFactory(name='melbourne')
         monash = ZoneFactory(name='monash')
+        tas = ZoneFactory(name='tas')
         nectar = ZoneFactory(name='nectar')
 
         volume_st = ServiceTypeFactory(catalog_name='volume')
@@ -133,6 +139,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
         compute_st = ServiceTypeFactory(catalog_name='compute')
         volume_st.zones.add(melbourne)
         volume_st.zones.add(monash)
+        volume_st.zones.add(tas)
         object_st.zones.add(nectar)
         compute_st.zones.add(nectar)
 
@@ -140,10 +147,27 @@ class AllocationFactory(factory.django.DjangoModelFactory):
         volumes = ResourceFactory(quota_name='gigabytes',
                                   service_type=volume_st)
         cores = ResourceFactory(quota_name='cores', service_type=compute_st)
+        instances = ResourceFactory(quota_name='instances',
+                                    service_type=compute_st)
+        ram = ResourceFactory(quota_name='ram', service_type=compute_st)
 
-        QuotaFactory(allocation=allocation, zone=nectar, resource=objects)
-        QuotaFactory(allocation=allocation, zone=monash, resource=volumes)
-        QuotaFactory(allocation=allocation, zone=melbourne, resource=volumes)
-        QuotaFactory(allocation=allocation, zone=nectar, resource=cores)
+        group_volume_monash = QuotaGroupFactory(allocation=allocation,
+                                                service_type=volume_st,
+                                                zone=monash)
+        group_volume_melbourne = QuotaGroupFactory(allocation=allocation,
+                                                   service_type=volume_st,
+                                                   zone=melbourne)
+        group_object = QuotaGroupFactory(allocation=allocation,
+                                         service_type=object_st,
+                                         zone=nectar)
+        group_compute = QuotaGroupFactory(allocation=allocation,
+                                          service_type=compute_st,
+                                          zone=nectar)
+        QuotaFactory(group=group_object, resource=objects)
+        QuotaFactory(group=group_volume_monash, resource=volumes)
+        QuotaFactory(group=group_volume_melbourne, resource=volumes)
+        QuotaFactory(group=group_compute, resource=cores)
+        QuotaFactory(group=group_compute, resource=ram)
+        QuotaFactory(group=group_compute, resource=instances)
 
         return allocation

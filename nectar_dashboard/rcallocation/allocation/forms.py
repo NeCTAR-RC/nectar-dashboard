@@ -1,10 +1,10 @@
-from django.forms import ModelForm, Textarea, TextInput, Select, NumberInput
+from django import forms as d_forms
 
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import forms
 
 
-class AllocationApproveForm(ModelForm):
+class AllocationApproveForm(d_forms.ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
@@ -18,15 +18,16 @@ class AllocationApproveForm(ModelForm):
         exclude = ('nectar_support', 'ncris_support',)
 
         widgets = {
-            'project_name': TextInput(attrs={'readonly': 'readonly'}),
-            'project_description': TextInput(attrs={'readonly': 'readonly'}),
-            'start_date': TextInput(attrs={'readonly': 'readonly'}),
-            'status_explanation': Textarea(
+            'project_name': d_forms.TextInput(attrs={'readonly': 'readonly'}),
+            'project_description': d_forms.TextInput(
+                attrs={'readonly': 'readonly'}),
+            'start_date': d_forms.TextInput(attrs={'readonly': 'readonly'}),
+            'status_explanation': d_forms.Textarea(
                 attrs={'class': 'col-md-6 form-control',
                        'style': 'height:120px; width:420px'}),
-            'funding_national_percent': NumberInput(
+            'funding_national_percent': d_forms.NumberInput(
                 attrs={'class': 'form-control col-md-2'}),
-            'funding_node': Select(attrs={'class': 'col-md-6'}),
+            'funding_node': d_forms.Select(attrs={'class': 'col-md-6'}),
 
         }
 
@@ -58,19 +59,20 @@ class AllocationApproveForm(ModelForm):
             self.instance.status = 'A'
 
 
-class AllocationRejectForm(ModelForm):
+class AllocationRejectForm(d_forms.ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
         model = models.AllocationRequest
         fields = ('project_name', 'project_description', 'status_explanation',)
         widgets = {
-            'project_name': TextInput(attrs={'class': 'form-control col-md-6',
-                                             'readonly': 'readonly'}),
-            'project_description': TextInput(
+            'project_name': d_forms.TextInput(
                 attrs={'class': 'form-control col-md-6',
                        'readonly': 'readonly'}),
-            'status_explanation': Textarea(
+            'project_description': d_forms.TextInput(
+                attrs={'class': 'form-control col-md-6',
+                       'readonly': 'readonly'}),
+            'status_explanation': d_forms.Textarea(
                 attrs={'class': 'form-control col-md-6',
                        'style': 'height:120px; width:420px'})
         }
@@ -89,7 +91,7 @@ class AllocationRejectForm(ModelForm):
 
 class QuotaForm(forms.BaseQuotaForm):
     class Meta(forms.BaseQuotaForm.Meta):
-        exclude = ('allocation', 'resource', 'zone')
+        exclude = ('resource',)
 
     def __init__(self, **kwargs):
         super(QuotaForm, self).__init__(**kwargs)
@@ -109,7 +111,16 @@ class QuotaForm(forms.BaseQuotaForm):
         return bool(self.initial or changed_data)
 
 
-class EditNotesForm(ModelForm):
+class QuotaGroupForm(forms.BaseQuotaGroupForm):
+
+    class Meta(forms.BaseQuotaGroupForm.Meta):
+        widgets = {
+            'zone': d_forms.HiddenInput(),
+            'service_type': d_forms.HiddenInput()
+        }
+
+
+class EditNotesForm(d_forms.ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
