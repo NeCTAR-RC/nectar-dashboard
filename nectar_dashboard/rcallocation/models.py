@@ -528,7 +528,7 @@ class ServiceType(models.Model):
     zones = models.ManyToManyField(Zone)
 
     def __unicode__(self):
-        return self.name
+        return self.catalog_name
 
 
 class Resource(models.Model):
@@ -547,27 +547,35 @@ class Resource(models.Model):
         unique_together = ('service_type', 'quota_name')
 
 
-class Quota(models.Model):
+class QuotaGroup(models.Model):
     allocation = models.ForeignKey(AllocationRequest, related_name='quotas')
-
-    resource = models.ForeignKey(Resource)
-
     zone = models.ForeignKey(Zone, null=True, blank=True)
+    service_type = models.ForeignKey(ServiceType)
 
+    class Meta:
+        unique_together = ("allocation", "zone", "service_type")
+
+    def __unicode__(self):
+        return '{0} {1} {2}'.format(self.allocation.id,
+                                    self.service_type, self.zone)
+
+
+class Quota(models.Model):
+    group = models.ForeignKey(QuotaGroup)
+    resource = models.ForeignKey(Resource)
     requested_quota = models.PositiveIntegerField(
         'Requested quota',
         default='0')
-
     quota = models.PositiveIntegerField(
         "Allocated quota",
         default='0')
 
     class Meta:
-        unique_together = ("allocation", "resource", "zone")
+        unique_together = ("group", "resource")
 
     def __unicode__(self):
-        return '{0} {1} {2}'.format(self.allocation.id,
-                                    self.resource, self.zone)
+        return '{0} {1} {2}'.format(self.group.allocation.id,
+                                    self.resource, self.group.zone)
 
 
 class ChiefInvestigator(models.Model):
