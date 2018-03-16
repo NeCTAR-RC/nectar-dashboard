@@ -17,15 +17,19 @@ class RequestTestCase(TestCase):
                           grants=[], investigators=[], **attributes):
         for field, value in attributes.items():
             assert getattr(model, field) == value
-        assert model.contact_email == self.user.name
-        quotas_l = model.quotas.all()
-        quotas = sorted(quotas, key=itemgetter('id'))
+        self.assertEqual(model.contact_email, self.user.name)
+        # Sort by requested quota so we can easily compare by iterating
+        quotas_l = models.Quota.objects.filter(
+            group__allocation=model).order_by('requested_quota')
+        quotas = sorted(quotas, key=itemgetter('requested_quota'))
 
+        self.assertEqual(quotas_l.count(), len(quotas))
         for i, quota_model in enumerate(quotas_l):
-            assert quota_model.zone.name == quotas[i]['zone']
-            assert quota_model.resource.id == quotas[i]['resource']
-            assert quota_model.requested_quota == quotas[i]['requested_quota']
-            assert quota_model.quota == quotas[i]['quota']
+            self.assertEqual(quota_model.resource.id, quotas[i]['resource'])
+            self.assertEqual(quota_model.group.zone.name, quotas[i]['zone'])
+            self.assertEqual(quota_model.requested_quota,
+                             quotas[i]['requested_quota'])
+            self.assertEqual(quota_model.quota, quotas[i]['quota'])
 
         institutions_l = model.institutions.all()
         for i, institution_model in enumerate(institutions_l):
@@ -52,7 +56,7 @@ class RequestTestCase(TestCase):
         response = self.client.get(
             reverse('horizon:allocation:user_requests:edit_request',
                     args=(allocation.id,)))
-        assert response.status_code == 200
+        self.assertStatusCode(response, 200)
         expected_model, form = request_allocation(user=self.user,
                                                   model=allocation)
 
@@ -63,13 +67,14 @@ class RequestTestCase(TestCase):
 
         # Check to make sure we were redirected back to the index of
         # our requests.
-
-        assert response.status_code == 302
+        self.assertStatusCode(response, 302)
         assert response.get('location').endswith(
             reverse('horizon:allocation:user_requests:index'))
+
         model = (models.AllocationRequest.objects.get(
             project_description=form['project_description'],
             parent_request_id=None))
+
         self.assert_allocation(model, **expected_model)
 
         # check historical allocation model
@@ -82,6 +87,7 @@ class RequestTestCase(TestCase):
         for invalid_field in ['modified_time', 'id', 'parent_request']:
             del old_state[invalid_field]
             del initial_state[invalid_field]
+
         for quota in old_state['quota'] + initial_state['quota']:
             del quota['id']
             del quota['allocation']

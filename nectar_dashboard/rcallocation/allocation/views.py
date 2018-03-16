@@ -28,6 +28,7 @@ class AllocationApproveView(views.BaseAllocationView):
     model = models.AllocationRequest
     form_class = allocation_forms.AllocationApproveForm
     quota_form_class = allocation_forms.QuotaForm
+    quotagroup_form_class = allocation_forms.QuotaGroupForm
     success_url = "../../"
 
     formset_investigator_class = None

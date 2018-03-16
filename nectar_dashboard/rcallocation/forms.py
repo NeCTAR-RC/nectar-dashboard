@@ -8,7 +8,7 @@ from django.forms.forms import NON_FIELD_ERRORS
 from django.forms.formsets import DELETION_FIELD_NAME
 from django.utils.safestring import mark_safe
 from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
-    ChiefInvestigator, Institution, Publication, Grant
+    ChiefInvestigator, Institution, Publication, Grant, QuotaGroup
 
 
 class FORValidationError(Exception):
@@ -191,44 +191,53 @@ class BaseQuotaForm(ModelForm):
 class QuotaForm(BaseQuotaForm):
     class Meta(BaseQuotaForm.Meta):
         model = Quota
-        exclude = ('allocation', 'quota',)
+        exclude = ('quota',)
 
     def __init__(self, **kwargs):
         super(QuotaForm, self).__init__(**kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
+        self.fields['group'].required = False
+
+
+class BaseQuotaGroupForm(forms.ModelForm):
+
+    error_css_class = 'has-error'
+
+    enabled = forms.BooleanField(required=False, widget=forms.HiddenInput(
+        attrs={'class': 'quota-group-enabled'}))
+
+    def __init__(self, **kwargs):
+        self.service_type = kwargs.pop('service_type')
+        super(BaseQuotaGroupForm, self).__init__(**kwargs)
+
+    class Meta:
+        model = QuotaGroup
+        exclude = ('allocation',)
+
+
+class QuotaGroupForm(BaseQuotaGroupForm):
+
+    def __init__(self, **kwargs):
+        super(QuotaGroupForm, self).__init__(**kwargs)
+        self.fields['service_type'].widget = forms.HiddenInput()
+        self.fields['service_type'].initial = self.service_type
         self.fields['zone'].required = False
+        self.fields['zone'].queryset = self.service_type.zones
+        if len(self.service_type.zones.all()) == 1:
+            self.fields['zone'].widget = forms.HiddenInput()
+            self.fields['zone'].initial = 'nectar'
+        for field in self.fields.values():
+            field.widget.attrs['class'] = (
+                field.widget.attrs.get('class', '') + ' form-control')
 
     def clean(self):
-        cleaned_data = super(QuotaForm, self).clean()
-        requested_quota = cleaned_data.get("requested_quota")
-        zone = cleaned_data.get("zone")
-        if requested_quota > 0 and not zone:
+        cleaned_data = super(QuotaGroupForm, self).clean()
+        enabled = cleaned_data.get('enabled')
+        zone = cleaned_data.get('zone')
+        if enabled and not zone:
             raise forms.ValidationError("Please specify a zone")
-
-
-class QuotaInlineFormSet(forms.BaseInlineFormSet):
-
-    def add_fields(self, form, index):
-        super(QuotaInlineFormSet, self).add_fields(form, index)
-        form.fields[DELETION_FIELD_NAME].widget = forms.HiddenInput()
-
-    def clean(self):
-        if any(self.errors):
-            return
-
-        zone_resources = []
-        for form in self.forms:
-            if form.cleaned_data.get(DELETION_FIELD_NAME, False):
-                continue
-            if form.cleaned_data and form.cleaned_data.get('zone'):
-                zr = (form.cleaned_data['zone'], form.cleaned_data['resource'])
-                if zr in zone_resources:
-                    raise forms.ValidationError(
-                        'Please correct the duplicate data for resource '
-                        'and zone, which must be unique.')
-                zone_resources.append(zr)
 
 
 # Base ModelForm
