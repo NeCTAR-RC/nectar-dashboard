@@ -102,7 +102,7 @@
           Research Cloud that you may wish to use. Each of these resources
           has its own quota that you can apply for.</p>
         <div id="quota_formset">
-          {% for service_type, formset in quota_formsets %}
+          {% for service_type, form_tuple in quota_formsets %}
           <div id="panel-quota-{{ service_type.catalog_name }}" class="col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading" style="display:flex;">
@@ -117,21 +117,23 @@
               </div>
               <div class="panel-collapse collapse in">
                 <div id="panel-{{ service_type.catalog_name }}" class="panel-body panel-quota">
-                  {{ formset.management_form }}
                   <div id="empty-quotas-{{ service_type.catalog_name }}" style="display: none;">
-                    {% with formset.empty_form as form %}
-                      {% include "rcallocation/quota_form.html" %}
-                    {% endwith %}
+                    <div class="quota-group">
+                      {% include "rcallocation/quota_template_form.html" %}
+                    </div>
                   </div>
                   <div id="quotas-{{ service_type.catalog_name }}" class="quotas">
-                    {% if formset.non_form_errors %}
-                    <div class="form-group has-error">
-                      <span class="help-block">{{ formset.non_form_errors }}</span>
+                    <div class="quota-group">
+			          {% for group_form, formset in form_tuple %}
+    	                {% if formset.non_form_errors %}
+        	              <div class="form-group has-error">
+                            <span class="help-block">{{ formset.non_form_errors }}</span>
+            	          </div>
+	                    {% endif %}
+    	                {{ formset.management_form }}
+        	            {% include "rcallocation/quota_forms.html" %}
+            	      {% endfor %}
                     </div>
-                    {% endif %}
-                    {% for form in formset.forms %}
-                      {% include "rcallocation/quota_form.html" %}
-                    {% endfor %}
                   </div>
                   <div class="form-actions">
                     <input id="add-quota-{{ service_type.catalog_name }}" type="button" value="Add more" class="btn btn-default"/>

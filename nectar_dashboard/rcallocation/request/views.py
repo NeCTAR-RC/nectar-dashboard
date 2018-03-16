@@ -13,7 +13,6 @@ from nectar_dashboard.rcallocation.request import forms as request_forms
 class UserAllocationRequestForm(forms.AllocationRequestForm):
     class Meta(forms.AllocationRequestForm.Meta):
         exclude = ('project_id', 'status_explanation',
-                   'instance_quota', 'core_quota', 'ram_quota',
                    ) + forms.AllocationRequestForm.Meta.exclude
 
 

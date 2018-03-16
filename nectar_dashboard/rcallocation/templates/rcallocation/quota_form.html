@@ -20,14 +20,6 @@
       <span class="help-block">{{ form.requested_quota.errors }}</span>
     </div>
     {% endif %}
-    <div class="form-group input-group zone {%if form.zone.errors %}has-error{% endif %}">
-      {{ form.zone }}
-    </div>
-    {% if form.zone.errors %}
-    <div class="form-group has-error">
-      <span class="help-block">{{ form.zone.errors }}</span>
-    </div>
-    {% endif %}
 
     <button class="btn btn-link btn-xs quota-resource-delete" type="button" name="action" value="delete" style="display: none;">
         <i class="fa fa-times text-danger"></i>
