@@ -31,10 +31,51 @@ def allocation_to_dict(model):
     return allocation
 
 
-def request_allocation(user, model=None, compute_quotas=None,
-                       volume_quotas=None, object_quotas=None,
+def get_groups(service_type, allocation=None):
+    quota_fuzz = fuzzy.FuzzyInteger(1, 100000)
+    st = models.ServiceType.objects.get(catalog_name=service_type)
+    resources = st.resource_set.all()
+    groups = []
+    allocated_zones = []
+    if allocation:
+        service_type_groups = allocation.quotas.filter(
+            service_type__catalog_name=service_type)
+        for group in service_type_groups:
+            quotas = []
+            for quota in group.quota_set.all():
+                quotas.append({'id': quota.id,
+                               'requested_quota': quota.requested_quota,
+                               'resource': quota.resource.id,
+                               'group': group.id,
+                               'quota': quota.quota})
+            groups.append({'id': group.id,
+                           'zone': group.zone.name,
+                           'service_type': group.service_type.catalog_name,
+                           'quotas': quotas})
+            allocated_zones.append(group.zone.name)
+    for zone in st.zones.all():
+        if zone.name in allocated_zones:
+            continue
+        quotas = []
+        for resource in resources:
+            quotas.append(
+                {'id': '',
+                 'requested_quota': quota_fuzz.fuzz(),
+                 'resource': resource.id,
+                 'group': '',
+                 'quota': 0})
+        groups.append({'id': '',
+                       'zone': zone.name,
+                       'service_type': st.catalog_name,
+                       'quotas': quotas})
+    return groups
+
+
+def request_allocation(user, model=None, compute_groups=None,
+                       volume_groups=None, object_groups=None,
                        institutions=None, publications=None, grants=None,
                        investigators=None):
+
     _1_year = date.today() + timedelta(days=365)
     start_date = fuzzy.FuzzyDate(date.today(), _1_year).fuzz()
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
@@ -66,29 +107,9 @@ def request_allocation(user, model=None, compute_quotas=None,
                   }
 
     if model:
-        volume_quotas = [{'id': q.id,
-                          'requested_quota': quota.fuzz(),
-                          'resource': q.resource.id,
-                          'quota': 0,
-                          'zone': q.zone.name}
-                         for q in model.quotas.filter(
-                             resource__service_type__catalog_name='volume')]
-
-        object_quotas = [{'id': q.id,
-                          'requested_quota': quota.fuzz(),
-                          'resource': q.resource.id,
-                          'quota': 0,
-                          'zone': q.zone.name}
-                         for q in model.quotas.filter(
-                             resource__service_type__catalog_name='object')]
-
-        compute_quotas = [{'id': q.id,
-                           'requested_quota': quota.fuzz(),
-                           'resource': q.resource.id,
-                           'quota': 0,
-                           'zone': q.zone.name}
-                          for q in model.quotas.filter(
-                              resource__service_type__catalog_name='compute')]
+        compute_groups = get_groups('compute', model)
+        volume_groups = get_groups('volume', model)
+        object_groups = get_groups('object', model)
 
         institutions = [{'id': ins.id,
                          'name': ins.name}
@@ -118,40 +139,14 @@ def request_allocation(user, model=None, compute_quotas=None,
                          for inv in model.investigators.all()]
 
     else:
-        if not volume_quotas:
-            volume_resource = models.Resource.objects.filter(
-                service_type__catalog_name='volume')[0]
-            volume_quotas = [
-                {'id': '',
-                 'requested_quota': quota.fuzz(),
-                 'resource': volume_resource.id,
-                 'quota': 0,
-                 'zone': 'melbourne'},
-                {'id': '',
-                 'requested_quota': quota.fuzz(),
-                 'resource': volume_resource.id,
-                 'quota': 0,
-                 'zone': 'monash'}]
+        if not volume_groups:
+            volume_groups = get_groups('volume')
 
-        if not object_quotas:
-            object_resource = models.Resource.objects.filter(
-                service_type__catalog_name='object')[0]
-            object_quotas = [
-                {'id': '',
-                 'requested_quota': quota.fuzz(),
-                 'resource': object_resource.id,
-                 'quota': 0,
-                 'zone': 'nectar'}]
+        if not object_groups:
+            object_groups = get_groups('object')
 
-        if not compute_quotas:
-            compute_resource = models.Resource.objects.filter(
-                service_type__catalog_name='compute')[0]
-            compute_quotas = [
-                {'id': '',
-                 'requested_quota': quota.fuzz(),
-                 'resource': compute_resource.id,
-                 'quota': 0,
-                 'zone': 'nectar'}]
+        if not compute_groups:
+            compute_groups = get_groups('compute')
 
         if not institutions:
             institutions = [
@@ -184,21 +179,44 @@ def request_allocation(user, model=None, compute_quotas=None,
                 'additional_researchers': 'None'
             }]
 
+    def next_char(c):
+        return chr(ord(c) + 1)
+
     form = model_dict.copy()
-    form['compute-INITIAL_FORMS'] = model.quotas.filter(
-        resource__service_type__catalog_name='compute').count() if model else 0
-    form['compute-TOTAL_FORMS'] = len(compute_quotas)
-    form['compute-MAX_NUM_FORMS'] = 1000
+    all_quotas = []
 
-    form['object-INITIAL_FORMS'] = model.quotas.filter(
-        resource__service_type__catalog_name='object').count() if model else 0
-    form['object-TOTAL_FORMS'] = len(object_quotas)
-    form['object-MAX_NUM_FORMS'] = 1000
+    def add_quota_forms(service_type, groups, prefix_start='a'):
+        new_prefix = prefix_start
+        for group in groups:
+            if group['id']:
+                prefix = group['id']
+            else:
+                prefix = new_prefix
+                new_prefix = next_char(new_prefix)
 
-    form['volume-INITIAL_FORMS'] = model.quotas.filter(
-        resource__service_type__catalog_name='volume').count() if model else 0
-    form['volume-TOTAL_FORMS'] = len(volume_quotas)
-    form['volume-MAX_NUM_FORMS'] = 1000
+            quotas = group.pop('quotas')
+            form['%s_%s-INITIAL_FORMS' %
+                 (service_type, prefix)] = len(quotas) if group['id'] else 0
+            resource_count = models.Resource.objects.filter(
+                service_type__catalog_name=service_type).count()
+            form['%s_%s-TOTAL_FORMS' % (service_type, prefix)] = resource_count
+            form['%s_%s-MAX_NUM_FORMS' % (service_type, prefix)] = 1000
+
+            for i, quota in enumerate(quotas):
+                all_quotas.append({'resource': quota['resource'],
+                                   'zone': group['zone'],
+                                   'requested_quota': quota['requested_quota'],
+                                   'quota': quota['quota']})
+                for k, v in quota.items():
+                    form['%s_%s-%s-%s' % (service_type, prefix, i, k)] = v
+
+            for k, v in group.items():
+                form['%s_%s-%s' % (service_type, prefix, k)] = v
+
+    prefix_start = 'b' if model else 'a'
+    add_quota_forms('compute', compute_groups, prefix_start)
+    add_quota_forms('volume', volume_groups, prefix_start)
+    add_quota_forms('object', object_groups, prefix_start)
 
     form['institutions-INITIAL_FORMS'] = model.institutions.count() \
         if model else 0
@@ -219,18 +237,6 @@ def request_allocation(user, model=None, compute_quotas=None,
     form['investigators-TOTAL_FORMS'] = len(investigators)
     form['investigators-MAX_NUM_FORMS'] = 1000
 
-    for i, quota in enumerate(volume_quotas):
-        for k, v in quota.items():
-            form['volume-%s-%s' % (i, k)] = v
-
-    for i, quota in enumerate(compute_quotas):
-        for k, v in quota.items():
-            form['compute-%s-%s' % (i, k)] = v
-
-    for i, quota in enumerate(object_quotas):
-        for k, v in quota.items():
-            form['object-%s-%s' % (i, k)] = v
-
     for i, ins in enumerate(institutions):
         for k, v in ins.items():
             form['institutions-%s-%s' % (i, k)] = v
@@ -247,7 +253,7 @@ def request_allocation(user, model=None, compute_quotas=None,
         for k, v in inv.items():
             form['investigators-%s-%s' % (i, k)] = v
 
-    model_dict['quotas'] = compute_quotas + volume_quotas + object_quotas
+    model_dict['quotas'] = all_quotas
     model_dict['institutions'] = institutions
     model_dict['publications'] = publications
     model_dict['grants'] = grants

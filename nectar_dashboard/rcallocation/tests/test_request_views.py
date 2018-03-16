@@ -35,11 +35,11 @@ class RequestTestCase(TestCase):
         for field, value in attributes.items():
             self.assertEqual(getattr(model, field), value)
         self.assertEqual(model.contact_email, self.user.name)
-        quotas_l = model.quotas.all()
+        quotas_l = models.Quota.objects.filter(group__allocation=model)
         self.assertEqual(quotas_l.count(), len(quotas))
         for i, quota_model in enumerate(quotas_l):
             self.assertEqual(quota_model.resource.id, quotas[i]['resource'])
-            self.assertEqual(quota_model.zone.name, quotas[i]['zone'])
+            self.assertEqual(quota_model.group.zone.name, quotas[i]['zone'])
             self.assertEqual(quota_model.requested_quota,
                              quotas[i]['requested_quota'])
             self.assertEqual(quota_model.quota, quotas[i]['quota'])
