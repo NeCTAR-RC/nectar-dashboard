@@ -40,9 +40,9 @@ class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ResourceSerializer
 
 
-class CodeNameField(serializers.RelatedField):
+class ResourceField(serializers.RelatedField):
     def to_representation(self, value):
-        return value.codename()
+        return value.quota_name
 
 
 class QuotaSerializer(serializers.ModelSerializer):
@@ -52,22 +52,28 @@ class QuotaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class InlineQuotaSerializer(serializers.ModelSerializer):
-    resource = CodeNameField(read_only=True)
-
-    class Meta:
-        model = models.Quota
-        fields = ('resource', 'zone', 'quota')
-
+class QuotaGroupField(serializers.RelatedField):
+    def to_representation(self, value):
+        quota_groups = value.all()
+        output = []
+        for quota_group in quota_groups:
+            for quota in quota_group.quota_set.all():
+                quota_dict = {'zone': quota_group.zone.name,
+                              'resource': quota.resource.codename(),
+                              'quota': quota.quota
+                }
+                output.append(quota_dict)
+        return output
+                        
 
 class QuotaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Quota.objects.all()
     serializer_class = QuotaSerializer
-    filter_fields = ('allocation', 'resource', 'zone')
+    filter_fields = ('resource',)
 
 
 class AllocationSerializer(serializers.ModelSerializer):
-    quotas = InlineQuotaSerializer(many=True, read_only=True)
+    quotas = QuotaGroupField(many=False, read_only=True)
 
     class Meta:
         model = models.AllocationRequest

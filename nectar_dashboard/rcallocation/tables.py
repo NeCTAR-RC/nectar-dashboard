@@ -96,8 +96,8 @@ def get_quota(wanted, actual=None):
 def get_quota_by_resource(resource):
     def quota(allocation):
         want = 0
-        have = 0
-        for quota in allocation.quotas.filter(resource__quota_name=resource):
+        have = 0        
+        for quota in models.Quota.objects.filter(group__allocation=allocation, resource__quota_name=resource):
             want += quota.requested_quota
             have += quota.quota
         return delta_quota(allocation, want, have)

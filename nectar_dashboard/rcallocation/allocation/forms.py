@@ -1,4 +1,4 @@
-from django.forms import ModelForm, Textarea, TextInput, Select, NumberInput
+from django.forms import ModelForm, Textarea, TextInput, Select, NumberInput, HiddenInput
 
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import forms
@@ -89,7 +89,7 @@ class AllocationRejectForm(ModelForm):
 
 class QuotaForm(forms.BaseQuotaForm):
     class Meta(forms.BaseQuotaForm.Meta):
-        exclude = ('allocation', 'resource', 'zone')
+        exclude = ('resource',)
 
     def __init__(self, **kwargs):
         super(QuotaForm, self).__init__(**kwargs)
@@ -109,6 +109,16 @@ class QuotaForm(forms.BaseQuotaForm):
         return bool(self.initial or changed_data)
 
 
+class QuotaGroupForm(forms.BaseQuotaGroupForm):
+
+    class Meta(forms.BaseQuotaGroupForm.Meta):
+        widgets = {
+            'zone': HiddenInput(),
+            'service_type': HiddenInput()
+        }
+
+                    
+    
 class EditNotesForm(ModelForm):
     error_css_class = 'has-error'
 
