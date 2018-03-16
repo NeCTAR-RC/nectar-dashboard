@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+'{% extends 'base.html' %}
 
 {% block title %}View allocation request{% endblock title %}
 
@@ -80,11 +80,13 @@
         <div class="col-md-6">
           <h3>Requested Quota</h3>
           <table class="table table-hover">
-            {% for quota in allocation.quotas.all %}
+            {% for quotagroup in allocation.quotas.all %}
+            {% for quota in quotagroup.quota_set.all %}
               <tr>
-                <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.zone }}</span></th>
+                <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
                 <td>{{ quota.requested_quota }} {{ quota.resource.unit }}</td>
               </tr>
+            {% endfor %}
             {% endfor %}
           </table>
         </div>
@@ -92,11 +94,13 @@
           {% if previous_allocation and not allocation.is_archived %}
           <h3>Current Quota</h3>
           <table class="table table-hover">
-            {% for quota in previous_allocation.quotas.all %}
+            {% for quotagroup in previous_allocation.quotas.all %}
+            {% for quota in quota_group.quota_set.all %}
               <tr>
-                <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.zone }}</span></th>
+                <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
                 <td>{{ quota.quota }} {{ quota.resource.unit }}</td>
               </tr>
+            {% endfor %}
             {% endfor %}
           </table>
           {% elif not allocation.is_archived %}
