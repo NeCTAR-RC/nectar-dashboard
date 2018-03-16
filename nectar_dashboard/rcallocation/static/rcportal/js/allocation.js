@@ -5,7 +5,7 @@
       forms.each(function (i, item) {
         $(item).find('input, label').each(function() {
           var name = $(this).attr('name');
-          if (name) {'.quota-resource'
+          if (name) {
             $(this).attr('name', name.replace(match, '-' + i + '-'));
             $(this).attr('id', name.replace(match, '-' + i + '-'));
           }
@@ -13,102 +13,78 @@
       });
     };
 
+
     function delete_form(item) {
-      var form = $(item).closest('.quota-resource');
+      var form = $(item).closest('.quota-group');
       form.hide();
       form.find('input[id$="-DELETE"]').val(true);
       form.find('input.requested-quota').val(0);
     };
 
-    function create_form(formset, opts, service_type, resource) {
-      var total = $('#id_' + service_type + '-TOTAL_FORMS').val();
-      var newElement = $('#empty-quotas-' + service_type).find('.row').first().clone();
 
-      newElement.find('input, label, select').each(function() {
+    function create_forms(opts, service_type) {
+      var i = $('#quotas-' + service_type).find('.quota-group').length
+      var prefix = String.fromCharCode('a'.charCodeAt() + i)
+
+      var r = $('#empty-quotas-' + service_type).find('.quota-group').first().clone();
+
+      r.find('input, label, select').each(function() {
         var name = $(this).attr('name');
         if (name) {
-          $(this).attr('name', name.replace(/__prefix__/g, total));
-          $(this).attr('id', name.replace(/__prefix__/g, total));
+          $(this).attr('name', name.replace(/__prefix__/g, prefix));
+          $(this).attr('id', name.replace(/__prefix__/g, prefix));
         }
       });
 
-      process_resource(newElement, opts, resource);
-      newElement.find('input[id$="-resource"]').attr('value', resource['id']);
-      newElement.find('.quota-resource-delete').show();
-      newElement.show();
+      r.find('.quota-group-delete').click(function() {
+        delete_form($(this));
+      });
 
-      $('#quotas-' + service_type).append(newElement);
-      var total = $('#quotas-' + service_type).children().length;
-      $('#id_' + service_type + '-TOTAL_FORMS').val(total);
-    };
-
-    function process_resource(item, opts, resource) {
-     $(item).find('#label-resource-name').text(resource['name']);
-     $(item).find("#label-resource-unit").text(resource['unit']);
-
-     var zone_select = $(item).find('.zone select');
-     var service_type = resource['service_type']
-     var zones = opts['service_types'][service_type]['zones']
-      var selected_zone = zone_select.val();
-     zone_select.empty();
-
-     // only show zones select when >1 zone
-     if (zones.length > 1) {
-       zone_select.append($('<option></option>')
-         .attr('value', '')
-         .attr('selected', 'selected')
-         .text('Select Zone...'));
-       zone_select.show();
-       $(item).find('.quota-resource-delete').show();
-     } else {
-       zone_select.hide();
-     }
-
-     // add the specific zones to the resource and optionally set
-     // the selected zone if it's a returned form
-     $.each(zones, function(z) {
-       var option = $('<option></option>')
-         .attr('value', zones[z]['name'])
-         .text(zones[z]['display_name']);
-       if (zones[z]['name'] == selected_zone) {
-         option.attr('selected', 'selected');
-       }
-       zone_select.append(option);
-     });
-
-     $(item).find('.quota-resource-delete').click(function() {
-       delete_form(this);
-     });
-    };
+      $('#quotas-' + service_type).append(r);
+      r.show();
+    }
 
     $.fn.formset = function(options) {
       var opts = $.extend({}, $.fn.formset.defaults, options);
       return this.each(function() {
 
+        
         $('div[id^="quota-resource-"]').each(function() {
           var resource_id = $(this).attr('id').match(/[\d]+$/);
           if (resource_id == null) {
             return
           }
           var resource = opts['resources'][resource_id];
-          process_resource(this, opts, resource);
+          // Set the labels for the resources
+          $(this).find('#label-resource-name').text(resource['name']);
+          $(this).find("#label-resource-unit").text(resource['unit']);
         });
+       
 
         $('input:checkbox.toggle-quota').change(function() {
           var panel = $(this).closest('.panel');
+          var enabled = this.checked;
           panel.find('.panel-collapse').collapse(this.checked ? 'show' : 'hide');
 
-          if (!this.checked) {
-            $(this).closest('.panel').find('input.requested-quota').each(function() {
+          // Set quotas to 0 if service is disabled
+          if (!enabled) {
+            panel.find('input.requested-quota').each(function() {
               $(this).val(0);
             });
           }
+
+          // Set the value of hidden input field called enabled
+          panel.find('input.quota-group-enabled').each(function() {
+            $(this).val(enabled);
+          });
         });
+
 
         $(this).find('div[id^="panel-quota-"]').each(function() {
           var service_type = $(this).attr('id').match(/[\w]+$/);
           var zones = opts['service_types'][service_type]['zones']
 
+          /* If this is a multi-zone resource, show the 'Add more' button */
           if (zones.length > 1) {
             $('input[id^="add-quota-' + service_type + '"]').show();
           } else {
@@ -121,6 +97,7 @@
               is_enabled = true;
             }
           });
+
           var toggle = $(this).find('input:checkbox.toggle-quota');
           if (toggle.length) {
             $(this).find('div.panel-collapse').collapse(is_enabled ? 'show' : 'hide');
@@ -130,13 +107,9 @@
 
         $('input[id^="add-quota-"]').click(function() {
           var service_type = $(this).attr('id').match(/[\w]+$/);
-          var resources = opts['resources'];
-          for (var k in resources) {
-            if (resources[k]['service_type'] == service_type) {
-              create_form(this, opts, service_type, resources[k]);
-            }
-          }
+          create_forms(opts, service_type);
         });
+
       });
     };
 

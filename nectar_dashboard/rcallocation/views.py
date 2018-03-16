@@ -1,6 +1,8 @@
+from collections import OrderedDict
 import logging
 import json
 from operator import methodcaller
+import re
 
 from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView
@@ -96,7 +98,7 @@ class AllocationHistoryView(horizon_tables.DataTableView):
 def copy_allocation(allocation):
     old_object = models.AllocationRequest.objects.get(id=allocation.id)
     old_object.parent_request = allocation
-    quotas = old_object.quotas.all()
+    quota_groups = old_object.quotas.all()
     investigators = old_object.investigators.all()
     institutions = old_object.institutions.all()
     publications = old_object.publications.all()
@@ -105,10 +107,16 @@ def copy_allocation(allocation):
     old_object.id = None
     old_object.save()
 
-    for quota in quotas:
-        quota.id = None
-        quota.allocation = old_object
-        quota.save()
+    for quota_group in quota_groups:
+        old_quota_group_id = quota_group.id
+        quota_group.id = None
+        quota_group.allocation = old_object
+        quota_group.save()
+        old_quota_group = models.QuotaGroup.objects.get(id=old_quota_group_id)
+        for quota in old_quota_group.quota_set.all():
+            quota.id = None
+            quota.group = quota_group
+            quota.save()
 
     for inv in investigators:
         inv.id = None
@@ -139,6 +147,8 @@ class BaseAllocationView(UpdateView):
     page_title = "Update"
 
     quota_form_class = forms.QuotaForm
+    quotagroup_form_class = forms.QuotaGroupForm
+
     # investigator
     formset_investigator_class = inlineformset_factory(
         models.AllocationRequest, models.ChiefInvestigator,
@@ -214,8 +224,15 @@ class BaseAllocationView(UpdateView):
     def get_formset_grant_class(self):
         return self.formset_grant_class
 
-    def get_formset(self, formset, queryset=None, prefix=None, initial=None):
-        kwargs = {'instance': self.object}
+    def get_formset(self, formset, queryset=None, prefix=None,
+                    initial=None, **kwargs):
+        if 'instance' in kwargs:
+            instance = kwargs['instance']
+        elif 'instance' not in kwargs:
+            instance = self.object
+        else:
+            instance = None
+        kwargs = {'instance': instance}
         if self.request.method in ('POST', 'PUT'):
             kwargs.update({
                 'data': self.request.POST,
@@ -225,15 +242,18 @@ class BaseAllocationView(UpdateView):
                        **kwargs)
 
     def get_quota_formsets(self):
-        if not self.quota_form_class:
+        if not self.quotagroup_form_class:
             return []
 
-        quota_formsets = []
+        quota_formsets = OrderedDict()
         for service_type in models.ServiceType.objects.all():
+            existing_groups = []
+
             initial = []
             existing_resources = []
             if self.object:
-                existing_quotas = self.object.quotas.filter(
+                existing_quotas = models.Quota.objects.filter(
+                    group__allocation=self.object,
                     resource__service_type=service_type)
                 if not existing_quotas and not self.SHOW_EMPTY_SERVICE_TYPES:
                     continue
@@ -246,19 +266,85 @@ class BaseAllocationView(UpdateView):
                     initial.append({'resource': resource})
 
             QuotaFormSet = inlineformset_factory(
-                models.AllocationRequest, models.Quota,
-                form=self.quota_form_class, formset=forms.QuotaInlineFormSet,
+                models.QuotaGroup, models.Quota,
+                form=self.quota_form_class,
                 extra=len(initial))
 
-            formset = self.get_formset(
-                QuotaFormSet,
-                queryset=models.Quota.objects.filter(
-                    resource__service_type=service_type),
-                prefix=service_type.catalog_name,
-                initial=initial
-            )
-            quota_formsets.append((service_type, formset))
-        return quota_formsets
+            group_form_args = {'service_type': service_type}
+            if self.request.method in ('POST'):
+                group_form_args.update({
+                    'data': self.request.POST,
+                })
+
+            GroupForm = self.quotagroup_form_class
+
+            if self.object:
+                existing_groups = self.object.quotas.filter(
+                    service_type=service_type)
+                if existing_groups:
+                    qg_formsets = []
+                    for quotagroup in existing_groups:
+                        form = GroupForm(instance=quotagroup,
+                                         prefix="%s_%s" % (
+                                             service_type.catalog_name,
+                                             quotagroup.id),
+                                         **group_form_args)
+                        formset = self.get_formset(
+                            QuotaFormSet,
+                            queryset=models.Quota.objects.filter(
+                                resource__service_type=service_type),
+                            prefix="%s_%s" % (service_type.catalog_name,
+                                              quotagroup.id),
+                            initial=initial,
+                            instance=quotagroup,
+                        )
+                        qg_formsets.append((form, formset))
+                    quota_formsets[service_type] = qg_formsets
+                else:
+                    form = GroupForm(prefix="%s_a" % service_type.catalog_name,
+                                     **group_form_args)
+                    formset = self.get_formset(
+                        QuotaFormSet,
+                        queryset=models.Quota.objects.filter(
+                            resource__service_type=service_type),
+                        prefix="%s_a" % service_type.catalog_name,
+                        initial=initial,
+                        instance=None,
+                    )
+                    quota_formsets[service_type] = [(form, formset)]
+            else:
+                form = GroupForm(prefix="%s_a" % service_type.catalog_name,
+                                 **group_form_args)
+                formset = self.get_formset(
+                    QuotaFormSet,
+                    queryset=models.Quota.objects.filter(
+                        resource__service_type=service_type),
+                    prefix="%s_a" % service_type.catalog_name,
+                    initial=initial,
+                    instance=None,
+                )
+                quota_formsets[service_type] = [(form, formset)]
+
+            # Find javascript created formsets
+            exp = re.compile('%s_(?P<prefix>[b-z])-TOTAL_FORMS' %
+                             service_type.catalog_name)
+            for key in self.request.POST.keys():
+                match = exp.search(key)
+                if match:
+                    prefix = "%s_%s" % (service_type.catalog_name,
+                                        match.group('prefix'))
+                    form = GroupForm(prefix=prefix, **group_form_args)
+                    formset = self.get_formset(
+                        QuotaFormSet,
+                        queryset=models.Quota.objects.filter(
+                            resource__service_type=service_type),
+                        prefix=prefix,
+                        initial=initial,
+                        instance=None,
+                    )
+                    quota_formsets[service_type].append((form, formset))
+
+        return quota_formsets.items()
 
     def get_context_data(self, **kwargs):
         # investigator
@@ -384,10 +470,19 @@ class BaseAllocationView(UpdateView):
 
         quota_valid = True
         quota_formsets = self.get_quota_formsets()
-        for service_type, formset in quota_formsets:
-            if not formset.is_valid():
-                quota_valid = False
-
+        for service_type, form_tuple in quota_formsets:
+            selected_zones = []
+            for group_form, formset in form_tuple:
+                if not formset.is_valid():
+                    quota_valid = False
+                if not group_form.is_valid():
+                    quota_valid = False
+                else:
+                    if group_form.cleaned_data['zone'] in selected_zones:
+                        group_form.add_error(None, "Zones must be unique")
+                        quota_valid = False
+                    else:
+                        selected_zones.append(group_form.cleaned_data['zone'])
         if quota_valid and all(map(methodcaller('is_valid'), kwargs.values())):
             return self.form_valid(quota_formsets=quota_formsets, **kwargs)
         else:
@@ -416,17 +511,32 @@ class BaseAllocationView(UpdateView):
         # quota formsets handled slightly differently as we want to
         # drop objects if requested_quota == 0
         # Default quotas are zero so requesting 0 is not needed
-        for service_type, quota_formset in quota_formsets:
-            quotas = quota_formset.save(commit=False)
-            for obj in quota_formset.deleted_objects:
-                obj.delete()
-            for quota in quotas:
-                if quota.requested_quota > 0:
-                    quota.allocation = self.object
-                    quota.save()
-                else:
-                    if quota.id:
-                        quota.delete()
+        for service_type, form_tuple in quota_formsets:
+            for group_form, quota_formset in form_tuple:
+                quotas_to_save = []
+
+                quotas = quota_formset.save(commit=False)
+                for obj in quota_formset.deleted_objects:
+                    obj.delete()
+                for quota in quotas:
+                    if quota.requested_quota > 0:
+                        quotas_to_save.append(quota)
+                    else:
+                        if quota.id:
+                            quota.delete()
+
+                if quotas_to_save or group_form.instance.id:
+                    group = group_form.save(commit=False)
+                    group.allocation = self.object
+                    group.save()
+                    for quota in quotas_to_save:
+                        quota.group = group
+                        quota.save()
+
+        # Delete empty quota groups
+        for group in self.object.quotas.all():
+            if group.quota_set.count() < 1:
+                group.delete()
 
         formsets = [investigator_formset, institution_formset,
                     publication_formset, grant_formset]
