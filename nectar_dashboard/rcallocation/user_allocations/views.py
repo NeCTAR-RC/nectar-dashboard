@@ -21,8 +21,6 @@ LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 class BaseAllocationUpdateView(views.BaseAllocationView):
     editor_attr = 'contact_email'
-    formset_quota_class = inlineformset_factory(
-        models.AllocationRequest, models.Quota, form=forms.QuotaForm, extra=0)
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
