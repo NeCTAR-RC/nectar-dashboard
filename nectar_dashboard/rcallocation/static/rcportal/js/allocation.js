@@ -44,11 +44,11 @@
       r.show();
     }
 
+
     $.fn.formset = function(options) {
       var opts = $.extend({}, $.fn.formset.defaults, options);
       return this.each(function() {
 
-        
         $('div[id^="quota-resource-"]').each(function() {
           var resource_id = $(this).attr('id').match(/[\d]+$/);
           if (resource_id == null) {
@@ -56,8 +56,8 @@
           }
           var resource = opts['resources'][resource_id];
           // Set the labels for the resources
-          $(this).find('#label-resource-name').text(resource['name']);
-          $(this).find("#label-resource-unit").text(resource['unit']);
+          $(this).find('.label-resource-name').text(resource['name']);
+          $(this).find('.label-resource-unit').text(resource['unit']);
         });
        
 
@@ -115,12 +115,13 @@
 
     // Plugin defaults – added as a property on our plugin function.
     $.fn.formset.defaults = {
-        service_types: {},
-        form_tmpl: "",
-        prefix: ""
+       prefix: "",
+       service_types: {},
+       resources: {},
+       zones: {},
     };
-
 }(jQuery));
+
 
 //help icon span click
 $('.help-icon-sp').on('click', function(event){

@@ -536,6 +536,7 @@ class Resource(models.Model):
     service_type = models.ForeignKey(ServiceType)
     quota_name = models.CharField(max_length=32)
     unit = models.CharField(max_length=32)
+    requestable = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.name
