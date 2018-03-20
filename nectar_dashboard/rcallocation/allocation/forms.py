@@ -91,7 +91,7 @@ class AllocationRejectForm(d_forms.ModelForm):
 
 class QuotaForm(forms.BaseQuotaForm):
     class Meta(forms.BaseQuotaForm.Meta):
-        exclude = ('resource',)
+        fields = '__all__'
 
     def __init__(self, **kwargs):
         super(QuotaForm, self).__init__(**kwargs)

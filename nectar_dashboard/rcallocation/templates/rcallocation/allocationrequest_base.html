@@ -6,20 +6,24 @@
 {% endwith %}
 {% endblock %}
 
+{% block css %}
+{{ block.super }}
+<style>
+  .panel-default > .panel-heading {
+    background-color: #f5f5f5;
+  }
+</style>
+{% endblock %}
+
 {% block page_header %}
 {{ block.super }}
 {% include "horizon/common/_page_header.html" with title="Allocation Request" %}
-<style>
-  .panel-default > .panel-heading {
-  background-color: #f5f5f5;
-  }
-</style>
 {% endblock page_header %}
 
 {% block js %}
 {{ block.super }}
-<script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
-<script src='{{ STATIC_URL }}rcportal/js/jquery.mDialog.js' type='text/javascript' charset='utf-8'></script>
+  <script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
+  <script src='{{ STATIC_URL }}rcportal/js/jquery.mDialog.js' type='text/javascript' charset='utf-8'></script>
 {% endblock %}
 
 {% block main %}
@@ -81,21 +85,26 @@
                 <div class="panel-collapse collapse in">
                   <div id="panel-{{ service_type.catalog_name }}" class="panel-body panel-quota">
                     <div id="quotas-{{ service_type.catalog_name }}" class="quotas">
-		      {% for group_form, formset in form_tuple %}
-		      {% for hidden in group_form.hidden_fields %}
-		      {{ hidden }}
-		      {% endfor %}		      
-		      {{ formset.management_form }}
-                      {% for form in formset.forms %}
-                      {% include "rcallocation/quota_admin_form.html" %}
+                      {% for group_form, formset in form_tuple %}
+                        <div class="panel panel-default">
+                          <div class="panel-heading"><h4>{{ group_form.instance.zone }} Zone</h4></div>
+                          <div class="panel-body">
+                            {% for hidden in group_form.hidden_fields %}
+                              {{ hidden }}
+                            {% endfor %}
+                            {{ formset.management_form }}
+                            {% for form in formset.forms %}
+                              {% include "rcallocation/quota_admin_form.html" %}
+                            {% endfor %}
+                          </div>
+                        </div>
                       {% endfor %}
-		      {% endfor %}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            {% endfor %} 
+            {% endfor %}
          </div>
         </div>
       </div>
@@ -125,7 +134,6 @@
       if (!("autofocus" in document.createElement("input"))) {
         document.getElementById("id_project_description").focus();
       }
-
       $(document).ready(function() {
         $('div#quota_formset').formset({
           prefix: 'quotas',
