@@ -137,6 +137,7 @@ def copy_allocation(allocation):
 
 class BaseAllocationView(UpdateView):
     SHOW_EMPTY_SERVICE_TYPES = True
+    ONLY_REQUESTABLE_RESOURCES = True
 
     model = models.AllocationRequest
     form_class = forms.AllocationRequestForm
@@ -241,6 +242,12 @@ class BaseAllocationView(UpdateView):
         if not self.quotagroup_form_class:
             return []
 
+        resource_kwargs = {}
+        quota_kwargs = {}
+        if self.ONLY_REQUESTABLE_RESOURCES:
+            quota_kwargs['resource__requestable'] = True
+            resource_kwargs['requestable'] = True
+
         quota_formsets = OrderedDict()
         for service_type in models.ServiceType.objects.all():
             existing_groups = []
@@ -250,14 +257,16 @@ class BaseAllocationView(UpdateView):
             if self.object:
                 existing_quotas = models.Quota.objects.filter(
                     group__allocation=self.object,
-                    resource__service_type=service_type)
+                    resource__service_type=service_type,
+                    **quota_kwargs)
                 if not existing_quotas and not self.SHOW_EMPTY_SERVICE_TYPES:
                     continue
                 if not existing_resources:
                     existing_resources = [quota.resource
                                           for quota in existing_quotas]
 
-            for resource in service_type.resource_set.all():
+            resources = service_type.resource_set.filter(**resource_kwargs)
+            for resource in resources:
                 if resource not in existing_resources:
                     initial.append({'resource': resource})
 
@@ -273,6 +282,9 @@ class BaseAllocationView(UpdateView):
                 })
 
             GroupForm = self.quotagroup_form_class
+            service_quotas = models.Quota.objects.filter(
+                resource__service_type=service_type,
+                **quota_kwargs)
 
             if self.object:
                 existing_groups = self.object.quotas.filter(
@@ -287,8 +299,7 @@ class BaseAllocationView(UpdateView):
                                          **group_form_args)
                         formset = self.get_formset(
                             QuotaFormSet,
-                            queryset=models.Quota.objects.filter(
-                                resource__service_type=service_type),
+                            queryset=service_quotas,
                             prefix="%s_%s" % (service_type.catalog_name,
                                               quotagroup.id),
                             initial=initial,
@@ -301,8 +312,7 @@ class BaseAllocationView(UpdateView):
                                      **group_form_args)
                     formset = self.get_formset(
                         QuotaFormSet,
-                        queryset=models.Quota.objects.filter(
-                            resource__service_type=service_type),
+                        queryset=service_quotas,
                         prefix="%s_a" % service_type.catalog_name,
                         initial=initial,
                         instance=None,
@@ -313,8 +323,7 @@ class BaseAllocationView(UpdateView):
                                  **group_form_args)
                 formset = self.get_formset(
                     QuotaFormSet,
-                    queryset=models.Quota.objects.filter(
-                        resource__service_type=service_type),
+                    queryset=service_quotas,
                     prefix="%s_a" % service_type.catalog_name,
                     initial=initial,
                     instance=None,
@@ -332,8 +341,7 @@ class BaseAllocationView(UpdateView):
                     form = GroupForm(prefix=prefix, **group_form_args)
                     formset = self.get_formset(
                         QuotaFormSet,
-                        queryset=models.Quota.objects.filter(
-                            resource__service_type=service_type),
+                        queryset=service_quotas,
                         prefix=prefix,
                         initial=initial,
                         instance=None,
