@@ -2,6 +2,15 @@
 
 {% block title %}Allocation Request{% endblock title %}
 
+{% block css %}
+{{ block.super }}
+<style>
+  .panel-default > .panel-heading {
+    background-color: #f5f5f5;
+  }
+</style>
+{% endblock %}
+
 {% block sidebar %}
 {% with current_sidebar="allocation" %}
   {{ block.super }}
@@ -23,11 +32,6 @@
 {% block page_header %}
 {{ block.super }}
 {% include "horizon/common/_page_header.html" with title="Allocation Request" %}
-<style>
-  .panel-default > .panel-heading {
-  background-color: #f5f5f5;
-  }
-</style>
 {% endblock page_header %}
 
 {% block js %}

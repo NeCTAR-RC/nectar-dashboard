@@ -167,7 +167,6 @@ class AllocationFactory(factory.django.DjangoModelFactory):
         QuotaFactory(group=group_volume_monash, resource=volumes)
         QuotaFactory(group=group_volume_melbourne, resource=volumes)
         QuotaFactory(group=group_compute, resource=cores)
-        QuotaFactory(group=group_compute, resource=ram)
         QuotaFactory(group=group_compute, resource=instances)
 
         return allocation

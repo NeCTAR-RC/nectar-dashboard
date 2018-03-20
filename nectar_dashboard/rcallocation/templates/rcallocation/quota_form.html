@@ -9,11 +9,11 @@
   {% endif %}
   <div id="quota-resource-{{ form.resource.value }}" class="form-inline">
     <div class="form-group input-group col-sm-2">
-        <label id="label-resource-name" class="control-label pull-right"></label>
+        <label class="label-resource-name control-label pull-right"></label>
     </div>
     <div class="form-group input-group requested_quota">
       <input id="{{ form.requested_quota.id_for_label }}" class="form-control requested-quota" min="0" name="{{ form.requested_quota.html_name }}" type="number" value="{{ form.requested_quota.value }}">
-      <span id="label-resource-unit" class="input-group-addon"></span>
+      <span class="input-group-addon label-resource-unit"></span>
     </div>
     {% if form.requested_quota.errors %}
     <div class="form-group has-error">
