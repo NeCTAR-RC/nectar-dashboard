@@ -23,6 +23,7 @@ class AllocationNotesEdit(UpdateView):
 
 class AllocationApproveView(views.BaseAllocationView):
     SHOW_EMPTY_SERVICE_TYPES = False
+    ONLY_REQUESTABLE_RESOURCES = False
 
     template_name = "rcallocation/allocationrequest_approve.html"
     model = models.AllocationRequest
