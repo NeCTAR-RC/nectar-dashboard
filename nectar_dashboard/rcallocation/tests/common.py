@@ -34,7 +34,7 @@ def allocation_to_dict(model):
 def get_groups(service_type, allocation=None):
     quota_fuzz = fuzzy.FuzzyInteger(1, 100000)
     st = models.ServiceType.objects.get(catalog_name=service_type)
-    resources = st.resource_set.all()
+    resources = st.resource_set.filter(requestable=True)
     groups = []
     allocated_zones = []
     if allocation:
@@ -42,7 +42,7 @@ def get_groups(service_type, allocation=None):
             service_type__catalog_name=service_type)
         for group in service_type_groups:
             quotas = []
-            for quota in group.quota_set.all():
+            for quota in group.quota_set.filter(resource__requestable=True):
                 quotas.append({'id': quota.id,
                                'requested_quota': quota.requested_quota,
                                'resource': quota.resource.id,
@@ -198,7 +198,8 @@ def request_allocation(user, model=None, compute_groups=None,
             form['%s_%s-INITIAL_FORMS' %
                  (service_type, prefix)] = len(quotas) if group['id'] else 0
             resource_count = models.Resource.objects.filter(
-                service_type__catalog_name=service_type).count()
+                service_type__catalog_name=service_type,
+                requestable=True).count()
             form['%s_%s-TOTAL_FORMS' % (service_type, prefix)] = resource_count
             form['%s_%s-MAX_NUM_FORMS' % (service_type, prefix)] = 1000
 
