@@ -391,6 +391,7 @@ class BaseAllocationView(UpdateView):
                 'service_type': resource.service_type.catalog_name,
                 'quota_name': resource.quota_name,
                 'unit': resource.unit,
+                'help_text': resource.help_text,
             }
 
         return (super(BaseAllocationView, self)

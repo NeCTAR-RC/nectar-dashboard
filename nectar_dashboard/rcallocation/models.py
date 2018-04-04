@@ -537,6 +537,7 @@ class Resource(models.Model):
     quota_name = models.CharField(max_length=32)
     unit = models.CharField(max_length=32)
     requestable = models.BooleanField(default=True)
+    help_text = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name

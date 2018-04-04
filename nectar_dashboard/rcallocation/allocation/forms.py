@@ -100,6 +100,9 @@ class QuotaForm(forms.BaseQuotaForm):
                 field.widget.attrs.get('class', '') + 'form-control')
         self.fields['requested_quota'].widget.attrs['readonly'] = True
         self.fields['requested_quota'].required = False
+        quota = kwargs.pop('instance', None)
+        if not quota:
+            self.fields['requested_quota'].widget = d_forms.HiddenInput()
         self.initial['quota'] = self.instance.requested_quota
 
     def has_changed(self):

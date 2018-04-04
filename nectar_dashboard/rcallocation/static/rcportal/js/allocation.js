@@ -58,8 +58,11 @@
           // Set the labels for the resources
           $(this).find('.label-resource-name').text(resource['name']);
           $(this).find('.label-resource-unit').text(resource['unit']);
+
+          if (resource['help_text']) {
+            $(this).find('.label-resource-help').text(resource['help_text']);
+          }
         });
-       
 
         $('input:checkbox.toggle-quota').change(function() {
           var panel = $(this).closest('.panel');
