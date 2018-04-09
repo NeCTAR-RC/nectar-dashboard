@@ -49,4 +49,4 @@ Fields Of Research breakdown:
 {% endspaceless %}
 
 Kind Regards,
-The NeCTAR Research Cloud Team.
+The Nectar Research Cloud Team.
