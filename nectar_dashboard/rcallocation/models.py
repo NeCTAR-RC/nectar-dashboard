@@ -711,6 +711,17 @@ class Grant(models.Model):
         help_text="""Specify the first year funded"""
     )
 
+    last_year_funded = models.IntegerField(
+        'Last year funded',
+        blank=False,
+        default=datetime.datetime.now().year + 1,
+        validators=[MinValueValidator(1970), MaxValueValidator(3000)],
+        error_messages={
+            'min_value': 'Please input a year between 1970 ~ 3000',
+            'max_value': 'Please input a year between 1970 ~ 3000'},
+        help_text="""Specify the last year funded"""
+    )
+
     total_funding = models.FloatField(
         'Total funding (AUD)',
         validators=[MinValueValidator(1)],
