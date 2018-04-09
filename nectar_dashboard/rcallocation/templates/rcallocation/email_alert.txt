@@ -1,5 +1,5 @@
 Allocation request [{{ request.project_description }}]
-
+
 {% block preamble %}{% endblock %}
 Allocation Request Received
 ---------------------------
@@ -49,4 +49,4 @@ Fields Of Research breakdown:
 {% endspaceless %}
 
 Kind Regards,
-The NeCTAR Research Cloud Team.
+The Nectar Research Cloud Team.
