@@ -168,7 +168,8 @@ class BaseAllocationView(UpdateView):
 
     # grant
     formset_grant_class = inlineformset_factory(
-        models.AllocationRequest, models.Grant, form=forms.GrantForm, extra=0)
+        models.AllocationRequest, models.Grant, form=forms.GrantForm,
+        min_num=1, extra=0)
 
     # The attribute used to record who did the edit.  this should
     # either be approver_email or contact_email
@@ -556,6 +557,8 @@ class BaseAllocationView(UpdateView):
                 for instance in instances:
                     instance.allocation = self.object
                     instance.save()
+                for instance in formset.deleted_objects:
+                    instance.delete()
 
         return HttpResponseRedirect(self.get_success_url())
 
