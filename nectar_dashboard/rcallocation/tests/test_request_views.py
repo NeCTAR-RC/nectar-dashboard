@@ -61,6 +61,8 @@ class RequestTestCase(TestCase):
             self.assertEqual(g_model.grant_id, grants[i]['grant_id'])
             self.assertEqual(g_model.first_year_funded,
                              grants[i]['first_year_funded'])
+            self.assertEqual(g_model.last_year_funded,
+                             grants[i]['last_year_funded'])
             self.assertEqual(g_model.total_funding, grants[i]['total_funding'])
 
         investigators_l = model.investigators.all()
