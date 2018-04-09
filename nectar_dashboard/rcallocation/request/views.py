@@ -30,6 +30,10 @@ class AllocationCreateView(views.BaseAllocationView):
         models.AllocationRequest, models.Institution,
         form=forms.InstitutionForm, extra=1)
 
+    formset_grant_class = inlineformset_factory(
+        models.AllocationRequest, models.Grant, form=forms.GrantForm, extra=0,
+        validate_min=True, min_num=1)
+
     def get_object(self):
         return None
 

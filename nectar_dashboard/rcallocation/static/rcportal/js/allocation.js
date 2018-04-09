@@ -330,6 +330,16 @@ function show_help_message(el, help_title, help_message) {
         new_row += "</div>";
         new_row += "</div>";
         new_row += create_help_span(opts, 'first_year_funded', row_index, 'Specify the first year funded');
+        //last_year_funded
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'last_year_funded', 'Last year funded', row_index, true);
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_year_input_field(opts, 'last_year_funded', row_index);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += create_help_span(opts, 'last_year_funded', row_index, 'Specify the last year funded');
         //total funding
         new_row += "<div class='form-group '>";
         new_row += create_input_field_label(opts, 'total_funding', 'Total funding (AUD)', row_index, true);
@@ -409,7 +419,7 @@ function show_help_message(el, help_title, help_message) {
 
     function create_year_input_field(opts, field_name, row_index){
        return "<input type='number' name='" + opts.prefix + "-" + row_index
-           + "-" + field_name + "' value='2015' id='id_" + opts.prefix + "-"
+           + "-" + field_name + "' value='' id='id_" + opts.prefix + "-"
            + row_index + "-" + field_name + "' min='1970' max='3000' class='form-control'>"
     };
 

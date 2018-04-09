@@ -86,6 +86,7 @@ class GrantFactory(factory.django.DjangoModelFactory):
     funding_body_scheme = 'ARC funding scheme'
     grant_id = 'arc-grant-0001'
     first_year_funded = 2015
+    last_year_funded = 2017
     total_funding = 20000
 
 

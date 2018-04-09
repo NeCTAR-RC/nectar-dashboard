@@ -65,7 +65,7 @@
     Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-primary"></span>
     sign.
   </blockquote>
-  {% if form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors%}
+  {% if form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
   <div class="alert alert-danger" role="alert">Please fix up the below errors</div>
   {% endif %}
   <form id="new-allocation"
@@ -242,9 +242,20 @@
       <div class="col-md-12">
         <h2>Research Grant Information</h2>
         <hr/>
-        <span class="label label-info">Note:</span>
-        Research grant information aids in the assessment of research allocations and
-        indicates the scale of the research supported.
+	{% if grant_formset.non_form_errors %}
+	<div class="alert alert-danger" role="alert"
+	  {{ grant_formset.non_form_errors }}
+	</div>
+	{% endif %}
+        <p><span class="label label-info">Note:</span>
+	  Research grant information aids in the assessment of research allocations and indicates the scale of the research supported. You must put at least one grant.</p>
+        <p>A National project allocation request can only be approved if it is:</p>
+	  <ul>
+	    <li>funded through a <a href="https://docs.education.gov.au/system/files/doc/other/2016_acgr_listing_final.pdf">national competitive research grant</a></li>
+	    <li>funded by, or supports, a <a href="https://www.education.gov.au/funded-research-infrastructure-projects">National Collaborative Research Infrastructure Strategy</a> (NCRIS) capability</li>
+	    <li>funded by Nectar, ANDS or RDS (e.g. a Virtual Laboratory).</li>
+	  </ul>
+	<p>Note that if a project meets the above criteria, it is not automatically entitled to a national allocation. In some cases it may be more suited to a local allocation.</p>
         <br/>
         <br/>
         <div class="grant_formset">
