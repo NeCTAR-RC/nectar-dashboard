@@ -170,15 +170,16 @@ class AllocationRequest(models.Model):
     use_case = models.TextField(
         "Research use case",
         max_length=4096,
-        help_text="""A short write up on how you intend to to use your
-        cloud instances will help us in our decision making.""")
+        help_text="""Provide a very brief overview of your research project,
+        and how you will use the cloud to support your project.""")
 
     usage_patterns = models.TextField(
         "Instance, Object Storage and Volumes Storage Usage Patterns",
         max_length=1024, blank=True,
         help_text="""Will your project have many users and small data
-                sets? Or will it have large data sets with a small
-                number of users? Your answers here will help us.""")
+        sets? Or will it have large data sets with a small number of users?
+        Will your instances be long running or created and deleted as needed
+        Your answers here will help us.""")
 
     allocation_home = models.CharField(
         "Allocation home location",
@@ -188,10 +189,10 @@ class AllocationRequest(models.Model):
         default='national',
         max_length=128,
         help_text="""You can provide a primary location where you expect to
-                use most resources, effectively the main NeCTAR node for your
+                use most resources, effectively the main Nectar Node for your
                 allocation. Use of other locations is still possible.
                 This can also indicate a specific arrangement with a
-                NeCTAR Node, for example where you obtain support, or if
+                Nectar Node, for example where you obtain support, or if
                 your institution is a supporting member of that Node.
                 """
     )
@@ -268,11 +269,10 @@ class AllocationRequest(models.Model):
         choices=PERCENTAGE_CHOICES, default=0)
 
     nectar_support = models.CharField(
-        'List any NeCTAR Virtual Laboratories supporting this request',
+        """List any ANDS, Nectar, or RDS funded projects supporting this
+        request.""",
         blank=True,
-        max_length=255,
-        help_text="""Specify any NeCTAR Virtual Laboratories
-                    supporting this request.""")
+        max_length=255)
 
     ncris_support = models.CharField(
         'List NCRIS capabilities supporting this request',
