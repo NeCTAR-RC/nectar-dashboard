@@ -1,6 +1,7 @@
 import base64
 import logging
 import random
+import time
 import sha
 
 from django.contrib import messages
@@ -9,10 +10,10 @@ from django import forms
 from django import shortcuts
 
 from keystoneclient.v3 import client as keystoneclient
+from keystoneauth1.identity import v3
 from openstack_dashboard import api
-from openstack_auth.user import create_user_from_token
-from openstack_auth.user import set_session_from_user
-from openstack_auth.user import Token as UserToken
+from openstack_auth import utils
+from openstack_auth import user as auth_user
 
 
 LOG = logging.getLogger(__name__)
@@ -29,8 +30,9 @@ def credentials(request):
         password = sha.sha(str(sys_random.getrandbits(256))).hexdigest()
         password = base64.encodestring(password)[:20]
 
-        project = request.user.token.tenant['id']
-        endpoint = api.keystone._get_endpoint_url(request, 'internalURL')
+        project_id = request.user.token.tenant['id']
+        endpoint, __ = utils.fix_auth_url_version_prefix(request.user.endpoint)
+        session = utils.get_session()
 
         api.keystone.user_update_own_password(
             request,
@@ -38,17 +40,22 @@ def credentials(request):
             password)
 
         # Reauthenticate.
-        client = keystoneclient.Client(username=request.user.username,
-                                       password=password,
-                                       tenant_id=project,
-                                       auth_url=endpoint)
+        auth = v3.Password(auth_url=endpoint,
+                           username=request.user.username,
+                           password=password,
+                           project_id=project_id,
+                           user_domain_id=request.user.user_domain_id,
+                           project_domain_id=request.user.token.project['domain_id'])
 
-        token = UserToken(client.auth_ref,
-                          unscoped_token=request.user.token.unscoped_token)
-        user = create_user_from_token(request, token, endpoint)
-        set_session_from_user(request, user)
+        auth_ref = auth.get_access(session)
+        token = auth_user.Token(auth_ref, unscoped_token=auth_ref.auth_token)
+        user = auth_user.create_user_from_token(request, token, endpoint)
+        auth_user.set_session_from_user(request, user)
+        # (sorrison) This is needed for some reason, else get a 403 from keystone....
+        time.sleep(5)
         messages.add_message(request, messages.INFO,
                              "Your password has been reset.")
+
     context = {'form': passwordForm,
                'password': password}
 
