@@ -189,11 +189,12 @@ class AllocationRequest(models.Model):
         default='national',
         max_length=128,
         help_text="""You can provide a primary location where you expect to
-                use most resources, effectively the main Nectar Node for your
+                use most resources, effectively the main Nectar site for your
                 allocation. Use of other locations is still possible.
                 This can also indicate a specific arrangement with a
-                Nectar Node, for example where you obtain support, or if
-                your institution is a supporting member of that Node.
+                Nectar site, for example where you obtain support, or if
+                your institution is a supporting member of that site.
+                Select unassigned if you have no preference.
                 """
     )
 
