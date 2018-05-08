@@ -389,8 +389,8 @@ function show_help_message(el, help_title, help_message) {
         var select = "<select name='"+ opts.prefix + "-" + row_index + "-" + field_name + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name +"' class='form-control'>";
         select += "<option selected='selected' value='comp'>Australian competitive research grant</option>";
         select += "<option value='ncris'>NCRIS funding</option>";
-        select += "<option value='nectar'>Nectar funding</option>";
-        select += "<option value='ands'>ANDS funding</option>";
+        select += "<option value='ands_nectar_rds'>ANDS, Nectar, RDS funding</option>";
+        select += "<option value='nhmrc'>NHMRC</option>";
         select += "<option value='govt'>Other Australian government grant</option>";
         select += "<option value='industry'>Industry funding</option>";
         select += "<option value='ext'>Other external funding</option>";
