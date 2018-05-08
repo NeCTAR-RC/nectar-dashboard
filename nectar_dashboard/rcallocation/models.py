@@ -203,10 +203,8 @@ class AllocationRequest(models.Model):
         blank=True,
         verbose_name="Additional location requirements",
         help_text="""Indicate to the allocations committee any special
-                geographic requirements that you may need?  Please note
-                that the ability to run virtual machines at specified
-                locations is normal functionality and not a
-                special requirement.""")
+                geographic requirements that you may need, e.g. to run
+                at more than one node.""")
 
     project_id = models.CharField(max_length=36, blank=True, null=True)
 
@@ -661,7 +659,7 @@ class Institution(models.Model):
 class Publication(models.Model):
     publication = models.CharField(
         'Publication/Output',
-        max_length=255,
+        max_length=512,
         help_text="""Please provide any traditional and non-traditional
                 research outputs using a citation style text reference
                 for each. eg. include article/title, journal/outlet, year,
