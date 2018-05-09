@@ -1,3 +1,4 @@
+from django_filters import rest_framework as filters
 from rest_framework import serializers, viewsets
 
 from nectar_dashboard.rcallocation import models
@@ -53,7 +54,7 @@ class QuotaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class QuotaGroupField(serializers.RelatedField):
+class QuotaGroupsField(serializers.RelatedField):
     def to_representation(self, value):
         quota_groups = value.all()
         output = []
@@ -73,18 +74,26 @@ class QuotaViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class AllocationSerializer(serializers.ModelSerializer):
-    quotas = QuotaGroupField(many=False, read_only=True)
+    quotas = QuotaGroupsField(many=False, read_only=True)
 
     class Meta:
         model = models.AllocationRequest
         fields = '__all__'
 
 
+class AllocationFilter(filters.FilterSet):
+    parent_request__isnull = filters.BooleanFilter(name='parent_request', lookup_expr='isnull')
+
+    class Meta:
+        model = models.AllocationRequest
+        fields = ('id', 'status', 'parent_request_id', 'project_id',
+                   'project_name', 'provisioned', 'parent_request', 'parent_request__isnull')
+
+
 class AllocationViewSet(viewsets.ModelViewSet):
-    queryset = models.AllocationRequest.objects.all()
+    queryset = models.AllocationRequest.objects.order_by('-modified_time')
     serializer_class = AllocationSerializer
-    filter_fields = ('id', 'status', 'parent_request_id', 'project_id',
-                     'project_name', 'provisioned')
+    filter_class = AllocationFilter
 
 
 class ChiefInvestigatorSerializer(serializers.ModelSerializer):
