@@ -17,6 +17,7 @@
         <input id="{{ form.requested_quota.id_for_label }}" class="form-control requested-quota" min="0" name="{{ form.requested_quota.html_name }}" type="number" value="{{ form.requested_quota.value }}">
         <span class="input-group-addon label-resource-unit"></span>
       </div>
+      <img class="help-popover" src="/static/rcportal/img/help.png" style="display: none;">
       {% if form.requested_quota.errors %}
         <div class="form-group has-error">
           <span class="help-block">{{ form.requested_quota.errors }}</span>
