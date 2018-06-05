@@ -59,8 +59,15 @@
           $(this).find('.label-resource-name').text(resource['name']);
           $(this).find('.label-resource-unit').text(resource['unit']);
 
+          var popover = $(this).find('.help-popover')
           if (resource['help_text']) {
-            $(this).find('.label-resource-help').text(resource['help_text']);
+            $(this).find('.label-resource-help').text(resource['help_text']); // TODO(andy): migrate to popover
+            popover.attr('title', resource['name']);
+            popover.attr('data-content', resource['help_text']);
+            popover.show();
+          }
+          else {
+            popover.hide();
           }
         });
 
@@ -125,6 +132,12 @@
     };
 }(jQuery));
 
+$(function () {
+  $('.help-popover').popover({
+    trigger: "hover",
+    placement: "top",
+  });
+})
 
 //help icon span click
 $('.help-icon-sp').on('click', function(event){
