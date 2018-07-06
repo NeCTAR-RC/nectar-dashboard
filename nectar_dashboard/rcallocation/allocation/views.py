@@ -47,6 +47,7 @@ class AllocationRejectView(views.BaseAllocationView):
     model = models.AllocationRequest
     form_class = allocation_forms.AllocationRejectForm
     quota_form_class = None
+    quotagroup_form_class = None
     success_url = "../../"
 
     formset_investigator_class = None
