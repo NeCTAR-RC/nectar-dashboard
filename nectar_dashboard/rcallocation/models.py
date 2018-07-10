@@ -92,7 +92,7 @@ class AllocationRequest(models.Model):
 
     status = models.CharField(max_length=1, blank=False,
                               choices=REQUEST_STATUS_CHOICES,
-                              default=NEW)
+                              default=SUBMITTED)
 
     status_explanation = models.TextField(
         null=True, blank=True,
