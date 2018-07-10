@@ -1,3 +1,16 @@
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   not use this file except in compliance with the License. You may obtain
+#   a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#   License for the specific language governing permissions and limitations
+#   under the License.
+#
+
 from datetime import date, timedelta
 import factory
 from factory import fuzzy
@@ -126,7 +139,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     ncris_support = 'ncris supporting'
 
     @classmethod
-    def create(cls, **kwargs):
+    def create(cls, create_quotas=True, **kwargs):
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
 
@@ -152,22 +165,23 @@ class AllocationFactory(factory.django.DjangoModelFactory):
                                     service_type=compute_st)
         ram = ResourceFactory(quota_name='ram', service_type=compute_st)
 
-        group_volume_monash = QuotaGroupFactory(allocation=allocation,
-                                                service_type=volume_st,
-                                                zone=monash)
-        group_volume_melbourne = QuotaGroupFactory(allocation=allocation,
-                                                   service_type=volume_st,
-                                                   zone=melbourne)
-        group_object = QuotaGroupFactory(allocation=allocation,
-                                         service_type=object_st,
-                                         zone=nectar)
-        group_compute = QuotaGroupFactory(allocation=allocation,
-                                          service_type=compute_st,
-                                          zone=nectar)
-        QuotaFactory(group=group_object, resource=objects)
-        QuotaFactory(group=group_volume_monash, resource=volumes)
-        QuotaFactory(group=group_volume_melbourne, resource=volumes)
-        QuotaFactory(group=group_compute, resource=cores)
-        QuotaFactory(group=group_compute, resource=instances)
+        if create_quotas:
+            group_volume_monash = QuotaGroupFactory(allocation=allocation,
+                                                    service_type=volume_st,
+                                                    zone=monash)
+            group_volume_melbourne = QuotaGroupFactory(allocation=allocation,
+                                                       service_type=volume_st,
+                                                       zone=melbourne)
+            group_object = QuotaGroupFactory(allocation=allocation,
+                                             service_type=object_st,
+                                             zone=nectar)
+            group_compute = QuotaGroupFactory(allocation=allocation,
+                                              service_type=compute_st,
+                                              zone=nectar)
+            QuotaFactory(group=group_object, resource=objects)
+            QuotaFactory(group=group_volume_monash, resource=volumes)
+            QuotaFactory(group=group_volume_melbourne, resource=volumes)
+            QuotaFactory(group=group_compute, resource=cores)
+            QuotaFactory(group=group_compute, resource=instances)
 
         return allocation

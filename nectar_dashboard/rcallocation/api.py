@@ -1,7 +1,44 @@
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   not use this file except in compliance with the License. You may obtain
+#   a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#   License for the specific language governing permissions and limitations
+#   under the License.
+#
+
+from django.conf import settings
+
 from django_filters import rest_framework as filters
-from rest_framework import serializers, viewsets
+
+from rest_framework.decorators import detail_route
+from rest_framework import permissions
+
+from rest_framework import response
+from rest_framework import serializers
+from rest_framework import status
+from rest_framework import viewsets
 
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard import rest_auth
+from nectar_dashboard.rcallocation import utils
+
+
+class PermissionMixin(object):
+
+    def is_admin(self):
+        if self.request.user.is_authenticated():
+            roles = set([role['name'].lower()
+                         for role in self.request.user.roles])
+            required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES +
+                           settings.ALLOCATION_APPROVER_ROLES)
+            if required & roles:
+                return True
+        return False
 
 
 class ZoneSerializer(serializers.ModelSerializer):
@@ -12,6 +49,7 @@ class ZoneSerializer(serializers.ModelSerializer):
 
 
 class ZoneViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (rest_auth.ReadOrAdmin,)
     queryset = models.Zone.objects.all()
     serializer_class = ZoneSerializer
 
@@ -24,7 +62,6 @@ class ResourceSerializer(serializers.ModelSerializer):
 
 
 class ServiceTypeSerializer(serializers.ModelSerializer):
-    zones = ZoneSerializer(many=True, read_only=True)
     resource_set = ResourceSerializer(many=True, read_only=True)
 
     class Meta:
@@ -33,25 +70,80 @@ class ServiceTypeSerializer(serializers.ModelSerializer):
 
 
 class ServiceTypeViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (rest_auth.ReadOrAdmin,)
     queryset = models.ServiceType.objects.all()
     serializer_class = ServiceTypeSerializer
 
 
 class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (rest_auth.ReadOrAdmin,)
     queryset = models.Resource.objects.all()
     serializer_class = ResourceSerializer
 
 
-class ResourceField(serializers.RelatedField):
-    def to_representation(self, value):
-        return value.quota_name
-
-
 class QuotaSerializer(serializers.ModelSerializer):
+    zone = serializers.SerializerMethodField()
+    allocation = serializers.SerializerMethodField()
+
+    def get_zone(self, obj):
+        try:
+            return obj.group.zone.name
+        except AttributeError:
+            return ''
+
+    def get_allocation(self, obj):
+        try:
+            return obj.group.allocation.id
+        except AttributeError:
+            return ''
+
+    def validate(self, data):
+        user = None
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+        try:
+            allocation = models.AllocationRequest.objects.get(
+                id=self.initial_data['allocation'],
+                created_by=user.id)
+        except models.AllocationRequest.DoesNotExist:
+            raise serializers.ValidationError("Allocation does not exist")
+
+        if allocation.status not in [models.AllocationRequest.SUBMITTED,
+                                     models.AllocationRequest.UPDATE_PENDING]:
+            raise serializers.ValidationError(
+                "Allocation quota in status '%s' can not be updated" %
+                allocation.get_status_display())
+
+        try:
+            zone = models.Zone.objects.get(name=self.initial_data['zone'])
+        except models.Zone.DoesNotExist:
+            raise serializers.ValidationError("Zone does not exist")
+
+        if zone not in data['resource'].service_type.zones.all():
+            raise serializers.ValidationError(
+                "Resource not available in this zone")
+
+        try:
+            group = models.QuotaGroup.objects.get(
+                allocation=allocation, zone=zone,
+                service_type=data['resource'].service_type)
+        except models.QuotaGroup.DoesNotExist:
+            group = None
+        if group:
+            try:
+                models.Quota.objects.get(resource=data['resource'],
+                                         group=group)
+            except models.Quota.DoesNotExist:
+                pass
+            else:
+                raise serializers.ValidationError("Duplicate quota resource")
+
+        return data
 
     class Meta:
         model = models.Quota
-        fields = '__all__'
+        exclude = ('group',)
 
 
 class QuotaGroupsField(serializers.RelatedField):
@@ -62,23 +154,78 @@ class QuotaGroupsField(serializers.RelatedField):
             for quota in quota_group.quota_set.all():
                 quota_dict = {'zone': quota_group.zone.name,
                               'resource': quota.resource.codename(),
-                              'quota': quota.quota}
+                              'quota': quota.quota,
+                              'id': quota.id}
                 output.append(quota_dict)
         return output
 
 
-class QuotaViewSet(viewsets.ReadOnlyModelViewSet):
+class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
     queryset = models.Quota.objects.all()
     serializer_class = QuotaSerializer
-    filter_fields = ('resource',)
+    filter_fields = ('resource', 'group__allocation', 'group__zone',
+                     'group__service_type')
+
+    def get_queryset(self):
+        if self.is_admin():
+            return self.queryset
+        return models.Quota.objects.filter(
+            group__allocation__created_by=self.request.user.id)
+
+    def get_permissions(self):
+        permission_classes = [permissions.IsAuthenticated]
+        if self.action == 'destroy':
+            permission_classes = [rest_auth.CanUpdate]
+        return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        allocation = models.AllocationRequest.objects.get(
+            id=serializer.initial_data['allocation'],
+            created_by=self.request.user.id,
+        )
+        zone = models.Zone.objects.get(name=serializer.initial_data['zone'])
+        st = models.Resource.objects.get(
+            id=serializer.initial_data['resource']).service_type
+        group, created = models.QuotaGroup.objects.get_or_create(
+            allocation=allocation,
+            zone=zone,
+            service_type=st)
+        serializer.save(group=group)
+
+    def update(self, request, *args, **kwargs):
+        return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
+    status_display = serializers.SerializerMethodField()
 
     class Meta:
         model = models.AllocationRequest
-        fields = '__all__'
+        exclude = ('created_by', 'notes', 'status_explanation', )
+        read_only_fields = ('status', 'parent_request', 'submit_date',
+                            'motified_time', 'contact_email', 'approver_email',
+                            'project_id', 'funding_national_percent',
+                            'funding_node', 'provisioned',)
+
+    def get_status_display(self, obj):
+        return obj.get_status_display()
+
+    def validate_project_name(self, value):
+        projects = models.AllocationRequest.objects.filter(project_name=value)
+        if projects:
+            raise serializers.ValidationError("Project name already exists")
+        return value
+
+
+class AdminAllocationSerializer(AllocationSerializer):
+
+    class Meta:
+        model = models.AllocationRequest
+        exclude = ('created_by',)
+        read_only_fields = ('parent_request', 'submit_date',
+                            'motified_time', 'contact_email', 'approver_email',
+                            'status', 'provisioned')
 
 
 class AllocationFilter(filters.FilterSet):
@@ -92,10 +239,72 @@ class AllocationFilter(filters.FilterSet):
                   'parent_request__isnull')
 
 
-class AllocationViewSet(viewsets.ModelViewSet):
+class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     queryset = models.AllocationRequest.objects.order_by('-modified_time')
     serializer_class = AllocationSerializer
     filter_class = AllocationFilter
+
+    def get_queryset(self):
+        if self.is_admin():
+            return self.queryset
+        return models.AllocationRequest.objects.filter(
+            created_by=self.request.user.id)
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user.id,
+                        contact_email=self.request.user.username)
+
+    def get_serializer_class(self):
+        if self.is_admin():
+            return AdminAllocationSerializer
+        return AllocationSerializer
+
+    def get_permissions(self):
+        permission_classes = [permissions.IsAuthenticated]
+
+        if self.action in ['update', 'partial_update']:
+            permission_classes.append(rest_auth.CanUpdate)
+        elif self.action == 'delete':
+            permission_classes.append(rest_auth.CanDelete)
+        elif self.action == 'amend':
+            permission_classes.append(rest_auth.CanAmend)
+        elif self.action == 'approve':
+            permission_classes.append(rest_auth.CanApprove)
+
+        return [permission() for permission in permission_classes]
+
+    @detail_route(methods=['post'])
+    def approve(self, request, pk=None):
+        allocation = self.get_object()
+        utils.copy_allocation(allocation)
+        allocation.status = models.AllocationRequest.APPROVED
+        allocation.provisioned = False
+        allocation.approver_email = request.user.username
+        allocation.save()
+        return response.Response(self.serializer_class(allocation).data)
+
+    @detail_route(methods=['post'])
+    def amend(self, request, pk=None):
+        allocation = self.get_object()
+        utils.copy_allocation(allocation)
+        allocation.status = models.AllocationRequest.UPDATE_PENDING
+        allocation.provisioned = False
+        allocation.save()
+        return response.Response(self.serializer_class(allocation).data)
+
+    @detail_route(methods=['post'])
+    def delete(self, request, pk=None):
+        allocation = self.get_object()
+        allocation.status = models.AllocationRequest.DELETED
+        allocation.save()
+        parent_request = allocation.parent_request
+        if parent_request:
+            parent_request.status = models.AllocationRequest.DELETED
+            parent_request.save()
+        return response.Response(self.serializer_class(allocation).data)
+
+    def destroy(self, request, *args, **kwargs):
+        return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class ChiefInvestigatorSerializer(serializers.ModelSerializer):
@@ -103,7 +312,9 @@ class ChiefInvestigatorSerializer(serializers.ModelSerializer):
         model = models.ChiefInvestigator
         fields = '__all__'
 
+
 class ChiefInvestigatorViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
     queryset = models.ChiefInvestigator.objects.all()
     serializer_class = ChiefInvestigatorSerializer
     filter_fields = ('allocation',)
@@ -115,6 +326,7 @@ class InstitutionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
     queryset = models.Institution.objects.all()
     serializer_class = InstitutionSerializer
     filter_fields = ('allocation',)
@@ -126,6 +338,7 @@ class PublicationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PublicationViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
     queryset = models.Publication.objects.all()
     serializer_class = PublicationSerializer
     filter_fields = ('allocation',)
@@ -137,6 +350,8 @@ class GrantSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class GrantViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
+
     queryset = models.Grant.objects.all()
     serializer_class = GrantSerializer
     filter_fields = ('allocation',)
