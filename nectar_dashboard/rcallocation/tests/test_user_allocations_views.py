@@ -1,3 +1,16 @@
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   not use this file except in compliance with the License. You may obtain
+#   a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#   License for the specific language governing permissions and limitations
+#   under the License.
+#
+
 from operator import itemgetter
 
 from django.core.urlresolvers import reverse
@@ -67,7 +80,10 @@ class RequestTestCase(TestCase):
         # Check to make sure we were redirected back to the index of
         # our requests.
         self.assertStatusCode(response, 302)
-        assert response.get('location') == '../../'
+        self.assertEqual(
+            'http://testserver' +
+            reverse('horizon:allocation:user_requests:index'),
+            response.get('location'))
         model = (models.AllocationRequest.objects.get(
             project_description=form['project_description'],
             parent_request_id=None))

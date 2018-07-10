@@ -4,6 +4,7 @@ git+https://github.com/NeCTAR-RC/horizon.git@nectar/queens#egg=openstack_dashboa
 
 python-dateutil
 pymysql
-djangorestframework
-django-filter
+djangorestframework==3.3.2
+django-filter==1.1.0
 trove-dashboard
+django==1.8.7
