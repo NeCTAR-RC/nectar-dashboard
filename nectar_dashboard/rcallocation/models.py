@@ -305,6 +305,9 @@ class AllocationRequest(models.Model):
         null=True, blank=True,
         help_text="These notes are only visible to allocation admins")
 
+    class Meta:
+        ordering = ['-modified_time']
+
     def get_absolute_url(self):
         return reverse('horizon:allocation:requests:allocation_view',
                        args=[str(self.id)])
