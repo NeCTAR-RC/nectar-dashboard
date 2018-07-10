@@ -36,9 +36,11 @@ STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'static'))
 STATIC_URL = '/static/'
 WEBROOT = '/'
 
+#USE_TZ = False
+
 SECRET_KEY = secret_key.generate_or_read_from_file(
     os.path.join(tempfile.gettempdir(), '.secret_key_store'))
-ROOT_URLCONF = 'openstack_dashboard.test.urls'
+ROOT_URLCONF = 'nectar_dashboard.test.urls'
 
 TEMPLATES[0]['DIRS'] = [
     os.path.join(TEST_DIR, 'templates')
@@ -88,6 +90,8 @@ INSTALLED_APPS = (
     'compressor',
     'horizon',
     'openstack_dashboard',
+    'rest_framework',
+    'django_filters',
     'nectar_dashboard.rcallocation',
     'nectar_dashboard.rcallocation.allocation',
     'nectar_dashboard.rcallocation.allocation_approved',
@@ -336,3 +340,30 @@ ALLOCATION_EMAIL_FROM = "allocations@nectar.org.au"
 ALLOCATION_EMAIL_PROVISIONER = "sorrison@gmail.com"
 ALLOCATION_EMAIL_BCC_RECIPIENTS = []
 ALLOCATION_EMAIL_REPLY_TO = 'noreply@nectar.org.au'
+
+ALLOCATION_GLOBAL_ADMIN_ROLES = ['admin']
+ALLOCATION_APPROVER_ROLES = ['tenantmanager']
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':
+    'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_FILTER_BACKENDS':
+    ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_AUTHENTICATION_CLASSES':
+    (
+        'nectar_dashboard.rest_auth.CsrfExemptSessionAuthentication',
+        'nectar_dashboard.rest_auth.KeystoneAuthentication',
+    ),
+}
+
+REST_VIEW_SETS = (
+    ('allocations', 'nectar_dashboard.rcallocation.api.AllocationViewSet'),
+    ('quotas', 'nectar_dashboard.rcallocation.api.QuotaViewSet'),
+    ('chiefinvestigators', 'nectar_dashboard.rcallocation.api.ChiefInvestigatorViewSet'),
+    ('institutions', 'nectar_dashboard.rcallocation.api.InstitutionViewSet'),
+    ('publications', 'nectar_dashboard.rcallocation.api.PublicationViewSet'),
+    ('grants', 'nectar_dashboard.rcallocation.api.GrantViewSet'),
+    ('resources', 'nectar_dashboard.rcallocation.api.ResourceViewSet'),
+    ('zones', 'nectar_dashboard.rcallocation.api.ZoneViewSet'),
+    ('service-types', 'nectar_dashboard.rcallocation.api.ServiceTypeViewSet'),
+)
