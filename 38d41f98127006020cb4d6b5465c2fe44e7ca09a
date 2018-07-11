@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99e6d6d3_121bd177",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2018-07-11T06:47:16Z",
+      "side": 1,
+      "message": "ws",
+      "range": {
+        "startLine": 34,
+        "startChar": 66,
+        "endLine": 34,
+        "endChar": 74
+      },
+      "revId": "38d41f98127006020cb4d6b5465c2fe44e7ca09a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2f7df751_243be3c8",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_quotas.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2018-07-11T06:47:16Z",
+      "side": 1,
+      "message": "what does this test means?",
+      "range": {
+        "startLine": 61,
+        "startChar": 24,
+        "endLine": 61,
+        "endChar": 33
+      },
+      "revId": "38d41f98127006020cb4d6b5465c2fe44e7ca09a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a2a214f_05c5c951",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_quotas.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2018-07-11T06:47:16Z",
+      "side": 1,
+      "message": "ws",
+      "range": {
+        "startLine": 66,
+        "startChar": 66,
+        "endLine": 66,
+        "endChar": 74
+      },
+      "revId": "38d41f98127006020cb4d6b5465c2fe44e7ca09a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ff4ec83_7d3e1748",
+        "filename": "nectar_dashboard/test/settings.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2018-07-11T06:47:16Z",
+      "side": 1,
+      "message": "needed?",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 15
+      },
+      "revId": "38d41f98127006020cb4d6b5465c2fe44e7ca09a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
