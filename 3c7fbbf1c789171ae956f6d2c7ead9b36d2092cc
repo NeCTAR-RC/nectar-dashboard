@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e8b06dc_87ab12a7",
+        "filename": "nectar_dashboard/rcallocation/tests/base.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2018-07-11T06:30:17Z",
+      "side": 1,
+      "message": "still want this?",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 33
+      },
+      "revId": "3c7fbbf1c789171ae956f6d2c7ead9b36d2092cc",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f5ccdf6b_a17259b7",
+        "filename": "nectar_dashboard/rcallocation/tests/base.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2018-07-11T06:30:17Z",
+      "side": 1,
+      "message": "ws",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 8
+      },
+      "revId": "3c7fbbf1c789171ae956f6d2c7ead9b36d2092cc",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "920033e2_d9aa8b77",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2018-07-11T06:30:17Z",
+      "side": 1,
+      "message": "ws",
+      "range": {
+        "startLine": 21,
+        "startChar": 66,
+        "endLine": 21,
+        "endChar": 74
+      },
+      "revId": "3c7fbbf1c789171ae956f6d2c7ead9b36d2092cc",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
