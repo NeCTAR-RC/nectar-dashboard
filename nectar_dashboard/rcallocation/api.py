@@ -3,7 +3,7 @@ from django.conf import settings
 from django_filters import rest_framework as filters
 
 from rest_framework.decorators import detail_route
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 
 from rest_framework import response
 from rest_framework import serializers
@@ -19,16 +19,10 @@ class PermissionMixin(object):
 
     def is_admin(self):
         if self.request.user.is_authenticated():
-            roles = set([role['name'].lower() for role in self.request.user.roles])
-            required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES)
-            if required & roles:
-                return True
-        return False
-
-    def is_local_admin(self):
-        if self.request.user.is_authenticated():
-            roles = set([role['name'].lower() for role in self.request.user.roles])
-            required = set(settings.ALLOCATION_LOCAL_WRITE_ROLES)
+            roles = set([role['name'].lower()
+                         for role in self.request.user.roles])
+            required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES +
+                           settings.ALLOCATION_APPROVER_ROLES)
             if required & roles:
                 return True
         return False
@@ -73,16 +67,22 @@ class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Resource.objects.all()
     serializer_class = ResourceSerializer
 
-    
+
 class QuotaSerializer(serializers.ModelSerializer):
     zone = serializers.SerializerMethodField()
     allocation = serializers.SerializerMethodField()
 
     def get_zone(self, obj):
-        return obj.group.zone.name
+        try:
+            return obj.group.zone.name
+        except AttributeError:
+            return ''
 
     def get_allocation(self, obj):
-        return obj.group.allocation.id
+        try:
+            return obj.group.allocation.id
+        except AttributeError:
+            return ''
 
     def validate(self, data):
         user = None
@@ -95,20 +95,36 @@ class QuotaSerializer(serializers.ModelSerializer):
                 created_by=user.id)
         except models.AllocationRequest.DoesNotExist:
             raise serializers.ValidationError("Allocation does not exist")
-        
+
         if allocation.status not in [models.AllocationRequest.SUBMITTED,
                                      models.AllocationRequest.UPDATE_PENDING]:
             raise serializers.ValidationError(
                 "Allocation quota in status '%s' can not be updated" %
                 allocation.get_status_display())
-            
+
         try:
             zone = models.Zone.objects.get(name=self.initial_data['zone'])
         except models.Zone.DoesNotExist:
             raise serializers.ValidationError("Zone does not exist")
 
         if zone not in data['resource'].service_type.zones.all():
-            raise serializers.ValidationError("Zone not available to this resource")
+            raise serializers.ValidationError(
+                "Resource not available in this zone")
+
+        try:
+            group = models.QuotaGroup.objects.get(
+                allocation=allocation, zone=zone,
+                service_type=data['resource'].service_type)
+        except models.QuotaGroup.DoesNotExist:
+            group = None
+        if group:
+            try:
+                models.Quota.objects.get(resource=data['resource'],
+                                         group=group)
+            except models.Quota.DoesNotExist:
+                pass
+            else:
+                raise serializers.ValidationError("Duplicate quota resource")
 
         return data
 
@@ -116,7 +132,7 @@ class QuotaSerializer(serializers.ModelSerializer):
         model = models.Quota
         exclude = ('group',)
 
-        
+
 class QuotaGroupsField(serializers.RelatedField):
     def to_representation(self, value):
         quota_groups = value.all()
@@ -143,6 +159,12 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
         return models.Quota.objects.filter(
             group__allocation__created_by=self.request.user.id)
 
+    def get_permissions(self):
+        permission_classes = [permissions.IsAuthenticated]
+        if self.action == 'destroy':
+            permission_classes = [rest_auth.CanUpdate]
+        return [permission() for permission in permission_classes]
+
     def perform_create(self, serializer):
         allocation = models.AllocationRequest.objects.get(
             id=serializer.initial_data['allocation'],
@@ -155,16 +177,12 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
             allocation=allocation,
             zone=zone,
             service_type=st)
-
         serializer.save(group=group)
-
-    def destroy(self, request, *args, **kwargs):
-        return super(QuotaViewSet, self).destroy(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    
+
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
@@ -174,12 +192,12 @@ class AllocationSerializer(serializers.ModelSerializer):
         exclude = ('created_by', 'notes', 'status_explanation', )
         read_only_fields = ('status', 'parent_request', 'submit_date',
                             'motified_time', 'contact_email', 'approver_email',
-                            'project_id', 'funding_national_percent', 'funding_node',
-                            'provisioned',)
+                            'project_id', 'funding_national_percent',
+                            'funding_node', 'provisioned',)
 
     def get_status_display(self, obj):
         return obj.get_status_display()
-        
+
     def validate_project_name(self, value):
         projects = models.AllocationRequest.objects.filter(project_name=value)
         if projects:
@@ -196,7 +214,7 @@ class AdminAllocationSerializer(AllocationSerializer):
                             'motified_time', 'contact_email', 'approver_email',
                             'status', 'provisioned')
 
-            
+
 class AllocationFilter(filters.FilterSet):
     parent_request__isnull = filters.BooleanFilter(name='parent_request',
                                                    lookup_expr='isnull')
@@ -216,7 +234,8 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     def get_queryset(self):
         if self.is_admin():
             return self.queryset
-        return models.AllocationRequest.objects.filter(created_by=self.request.user.id)
+        return models.AllocationRequest.objects.filter(
+            created_by=self.request.user.id)
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user.id,
@@ -227,7 +246,21 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
             return AdminAllocationSerializer
         return AllocationSerializer
 
-    @detail_route(methods=['post'], permission_classes=[rest_auth.CanApprove])
+    def get_permissions(self):
+        permission_classes = [permissions.IsAuthenticated]
+
+        if self.action in ['update', 'partial_update']:
+            permission_classes.append(rest_auth.CanUpdate)
+        elif self.action == 'delete':
+            permission_classes.append(rest_auth.CanDelete)
+        elif self.action == 'amend':
+            permission_classes.append(rest_auth.CanAmend)
+        elif self.action == 'approve':
+            permission_classes.append(rest_auth.CanApprove)
+
+        return [permission() for permission in permission_classes]
+
+    @detail_route(methods=['post'])
     def approve(self, request, pk=None):
         allocation = self.get_object()
         utils.copy_allocation(allocation)
@@ -237,7 +270,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.save()
         return response.Response(self.serializer_class(allocation).data)
 
-    @detail_route(methods=['post'], permission_classes=[rest_auth.CanAmend])
+    @detail_route(methods=['post'])
     def amend(self, request, pk=None):
         allocation = self.get_object()
         utils.copy_allocation(allocation)
@@ -246,7 +279,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.save()
         return response.Response(self.serializer_class(allocation).data)
 
-    @detail_route(methods=['post'], permission_classes=[rest_auth.CanDelete])
+    @detail_route(methods=['post'])
     def delete(self, request, pk=None):
         allocation = self.get_object()
         allocation.status = models.AllocationRequest.DELETED

@@ -36,9 +36,11 @@ STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'static'))
 STATIC_URL = '/static/'
 WEBROOT = '/'
 
+#USE_TZ = False
+
 SECRET_KEY = secret_key.generate_or_read_from_file(
     os.path.join(tempfile.gettempdir(), '.secret_key_store'))
-ROOT_URLCONF = 'openstack_dashboard.test.urls'
+ROOT_URLCONF = 'nectar_dashboard.test.urls'
 
 TEMPLATES[0]['DIRS'] = [
     os.path.join(TEST_DIR, 'templates')

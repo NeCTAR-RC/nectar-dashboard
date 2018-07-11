@@ -6,7 +6,6 @@ from openstack_auth import user as auth_user
 from rest_framework import authentication
 from rest_framework import exceptions
 from rest_framework import permissions
-from rest_framework.authentication import SessionAuthentication
 
 from nectar_dashboard.rcallocation import models
 
@@ -14,9 +13,6 @@ from nectar_dashboard.rcallocation import models
 class KeystoneAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
-        #if request.META['REMOTE_ADDR'] == '128.250.116.173':
-        #    import pdb; pdb.set_trace()
-        
         token = request.META.get('HTTP_X_AUTH_TOKEN')
 
         if not token:
@@ -24,20 +20,16 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
         try:
             request.user = auth.authenticate(request=request,
                                              token=token)
-        except exceptions.KeystoneAuthException as exc:
+        except exceptions.KeystoneAuthException:
             raise exceptions.AuthenticationFailed()
 
         auth_user.set_session_from_user(request, request.user)
         auth.login(request, request.user)
-        #if request.META['REMOTE_ADDR'] == '128.250.116.173':
-        #    token = Token.objects.create(user=request.user)
-        #    print token
         return (request.user, None)
 
 
-
 class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
-    
+
     def enforce_csrf(self, request):
         return  # To not perform the csrf check previously happening
 
@@ -65,29 +57,27 @@ class Permission(permissions.BasePermission):
         if not self.states:
             return True
 
-        if hasattr(obj, 'created_by'):
-            allocation = obj
-        elif hasattr(obj, 'allocation'):
-            allocation = obj.allocation
-        elif hasattr(obj, 'group'): # quota object
-            allocation = obj.group.allocation
-        else:
-            allocation = None
-
+        allocation = self.get_allocation(obj)
         if allocation and allocation.status in self.states:
             return True
         return False
 
     def is_admin(self, request):
-        return self.has_role(request.user, settings.ALLOCATION_GLOBAL_ADMIN_ROLES)
+        return self.has_role(request.user,
+                             settings.ALLOCATION_GLOBAL_ADMIN_ROLES)
 
-    def _get_roles(self, request):
-        roles = []
-        if request.user.is_authenticated():
-            roles = [role['name'].lower() for role in request.user.roles]
-        return roles
+    def get_allocation(self, obj):
+        if hasattr(obj, 'created_by'):
+            allocation = obj
+        elif hasattr(obj, 'allocation'):
+            allocation = obj.allocation
+        elif hasattr(obj, 'group'):  # quota object
+            allocation = obj.group.allocation
+        else:
+            allocation = None
+        return allocation
 
-    
+
 class IsAdmin(Permission):
     """
     Global permission check for admins role
@@ -96,7 +86,7 @@ class IsAdmin(Permission):
 
 
 class ApproverOrOwner(Permission):
-    
+
     roles = settings.ALLOCATION_APPROVER_ROLES
 
     def has_object_permission(self, request, view, obj):
@@ -105,15 +95,7 @@ class ApproverOrOwner(Permission):
 
         owner = False
 
-        if hasattr(obj, 'created_by'):
-            allocation = obj
-        elif hasattr(obj, 'allocation'):
-            allocation = obj.allocation
-        elif hasattr(obj, 'group'): # quota object
-            allocation = obj.group.allocation
-        else:
-            allocation = None
-
+        allocation = self.get_allocation(obj)
         if allocation and allocation.created_by == request.user.id:
             owner = True
 
@@ -133,34 +115,29 @@ class ReadOrAdmin(Permission):
 
 
 class ModifyPermission(Permission):
-    
+
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        return super(ModifyPermission, self).has_object_permission(request, view, obj)
+        return super(ModifyPermission, self).has_object_permission(request,
+                                                                   view, obj)
 
 
 class CanApprove(ModifyPermission):
     roles = settings.ALLOCATION_APPROVER_ROLES
-
     states = [models.AllocationRequest.SUBMITTED,
               models.AllocationRequest.UPDATE_PENDING]
 
 
 class CanDelete(ModifyPermission):
-
     roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES
 
 
 class CanUpdate(ModifyPermission):
-
     states = [models.AllocationRequest.SUBMITTED,
               models.AllocationRequest.UPDATE_PENDING]
 
 
-class CanAmend(CanUpdate):
-
-    states = [models.AllocationRequest.APPROVED,]
-
-
+class CanAmend(ModifyPermission):
+    states = [models.AllocationRequest.APPROVED]
