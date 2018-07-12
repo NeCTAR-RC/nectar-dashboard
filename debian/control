@@ -20,7 +20,6 @@ Depends: openstack-dashboard (>= 13.0.0),
          python-murano-dashboard,
          python-neutron-lbaas-dashboard,
          python-sahara-dashboard,
-         python-designate-dashboard,
          python-manila-ui,
 Description: NeCTAR openstack dashboard
  NeCTAR modifications and themes for the openstack dashboard
