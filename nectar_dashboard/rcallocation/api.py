@@ -105,7 +105,7 @@ class QuotaSerializer(serializers.ModelSerializer):
         try:
             allocation = models.AllocationRequest.objects.get(
                 id=self.initial_data['allocation'],
-                created_by=user.id)
+                contact_email=user.username)
         except models.AllocationRequest.DoesNotExist:
             raise serializers.ValidationError("Allocation does not exist")
 
@@ -170,7 +170,7 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
         if self.is_admin():
             return self.queryset
         return models.Quota.objects.filter(
-            group__allocation__created_by=self.request.user.id)
+            group__allocation__contact_email=self.request.user.username)
 
     def get_permissions(self):
         permission_classes = [permissions.IsAuthenticated]
@@ -181,7 +181,7 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
     def perform_create(self, serializer):
         allocation = models.AllocationRequest.objects.get(
             id=serializer.initial_data['allocation'],
-            created_by=self.request.user.id,
+            contact_email=self.request.user.username,
         )
         zone = models.Zone.objects.get(name=serializer.initial_data['zone'])
         st = models.Resource.objects.get(
@@ -224,7 +224,7 @@ class AdminAllocationSerializer(AllocationSerializer):
         model = models.AllocationRequest
         exclude = ('created_by',)
         read_only_fields = ('parent_request', 'submit_date',
-                            'motified_time', 'contact_email', 'approver_email',
+                            'motified_time', 'approver_email',
                             'status', 'provisioned')
 
 
@@ -248,11 +248,13 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         if self.is_admin():
             return self.queryset
         return models.AllocationRequest.objects.filter(
-            created_by=self.request.user.id)
+            contact_email=self.request.user.username)
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user.id,
-                        contact_email=self.request.user.username)
+        kwargs = {'created_by': self.request.user.token.project['id']}
+        if not serializer.validated_data.get('contact_email'):
+            kwargs['contact_email'] = self.request.user.username
+        serializer.save(**kwargs)
 
     def get_serializer_class(self):
         if self.is_admin():
