@@ -43,11 +43,11 @@ class QuotaTests(base.AllocationAPITest):
 
     def _get_quotas(self, user):
         return models.Quota.objects.filter(
-            group__allocation__created_by=user.id)
+            group__allocation__contact_email=user.username)
 
     def test_list_quotas(self):
         self.client.force_authenticate(user=self.user)
-        factories.AllocationFactory.create(created_by=self.user.id,
+        factories.AllocationFactory.create(contact_email=self.user.username,
                                            create_quotas=True)
         response = self.client.get('/rest_api/quotas/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -55,14 +55,14 @@ class QuotaTests(base.AllocationAPITest):
                          len(response.data))
 
     def test_list_quotas_unauthenticated(self):
-        factories.AllocationFactory.create(created_by=self.user.id,
+        factories.AllocationFactory.create(contact_email=self.user.username,
                                            create_quotas=True)
         response = self.client.get('/rest_api/quotas/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_quotas_negative(self):
         self.client.force_authenticate(user=self.user)
-        factories.AllocationFactory.create(created_by='456',
+        factories.AllocationFactory.create(contact_email='other@example.com',
                                            create_quotas=True)
         response = self.client.get('/rest_api/quotas/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -71,9 +71,9 @@ class QuotaTests(base.AllocationAPITest):
 
     def test_list_quotas_admin(self):
         self.client.force_authenticate(user=self.admin_user)
-        factories.AllocationFactory.create(created_by='456',
+        factories.AllocationFactory.create(contact_email='foo@example.com',
                                            create_quotas=True)
-        factories.AllocationFactory.create(created_by='XYZ',
+        factories.AllocationFactory.create(contact_email='bar@example.com',
                                            create_quotas=True)
         response = self.client.get('/rest_api/quotas/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
