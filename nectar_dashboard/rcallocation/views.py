@@ -69,10 +69,10 @@ class AllocationsListView(horizon_tables.DataTableView):
                                 models.AllocationRequest.SUBMITTED,
                                 models.AllocationRequest.UPDATE_PENDING)
                 ).filter(
-                    parent_request=None).order_by(
-                        'modified_time').prefetch_related(
-                            'quotas', 'investigators', 'institutions',
-                            'publications', 'grants')]
+                    parent_request=None
+                ).filter(source=models.AlocationRequst.WEB).prefetch_related(
+                    'quotas', 'investigators', 'institutions',
+                    'publications', 'grants')]
 
 
 class AllocationHistoryView(horizon_tables.DataTableView):

@@ -204,7 +204,7 @@ class AllocationSerializer(serializers.ModelSerializer):
         model = models.AllocationRequest
         exclude = ('created_by', 'notes', 'status_explanation',
                    'funding_national_percent', 'funding_node',
-                   'parent_request')
+                   'parent_request', 'source')
         read_only_fields = ('status', 'submit_date',
                             'motified_time', 'contact_email', 'approver_email',
                             'project_id', 'provisioned')
@@ -226,7 +226,7 @@ class AdminAllocationSerializer(AllocationSerializer):
         exclude = ('created_by',)
         read_only_fields = ('parent_request', 'submit_date',
                             'motified_time', 'approver_email',
-                            'status', 'provisioned')
+                            'status', 'provisioned', 'source')
 
 
 class AllocationFilter(filters.FilterSet):
@@ -237,7 +237,7 @@ class AllocationFilter(filters.FilterSet):
         model = models.AllocationRequest
         fields = ('id', 'status', 'parent_request_id', 'project_id',
                   'project_name', 'provisioned', 'parent_request',
-                  'parent_request__isnull')
+                  'parent_request__isnull', 'source')
 
 
 class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
@@ -252,7 +252,8 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
             contact_email=self.request.user.username)
 
     def perform_create(self, serializer):
-        kwargs = {'created_by': self.request.user.token.project['id']}
+        kwargs = {'created_by': self.request.user.token.project['id'],
+                  'source': models.AllocationRequest.API_V1}
         if not serializer.validated_data.get('contact_email'):
             kwargs['contact_email'] = self.request.user.username
         serializer.save(**kwargs)
