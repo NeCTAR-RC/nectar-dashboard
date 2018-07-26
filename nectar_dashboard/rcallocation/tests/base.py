@@ -20,10 +20,19 @@ from nectar_dashboard.rcallocation.tests import utils
 class AllocationAPITest(test.APITestCase):
 
     def setUp(self, *args, **kwargs):
-        self.user = utils.get_user()
-        self.user2 = utils.get_user(id='user2')
+        self.user = utils.get_user(id='user1',
+                                   username='bob',
+                                   project_name='proj1')
+        self.user2 = utils.get_user(id='user2',
+                                    username='fred',
+                                    project_name='proj2')
         self.approver_user = utils.get_user(id='approver',
+                                            username='approver',
+                                            project_name='proj3',
                                             roles=['tenantmanager'])
-        self.admin_user = utils.get_user(id='admin', roles=['admin'])
+        self.admin_user = utils.get_user(id='admin',
+                                         username='admin',
+                                         project_name='admin-proj',
+                                         roles=['admin'])
         self.allocation = factories.AllocationFactory.create(
-            created_by=self.user.id, status='E', create_quotas=False)
+            contact_email=self.user.username, status='E', create_quotas=False)
