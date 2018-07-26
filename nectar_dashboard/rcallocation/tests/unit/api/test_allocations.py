@@ -36,14 +36,14 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_list_allocations_negative(self):
         self.client.force_authenticate(user=self.user)
-        factories.AllocationFactory.create(created_by='456')
+        factories.AllocationFactory.create(contact_email='other@example.com')
         response = self.client.get('/rest_api/allocations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(1, len(response.data))
 
     def test_list_allocations_admin(self):
         self.client.force_authenticate(user=self.admin_user)
-        factories.AllocationFactory.create(created_by='456')
+        factories.AllocationFactory.create(contact_email='other@example.com')
         response = self.client.get('/rest_api/allocations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(2, len(response.data))
@@ -62,13 +62,13 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_get_allocation_negative(self):
         self.client.force_authenticate(user=self.user)
-        factories.AllocationFactory.create(created_by='456')
+        factories.AllocationFactory.create(contact_email='other@example.com')
         response = self.client.get('/rest_api/allocations/2/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_allocation_admin(self):
         self.client.force_authenticate(user=self.admin_user)
-        factories.AllocationFactory.create(created_by='456')
+        factories.AllocationFactory.create(contact_email='other@example.com')
         response = self.client.get('/rest_api/allocations/2/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(2, response.data['id'])
@@ -88,7 +88,7 @@ class AllocationTests(base.AllocationAPITest):
         self.client.force_authenticate(user=self.user)
         allocation = factories.AllocationFactory.create(
             status=models.AllocationRequest.APPROVED,
-            created_by=self.user.id)
+            contact_email=self.user.username)
         response = self.client.patch(
             '/rest_api/allocations/%s/' % allocation.id,
             {'use_case': 'test-update'})
@@ -112,14 +112,14 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_update_allocation_negative(self):
         self.client.force_authenticate(user=self.user)
-        factories.AllocationFactory.create(created_by='456')
+        factories.AllocationFactory.create(contact_email='other@example.com')
         response = self.client.patch('/rest_api/allocations/2/',
                                      {'use_case': 'test-update'})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_allocation_admin(self):
         self.client.force_authenticate(user=self.admin_user)
-        factories.AllocationFactory.create(created_by='456')
+        factories.AllocationFactory.create(contact_email='other@example.com')
         response = self.client.patch('/rest_api/allocations/2/',
                                      {'use_case': 'test-update'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -127,7 +127,7 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_update_allocation_admin_field(self):
         self.client.force_authenticate(user=self.admin_user)
-        factories.AllocationFactory.create(created_by='456')
+        factories.AllocationFactory.create(contact_email='other@example.com')
         response = self.client.patch('/rest_api/allocations/2/',
                                      {'notes': 'test-notes'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -142,10 +142,27 @@ class AllocationTests(base.AllocationAPITest):
                 'use_case': 'for testing'}
         response = self.client.post('/rest_api/allocations/', data)
         allocation = models.AllocationRequest.objects.get(id=2)
-        self.assertEqual(self.user.id, allocation.created_by)
+        self.assertEqual(self.user.token.project['id'], allocation.created_by)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual('test-project', response.data['project_name'])
         self.assertEqual(self.user.username, response.data['contact_email'])
+        self.assertEqual(models.AllocationRequest.SUBMITTED,
+                         response.data['status'])
+
+    def test_create_override_contact_email(self):
+        self.client.force_authenticate(user=self.admin_user)
+        data = {'project_name': 'test-project',
+                'project_description': 'project for testing',
+                'start_date': '2000-01-01',
+                'allocation_home': 'uom',
+                'use_case': 'for testing',
+                'contact_email': 'test_override@example.com'}
+        response = self.client.post('/rest_api/allocations/', data)
+        allocation = models.AllocationRequest.objects.get(id=2)
+        self.assertEqual(self.admin_user.token.project['id'], allocation.created_by)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual('test-project', response.data['project_name'])
+        self.assertEqual('test_override@example.com', response.data['contact_email'])
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
 
@@ -194,7 +211,7 @@ class AllocationTests(base.AllocationAPITest):
     def test_amend(self):
         self.client.force_authenticate(user=self.user)
         allocation = factories.AllocationFactory.create(
-            created_by=self.user.id,
+            contact_email=self.user.username,
             status=models.AllocationRequest.APPROVED)
         response = self.client.post(
             '/rest_api/allocations/%s/amend/' % allocation.id)
@@ -211,7 +228,7 @@ class AllocationTests(base.AllocationAPITest):
     def test_amend_invalid_user(self):
         self.client.force_authenticate(user=self.user)
         allocation = factories.AllocationFactory.create(
-            created_by='456',
+            contact_email='bogus@wrong.com',
             status=models.AllocationRequest.APPROVED)
         response = self.client.post(
             '/rest_api/allocations/%s/amend/' % allocation.id)
