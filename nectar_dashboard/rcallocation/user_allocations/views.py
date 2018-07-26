@@ -111,6 +111,7 @@ class UserAllocationsListView(views.AllocationsListView):
         return (models.AllocationRequest.objects.all()
                 .exclude(status=models.AllocationRequest.LEGACY)
                 .filter(parent_request=None)
+                .filter(source=models.AllocationRequest.WEB)
                 .filter(Q(project_id__in=managed_projects) |
                         Q(contact_email__exact=contact_email))
                 .order_by('status')

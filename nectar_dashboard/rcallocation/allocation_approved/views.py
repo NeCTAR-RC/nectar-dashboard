@@ -12,7 +12,8 @@ class ApprovedAllocationsListView(AllocationsListView):
         return [ar for ar in
                 AllocationRequest.objects.filter(
                     parent_request=None).filter(
+                    source=AllocationRequest.WEB).filter(
                     status__in=('A', 'X', 'J')).order_by(
-                    'project_name').prefetch_related(
-                    'quotas', 'investigators', 'institutions',
-                    'publications', 'grants')]
+                        'project_name').prefetch_related(
+                            'quotas', 'investigators', 'institutions',
+                            'publications', 'grants')]
