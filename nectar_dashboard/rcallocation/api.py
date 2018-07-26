@@ -202,11 +202,11 @@ class AllocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.AllocationRequest
-        exclude = ('created_by', 'notes', 'status_explanation', 'source')
-        read_only_fields = ('status', 'parent_request', 'submit_date',
+        exclude = ('created_by', 'notes', 'status_explanation', 'source',
+                   'funding_national_percent', 'funding_node', 'parent_request')
+        read_only_fields = ('status', 'submit_date',
                             'motified_time', 'contact_email', 'approver_email',
-                            'project_id', 'funding_national_percent',
-                            'funding_node', 'provisioned')
+                            'project_id', 'provisioned')
 
     def get_status_display(self, obj):
         return obj.get_status_display()
