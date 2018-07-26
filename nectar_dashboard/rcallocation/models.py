@@ -87,6 +87,14 @@ class AllocationRequest(models.Model):
         (LEGACY_APPROVED, 'Legacy approved'),
         (LEGACY_REJECTED, 'Legacy rejected'),
     )
+
+    WEB = 'web'
+    API_V1 = 'api-v1'
+    SOURCE_CHOICES = (
+        (WEB, 'Web form submission'),
+        (API_V1, 'APIv1 submission'),
+    )
+
     parent_request = models.ForeignKey('AllocationRequest', null=True,
                                        blank=True)
 
@@ -304,6 +312,10 @@ class AllocationRequest(models.Model):
         "Private notes for admins",
         null=True, blank=True,
         help_text="These notes are only visible to allocation admins")
+
+    source = models.CharField(max_length=10,
+                              choices=SOURCE_CHOICES,
+                              default=WEB)
 
     class Meta:
         ordering = ['-modified_time']
