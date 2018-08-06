@@ -209,7 +209,7 @@ class AllocationSerializer(serializers.ModelSerializer):
                    'parent_request')
         read_only_fields = ('status', 'submit_date',
                             'motified_time', 'contact_email', 'approver_email',
-                            'project_id', 'provisioned')
+                            'project_id', 'provisioned', 'notifications')
 
     @staticmethod
     def get_status_display(obj):
