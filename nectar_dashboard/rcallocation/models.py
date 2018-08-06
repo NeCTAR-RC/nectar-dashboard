@@ -305,6 +305,10 @@ class AllocationRequest(models.Model):
         null=True, blank=True,
         help_text="These notes are only visible to allocation admins")
 
+    notifications = models.BooleanField(
+        default=True,
+        help_text="Send notifications for this allocation")
+
     class Meta:
         ordering = ['-modified_time']
 
@@ -439,6 +443,8 @@ class AllocationRequest(models.Model):
         )
 
     def send_notifications(self):
+        if not self.notifications:
+            return
         status = self.status.lower()
         if status in ['n', 'e', 'x']:
             if status == 'n':
@@ -460,7 +466,7 @@ class AllocationRequest(models.Model):
         duration_relativedelta = relativedelta(
             months=self.estimated_project_duration)
         self.end_date = self.start_date + duration_relativedelta
-        if not kwargs.get('provisioning'):
+        if not kwargs.pop('provisioning', None):
             if not self.is_archived():
                 self.modified_time = datetime.datetime.utcnow()
                 try:
@@ -475,8 +481,6 @@ class AllocationRequest(models.Model):
             self.status = 'A'
         elif self.status == 'O':
             self.status = 'R'
-        if 'provisioning' in kwargs:
-            del kwargs['provisioning']
         super(AllocationRequest, self).save(*args, **kwargs)
 
     def get_all_fields(self):
