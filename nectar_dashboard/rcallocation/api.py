@@ -241,7 +241,10 @@ class AllocationFilter(filters.FilterSet):
 
 
 class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
-    queryset = models.AllocationRequest.objects.order_by('-modified_time')
+    queryset = models.AllocationRequest.objects.prefetch_related(
+        'quotas', 'quotas__quota_set', 'quotas__zone',
+        'quotas__quota_set__resource__service_type',
+        'quotas__quota_set__resource')
     serializer_class = AllocationSerializer
     filter_class = AllocationFilter
 
@@ -249,7 +252,10 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         if self.is_admin():
             return self.queryset
         return models.AllocationRequest.objects.filter(
-            contact_email=self.request.user.username)
+            contact_email=self.request.user.username).prefetch_related(
+                'quotas', 'quotas__quota_set', 'quotas__zone',
+                'quotas__quota_set__resource__service_type',
+                'quotas__quota_set__resource')
 
     def perform_create(self, serializer):
         kwargs = {'created_by': self.request.user.token.project['id']}
