@@ -226,7 +226,7 @@ class AdminAllocationSerializer(AllocationSerializer):
         exclude = ('created_by',)
         read_only_fields = ('parent_request', 'submit_date',
                             'motified_time', 'approver_email',
-                            'status', 'provisioned')
+                            'status')
 
 
 class AllocationFilter(filters.FilterSet):

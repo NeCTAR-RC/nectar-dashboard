@@ -130,6 +130,8 @@ class ReadOrAdmin(Permission):
 class ModifyPermission(Permission):
 
     def has_object_permission(self, request, view, obj):
+        if self.is_admin(request):
+            return True
         if request.method in permissions.SAFE_METHODS:
             return True
 
