@@ -27,12 +27,13 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         token = request.META.get('HTTP_X_AUTH_TOKEN')
-
+        project_id = request.META.get('HTTP_X_PROJECT_ID')
         if not token:
             return None
         try:
             request.user = auth.authenticate(request=request,
-                                             token=token)
+                                             token=token,
+                                             project_id=project_id)
         except exceptions.KeystoneAuthException:
             raise exceptions.AuthenticationFailed()
 
