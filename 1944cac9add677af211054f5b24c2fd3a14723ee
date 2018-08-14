@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4375f405_84486b8a",
+        "filename": "nectar_dashboard/rcallocation/migrations/0019_add-notifications-field.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2018-08-14T03:38:00Z",
+      "side": 1,
+      "message": "is this related to this change?",
+      "range": {
+        "startLine": 14,
+        "startChar": 8,
+        "endLine": 17,
+        "endChar": 10
+      },
+      "revId": "1944cac9add677af211054f5b24c2fd3a14723ee",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4dbdd00d_7fdd4d74",
+        "filename": "nectar_dashboard/rcallocation/migrations/0019_add-notifications-field.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2018-08-14T03:38:00Z",
+      "side": 1,
+      "message": "is this related to this change?",
+      "range": {
+        "startLine": 23,
+        "startChar": 8,
+        "endLine": 27,
+        "endChar": 10
+      },
+      "revId": "1944cac9add677af211054f5b24c2fd3a14723ee",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
