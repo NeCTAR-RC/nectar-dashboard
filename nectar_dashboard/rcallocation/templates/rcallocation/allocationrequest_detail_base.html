@@ -95,7 +95,7 @@
           <h3>Current Quota</h3>
           <table class="table table-hover">
             {% for quotagroup in previous_allocation.quotas.all %}
-            {% for quota in quota_group.quota_set.all %}
+            {% for quota in quotagroup.quota_set.all %}
               <tr>
                 <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
                 <td>{{ quota.quota }} {{ quota.resource.unit }}</td>
