@@ -30,12 +30,13 @@ from nectar_dashboard.rcallocation import utils
 
 class PermissionMixin(object):
 
-    def is_admin(self):
+    def is_read_admin(self):
         if self.request.user.is_authenticated():
             roles = set([role['name'].lower()
                          for role in self.request.user.roles])
             required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES +
-                           settings.ALLOCATION_APPROVER_ROLES)
+                           settings.ALLOCATION_APPROVER_ROLES +
+                           settings.ALLOCATION_GLOBAL_READ_ROLES)
             if required & roles:
                 return True
         return False
@@ -167,7 +168,7 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
                      'group__service_type')
 
     def get_queryset(self):
-        if self.is_admin():
+        if self.is_read_admin():
             return self.queryset
         return models.Quota.objects.filter(
             group__allocation__contact_email=self.request.user.username)
@@ -249,7 +250,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     filter_class = AllocationFilter
 
     def get_queryset(self):
-        if self.is_admin():
+        if self.is_read_admin():
             return self.queryset
         return models.AllocationRequest.objects.filter(
             contact_email=self.request.user.username).prefetch_related(
@@ -264,7 +265,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         serializer.save(**kwargs)
 
     def get_serializer_class(self):
-        if self.is_admin():
+        if self.is_read_admin():
             return AdminAllocationSerializer
         return AllocationSerializer
 
