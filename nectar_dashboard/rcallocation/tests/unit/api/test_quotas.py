@@ -55,10 +55,9 @@ class QuotaTests(base.AllocationAPITest):
                          len(response.data))
 
     def test_list_quotas_unauthenticated(self):
-        factories.AllocationFactory.create(contact_email=self.user.username,
-                                           create_quotas=True)
         response = self.client.get('/rest_api/quotas/')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(models.Quota.objects.count(), len(response.data))
 
     def test_list_quotas_negative(self):
         self.client.force_authenticate(user=self.user)
@@ -87,7 +86,7 @@ class QuotaTests(base.AllocationAPITest):
 
     def test_get_quota_unauthenticated(self):
         response = self.client.get('/rest_api/quotas/%s/' % self.quota.id)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_quota_negative(self):
         self.client.force_authenticate(user=self.user2)
