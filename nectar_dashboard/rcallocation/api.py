@@ -200,6 +200,7 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
+    chief_investigator = serializers.SerializerMethodField()
 
     class Meta:
         model = models.AllocationRequest
@@ -213,6 +214,15 @@ class AllocationSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_status_display(obj):
         return obj.get_status_display()
+
+    @staticmethod
+    def get_chief_investigator(obj):
+        investigators = obj.investigators.all()
+        if investigators:
+            # Should only be one ci per allocation
+            ci = investigators[0]
+            return str(ci.email)
+    return None
 
     def validate_project_name(self, value):
         projects = models.AllocationRequest.objects.filter(project_name=value)
@@ -234,6 +244,7 @@ class AdminAllocationSerializer(AllocationSerializer):
 class AllocationFilter(filters.FilterSet):
     parent_request__isnull = filters.BooleanFilter(name='parent_request',
                                                    lookup_expr='isnull')
+    chief_investigator = filters.CharFilter('investigators__email')
 
     class Meta:
         model = models.AllocationRequest
