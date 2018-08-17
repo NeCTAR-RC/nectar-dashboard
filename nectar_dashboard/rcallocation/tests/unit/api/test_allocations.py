@@ -32,7 +32,7 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_list_allocations_unauthenticated(self):
         response = self.client.get('/rest_api/allocations/')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_allocations_negative(self):
         self.client.force_authenticate(user=self.user)
@@ -58,7 +58,14 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_get_allocation_unauthenticated(self):
         response = self.client.get('/rest_api/allocations/1/')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        public_fields = ['id', 'project_name', 'project_description',
+                         'modified_time', 'submit_date', 'start_date',
+                         'end_date', 'field_of_research_1',
+                         'field_of_research_2', 'field_of_research_3',
+                         'for_percentage_1', 'for_percentage_2',
+                         'for_percentage_3', 'quotas']
+        self.assertEqual(public_fields, response.data.keys())
 
     def test_get_allocation_negative(self):
         self.client.force_authenticate(user=self.user)
