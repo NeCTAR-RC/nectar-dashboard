@@ -210,7 +210,8 @@ class AllocationSerializer(serializers.ModelSerializer):
                             'motified_time', 'contact_email', 'approver_email',
                             'project_id', 'provisioned')
 
-    def get_status_display(self, obj):
+    @staticmethod
+    def get_status_display(obj):
         return obj.get_status_display()
 
     def validate_project_name(self, value):
