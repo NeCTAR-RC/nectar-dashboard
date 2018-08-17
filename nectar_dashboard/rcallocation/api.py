@@ -168,6 +168,8 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
                      'group__service_type')
 
     def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return self.queryset
         if self.is_read_admin():
             return self.queryset
         return models.Quota.objects.filter(
@@ -177,6 +179,8 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
         permission_classes = [permissions.IsAuthenticated]
         if self.action == 'destroy':
             permission_classes = [rest_auth.CanUpdate]
+        elif self.action in ['list', 'retrieve']:
+            permission_classes = []
         return [permission() for permission in permission_classes]
 
     def perform_create(self, serializer):
@@ -231,6 +235,17 @@ class AllocationSerializer(serializers.ModelSerializer):
         return value
 
 
+class PublicAllocationSerializer(AllocationSerializer):
+    class Meta:
+        model = models.AllocationRequest
+        fields = ('id', 'project_name', 'project_description', 'modified_time',
+                  'submit_date', 'start_date', 'end_date',
+                  'field_of_research_1', 'field_of_research_2',
+                  'field_of_research_3', 'for_percentage_1',
+                  'for_percentage_2', 'for_percentage_3', 'quotas')
+        read_only_fields = fields
+
+
 class AdminAllocationSerializer(AllocationSerializer):
 
     class Meta:
@@ -258,10 +273,12 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         'quotas', 'quotas__quota_set', 'quotas__zone',
         'quotas__quota_set__resource__service_type',
         'quotas__quota_set__resource', 'investigators')
-    serializer_class = AllocationSerializer
+
     filter_class = AllocationFilter
 
     def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return self.queryset
         if self.is_read_admin():
             return self.queryset
         return models.AllocationRequest.objects.filter(
@@ -279,7 +296,10 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     def get_serializer_class(self):
         if self.is_read_admin():
             return AdminAllocationSerializer
-        return AllocationSerializer
+        elif self.request.user.is_authenticated():
+            return AllocationSerializer
+        else:
+            return PublicAllocationSerializer
 
     def get_permissions(self):
         permission_classes = [permissions.IsAuthenticated]
@@ -292,7 +312,8 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
             permission_classes.append(rest_auth.CanAmend)
         elif self.action == 'approve':
             permission_classes.append(rest_auth.CanApprove)
-
+        elif self.action in ('list', 'retrieve'):
+            permission_classes = []
         return [permission() for permission in permission_classes]
 
     @detail_route(methods=['post'])
@@ -303,7 +324,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.provisioned = False
         allocation.approver_email = request.user.username
         allocation.save()
-        return response.Response(self.serializer_class(allocation).data)
+        return response.Response(self.get_serializer_class()(allocation).data)
 
     @detail_route(methods=['post'])
     def amend(self, request, pk=None):
@@ -312,7 +333,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.status = models.AllocationRequest.UPDATE_PENDING
         allocation.provisioned = False
         allocation.save()
-        return response.Response(self.serializer_class(allocation).data)
+        return response.Response(self.get_serializer_class()(allocation).data)
 
     @detail_route(methods=['post'])
     def delete(self, request, pk=None):
@@ -323,7 +344,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         if parent_request:
             parent_request.status = models.AllocationRequest.DELETED
             parent_request.save()
-        return response.Response(self.serializer_class(allocation).data)
+        return response.Response(self.get_serializer_class()(allocation).data)
 
     def destroy(self, request, *args, **kwargs):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
