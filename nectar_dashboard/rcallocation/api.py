@@ -258,7 +258,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         'quotas', 'quotas__quota_set', 'quotas__zone',
         'quotas__quota_set__resource__service_type',
         'quotas__quota_set__resource', 'investigators')
-    serializer_class = AllocationSerializer
+
     filter_class = AllocationFilter
 
     def get_queryset(self):
@@ -303,7 +303,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.provisioned = False
         allocation.approver_email = request.user.username
         allocation.save()
-        return response.Response(self.serializer_class(allocation).data)
+        return response.Response(self.get_serializer_class()(allocation).data)
 
     @detail_route(methods=['post'])
     def amend(self, request, pk=None):
@@ -312,7 +312,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.status = models.AllocationRequest.UPDATE_PENDING
         allocation.provisioned = False
         allocation.save()
-        return response.Response(self.serializer_class(allocation).data)
+        return response.Response(self.get_serializer_class()(allocation).data)
 
     @detail_route(methods=['post'])
     def delete(self, request, pk=None):
@@ -323,7 +323,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         if parent_request:
             parent_request.status = models.AllocationRequest.DELETED
             parent_request.save()
-        return response.Response(self.serializer_class(allocation).data)
+        return response.Response(self.get_serializer_class()(allocation).data)
 
     def destroy(self, request, *args, **kwargs):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
