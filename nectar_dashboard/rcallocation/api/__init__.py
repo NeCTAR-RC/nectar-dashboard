@@ -369,6 +369,7 @@ class InstitutionSerializer(serializers.ModelSerializer):
         model = models.Institution
         fields = '__all__'
 
+
 class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
     queryset = models.Institution.objects.all()
@@ -381,6 +382,7 @@ class PublicationSerializer(serializers.ModelSerializer):
         model = models.Publication
         fields = '__all__'
 
+
 class PublicationViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
     queryset = models.Publication.objects.all()
@@ -392,6 +394,7 @@ class GrantSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Grant
         fields = '__all__'
+
 
 class GrantViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
