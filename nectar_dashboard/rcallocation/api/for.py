@@ -42,6 +42,8 @@ class AllocationTreeViewSet(viewsets.GenericViewSet):
 def partition_active_allocations():
     allocation_summaries = list()
     active_allocations = models.AllocationRequest.objects.filter(
+        status__in=[models.AllocationRequest.APPROVED,
+                    models.AllocationRequest.UPDATE_PENDING]).filter(
         parent_request__isnull=True).prefetch_related(
         Prefetch('quotas', queryset=models.QuotaGroup.objects.filter(
             service_type='compute', zone='nectar')),
