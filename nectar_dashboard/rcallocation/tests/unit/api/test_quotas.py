@@ -52,12 +52,13 @@ class QuotaTests(base.AllocationAPITest):
         response = self.client.get('/rest_api/quotas/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self._get_quotas(self.user).count(),
-                         len(response.data))
+                         len(response.data['results']))
 
     def test_list_quotas_unauthenticated(self):
         response = self.client.get('/rest_api/quotas/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(models.Quota.objects.count(), len(response.data))
+        self.assertEqual(models.Quota.objects.count(),
+                         len(response.data['results']))
 
     def test_list_quotas_negative(self):
         self.client.force_authenticate(user=self.user)
@@ -66,7 +67,7 @@ class QuotaTests(base.AllocationAPITest):
         response = self.client.get('/rest_api/quotas/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self._get_quotas(self.user).count(),
-                         len(response.data))
+                         len(response.data['results']))
 
     def test_list_quotas_admin(self):
         self.client.force_authenticate(user=self.admin_user)
@@ -76,7 +77,8 @@ class QuotaTests(base.AllocationAPITest):
                                            create_quotas=True)
         response = self.client.get('/rest_api/quotas/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(models.Quota.objects.count(), len(response.data))
+        self.assertEqual(models.Quota.objects.count(),
+                         len(response.data['results']))
 
     def test_get_quota(self):
         self.client.force_authenticate(user=self.user)

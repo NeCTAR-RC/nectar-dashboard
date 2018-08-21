@@ -28,7 +28,7 @@ class AllocationTests(base.AllocationAPITest):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/rest_api/allocations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(1, len(response.data))
+        self.assertEqual(1, len(response.data['results']))
 
     def test_list_allocations_unauthenticated(self):
         response = self.client.get('/rest_api/allocations/')
@@ -39,14 +39,14 @@ class AllocationTests(base.AllocationAPITest):
         factories.AllocationFactory.create(contact_email='other@example.com')
         response = self.client.get('/rest_api/allocations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(1, len(response.data))
+        self.assertEqual(1, len(response.data['results']))
 
     def test_list_allocations_admin(self):
         self.client.force_authenticate(user=self.admin_user)
         factories.AllocationFactory.create(contact_email='other@example.com')
         response = self.client.get('/rest_api/allocations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(2, len(response.data))
+        self.assertEqual(2, len(response.data['results']))
 
     def test_get_allocation(self):
         self.client.force_authenticate(user=self.user)
