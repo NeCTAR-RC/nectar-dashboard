@@ -358,13 +358,15 @@ REST_FRAMEWORK = {
 }
 
 REST_VIEW_SETS = (
-    ('allocations', 'nectar_dashboard.rcallocation.api.AllocationViewSet'),
-    ('quotas', 'nectar_dashboard.rcallocation.api.QuotaViewSet'),
-    ('chiefinvestigators', 'nectar_dashboard.rcallocation.api.ChiefInvestigatorViewSet'),
-    ('institutions', 'nectar_dashboard.rcallocation.api.InstitutionViewSet'),
-    ('publications', 'nectar_dashboard.rcallocation.api.PublicationViewSet'),
-    ('grants', 'nectar_dashboard.rcallocation.api.GrantViewSet'),
-    ('resources', 'nectar_dashboard.rcallocation.api.ResourceViewSet'),
-    ('zones', 'nectar_dashboard.rcallocation.api.ZoneViewSet'),
-    ('service-types', 'nectar_dashboard.rcallocation.api.ServiceTypeViewSet'),
+    ('allocations', 'nectar_dashboard.rcallocation.api.AllocationViewSet', None),
+    ('quotas', 'nectar_dashboard.rcallocation.api.QuotaViewSet', None),
+    ('chiefinvestigators', 'nectar_dashboard.rcallocation.api.ChiefInvestigatorViewSet', None),
+    ('institutions', 'nectar_dashboard.rcallocation.api.InstitutionViewSet', None),
+    ('publications', 'nectar_dashboard.rcallocation.api.PublicationViewSet', None),
+    ('grants', 'nectar_dashboard.rcallocation.api.GrantViewSet', None),
+    ('resources', 'nectar_dashboard.rcallocation.api.ResourceViewSet', None),
+    ('zones', 'nectar_dashboard.rcallocation.api.ZoneViewSet', None),
+    ('service-types', 'nectar_dashboard.rcallocation.api.ServiceTypeViewSet', None),
+    ('for-codes', 'nectar_dashboard.rcallocation.api.for.FORViewSet', 'for-codes'),
+    ('for-tree', 'nectar_dashboard.rcallocation.api.for.AllocationTreeViewSet', 'for-tree'),
 )
