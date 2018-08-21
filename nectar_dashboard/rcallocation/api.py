@@ -250,7 +250,8 @@ class AllocationFilter(filters.FilterSet):
         model = models.AllocationRequest
         fields = ('status', 'parent_request_id', 'project_id',
                   'project_name', 'provisioned', 'parent_request',
-                  'allocation_home', 'contact_email', 'approver_email',)
+                  'allocation_home', 'contact_email', 'approver_email',
+                  'start_date', 'end_date', 'modified_time', 'created_by')
 
 
 class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
