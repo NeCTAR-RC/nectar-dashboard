@@ -739,5 +739,5 @@ class Grant(models.Model):
                            "grant_id", "first_year_funded", "total_funding")
 
     def __unicode__(self):
-        return "Funding : {0} , total funding: {1}".format(self.funding_body,
-                                                           self.total_funding)
+        return "Funding : {0} , total funding: {1}".format(
+            self.funding_body_scheme, self.total_funding)
