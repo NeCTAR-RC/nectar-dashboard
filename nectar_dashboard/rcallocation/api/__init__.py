@@ -211,7 +211,7 @@ class AllocationSerializer(serializers.ModelSerializer):
         exclude = ('created_by', 'notes', 'status_explanation',
                    'funding_national_percent', 'funding_node',
                    'parent_request')
-        read_only_fields = ('status', 'submit_date',
+        read_only_fields = ('status', 'submit_date', 'end_date',
                             'motified_time', 'contact_email', 'approver_email',
                             'project_id', 'provisioned', 'notifications')
 
@@ -253,7 +253,7 @@ class AdminAllocationSerializer(AllocationSerializer):
         exclude = ('created_by',)
         read_only_fields = ('parent_request', 'submit_date',
                             'motified_time', 'approver_email',
-                            'status')
+                            'status', 'end_date'),
 
 
 class AllocationFilter(filters.FilterSet):
