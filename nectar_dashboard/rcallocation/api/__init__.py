@@ -351,54 +351,84 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class ChiefInvestigatorSerializer(serializers.ModelSerializer):
+class AllocationRelatedSerializer(serializers.ModelSerializer):
+
+    def validate(self, data):
+        user = None
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+        if self.instance:
+            allocation_id = self.instance.allocation.id
+        else:
+            allocation_id = self.initial_data.get('allocation')
+        try:
+            allocation = models.AllocationRequest.objects.get(
+                id=allocation_id,
+                contact_email=user.username)
+        except models.AllocationRequest.DoesNotExist:
+            raise serializers.ValidationError("Allocation does not exist")
+
+        if allocation.status not in [models.AllocationRequest.SUBMITTED,
+                                     models.AllocationRequest.UPDATE_PENDING]:
+            raise serializers.ValidationError(
+                "Allocation in status '%s' can not be updated" %
+                allocation.get_status_display())
+
+        return data
+
+
+class AllocationRelatedViewSet(viewsets.ModelViewSet, PermissionMixin):
+    permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
+    filter_fields = ('allocation',)
+
+    def get_queryset(self):
+        if self.is_read_admin():
+            return self.queryset
+        elif self.request.user.is_authenticated():
+            return self.queryset.filter(
+                allocation__contact_email=self.request.user.username)
+
+
+class ChiefInvestigatorSerializer(AllocationRelatedSerializer):
     class Meta:
         model = models.ChiefInvestigator
         fields = '__all__'
 
 
-class ChiefInvestigatorViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
+class ChiefInvestigatorViewSet(AllocationRelatedViewSet):
     queryset = models.ChiefInvestigator.objects.all()
     serializer_class = ChiefInvestigatorSerializer
-    filter_fields = ('allocation',)
 
 
-class InstitutionSerializer(serializers.ModelSerializer):
+class InstitutionSerializer(AllocationRelatedSerializer):
     class Meta:
         model = models.Institution
         fields = '__all__'
 
 
-class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
+class InstitutionViewSet(AllocationRelatedViewSet):
     queryset = models.Institution.objects.all()
     serializer_class = InstitutionSerializer
-    filter_fields = ('allocation',)
 
 
-class PublicationSerializer(serializers.ModelSerializer):
+class PublicationSerializer(AllocationRelatedSerializer):
     class Meta:
         model = models.Publication
         fields = '__all__'
 
 
-class PublicationViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
+class PublicationViewSet(AllocationRelatedViewSet):
     queryset = models.Publication.objects.all()
     serializer_class = PublicationSerializer
-    filter_fields = ('allocation',)
 
 
-class GrantSerializer(serializers.ModelSerializer):
+class GrantSerializer(AllocationRelatedSerializer):
     class Meta:
         model = models.Grant
         fields = '__all__'
 
 
-class GrantViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
-
+class GrantViewSet(AllocationRelatedViewSet):
     queryset = models.Grant.objects.all()
     serializer_class = GrantSerializer
-    filter_fields = ('allocation',)
