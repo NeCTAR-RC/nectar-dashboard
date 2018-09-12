@@ -103,6 +103,11 @@ class ApproverOrOwner(Permission):
 
     roles = settings.ALLOCATION_APPROVER_ROLES
 
+    def has_permission(self, request, view):
+        if request.user.is_authenticated():
+            return True
+        return False
+
     def has_object_permission(self, request, view, obj):
         if self.is_admin(request):
             return True
@@ -110,7 +115,8 @@ class ApproverOrOwner(Permission):
         owner = False
 
         allocation = self.get_allocation(obj)
-        if allocation and allocation.created_by == request.user.id:
+        if allocation and \
+           allocation.contact_email == request.user.username:
             owner = True
 
         if owner or self.has_role(request.user, self.roles):
