@@ -42,6 +42,17 @@ class PermissionMixin(object):
         return False
 
 
+def is_write_admin(user):
+    if user.is_authenticated():
+        roles = set([role['name'].lower()
+                     for role in user.roles])
+        required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES +
+                       settings.ALLOCATION_APPROVER_ROLES)
+        if required & roles:
+            return True
+    return False
+
+
 class ZoneSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -103,10 +114,14 @@ class QuotaSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request and hasattr(request, "user"):
             user = request.user
+        if not user:
+            raise serializers.ValidationError("No auth")
+
+        search_args = {'id': self.initial_data['allocation']}
+        if not is_write_admin(user):
+            search_args['contact_email'] = user.username
         try:
-            allocation = models.AllocationRequest.objects.get(
-                id=self.initial_data['allocation'],
-                contact_email=user.username)
+            allocation = models.AllocationRequest.objects.get(**search_args)
         except models.AllocationRequest.DoesNotExist:
             raise serializers.ValidationError("Allocation does not exist")
 
@@ -358,14 +373,18 @@ class AllocationRelatedSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request and hasattr(request, "user"):
             user = request.user
+        if not user:
+            raise serializers.ValidationError("No auth")
         if self.instance:
             allocation_id = self.instance.allocation.id
         else:
             allocation_id = self.initial_data.get('allocation')
+
+        search_args = {'id': allocation_id}
+        if not is_write_admin(user):
+            search_args['contact_email'] = user.username
         try:
-            allocation = models.AllocationRequest.objects.get(
-                id=allocation_id,
-                contact_email=user.username)
+            allocation = models.AllocationRequest.objects.get(**search_args)
         except models.AllocationRequest.DoesNotExist:
             raise serializers.ValidationError("Allocation does not exist")
 
