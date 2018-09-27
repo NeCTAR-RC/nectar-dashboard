@@ -201,7 +201,6 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
     def perform_create(self, serializer):
         allocation = models.AllocationRequest.objects.get(
             id=serializer.initial_data['allocation'],
-            contact_email=self.request.user.username,
         )
         zone = models.Zone.objects.get(name=serializer.initial_data['zone'])
         st = models.Resource.objects.get(

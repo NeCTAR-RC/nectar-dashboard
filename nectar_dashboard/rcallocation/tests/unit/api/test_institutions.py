@@ -142,6 +142,18 @@ class InstitutionTests(base.AllocationAPITest):
         self.assertEqual('foobar', institution.name)
         self.assertEqual(self.allocation, institution.allocation)
 
+    def test_create_approver(self):
+        self.client.force_authenticate(user=self.approver_user)
+        data = {
+            'allocation': self.allocation.id,
+            'name': 'foobar',
+        }
+        response = self.client.post('/rest_api/institutions/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        institution = models.Institution.objects.get(id=response.data['id'])
+        self.assertEqual('foobar', institution.name)
+        self.assertEqual(self.allocation, institution.allocation)
+
     def test_create_wrong_state(self):
         self.client.force_authenticate(user=self.user)
         self.allocation.status = models.AllocationRequest.APPROVED
