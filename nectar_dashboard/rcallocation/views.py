@@ -207,6 +207,8 @@ class BaseAllocationView(UpdateView):
         if self.ONLY_REQUESTABLE_RESOURCES:
             quota_kwargs['resource__requestable'] = True
             resource_kwargs['requestable'] = True
+        else:
+            resource_kwargs['requestable'] = False
 
         quota_formsets = OrderedDict()
         for service_type in models.ServiceType.objects.all():
@@ -483,8 +485,17 @@ class BaseAllocationView(UpdateView):
                 quotas = quota_formset.save(commit=False)
                 for obj in quota_formset.deleted_objects:
                     obj.delete()
+
+                # If quota is set to zero then delete the resource
+                # If unavailable qotas are visible then its approval
+                # And we want to determin by quota as opposed to requested
                 for quota in quotas:
-                    if quota.requested_quota > 0:
+                    if self.ONLY_REQUESTABLE_RESOURCES:
+                        zero_check = quota.requested_quota
+                    else:
+                        zero_check = quota.quota
+
+                    if zero_check > 0:
                         quotas_to_save.append(quota)
                     else:
                         if quota.id:
