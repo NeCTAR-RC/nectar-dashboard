@@ -14,8 +14,10 @@
         <label class="label-resource-name control-label pull-right"></label>
       </div>
       <div class="form-group input-group requested_quota">
-        <input id="{{ form.requested_quota.id_for_label }}" class="form-control requested-quota" min="0" name="{{ form.requested_quota.html_name }}" type="number" value="{{ form.requested_quota.value }}">
-        <span class="input-group-addon label-resource-unit"></span>
+        {{ form.requested_quota }}
+        {% if form.requested_quota.field.widget.input_type == "number" %}
+          <span class="input-group-addon label-resource-unit"></span>
+        {% endif %}
       </div>
       <img class="help-popover" src="/static/rcportal/img/help.png" style="display: none;">
       {% if form.requested_quota.errors %}
