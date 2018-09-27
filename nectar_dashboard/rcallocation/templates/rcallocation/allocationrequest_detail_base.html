@@ -84,7 +84,11 @@
             {% for quota in quotagroup.quota_set.all %}
               <tr>
                 <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
+		{% if quota.resource.resource_type == 'boolean' %}
+                <td>Enabled</td>
+		{% else %}
                 <td>{{ quota.requested_quota }} {{ quota.resource.unit }}</td>
+		{% endif %}
               </tr>
             {% endfor %}
             {% endfor %}
@@ -98,7 +102,11 @@
             {% for quota in quotagroup.quota_set.all %}
               <tr>
                 <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
+		{% if quota.resource.resource_type == 'boolean' %}
+                <td>Enabled</td>
+		{% else %}
                 <td>{{ quota.quota }} {{ quota.resource.unit }}</td>
+		{% endif %}
               </tr>
             {% endfor %}
             {% endfor %}

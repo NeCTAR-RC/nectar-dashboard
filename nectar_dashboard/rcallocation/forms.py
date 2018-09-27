@@ -8,7 +8,7 @@ from django.forms.forms import NON_FIELD_ERRORS
 from django.forms.formsets import DELETION_FIELD_NAME
 from django.utils.safestring import mark_safe
 from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
-    ChiefInvestigator, Institution, Publication, Grant, QuotaGroup
+    ChiefInvestigator, Institution, Publication, Grant, QuotaGroup, Resource
 
 
 class FORValidationError(Exception):
@@ -186,6 +186,22 @@ class BaseQuotaForm(ModelForm):
         widgets = {
             'resource': HiddenInput(),
         }
+
+    def __init__(self, **kwargs):
+        super(BaseQuotaForm, self).__init__(**kwargs)
+        inst = kwargs.get('instance', None)
+        if inst:
+            self.res = inst.resource
+        else:
+            self.res = self.initial['resource']
+        if self.res.resource_type == Resource.BOOLEAN:
+            self.fields['requested_quota'].widget = IntegerCheckboxInput(
+                attrs={'data-toggle': 'toggle'})
+
+class IntegerCheckboxInput(forms.CheckboxInput):
+    def value_from_datadict(self, data, files, name):
+        value = super(IntegerCheckboxInput, self).value_from_datadict(data, files, name)
+        return int(value)
 
 
 class QuotaForm(BaseQuotaForm):
