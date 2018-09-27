@@ -99,11 +99,15 @@ class QuotaForm(forms.BaseQuotaForm):
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
         self.fields['requested_quota'].widget.attrs['readonly'] = True
+        self.fields['requested_quota'].widget.attrs['disabled'] = True
         self.fields['requested_quota'].required = False
         quota = kwargs.pop('instance', None)
         if not quota:
             self.fields['requested_quota'].widget = d_forms.HiddenInput()
         self.initial['quota'] = self.instance.requested_quota
+        if self.res and self.res.resource_type == models.Resource.BOOLEAN:
+            self.fields['quota'].widget = forms.IntegerCheckboxInput(
+                attrs={'data-toggle': 'toggle'})
 
     def has_changed(self):
         """

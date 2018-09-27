@@ -538,12 +538,21 @@ class ServiceType(models.Model):
 
 
 class Resource(models.Model):
+    INTEGER = 'integer'
+    BOOLEAN = 'boolean'
+    RESOURCE_TYPES = (
+        (INTEGER, 'Integer'),
+        (BOOLEAN, 'Boolean'),
+    )
     name = models.CharField(max_length=64)
     service_type = models.ForeignKey(ServiceType)
     quota_name = models.CharField(max_length=32)
     unit = models.CharField(max_length=32)
     requestable = models.BooleanField(default=True)
     help_text = models.TextField(null=True, blank=True)
+    resource_type = models.CharField(max_length=10, blank=False,
+                                     choices=RESOURCE_TYPES,
+                                     default=INTEGER)
 
     def __unicode__(self):
         return self.name
@@ -553,7 +562,7 @@ class Resource(models.Model):
 
     class Meta:
         unique_together = ('service_type', 'quota_name')
-
+        ordering = ['id']
 
 class QuotaGroup(models.Model):
     allocation = models.ForeignKey(AllocationRequest, related_name='quotas')

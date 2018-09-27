@@ -13,7 +13,7 @@
     </div>
   </div>
   <div class="row">
-    {% if not  form.requested_quota.is_hidden %}
+    {% if not form.requested_quota.is_hidden %}
     <div class="col-md-4 requested_quota">
       {% include "rcallocation/quota_field.html" with field=form.requested_quota %}
     </div>

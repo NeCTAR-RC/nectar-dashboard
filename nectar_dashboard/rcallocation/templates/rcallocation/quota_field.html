@@ -1,5 +1,7 @@
 {% extends 'rcallocation/nohelp_field.html' %}
 {% block field %}
   {{ field }}
-  <span class="input-group-addon label-resource-unit">{{ unit }}</span>
+  {% if field.field.widget.input_type == "number" %}
+    <span class="input-group-addon label-resource-unit">{{ unit }}</span>
+  {% endif %}
 {% endblock %}
