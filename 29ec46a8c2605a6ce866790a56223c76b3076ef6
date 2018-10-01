@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f9743186_56e24253",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_detail_base.html",
+        "patchSetId": 3
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2018-10-01T03:40:54Z",
+      "side": 1,
+      "message": "replace tabs with spaces",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 2
+      },
+      "revId": "29ec46a8c2605a6ce866790a56223c76b3076ef6",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
