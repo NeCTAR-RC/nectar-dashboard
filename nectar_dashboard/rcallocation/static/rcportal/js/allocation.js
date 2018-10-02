@@ -133,34 +133,12 @@
 }(jQuery));
 
 $(function () {
+  // Popover tooltip settings
   $('.help-popover').popover({
     trigger: "hover",
     placement: "top",
   });
-})
-
-//help icon span click
-$('.help-icon-sp').on('click', function(event){
-    event.preventDefault();
-    var help_icon_sp = $(this);
-    var help_id = help_icon_sp.attr('id');
-    var title = help_icon_sp.attr('title');
-    var help_message = " ";
-    var help_msg_div = $('div[id="'+ help_id +'"]');
-    help_message = help_msg_div.html();
-    show_help_message(help_icon_sp, title, help_message);
 });
-
-//show help message
-function show_help_message(el, help_title, help_message) {
-    $(el).mDialog({
-        title:help_title,
-        content:help_message,
-        close_on_body_click:true,
-        width:450
-    });
-    return false;
-}
 
 (function($) {
 
