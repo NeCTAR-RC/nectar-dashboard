@@ -135,6 +135,9 @@
             	          </div>
 	                    {% endif %}
     	                {{ formset.management_form }}
+                        {% if service_type.notes %}
+                          <p><span class="label label-info">Note:</span> {{ service_type.notes }}</p>
+                        {% endif %}
         	            {% include "rcallocation/quota_forms.html" %}
             	      {% endfor %}
                     </div>

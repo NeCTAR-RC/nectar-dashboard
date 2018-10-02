@@ -532,6 +532,7 @@ class ServiceType(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField(null=True, blank=True)
     zones = models.ManyToManyField(Zone)
+    notes = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
