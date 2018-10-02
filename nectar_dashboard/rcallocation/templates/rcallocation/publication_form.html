@@ -6,18 +6,8 @@
     <label>
         Publication/Output
         <span class="glyphicon glyphicon-asterisk text-primary"></span>
-        &nbsp;&nbsp;&nbsp;<span title="Publication/Output" id="id_publication" class="help-icon-sp"> <img class="help-icon" src='{{ STATIC_URL }}rcportal/img/help.png'> </span>
+        <img class="help-popover" src="{{ STATIC_URL }}rcportal/img/help.png" data-content="Please provide any traditional and non-traditional research outputs using a citation style text reference for each. eg. include article/title, journal/outlet, year, DOI/link if available." data-original-title="Publication/Output" data-html="true">
     </label>
-    <span class="help-block">
-        <div id="id_publication" class="help-text-div">
-            {% autoescape off %}
-                Please provide any traditional and non-traditional research
-                outputs using a citation style text reference for each.
-                eg. include article/title, journal/outlet, year, DOI/link
-                if available.
-            {% endautoescape %}
-        </div>
-    </span>
 </div>
 
 <table class="more_fields_tab">

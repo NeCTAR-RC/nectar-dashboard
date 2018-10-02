@@ -5,9 +5,9 @@
       {% if field.field.required %}
         <span class="glyphicon glyphicon-asterisk text-primary"></span>
       {% endif %}
-      {% block help_sp %}
-      &nbsp;&nbsp;&nbsp;<span title="{{ field.label }}" id="id_{{ field.html_name }}" class="help-icon-sp"> <img class="help-icon" src='{{ STATIC_URL }}rcportal/img/help.png'> </span>
-      {% endblock %}
+      {% if field.help_text %}
+        <img class="help-popover" src="{{ STATIC_URL }}rcportal/img/help.png" data-content="{{ field.help_text }}" data-original-title="{{ field.label }}" data-html="true">
+      {% endif %}
    </label>
     <div class="controls">
       <div class="input-group">
@@ -20,12 +20,4 @@
       {% endfor %}
     </div>
   </div>
-  {% if field.help_text %}
-    <span class="help-block">
-      <div id="id_{{ field.html_name }}" class="help-text-div">
-          {% autoescape off %}{{ field.help_text }}{% endautoescape %}
-      </div>
-    </span>
-  {% endif %}
-  <div class="label-resource-help"></div>
 {% endif %}

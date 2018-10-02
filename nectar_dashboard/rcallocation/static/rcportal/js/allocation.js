@@ -132,35 +132,18 @@
     };
 }(jQuery));
 
-$(function () {
+function apply_popover() {
+  alert('apply popover');
+  // Popover tooltip settings
   $('.help-popover').popover({
     trigger: "hover",
     placement: "top",
   });
-})
-
-//help icon span click
-$('.help-icon-sp').on('click', function(event){
-    event.preventDefault();
-    var help_icon_sp = $(this);
-    var help_id = help_icon_sp.attr('id');
-    var title = help_icon_sp.attr('title');
-    var help_message = " ";
-    var help_msg_div = $('div[id="'+ help_id +'"]');
-    help_message = help_msg_div.html();
-    show_help_message(help_icon_sp, title, help_message);
-});
-
-//show help message
-function show_help_message(el, help_title, help_message) {
-    $(el).mDialog({
-        title:help_title,
-        content:help_message,
-        close_on_body_click:true,
-        width:450
-    });
-    return false;
 }
+
+$(function () {
+  apply_popover();
+});
 
 (function($) {
 
@@ -276,6 +259,7 @@ function show_help_message(el, help_title, help_message) {
              $('div.' + options.formset_class_id).on('click', '#add_another', function (event) {
                  event.preventDefault();
                  create_form_row(formset, opts);
+                 apply_popover();
              });
 
              $('div.'+ options.formset_class_id).on('click', '.delete-icon-sp', function (event){
@@ -315,64 +299,58 @@ function show_help_message(el, help_title, help_message) {
         new_row += "<div class='grant_div'>";
         //type
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'grant_type', 'Type', row_index, true);
+        new_row += create_input_field_label(opts, 'grant_type', 'Type', row_index, true, 'Choose the grant type from the dropdown options.');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_type_options(opts, 'grant_type', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
-        new_row += create_help_span(opts, 'grant_type', row_index, 'Choose the grant type from the dropdown options.');
         //funding body_scheme
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'funding_body_scheme', 'Funding body and scheme', row_index, true);
+        new_row += create_input_field_label(opts, 'funding_body_scheme', 'Funding body and scheme', row_index, true, 'For example, ARC Discovery Project.');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_input_field(opts, 'funding_body_scheme', 'Funding body and scheme', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
-        new_row += create_help_span(opts, 'funding_body_scheme', row_index, 'For example, ARC Discovery Project.');
         //first_year_funded
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'first_year_funded', 'First year funded', row_index, true);
+        new_row += create_input_field_label(opts, 'first_year_funded', 'First year funded', row_index, true, 'Specify the first year funded');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_year_input_field(opts, 'first_year_funded', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
-        new_row += create_help_span(opts, 'first_year_funded', row_index, 'Specify the first year funded');
         //last_year_funded
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'last_year_funded', 'Last year funded', row_index, true);
+        new_row += create_input_field_label(opts, 'last_year_funded', 'Last year funded', row_index, true, 'Specify the last year funded');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_year_input_field(opts, 'last_year_funded', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
-        new_row += create_help_span(opts, 'last_year_funded', row_index, 'Specify the last year funded');
         //total funding
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'total_funding', 'Total funding (AUD)', row_index, true);
+        new_row += create_input_field_label(opts, 'total_funding', 'Total funding (AUD)', row_index, true, 'Total funding amount in AUD.');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_number_input_field(opts, 'total_funding', '0', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
-        new_row += create_help_span(opts, 'total_funding', row_index, 'Total funding amount in AUD.');
         //grant id
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'grant_id', 'Grant ID', row_index, false);
+        new_row += create_input_field_label(opts, 'grant_id', 'Grant ID', row_index, false, 'Specify the grant id.');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_input_field(opts, 'grant_id', 'Grant ID', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
-        new_row += create_help_span(opts, 'grant_id', row_index, 'Specify the grant id.');
         // closed grant_div
         new_row += "</div>"
         new_row += "</td>";
@@ -385,15 +363,13 @@ function show_help_message(el, help_title, help_message) {
         return new_row;
     };
 
-    function create_input_field_label(opts, field_name, field_label, row_index, required){
+    function create_input_field_label(opts, field_name, field_label, row_index, required, help_text){
         label_section = "<label for='id_"+ opts.prefix + "-" + row_index + "-" + field_name +"'>";
         label_section += field_label;
         if(required == true){
             label_section += "<span class='glyphicon glyphicon-asterisk text-primary'></span>";
         }
-        label_section += "&nbsp;&nbsp;&nbsp;<span class='help-icon-sp' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' title='" + field_label + "'>";
-        label_section += "<img src='/static/rcportal/img/help.png' class='help-icon'>";
-        label_section += "</span>";
+        label_section += "<img class='help-popover' src='/static/rcportal/img/help.png' data-content='" + help_text + "' data-original-title='" + field_label + "' data-html='true'>";
         label_section += "</label>";
         return label_section;
     };
@@ -482,12 +458,6 @@ function show_help_message(el, help_title, help_message) {
                 $(this).attr('for', labelFor);
             });
 
-            //reindex help icon span id
-            $(this).find("span.help-icon-sp").each(function(){
-               var newHelpSpanId = $(this).attr('id').replace(match, opts.prefix + '-' + current_index + '-');
-                $(this).attr('id', newHelpSpanId);
-            });
-
             //reindex select id and name
             $(this).find("select.form-control").each(function(){
                 var selectId = $(this).attr('id').replace(match, opts.prefix + '-' + current_index + '-');
@@ -503,12 +473,6 @@ function show_help_message(el, help_title, help_message) {
                 $(this).attr('id', inputId);
                 $(this).attr('name', inputName);
             });
-
-            //reindex help text div help-text-div
-            $(this).find("div.help-text-div").each(function(){
-               var newHelpTextDivId = $(this).attr('id').replace(match, opts.prefix + '-' + current_index + '-');
-                $(this).attr('id', newHelpTextDivId);
-            })
         });
     };
 
@@ -520,6 +484,7 @@ function show_help_message(el, help_title, help_message) {
              $('div.' + options.formset_class_id).on('click', '#add_another', function (event) {
                  event.preventDefault();
                  create_form_row(formset, opts);
+                 apply_popover();
              });
 
              $('div.'+ options.formset_class_id).on('click', '#delete-grant', function (event){
@@ -527,17 +492,6 @@ function show_help_message(el, help_title, help_message) {
                  var clicked_span = $(this);
                  delete_form_row(formset, opts, clicked_span);
              });
-
-            $('div.'+ options.formset_class_id).on('click', '.help-icon-sp', function (event){
-                event.preventDefault();
-                var clicked_span = $(this);
-                var help_id = clicked_span.attr('id');
-                var title = clicked_span.attr('title');
-                var help_msg_div = $('div[id="'+ help_id +'"]');
-                var help_message = " ";
-                help_message = help_msg_div.html();
-                show_help_message(clicked_span, title, help_message);
-            });
          });
     };
 
