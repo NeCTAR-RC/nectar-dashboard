@@ -271,7 +271,9 @@ class AllocationRequest(models.Model):
         """List any ANDS, Nectar, or RDS funded projects supporting this
         request.""",
         blank=True,
-        max_length=255)
+        max_length=255,
+        help_text="""Specify any ANDS, Nectar, RDS or ARDC capabilities
+                    supporting this request.""")
 
     ncris_support = models.CharField(
         'List NCRIS capabilities supporting this request',
