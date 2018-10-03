@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38ecdacf_c77486ab",
+        "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
+        "patchSetId": 1
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2018-10-03T12:34:58Z",
+      "side": 1,
+      "message": "this ok if the css was removed?",
+      "range": {
+        "startLine": 372,
+        "startChar": 45,
+        "endLine": 372,
+        "endChar": 70
+      },
+      "revId": "0ff890c564c1065ac2e789f96ca642a910710808",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
