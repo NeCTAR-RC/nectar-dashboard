@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a804691_b51b24b9",
+        "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
+        "patchSetId": 3
+      },
+      "lineNbr": 501,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2018-10-04T00:27:51Z",
+      "side": 1,
+      "message": "tab",
+      "range": {
+        "startLine": 501,
+        "startChar": 0,
+        "endLine": 501,
+        "endChar": 1
+      },
+      "revId": "52e6f6a06e9f9e4f3d8b13fe6842e0969f7068c8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
