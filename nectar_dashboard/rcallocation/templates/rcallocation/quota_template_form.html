@@ -13,8 +13,8 @@
       <label class="label-resource-name control-label pull-right"></label>
     </div>
     <div class="form-group input-group requested_quota">
-            <input id="id_{{ service_type.catalog_name }}___prefix__-{{ forloop.counter0 }}-requested_quota" class="form-control requested-quota" min="0" name="{{ service_type.catalog_name }}___prefix__-{{ forloop.counter0 }}-requested_quota" type="number" value="0">
-	    <span class="input-group-addon label-resource-unit"></span>
+      <input id="id_{{ service_type.catalog_name }}___prefix__-{{ forloop.counter0 }}-requested_quota" class="form-control" min="0" name="{{ service_type.catalog_name }}___prefix__-{{ forloop.counter0 }}-requested_quota" type="number" value="0">
+	  <span class="input-group-addon label-resource-unit"></span>
     </div>
     <input class="quota-group-enabled form-control" id="id_{{ service_type.catalog_name }}___prefix__-enabled" name="{{ service_type.catalog_name }}___prefix__-enabled" type="hidden" value="true">
     {% if forloop.first %}

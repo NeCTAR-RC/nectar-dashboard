@@ -18,7 +18,7 @@
       var form = $(item).closest('.quota-group');
       form.hide();
       form.find('input[id$="-DELETE"]').val(true);
-      form.find('input.requested-quota').val(0);
+      form.find('input[id$="-requested_quota"]').val(0);
     };
 
 
@@ -78,7 +78,7 @@
 
           // Set quotas to 0 if service is disabled
           if (!enabled) {
-            panel.find('input.requested-quota').each(function() {
+            panel.find('input[id$="-requested_quota"]').each(function() {
               $(this).val(0);
             });
           }
@@ -102,7 +102,7 @@
           }
 
           var is_enabled = false;
-          $(this).find('input.requested-quota').each(function() {
+          $(this).find('input[id$="-requested_quota"]').each(function() {
             if (this.value > 0) {
               is_enabled = true;
             }
