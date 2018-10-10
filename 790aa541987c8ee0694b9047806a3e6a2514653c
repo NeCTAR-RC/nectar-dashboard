@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "091e30b8_7c4fc502",
+        "filename": "nectar_dashboard/rcallocation/allocation/forms.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2018-10-10T05:54:07Z",
+      "side": 1,
+      "message": "funding_node was required \u003d False. Just confirming you want this as True. Model looks like it\u0027s allows null",
+      "revId": "790aa541987c8ee0694b9047806a3e6a2514653c",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "08a23b2a_d10866b4",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_base.html",
+        "patchSetId": 5
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2018-10-10T05:54:07Z",
+      "side": 1,
+      "message": "You probably don\u0027t need a 12-column row for div for this. It can probably go",
+      "range": {
+        "startLine": 113,
+        "startChar": 12,
+        "endLine": 113,
+        "endChar": 13
+      },
+      "revId": "790aa541987c8ee0694b9047806a3e6a2514653c",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4aa649c2_74c904d0",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_base.html",
+        "patchSetId": 5
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2018-10-10T05:54:07Z",
+      "side": 1,
+      "message": "These tabs should be spaces",
+      "range": {
+        "startLine": 114,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 2
+      },
+      "revId": "790aa541987c8ee0694b9047806a3e6a2514653c",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
