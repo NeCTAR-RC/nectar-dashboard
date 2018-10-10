@@ -114,7 +114,7 @@ def request_allocation(user, model=None, compute_groups=None,
                   'use_case': fuzzy.FuzzyText().fuzz(),
                   'estimated_number_users': quota.fuzz(),
                   'geographic_requirements': fuzzy.FuzzyText().fuzz(),
-                  'allocation_home': alloc_home.fuzz(),
+                  'requested_allocation_home': alloc_home.fuzz(),
                   'nectar_support': 'nectar supporting',
                   'ncris_support': 'ncris supporting',
                   }

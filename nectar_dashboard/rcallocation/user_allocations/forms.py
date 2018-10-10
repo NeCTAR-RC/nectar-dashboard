@@ -19,8 +19,7 @@ class UserAllocationRequestAmendForm(AllocationAmendRequestForm):
     next_status = 'X'
 
     class Meta(AllocationAmendRequestForm.Meta):
-        exclude = ('project_id',
-                   'funding_national_percent', 'funding_node',
+        exclude = ('project_id', 'allocation_home',
                    'status_explanation', 'convert_project_trial'
                    ) + AllocationAmendRequestForm.Meta.exclude
 
