@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ab846543_a0266a1b",
+        "filename": "nectar_dashboard/rcallocation/migrations/0023_remove_funding_node.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2018-10-10T23:39:03Z",
+      "side": 1,
+      "message": "sneaky tab",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 1
+      },
+      "revId": "5c2e2075179c45cda74d6814e101bd4cda7dbcd3",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
