@@ -139,10 +139,10 @@
               <span class="label label-warning">No Submission</span>
             {% endif %}
           </p>
-          <h3>Allocation Home Location</h3>
+          <h3>Requested Allocation Home</h3>
           <p>
-            {% if allocation.allocation_home %}
-              {{ allocation.get_allocation_home_display }}
+            {% if requested_allocation.allocation_home %}
+              {{ requested_allocation.get_allocation_home_display }}
             {% else %}
               <span class="label label-warning">No Submission</span>
             {% endif %}

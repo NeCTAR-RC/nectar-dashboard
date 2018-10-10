@@ -46,7 +46,7 @@ class BaseAllocationForm(ModelForm):
             'usage_patterns': Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'allocation_home': Select(attrs={'class': 'col-md-6'}),
+            'requested_allocation_home': Select(attrs={'class': 'col-md-6'}),
             'geographic_requirements': Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),

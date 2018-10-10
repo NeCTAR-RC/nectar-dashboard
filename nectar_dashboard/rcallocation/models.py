@@ -181,7 +181,7 @@ class AllocationRequest(models.Model):
         Will your instances be long running or created and deleted as needed
         Your answers here will help us.""")
 
-    allocation_home = models.CharField(
+    requested_allocation_home = models.CharField(
         "Allocation home location",
         choices=ALLOC_HOME_CHOICE,
         blank=False,
