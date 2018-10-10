@@ -139,10 +139,10 @@
               <span class="label label-warning">No Submission</span>
             {% endif %}
           </p>
-          <h3>Allocation Home Location</h3>
+          <h3>Requested Allocation Home</h3>
           <p>
-            {% if allocation.allocation_home %}
-              {{ allocation.get_allocation_home_display }}
+            {% if requested_allocation.allocation_home %}
+              {{ requested_allocation.get_allocation_home_display }}
             {% else %}
               <span class="label label-warning">No Submission</span>
             {% endif %}
@@ -321,19 +321,13 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          {% if allocation.funding_national_percent %}
-            <h3>Funding</h3>
+            <h3>Allocation Home</h3>
               <table class="table table-hover">
                 <tr>
-                    <th width="200">National</th>
-                    <td>{{allocation.funding_national_percent}} %</td>
-                </tr>
-                <tr>
-                    <th width="200">Site</th>
-                    <td>{{allocation.get_funding_node_display}}</td>
+                    <th width="200">Home</th>
+                    <td>{{allocation.get_allocation_home_display}}</td>
                 </tr>
               </table>
-          {% endif %}
         </div>
       </div>
       <div class="row">

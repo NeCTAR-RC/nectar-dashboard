@@ -181,7 +181,7 @@ class AllocationRequest(models.Model):
         Will your instances be long running or created and deleted as needed
         Your answers here will help us.""")
 
-    allocation_home = models.CharField(
+    requested_allocation_home = models.CharField(
         "Allocation home location",
         choices=ALLOC_HOME_CHOICE,
         blank=False,
@@ -281,23 +281,13 @@ class AllocationRequest(models.Model):
         max_length=255,
         help_text="""Specify NCRIS capabilities supporting this request.""")
 
-    funding_national_percent = models.IntegerField(
-        'Nationally Funded Percentage [0..100]',
-        default='100',
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
-        error_messages={'min_value': 'The minimum percent is 0',
-                        'max_value': 'The maximum percent is 100'},
-        help_text="""Percentage funded under the National
-                    Allocation Scheme.""")
-
-    funding_node = models.CharField(
-        "Node Funding Remainder (if applicable)",
-        choices=ALLOC_HOME_CHOICE[1:],
+    allocation_home = models.CharField(
+        "Allocation Home",
+        choices=ALLOC_HOME_CHOICE,
         blank=True,
         null=True,
         max_length=128,
-        help_text="""You can choose the node that complements
-                    the National Funding."""
+        help_text="""Allocation home of the allocation""",
     )
 
     provisioned = models.BooleanField(default=False)
