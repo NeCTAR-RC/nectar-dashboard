@@ -124,7 +124,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     use_case = fuzzy.FuzzyText()
     usage_patterns = fuzzy.FuzzyText()
     geographic_requirements = fuzzy.FuzzyText()
-    allocation_home = alloc_home
+    requested_allocation_home = alloc_home
     project_description = fuzzy.FuzzyText()
     field_of_research_1 = for_code
     field_of_research_2 = for_code
@@ -133,8 +133,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     for_percentage_2 = 40
     for_percentage_3 = 10
     estimated_number_users = 1000
-    funding_national_percent = percent
-    funding_node = 'monash'
+    allocation_home = 'monash'
     nectar_support = 'nectar supporting'
     ncris_support = 'ncris supporting'
 
