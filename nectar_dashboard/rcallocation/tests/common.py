@@ -21,7 +21,7 @@ from nectar_dashboard.rcallocation import for_choices, project_duration_choices,
 
 FOR_CHOICES = dict(for_choices.FOR_CHOICES)
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
-ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE)
+ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
 
 
@@ -114,7 +114,7 @@ def request_allocation(user, model=None, compute_groups=None,
                   'use_case': fuzzy.FuzzyText().fuzz(),
                   'estimated_number_users': quota.fuzz(),
                   'geographic_requirements': fuzzy.FuzzyText().fuzz(),
-                  'allocation_home': alloc_home.fuzz(),
+                  'requested_allocation_home': alloc_home.fuzz(),
                   'nectar_support': 'nectar supporting',
                   'ncris_support': 'ncris supporting',
                   }

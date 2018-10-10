@@ -21,7 +21,7 @@ from nectar_dashboard.rcallocation import for_choices, project_duration_choices,
 
 FOR_CHOICES = dict(for_choices.FOR_CHOICES)
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
-ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE)
+ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
 
 for_code = fuzzy.FuzzyChoice(FOR_CHOICES.keys())
@@ -124,7 +124,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     use_case = fuzzy.FuzzyText()
     usage_patterns = fuzzy.FuzzyText()
     geographic_requirements = fuzzy.FuzzyText()
-    allocation_home = alloc_home
+    requested_allocation_home = alloc_home
     project_description = fuzzy.FuzzyText()
     field_of_research_1 = for_code
     field_of_research_2 = for_code
@@ -133,8 +133,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     for_percentage_2 = 40
     for_percentage_3 = 10
     estimated_number_users = 1000
-    funding_national_percent = percent
-    funding_node = 'monash'
+    allocation_home = 'monash'
     nectar_support = 'nectar supporting'
     ncris_support = 'ncris supporting'
 

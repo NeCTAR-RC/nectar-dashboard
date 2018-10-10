@@ -12,7 +12,7 @@ class AllocationApproveForm(d_forms.ModelForm):
         fields = (
             'project_name', 'project_description', 'start_date',
             'estimated_project_duration', 'status_explanation',
-            'funding_national_percent', 'funding_node',
+            'requested_allocation_home', 'allocation_home',
         )
 
         exclude = ('nectar_support', 'ncris_support',)
@@ -25,9 +25,9 @@ class AllocationApproveForm(d_forms.ModelForm):
             'status_explanation': d_forms.Textarea(
                 attrs={'class': 'col-md-6 form-control',
                        'style': 'height:120px; width:420px'}),
-            'funding_national_percent': d_forms.NumberInput(
-                attrs={'class': 'form-control col-md-2'}),
-            'funding_node': d_forms.Select(attrs={'class': 'col-md-6'}),
+            'requested_allocation_home': d_forms.Select(
+                attrs={'class': 'col-md-6'}),
+            'allocation_home': d_forms.Select(attrs={'class': 'col-md-6'}),
 
         }
 
@@ -49,9 +49,16 @@ class AllocationApproveForm(d_forms.ModelForm):
         self.fields['status_explanation'].help_text = 'Reviewer Comment'
         self.fields['status_explanation'].label = 'Comment'
         self.initial['status_explanation'] = ''
-        self.fields['funding_national_percent'].required = True
-        self.fields['funding_node'].required = False
-        self.fields['funding_node'].widget.attrs['class'] = 'form-control'
+        self.fields['allocation_home'].required = True
+        self.fields['allocation_home'].widget.attrs['class'] = 'form-control'
+        self.fields['requested_allocation_home'].label = \
+            'Requested Allocation Home'
+        self.fields['requested_allocation_home'].widget.attrs[
+            'class'] = 'form-control'
+        self.fields['requested_allocation_home'].widget.attrs[
+            'readonly'] = True
+        self.fields['requested_allocation_home'].widget.attrs[
+            'disabled'] = True
 
         if self.instance.status == 'L':
             self.instance.status = 'M'
