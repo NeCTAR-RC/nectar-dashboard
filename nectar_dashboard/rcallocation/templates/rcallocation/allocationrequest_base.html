@@ -110,14 +110,14 @@
       {% endblock %}
       <br/>
       <div class="row">
-        <div class="col-md-8">
-          {% include "rcallocation/field.html" with field=form.funding_national_percent %}
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-8">
-          {% include "rcallocation/field.html" with field=form.funding_node %}
-        </div>
+        <div class="col-md-12">
+	  <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="list-group-item-heading">Allocation Home</h4>
+              {% include "rcallocation/inline_field.html" with field=form.requested_allocation_home field2=form.allocation_home %}
+            </div>
+	  </div>
+	</div>
       </div>
       <div class="row">
         <div class="col-md-8">
