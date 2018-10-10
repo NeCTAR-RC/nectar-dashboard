@@ -1,0 +1,10 @@
+{% if field %}
+<div class="row">
+  <div class="col-md-4">
+    {% include "rcallocation/field.html" with field=field %}
+  </div>
+  <div class="col-md-4">
+    {% include "rcallocation/field.html" with field=field2 %}
+  </div>
+</div>
+{% endif %}

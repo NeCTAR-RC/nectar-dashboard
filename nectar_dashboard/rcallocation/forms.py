@@ -22,7 +22,7 @@ class BaseAllocationForm(ModelForm):
         model = AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'modified_time', 'parent_request',
-                   'funding_national_percent', 'funding_node', 'provisioned',
+                   'allocation_home', 'provisioned',
                    'project_id', 'notes', 'notifications')
 
         widgets = {
@@ -46,7 +46,7 @@ class BaseAllocationForm(ModelForm):
             'usage_patterns': Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'allocation_home': Select(attrs={'class': 'col-md-6'}),
+            'requested_allocation_home': Select(attrs={'class': 'col-md-6'}),
             'geographic_requirements': Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
