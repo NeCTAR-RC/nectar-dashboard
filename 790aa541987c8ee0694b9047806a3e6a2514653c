@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "52d3fe4a_35744330",
+        "filename": "nectar_dashboard/rcallocation/allocation/forms.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2018-10-11T00:17:34Z",
+      "side": 1,
+      "message": "yes want it required",
+      "parentUuid": "091e30b8_7c4fc502",
+      "revId": "790aa541987c8ee0694b9047806a3e6a2514653c",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "08a23b2a_d10866b4",
         "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_base.html",
         "patchSetId": 5
