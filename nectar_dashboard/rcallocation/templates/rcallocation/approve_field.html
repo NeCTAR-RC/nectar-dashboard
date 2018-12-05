@@ -1,0 +1,20 @@
+{% if field %}
+  <div class="form-group {% if field.errors %}has-error{% endif %}">
+    <label for="id_{{ field.html_name }}">
+      {{ field.label }}
+      {% if field.field.required %}
+        <span class="glyphicon glyphicon-asterisk text-primary"></span>
+      {% endif %}
+   </label>
+    <div class="controls">
+      <div class="input-group">
+        {{ field }}
+        <span class="input-group-addon label-resource-unit"></span>
+      </div>
+      <span class="label-resource-help"></span>
+      {% for error in field.errors %}
+        <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

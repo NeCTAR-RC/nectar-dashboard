@@ -14,6 +14,10 @@ from django.http import HttpResponseRedirect
 from django.template import loader
 from horizon import tables as horizon_tables
 
+from novaclient import exceptions as n_exc
+
+from openstack_dashboard import api
+
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import tables
@@ -352,10 +356,22 @@ class BaseAllocationView(UpdateView):
                 'help_text': resource.help_text,
             }
 
+        # Get quota limits for Nova
+        quota_limits = {}
+        if self.object:
+            try:
+                quota_limits = api.nova.tenant_absolute_limits(
+                    self.request, reserved=True,
+                    tenant_id=self.object.project_id)
+            except n_exc.Forbidden:
+                # required os_compute_api:os-used-limits policy
+                pass
+
         return (super(BaseAllocationView, self)
                 .get_context_data(service_types=json.dumps(service_types),
                                   resources=json.dumps(resources),
                                   zones=json.dumps(zones),
+                                  quota_limits=json.dumps(quota_limits),
                                   **kwargs))
 
     def get(self, request, *args, **kwargs):
