@@ -58,16 +58,64 @@
           // Set the labels for the resources
           $(this).find('.label-resource-name').text(resource['name']);
           $(this).find('.label-resource-unit').text(resource['unit']);
-
-          var popover = $(this).find('.help-popover')
           if (resource['help_text']) {
-            $(this).find('.label-resource-help').text(resource['help_text']); // TODO(andy): migrate to popover
+            $(this).find('.label-resource-help').text(resource['help_text']); // admin form
+          }
+          var popover = $(this).find('.help-popover');
+          if (resource['help_text']) {
             popover.attr('title', resource['name']);
             popover.attr('data-content', resource['help_text']);
             popover.show();
           }
           else {
             popover.hide();
+          }
+
+          /* Custom hack for RAM!
+             Here we add some html to add extra control for the RAM quota.
+             We add some radio buttons to ether use default value (= 0) and
+             hide the input box or allow a custom value and show it.
+          */
+          if (resource['quota_name'] == 'ram') {
+            // quota_limits will only exist for an allocation that has a project
+            if ('quota_limits' in opts) {
+              ram_gb = parseInt(opts['quota_limits']['maxTotalRAMSize'] / 1024);
+              num_cores = parseInt(opts['quota_limits']['maxTotalCores']);
+
+              var ig = $(this).find('.input-group')
+              ig.after('<div class="resource-custom-override">' +
+                       '  <label class="radio-inline">' +
+                       '    <input type="radio" name="resource_custom_override" value="default">' +
+                       '      Default (4GB per core)' +
+                       '  </label>' +
+                       '  <label class="radio-inline">' +
+                       '    <input type="radio" name="resource_custom_override" value="custom">' +
+                       '      Custom' +
+                       '  </label>' +
+                       '</div>');
+
+              // check if we have a RAM value is default
+              if (ram_gb == (num_cores * 4)) {
+                $(this).find('input:radio[name="resource_custom_override"]').val(['default']);
+                ig.hide();
+              } else {
+                $(this).find('input:radio[name="resource_custom_override"]').val(['custom']);
+                ig.find('input').val(ram_gb);
+              }
+           }
+          }
+        });
+
+        $('input[name="resource_custom_override"]').change(function(){
+          var ig = $(this).closest('.controls').find('.input-group');
+
+          if ($(this).val() == 'custom') {
+            ig.show();
+          }
+          else {
+            // Reset to 0 as its what the default value is
+            ig.find('input').val(0);
+            ig.hide();
           }
         });
 
