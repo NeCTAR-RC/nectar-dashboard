@@ -15,13 +15,13 @@
   <div class="row">
     {% if not form.requested_quota.is_hidden %}
     <div class="col-md-4 requested_quota">
-      {% include "rcallocation/quota_field.html" with field=form.requested_quota %}
+      {% include "rcallocation/approve_field.html" with field=form.requested_quota %}
     </div>
     {% else %}
     <div class="col-md-4"><p>Users cannot request this resource</p></div>
     {% endif %}
     <div class="col-md-4 quota">
-      {% include "rcallocation/quota_field.html" with field=form.quota %}
+      {% include "rcallocation/approve_field.html" with field=form.quota %}
     </div>
   </div>
 </div>
