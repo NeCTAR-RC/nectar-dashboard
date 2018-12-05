@@ -15,7 +15,11 @@ from operator import itemgetter
 
 from django.core.urlresolvers import reverse
 
+import mock
+
 from nectar_dashboard.rcallocation import models
+
+from openstack_dashboard import api
 from openstack_dashboard.test.helpers import TestCase
 
 from .factories import AllocationFactory
@@ -59,7 +63,10 @@ class RequestTestCase(TestCase):
         for i, investigator_model in enumerate(investigators_l):
             assert investigator_model.email == investigators[i]['email']
 
-    def test_edit_allocation_request(self):
+    @mock.patch.object(api.nova, 'tenant_absolute_limits')
+    def test_edit_allocation_request(self, mock_nova_limits):
+
+        mock_nova_limits.return_value = {}
 
         allocation = AllocationFactory.create(contact_email=self.user.name)
         initial_state = allocation_to_dict(
@@ -80,10 +87,11 @@ class RequestTestCase(TestCase):
         # Check to make sure we were redirected back to the index of
         # our requests.
         self.assertStatusCode(response, 302)
-        self.assertEqual(
-            'http://testserver' +
-            reverse('horizon:allocation:user_requests:index'),
-            response.get('location'))
+        #self.assertEqual(
+        #    'http://testserver' +
+        #    reverse('horizon:allocation:user_requests:index'),
+        #    response.get('location'))
+        self.assertEqual('../../', response.get('location'))
         model = (models.AllocationRequest.objects.get(
             project_description=form['project_description'],
             parent_request_id=None))
