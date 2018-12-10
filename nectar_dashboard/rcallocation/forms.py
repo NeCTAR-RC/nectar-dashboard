@@ -1,11 +1,9 @@
 from django import forms
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.forms import ModelForm, ValidationError
 from django.forms import TextInput, Select, CharField, Textarea, HiddenInput
 from django.forms.forms import NON_FIELD_ERRORS
-from django.forms.formsets import DELETION_FIELD_NAME
 from django.utils.safestring import mark_safe
 from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
     ChiefInvestigator, Institution, Publication, Grant, QuotaGroup, Resource
@@ -142,9 +140,10 @@ class AllocationRequestForm(BaseAllocationForm):
         max_length=32,
         label='Project Identifier',
         required=True,
-        help_text='A short name used to identify your project.<br>'
-                  'Letters, numbers, underscores and hyphens only.<br>'
-                  'Must start with a letter and be less than 32 characters.',
+        help_text='A short name used to identify your project. '
+                  'The name should contain letters, numbers, underscores and '
+                  'hyphens only, must start with a letter and be between than '
+                  '5 and 32 characters in length.',
         widget=TextInput(attrs={'autofocus': 'autofocus'}))
 
     def clean(self):
@@ -155,8 +154,19 @@ class AllocationRequestForm(BaseAllocationForm):
         allocations = (AllocationRequest.objects
                        .filter(project_name=cleaned_data['project_name'],
                                parent_request_id=None))
+
+        project_id = None
+
         if self.instance:
             allocations = allocations.exclude(pk=self.instance.pk)
+            project_id = self.instance.project_id
+
+        # Only want this restriction on new allocations only
+        if not project_id:
+            if len(cleaned_data.get('project_name')) < 5:
+                self.add_error('project_name',
+                forms.ValidationError('Project identifier must be at least 5 '
+                                      'characters in length.'))
 
         if allocations:
             self._errors["project_name"] = \
