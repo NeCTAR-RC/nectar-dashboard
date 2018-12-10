@@ -75,16 +75,29 @@
       {{ hidden }}
     {% endfor %}
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
         {% include "rcallocation/field.html" with field=form.project_name %}
       </div>
-      <div class="col-md-6">
+      <div class="col-md-8">
         {% include "rcallocation/field.html" with field=form.contact_email %}
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-4">
         {% include "rcallocation/field.html" with field=form.project_description %}
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label>
+            Generated project DNS zone name
+            <img class="help-popover" src="/static/rcportal/img/help.png" data-content="This will be the Nectar DNS zone name that will be created for your project. This is based on the project identifer value. See our <a href='https://support.ehelp.edu.au/support/solutions/articles/6000201311' target='_blank'>support documentation</a> for more information." data-original-title="Generated project DNS zone name" data-html="true">
+         </label>
+          <div class="controls">
+            <div class="input-group" style="width: 300px;">
+                <input id="id_dns_domain" class="form-control" readonly="readonly" type="text">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -246,7 +259,7 @@
         <h2>Research Grant Information</h2>
         <hr/>
 	{% if grant_formset.non_form_errors %}
-	<div class="alert alert-danger" role="alert"
+	<div class="alert alert-danger" role="alert">
 	  {{ grant_formset.non_form_errors }}
 	</div>
 	{% endif %}
