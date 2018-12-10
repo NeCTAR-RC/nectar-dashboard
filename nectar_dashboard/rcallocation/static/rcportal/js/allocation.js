@@ -133,12 +133,54 @@
 }(jQuery));
 
 function apply_popover() {
-  // Popover tooltip settings
+  // Popover tooltip settings - note we use a manual trigger to support keeping
+  // the popup open to allow clicking hyperlinks within the text
   $('.help-popover').popover({
-    trigger: "hover",
+    trigger: "manual",
     placement: "top",
+    html: true,
+    animation: false,
+  })
+  .on("mouseenter", function() {
+    var _this = this;
+    $(this).popover("show");
+    $(".popover").on("mouseleave", function() {
+      $(_this).popover('hide');
+    });
+  })
+  .on("mouseleave", function() {
+    var _this = this;
+    setTimeout(function() {
+      if (!$(".popover:hover").length) {
+        $(_this).popover("hide");
+      }
+    }, 200);
   });
 }
+
+function get_dns_service_name(project_name) {
+  var domain_name = 'cloud.edu.au';
+  var zone;
+
+  // Setting an arbitary length for new project names to >=5
+  if (project_name.length < 5) {
+    zone = '';
+  } else {
+    // Copied from nectar-tools/expiry/archiver.py
+    var name = project_name.toLowerCase()
+                           .replace(/_/g, '-')
+                           .replace(/[^a-z0-9-]+/g, '')
+                           .substring(0, 62);
+    zone = name + '.' + domain_name;
+  }
+  return zone;
+}
+
+$('#id_project_name').on('input', function(e) {
+  var project_name = $(this).val();
+  var zone = get_dns_service_name(project_name);
+  $('#id_dns_domain').val(zone);
+});
 
 (function($) {
 
@@ -509,6 +551,10 @@ $(function() {
 
     apply_popover();
 });
+
+
+
+
 
 $("form#new-allocation").on("change","#id_start_date", function() {
     var input_start_date = $(this).val();
