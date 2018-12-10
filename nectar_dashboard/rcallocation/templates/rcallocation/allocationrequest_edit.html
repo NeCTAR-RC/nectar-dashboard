@@ -83,8 +83,24 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         {% include "rcallocation/field.html" with field=form.project_description %}
+      </div>
+      <div class="col-md-6">
+
+
+        <div class="form-group ">
+          <label>
+            Nectar DNS service domain
+            <img class="help-popover" src="/static/rcportal/img/help.png" data-content="This will be the Nectar DNS service domain that will be created for your project. This is based on the project identifer value." data-original-title="Nectar DNS service domain" data-html="true">
+         </label>
+          <div class="controls">
+            <div class="input-group">
+                <input id="id_dns_domain" class="form-control" readonly="readonly" type="text" length="70">
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="row">
@@ -246,7 +262,7 @@
         <h2>Research Grant Information</h2>
         <hr/>
 	{% if grant_formset.non_form_errors %}
-	<div class="alert alert-danger" role="alert"
+	<div class="alert alert-danger" role="alert">
 	  {{ grant_formset.non_form_errors }}
 	</div>
 	{% endif %}
