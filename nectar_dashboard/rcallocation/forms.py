@@ -104,6 +104,9 @@ class BaseAllocationForm(ModelForm):
         data = self.cleaned_data['project_name']
         if data.startswith('pt-'):
             raise ValidationError("Projects can not start with pt-")
+        if len(data) < 5:
+            raise ValidationError("Project identifier must be at least 5 "
+                                  "characters in length.")
 
         return data
 
@@ -142,9 +145,10 @@ class AllocationRequestForm(BaseAllocationForm):
         max_length=32,
         label='Project Identifier',
         required=True,
-        help_text='A short name used to identify your project.<br>'
-                  'Letters, numbers, underscores and hyphens only.<br>'
-                  'Must start with a letter and be less than 32 characters.',
+        help_text='A short name used to identify your project. '
+                  'The name should contain letters, numbers, underscores and '
+                  'hyphens only, must start with a letter and be between than '
+                  '5 and 32 characters in length.',
         widget=TextInput(attrs={'autofocus': 'autofocus'}))
 
     def clean(self):
