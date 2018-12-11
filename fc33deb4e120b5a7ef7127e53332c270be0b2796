@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0d5f9936_021e0759",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2018-12-11T05:27:12Z",
+      "side": 1,
+      "message": "I don\u0027t think this is the way to do this, not sure what the add_error method is but should be raising a ValidationError. See https://docs.djangoproject.com/en/1.11/ref/forms/validation/#cleaning-a-specific-field-attribute\n\nThe bit below this is a bit dodgy too, this one needs to be in the clean method due to it needing to deal with something outside of just the project name but it should not be modifying _errors etc.",
+      "range": {
+        "startLine": 166,
+        "startChar": 0,
+        "endLine": 171,
+        "endChar": 55
+      },
+      "revId": "fc33deb4e120b5a7ef7127e53332c270be0b2796",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
