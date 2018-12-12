@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d5a14eb_b2d69176",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2018-12-12T02:23:24Z",
+      "side": 1,
+      "message": "\"Generated project DNS zone name\"?",
+      "range": {
+        "startLine": 92,
+        "startChar": 12,
+        "endLine": 92,
+        "endChar": 40
+      },
+      "revId": "ff6b7d9dd2c1339a22828884655e6e05b418a296",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5d6ae4_46cdf15f",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2018-12-12T02:23:24Z",
+      "side": 1,
+      "message": "remove this?",
+      "range": {
+        "startLine": 92,
+        "startChar": 23,
+        "endLine": 92,
+        "endChar": 30
+      },
+      "revId": "ff6b7d9dd2c1339a22828884655e6e05b418a296",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "84bb67fc_a93cd68c",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2018-12-12T02:23:24Z",
+      "side": 1,
+      "message": "Is there a support doc we can link to?\n\nMaybe something like: A DNS zone name will be provisioned for this project for you to use \u003ca link\u003d\u0027support\u0027\u003emore info\u003c/a\u003e",
+      "range": {
+        "startLine": 93,
+        "startChar": 116,
+        "endLine": 93,
+        "endChar": 123
+      },
+      "revId": "ff6b7d9dd2c1339a22828884655e6e05b418a296",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    }
+  ]
+}
