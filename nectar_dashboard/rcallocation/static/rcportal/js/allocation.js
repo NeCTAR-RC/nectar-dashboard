@@ -170,7 +170,10 @@ function get_dns_service_name(project_name) {
     var name = project_name.toLowerCase()
                            .replace(/_/g, '-')
                            .replace(/[^a-z0-9-]+/g, '')
-                           .substring(0, 62);
+                           .replace(/(-)\1+/g, '$1')
+                           .replace(/^[^a-z0-9]/g, '')
+                           .substring(0, 62)
+                           .replace(/[^a-z0-9]$/g, '');
     zone = name + '.' + domain_name;
   }
   return zone;
