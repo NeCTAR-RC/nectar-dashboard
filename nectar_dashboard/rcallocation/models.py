@@ -324,13 +324,6 @@ class AllocationRequest(models.Model):
         """
         return self.status.lower() == 'a'
 
-    def is_decided(self):
-        """
-        Return True if the allocation has either been accepted or
-        rejected, false otherwise.
-        """
-        return self.is_active()
-
     def is_rejected(self):
         """
         Return True if the allocation has either been accepted or
