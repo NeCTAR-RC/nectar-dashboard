@@ -329,7 +329,7 @@ class AllocationRequest(models.Model):
         Return True if the allocation has either been accepted or
         rejected, false otherwise.
         """
-        return self.is_active()
+        return self.is_active() or self.is_rejected()
 
     def is_rejected(self):
         """
