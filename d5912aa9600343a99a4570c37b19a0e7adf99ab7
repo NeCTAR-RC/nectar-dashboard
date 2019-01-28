@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0605b129_cbb4a741",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-01-28T22:35:28Z",
+      "side": 1,
+      "message": "I can\u0027t see where this method is used, maybe it should be deleted?",
+      "revId": "d5912aa9600343a99a4570c37b19a0e7adf99ab7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
