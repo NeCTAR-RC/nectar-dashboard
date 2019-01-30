@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b55cd632_dda6fded",
+        "filename": "README.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-01-30T02:36:22Z",
+      "side": 1,
+      "message": "If these are required they should be in the requirements.txt file. Could put up a review to fix the requirements file?",
+      "range": {
+        "startLine": 39,
+        "startChar": 1,
+        "endLine": 41,
+        "endChar": 34
+      },
+      "revId": "634177e1ffbcfc0b2e46663a554baa0350318687",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aaf729bb_6a9defc7",
+        "filename": "README.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-01-30T02:36:22Z",
+      "side": 1,
+      "message": "a",
+      "range": {
+        "startLine": 54,
+        "startChar": 9,
+        "endLine": 54,
+        "endChar": 11
+      },
+      "revId": "634177e1ffbcfc0b2e46663a554baa0350318687",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02f3c2ee_58c12a96",
+        "filename": "README.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-01-30T02:36:22Z",
+      "side": 1,
+      "message": "you should always install the version based on the version of horizon, so stable queens horizon means stable/queens plugins",
+      "range": {
+        "startLine": 57,
+        "startChar": 1,
+        "endLine": 59,
+        "endChar": 18
+      },
+      "revId": "634177e1ffbcfc0b2e46663a554baa0350318687",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
