@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "417409e0_1e93f747",
+        "filename": "README.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-01-31T04:51:52Z",
+      "side": 1,
+      "message": "nectar-dashboard",
+      "range": {
+        "startLine": 24,
+        "startChar": 49,
+        "endLine": 24,
+        "endChar": 65
+      },
+      "revId": "282140a68e9edf34dc2628c479662b230c953917",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
