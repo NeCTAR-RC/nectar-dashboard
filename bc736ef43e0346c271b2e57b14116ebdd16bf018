@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03e22c51_3d9a7248",
+        "filename": "README.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2019-02-12T06:04:06Z",
+      "side": 1,
+      "message": "I am unsure about whether such specific instructions belongs in a README.rst of a public repo. Not security-wise, I think this is covered pretty nicely by redacting wiki URLs, but who is the intended audience?",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 40
+      },
+      "revId": "bc736ef43e0346c271b2e57b14116ebdd16bf018",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
