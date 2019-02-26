@@ -38,3 +38,6 @@ class AllocationCreateView(views.BaseAllocationView):
 
     def get_success_url(self):
         return reverse('horizon:allocation:user_requests:index')
+
+    def check_access(self, request):
+        pass
