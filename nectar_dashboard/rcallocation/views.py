@@ -7,6 +7,7 @@ import re
 from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.edit import ModelFormMixin
+from django.core.exceptions import PermissionDenied
 from django.forms.models import inlineformset_factory
 from django.db import transaction
 from django.db.models import Q
@@ -22,13 +23,14 @@ from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import tables
 from nectar_dashboard.rcallocation import utils
+from nectar_dashboard.rcallocation import mixins
 
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
 
-class AllocationDetailView(DetailView, ModelFormMixin):
+class AllocationDetailView(mixins.UserPassesTestMixin, DetailView, ModelFormMixin):
     """
     A class that handles rendering the details view, and then the
     posting of the associated accept/reject action
@@ -51,11 +53,12 @@ class AllocationDetailView(DetailView, ModelFormMixin):
             kwargs['previous_allocation'] = self.object
         return (super(AllocationDetailView, self).get_context_data(**kwargs))
 
-    def post(self, request, *args, **kwargs):
-        pass
+    def test_func(self):
+        # Direct uses of this view needs alloc admin access
+        return utils.user_is_allocation_admin(self.request.user)
 
 
-class AllocationsListView(horizon_tables.DataTableView):
+class AllocationsListView(mixins.UserPassesTestMixin, horizon_tables.DataTableView):
     """
     A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
@@ -78,8 +81,12 @@ class AllocationsListView(horizon_tables.DataTableView):
                             'quotas', 'investigators', 'institutions',
                             'publications', 'grants')]
 
+    def test_func(self):
+        # Direct uses of this view needs alloc admin access
+        return utils.user_is_allocation_admin(self.request.user)
 
-class AllocationHistoryView(horizon_tables.DataTableView):
+
+class AllocationHistoryView(mixins.UserPassesTestMixin, horizon_tables.DataTableView):
     """
     A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
@@ -97,8 +104,12 @@ class AllocationHistoryView(horizon_tables.DataTableView):
                 'quotas', 'investigators', 'institutions',
                 'publications', 'grants')
 
+    def test_func(self):
+        # Direct uses of this view needs alloc admin access
+        return utils.user_is_allocation_admin(self.request.user)
 
-class BaseAllocationView(UpdateView):
+
+class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
     SHOW_EMPTY_SERVICE_TYPES = True
     ONLY_REQUESTABLE_RESOURCES = True
 
@@ -373,6 +384,10 @@ class BaseAllocationView(UpdateView):
                                   zones=json.dumps(zones),
                                   quota_limits=json.dumps(quota_limits),
                                   **kwargs))
+
+    def test_func(self):
+        # Uses of this view needs alloc admin access ... unless overridden
+        return utils.user_is_allocation_admin(self.request.user)
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
