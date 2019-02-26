@@ -2,7 +2,9 @@ from django.views.generic.edit import UpdateView
 
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import forms
+from nectar_dashboard.rcallocation import utils
 from nectar_dashboard.rcallocation import views
+from nectar_dashboard.rcallocation import mixins
 
 from nectar_dashboard.rcallocation.allocation import forms as allocation_forms
 
@@ -15,11 +17,14 @@ class AllocationUpdateView(views.BaseAllocationView):
     page_title = 'Update'
 
 
-class AllocationNotesEdit(UpdateView):
+class AllocationNotesEdit(mixins.UserPassesTestMixin, UpdateView):
     template_name = "rcallocation/allocationrequest_edit_notes.html"
     model = models.AllocationRequest
     form_class = allocation_forms.EditNotesForm
     page_title = 'Update Notes'
+
+    def test_func(self):
+        return utils.user_is_allocation_admin(self.request.user)
 
 
 class AllocationApproveView(views.BaseAllocationView):
@@ -38,7 +43,6 @@ class AllocationApproveView(views.BaseAllocationView):
     formset_institution_class = None
     formset_publication_class = None
     formset_grant_class = None
-
 
 
 class AllocationRejectView(views.BaseAllocationView):
