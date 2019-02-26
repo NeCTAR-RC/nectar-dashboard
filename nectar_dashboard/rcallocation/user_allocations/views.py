@@ -23,29 +23,8 @@ class BaseAllocationUpdateView(views.BaseAllocationView):
     page_title = 'Update'
     editor_attr = 'contact_email'
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.is_archived():
-            raise PermissionDenied()
-        if not self.object.contact_email == request.user.username:
-            managed_projects = get_managed_projects(self.request)
-            if self.object.project_id not in managed_projects and \
-               not utils.user_is_allocation_admin(request.user):
-                raise PermissionDenied()
-        return super(BaseAllocationUpdateView, self) \
-            .get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.is_archived():
-            raise PermissionDenied()
-        if not self.object.contact_email == request.user.username:
-            managed_projects = get_managed_projects(self.request)
-            if self.object.project_id not in managed_projects and \
-               not utils.user_is_allocation_admin(request.user):
-                raise PermissionDenied()
-        return super(BaseAllocationUpdateView, self) \
-            .post(request, *args, **kwargs)
+    def check_access(self, request):
+        check_tm_or_alloc_admin(request, self.object)
 
 
 class RestrictedAllocationsEditView(BaseAllocationUpdateView):
@@ -60,21 +39,19 @@ class RestrictedAllocationsDetailsView(views.AllocationDetailView):
     template_name = "rcallocation/allocationrequest_user_detail.html"
     page_title = 'Details'
 
-    def get(self, request, **kwargs):
-        """
-        Renders the template with the allocation request and details
-        on it.
-        """
-        self.object = self.get_object()
-        # TODO(shauno) Do this somewhere a bit more senisible (model manager?)
-        if not self.object.contact_email == request.user.username \
-                and not request.user.is_staff:
-            managed_projects = get_managed_projects(self.request)
-            if self.object.project_id not in managed_projects:
-                raise PermissionDenied()
-        return super(RestrictedAllocationsDetailsView, self) \
-            .get(request, **kwargs)
+    def check_access(self, request):
+        check_tm_or_alloc_admin(request, self.object)
 
+
+def check_tm_or_alloc_admin(request, object):
+    if object:
+        if object.is_archived():
+            raise PermissionDenied()
+        if not object.contact_email == request.user.username and \
+           not utils.user_is_allocation_admin(request.user):
+            managed_projects = get_managed_projects(request)
+            if object.project_id not in managed_projects:
+                raise PermissionDenied()
 
 def get_managed_projects(request):
     try:
@@ -115,3 +92,8 @@ class UserAllocationsListView(views.AllocationsListView):
                         Q(contact_email__exact=contact_email))
                 .order_by('status')
                 .prefetch_related('quotas'))
+
+    def check_access(self, request):
+        # Any user is allowed to list allocations.  The filter should
+        # limit what they see.
+        pass
