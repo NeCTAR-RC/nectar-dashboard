@@ -2,6 +2,7 @@ from django.views.generic.edit import UpdateView
 
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import forms
+from nectar_dashboard.rcallocation import utils
 from nectar_dashboard.rcallocation import views
 
 from nectar_dashboard.rcallocation.allocation import forms as allocation_forms
@@ -21,6 +22,17 @@ class AllocationNotesEdit(UpdateView):
     form_class = allocation_forms.EditNotesForm
     page_title = 'Update Notes'
 
+    def get(self, request, *args, **kwargs):
+        if not utils.user_is_allocation_admin(request.user):
+            raise PermissionDenied()
+        return super(AllocationNotesEdit, self).get(request, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not utils.user_is_allocation_admin(request.user):
+            raise PermissionDenied()
+        return super(AllocationNotesEdit, self).post(request, **kwargs)
+    
+    
 
 class AllocationApproveView(views.BaseAllocationView):
     SHOW_EMPTY_SERVICE_TYPES = False
@@ -40,7 +52,6 @@ class AllocationApproveView(views.BaseAllocationView):
     formset_grant_class = None
 
 
-
 class AllocationRejectView(views.BaseAllocationView):
     page_title = "Decline"
     template_name = "rcallocation/allocationrequest_reject.html"
@@ -54,3 +65,4 @@ class AllocationRejectView(views.BaseAllocationView):
     formset_institution_class = None
     formset_publication_class = None
     formset_grant_class = None
+

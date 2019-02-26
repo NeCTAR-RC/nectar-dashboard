@@ -51,7 +51,18 @@ class AllocationDetailView(DetailView, ModelFormMixin):
             kwargs['previous_allocation'] = self.object
         return (super(AllocationDetailView, self).get_context_data(**kwargs))
 
+    def check_access(self, request):
+        # Direct uses of this view needs alloc admin access
+        if not utils.user_is_allocation_admin(request.user):
+            raise PermissionDenied()
+    
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.check_access(request)
+        return super(AllocationDetailView, self).get(request, **kwargs)
+
     def post(self, request, *args, **kwargs):
+        # Not supported
         pass
 
 
@@ -78,6 +89,14 @@ class AllocationsListView(horizon_tables.DataTableView):
                             'quotas', 'investigators', 'institutions',
                             'publications', 'grants')]
 
+    def get(self, request, *args, **kwargs):
+        self.check_access(request)
+        return super(AllocationsListView, self).get(request, **kwargs)
+
+    def check_access(self, request):
+        # Direct uses of this view needs alloc admin access
+        if not utils.user_is_allocation_admin(request.user):
+            raise PermissionDenied()
 
 class AllocationHistoryView(horizon_tables.DataTableView):
     """
@@ -96,6 +115,15 @@ class AllocationHistoryView(horizon_tables.DataTableView):
             Q(parent_request=pk) | Q(pk=pk)).prefetch_related(
                 'quotas', 'investigators', 'institutions',
                 'publications', 'grants')
+
+    def get(self, request, *args, **kwargs):
+        self.check_access(request)
+        return super(AllocationHistoryView, self).get(request, **kwargs)
+
+    def check_access(self, request):
+        # Direct uses of this view needs alloc admin access
+        if not utils.user_is_allocation_admin(request.user):
+            raise PermissionDenied()
 
 
 class BaseAllocationView(UpdateView):
@@ -374,9 +402,15 @@ class BaseAllocationView(UpdateView):
                                   quota_limits=json.dumps(quota_limits),
                                   **kwargs))
 
+    def check_access(self, request):
+        # Uses of this view needs alloc admin access ... unless overridden
+        if not utils.user_is_allocation_admin(request.user):
+            raise PermissionDenied()
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-
+        self.check_access(request)
+        
         if self.object:
 
             # Ensure old projects have to set an investigator and
@@ -429,6 +463,7 @@ class BaseAllocationView(UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        self.check_access(request)               
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         kwargs = {'form': form}
