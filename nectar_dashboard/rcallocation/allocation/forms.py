@@ -6,6 +6,8 @@ from nectar_dashboard.rcallocation import forms
 
 class AllocationApproveForm(d_forms.ModelForm):
     error_css_class = 'has-error'
+    ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
+                                         required=False)
 
     class Meta:
         model = models.AllocationRequest
