@@ -15,6 +15,8 @@ class FORValidationError(Exception):
 
 class BaseAllocationForm(ModelForm):
     error_css_class = 'has-error'
+    ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
+                                         required=False)
 
     class Meta:
         model = AllocationRequest
@@ -69,6 +71,7 @@ class BaseAllocationForm(ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 'form-control ' + field.widget.attrs.get('class', ''))
+        self.warnings = []
 
     def _in_groups(self, field):
         for group in self.groups:
