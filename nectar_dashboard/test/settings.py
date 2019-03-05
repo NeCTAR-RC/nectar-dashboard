@@ -105,6 +105,7 @@ AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
 SITE_BRANDING = 'OpenStack'
 
 HORIZON_CONFIG = {
+    'WARNING_INFO_URL': "https://support.ehelp.edu.au/support/home",
     "password_validator": {
         "regex": '^.{8,18}$',
         "help_text": "Password must be between 8 and 18 characters."
