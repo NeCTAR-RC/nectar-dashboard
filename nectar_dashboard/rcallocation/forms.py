@@ -55,7 +55,7 @@ class BaseAllocationForm(ModelForm):
             'for_percentage_2': Select(attrs={'class': 'col-md-2'}),
             'for_percentage_3': Select(attrs={'class': 'col-md-2'}),
             'nectar_support': TextInput(attrs={'class': 'col-md-12'}),
-            'ncris_support': TextInput(attrs={'class': 'col-md-12'}),
+            'ncris_support': TextInput(attrs={'class': 'col-md-12'})
         }
 
     groups = (
@@ -69,6 +69,7 @@ class BaseAllocationForm(ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 'form-control ' + field.widget.attrs.get('class', ''))
+        self.warnings = []
 
     def _in_groups(self, field):
         for group in self.groups:
