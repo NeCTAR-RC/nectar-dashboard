@@ -12,3 +12,20 @@ Enter the quotas and end date for the project to be created.
 {% endblock description %}
 
 {% block form_action %}{% url 'horizon:allocation:requests:approve_request' object.pk %}{% endblock %}
+{% block submit_buttons %}
+    <div class="form-actions">
+      <input class="btn btn-success" type="submit"
+	     value="Submit">
+      {% if warnings|length > 0 %}
+      <script>
+	function submit_ignore() {
+	  document.getElementById('ignore-warnings').value = 'yes';
+	  document.getElementById('new-allocation').submit();
+	}
+      </script>
+      <input class="btn btn-success" type="button"
+	     onClick="submit_ignore()"
+	     value="Submit ignoring warnings">
+      {% endif %}
+    </div>
+{% endblock %}

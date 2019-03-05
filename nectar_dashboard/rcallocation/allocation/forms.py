@@ -57,8 +57,6 @@ class AllocationApproveForm(d_forms.ModelForm):
             'class'] = 'form-control'
         self.fields['requested_allocation_home'].widget.attrs[
             'readonly'] = True
-        self.fields['requested_allocation_home'].widget.attrs[
-            'disabled'] = True
 
         if self.instance.status == 'L':
             self.instance.status = 'M'
