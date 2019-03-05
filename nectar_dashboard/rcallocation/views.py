@@ -1,3 +1,4 @@
+import pdb
 from collections import OrderedDict
 import logging
 import json
@@ -23,10 +24,12 @@ from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import tables
 from nectar_dashboard.rcallocation import utils
 from nectar_dashboard.rcallocation import mixins
+from nectar_dashboard.rcallocation import quota_sanity
 
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
+WARNING_INFO_URL = "https://support.ehelp.edu.au/support/home"  # FIXME
 
 class AllocationDetailView(mixins.UserPassesTestMixin, DetailView,
                            ModelFormMixin):
@@ -414,7 +417,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
-        kwargs = {'form': form}
+        kwargs['form'] = form
         # quota
         kwargs['quota_formsets'] = self.get_quota_formsets()
 
@@ -448,6 +451,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         kwargs = {'form': form}
+        ignore_warnings = request.POST.get('ignore-warnings', 'no') == 'yes'
 
         formset_investigator_class = self.get_formset_investigator_class()
         if formset_investigator_class:
@@ -467,8 +471,14 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         if formset_grant_class:
             kwargs['grant_formset'] = self.get_formset(formset_grant_class)
 
+        # Primary validation of quotas + gathering of the values
+        # into a form that can be used for quota sanity checks.
         quota_valid = True
         quota_formsets = self.get_quota_formsets()
+        if not ignore_warnings:
+            sc_context = quota_sanity.QuotaSanityContext(form,
+                requested=self.ONLY_REQUESTABLE_RESOURCES)
+
         for service_type, form_tuple in quota_formsets:
             selected_zones = []
             for group_form, formset in form_tuple:
@@ -482,10 +492,21 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                         quota_valid = False
                     else:
                         selected_zones.append(group_form.cleaned_data['zone'])
-        if quota_valid and all(map(methodcaller('is_valid'), kwargs.values())):
-            return self.form_valid(quota_formsets=quota_formsets, **kwargs)
-        else:
-            return self.form_invalid(quota_formsets=quota_formsets, **kwargs)
+                if not ignore_warnings:
+                    sc_context.add_quotas(formset)
+
+        valid = quota_valid and \
+                all(map(methodcaller('is_valid'), kwargs.values()))
+        kwargs['quota_formsets'] = quota_formsets
+        warnings = []
+        if valid:
+            if not ignore_warnings:
+                warnings = sc_context.do_checks()
+            if len(warnings) == 0:
+                return self.form_valid(**kwargs)
+            kwargs['warnings'] = warnings
+
+        return self.form_invalid(**kwargs)
 
     @transaction.atomic
     def form_valid(self, form, investigator_formset=None,
@@ -562,7 +583,8 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
 
     def form_invalid(self, form, investigator_formset=None,
                      institution_formset=None, publication_formset=None,
-                     grant_formset=None, quota_formsets=None):
+                     grant_formset=None, quota_formsets=None,
+                     warnings=[]):
         """
         If the form is invalid, re-render the context data with the
         data-filled forms and errors.
@@ -573,4 +595,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                                   institution_formset=institution_formset,
                                   publication_formset=publication_formset,
                                   grant_formset=grant_formset,
-                                  quota_formsets=quota_formsets))
+                                  quota_formsets=quota_formsets,
+                                  warnings=warnings,
+                                  warning_info_url=WARNING_INFO_URL)) 
