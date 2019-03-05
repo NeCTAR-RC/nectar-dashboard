@@ -1,0 +1,19 @@
+  <div class="alert alert-danger" role="alert">Please review the following consistency warnings.  Then either modify the form and "Submit" it again, or "Submit ignoring warnings".</div>
+  <table class="table table-sm alert alert-info">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Description of inconsistency</th>
+        <th scope="col">More information</th>
+      </rr>
+    </thead>
+    <tbody>
+    {% for warning in warnings %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{warning.1}}</td>
+        <td><a href="{{warning_info_url}}#{{warning.0}}" target="_blank">link</a></td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>

@@ -34,8 +34,10 @@
     Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-primary"></span>
     sign.
   </blockquote>
-  {% if form.errors %}
-  <div class="alert alert-danger" role="alert">Please fix up the below errors</div>
+  {% if warnings|length > 0 %}
+  {% include "rcallocation/warnings.html" %}
+  {% elif form.errors %}
+  <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit</div>
   {% endif %}
   <form id="new-allocation"
         action="{% block form_action %}{% endblock %}"
@@ -45,6 +47,8 @@
       {% for hidden in form.hidden_fields %}
       {{ hidden }}
       {% endfor %}
+      <input id="ignore-warnings" type="hidden"
+	     name="ignore-warnings" value="no">
       <div class="row">
         <div class="col-md-6">
           {% include "rcallocation/field.html" with field=form.project_name %}
@@ -126,7 +130,9 @@
       </div>
     </fieldset>
     <div class="form-actions">
+      {% block submit_buttons %}
       <input type="submit" value="Submit" class="btn btn-primary"/>
+      {% endblock %}
     </div>
     <script>
       /* For browsers that don't recognize the autofocus attribute... */
