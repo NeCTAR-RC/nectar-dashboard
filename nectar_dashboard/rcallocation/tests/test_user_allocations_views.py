@@ -79,6 +79,12 @@ class RequestTestCase(TestCase):
         expected_model, form = request_allocation(user=self.user,
                                                   model=allocation)
 
+        # Tells the server to skip the sanity checks.  (For these to work in
+        # this test, the request needs to be populated with sane quotas for
+        # resources that mirror those understood by the sanity check code.
+        # The sanity checks will be tested another way.)
+        form['ignore_warnings'] = 'yes'
+
         response = self.client.post(
             reverse('horizon:allocation:user_requests:edit_request',
                     args=(allocation.id,)),

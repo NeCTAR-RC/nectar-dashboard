@@ -64,8 +64,10 @@
     Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-primary"></span>
     sign.
   </blockquote>
-  {% if form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
-  <div class="alert alert-danger" role="alert">Please fix up the below errors</div>
+  {% if warnings|length > 0 %}
+  {% include "rcallocation/warnings.html" %}
+  {% elif form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
+  <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit</div>
   {% endif %}
   <form id="new-allocation"
         action="{% block form_action %}{% url 'horizon:allocation:request:request' %}{% endblock %}"
@@ -286,7 +288,19 @@
       </div>
     </div>
     <div class="form-actions">
-      <input type="submit" value="Submit" class="btn btn-primary"/>
+      <input class="btn btn-success" type="submit"
+	     value="Submit">
+      {% if warnings|length > 0 %}
+      <script>
+	function submit_ignore() {
+	  document.getElementById('id_ignore_warnings').value = 'yes';
+	  document.getElementById('new-allocation').submit();
+	}
+      </script>
+      <input class="btn btn-success" type="button"
+	     onClick="submit_ignore()"
+	     value="Submit ignoring warnings">
+      {% endif %}
     </div>
     <script>
       /* For browsers that don't recognize the autofocus attribute... */
