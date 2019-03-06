@@ -81,3 +81,10 @@
 .toggle-on.btn-xs { padding-right: 12px; }
 .toggle-off.btn-xs { padding-left: 12px; }
 
+.toggle.btn[readonly] {
+	cursor: not-allowed;
+	opacity: 0.65;
+	filter: alpha(opacity=65);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}

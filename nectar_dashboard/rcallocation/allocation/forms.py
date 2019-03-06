@@ -57,8 +57,6 @@ class AllocationApproveForm(d_forms.ModelForm):
             'class'] = 'form-control'
         self.fields['requested_allocation_home'].widget.attrs[
             'readonly'] = True
-        self.fields['requested_allocation_home'].widget.attrs[
-            'disabled'] = True
 
         if self.instance.status == 'L':
             self.instance.status = 'M'
@@ -106,7 +104,6 @@ class QuotaForm(forms.BaseQuotaForm):
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
         self.fields['requested_quota'].widget.attrs['readonly'] = True
-        self.fields['requested_quota'].widget.attrs['disabled'] = True
         self.fields['requested_quota'].required = False
         quota = kwargs.pop('instance', None)
         if not quota:

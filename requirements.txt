@@ -11,3 +11,4 @@ trove-dashboard==10.0.0
 django==1.8.7
 django-cors-headers
 python-memcached
+XStatic-jQuery<2
