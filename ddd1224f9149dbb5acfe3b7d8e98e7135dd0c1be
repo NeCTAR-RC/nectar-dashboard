@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "966ef35e_d177eb58",
+        "filename": "nectar_dashboard/rcallocation/allocation/forms.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-06T04:21:20Z",
+      "side": 0,
+      "message": "This doesn\u0027t look related?",
+      "range": {
+        "startLine": 60,
+        "startChar": 8,
+        "endLine": 61,
+        "endChar": 30
+      },
+      "revId": "ddd1224f9149dbb5acfe3b7d8e98e7135dd0c1be",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}

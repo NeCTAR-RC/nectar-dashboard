@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6189fbe1_1cffd52e",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-06T04:21:20Z",
+      "side": 1,
+      "message": "unrelated change, chuck it in a separate review, just makes it easier in the case that a patch needs to be reverted etc.",
+      "range": {
+        "startLine": 58,
+        "startChar": 66,
+        "endLine": 58,
+        "endChar": 68
+      },
+      "revId": "688f3216bcea0dfdfbeb916cc89e81409d638397",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2145fc81_36bcb02c",
+        "filename": "nectar_dashboard/rcallocation/quota_sanity.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-06T04:21:20Z",
+      "side": 1,
+      "message": "please keep with the code style of the rest of the code, (aka no camelCase for methods) this should be \n\ndef no_vcpu_check(",
+      "range": {
+        "startLine": 17,
+        "startChar": 4,
+        "endLine": 17,
+        "endChar": 15
+      },
+      "revId": "688f3216bcea0dfdfbeb916cc89e81409d638397",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82c0d606_dc84c917",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_approve.html",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-06T04:21:20Z",
+      "side": 1,
+      "message": "mix of spaces and tabs, please remove tabs",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 6
+      },
+      "revId": "688f3216bcea0dfdfbeb916cc89e81409d638397",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b4b4855_46f22071",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_base.html",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-06T04:21:20Z",
+      "side": 1,
+      "message": "tab",
+      "range": {
+        "startLine": 51,
+        "startChar": 1,
+        "endLine": 51,
+        "endChar": 2
+      },
+      "revId": "688f3216bcea0dfdfbeb916cc89e81409d638397",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28dcd700_bd341201",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 3
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-06T04:21:20Z",
+      "side": 1,
+      "message": "You should add this as a new attribute of the form as opposed to doing this manually",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 80,
+        "endChar": 38
+      },
+      "revId": "688f3216bcea0dfdfbeb916cc89e81409d638397",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
