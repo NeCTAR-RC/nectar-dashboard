@@ -40,9 +40,6 @@ class AllocationRequest(models.Model):
     DECLINED = 'R'
     UPDATE_PENDING = 'X'
     UPDATE_DECLINED = 'J'
-    LEGACY = 'L'
-    LEGACY_APPROVED = 'M'
-    LEGACY_REJECTED = 'O'
     DELETED = 'D'
 
     REQUEST_STATUS_CHOICES = (
@@ -76,16 +73,8 @@ class AllocationRequest(models.Model):
         # Requests in above status can be viewed by both user
         # and admin at all times.
 
-        # Not visible to users
-        (LEGACY, 'Legacy submission'),
-
         # Allocation has been deleted
         (DELETED, 'Deleted'),
-
-        # Avoid sending emails for legacy approvals/rejections.
-        # Set to A/R during model save.
-        (LEGACY_APPROVED, 'Legacy approved'),
-        (LEGACY_REJECTED, 'Legacy rejected'),
     )
     parent_request = models.ForeignKey('AllocationRequest', null=True,
                                        blank=True)
@@ -332,7 +321,7 @@ class AllocationRequest(models.Model):
         return self.status.lower() in ('r', 'j')
 
     def is_requested(self):
-        return self.status.lower() in ('e', 'n', 'l')
+        return self.status.lower() in ('e', 'n')
 
     def amendment_requested(self):
         """
@@ -357,7 +346,7 @@ class AllocationRequest(models.Model):
 
     def can_user_edit(self):
         return self.status.lower() in (
-            'e', 'r', 'n', 'l') and not self.is_archived()
+            'e', 'r', 'n') and not self.is_archived()
 
     def can_user_edit_amendment(self):
         return self.amendment_requested() and not self.is_archived()
@@ -462,10 +451,6 @@ class AllocationRequest(models.Model):
                         % self.project_name)
                     if settings.DEBUG:
                         raise
-        if self.status == 'M':
-            self.status = 'A'
-        elif self.status == 'O':
-            self.status = 'R'
         super(AllocationRequest, self).save(*args, **kwargs)
 
     def get_all_fields(self):
