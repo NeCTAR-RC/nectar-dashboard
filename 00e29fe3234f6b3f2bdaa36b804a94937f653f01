@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72686333_12175e52",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-03-08T10:05:24Z",
+      "side": 1,
+      "message": "A boolean seems like a more optimal choice here. How about changing to a checkbox instead and removing the \u0027yes\u0027 bits and replace with 1/0?",
+      "range": {
+        "startLine": 18,
+        "startChar": 28,
+        "endLine": 18,
+        "endChar": 37
+      },
+      "revId": "00e29fe3234f6b3f2bdaa36b804a94937f653f01",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b1e3c22a_6235432c",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-03-08T10:05:24Z",
+      "side": 1,
+      "message": "removed the trailing comma? just nit picking though",
+      "range": {
+        "startLine": 60,
+        "startChar": 67,
+        "endLine": 60,
+        "endChar": 68
+      },
+      "revId": "00e29fe3234f6b3f2bdaa36b804a94937f653f01",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad4e98a2_f7f53fc2",
+        "filename": "nectar_dashboard/rcallocation/quota_sanity.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-03-08T10:05:24Z",
+      "side": 1,
+      "message": "why numbers? if you\u0027re using anchors in a support document, just use names?",
+      "range": {
+        "startLine": 6,
+        "startChar": 29,
+        "endLine": 6,
+        "endChar": 36
+      },
+      "revId": "00e29fe3234f6b3f2bdaa36b804a94937f653f01",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "54dce285_d7057473",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 6
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-03-08T10:05:24Z",
+      "side": 1,
+      "message": "could this be just `if warnings` ?",
+      "range": {
+        "startLine": 67,
+        "startChar": 8,
+        "endLine": 67,
+        "endChar": 23
+      },
+      "revId": "00e29fe3234f6b3f2bdaa36b804a94937f653f01",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93e30ddc_77b3ba4f",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 6
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-03-08T10:05:24Z",
+      "side": 1,
+      "message": "tabs here? should be spaces",
+      "range": {
+        "startLine": 292,
+        "startChar": 0,
+        "endLine": 292,
+        "endChar": 6
+      },
+      "revId": "00e29fe3234f6b3f2bdaa36b804a94937f653f01",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4db681d4_2bdb136c",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 6
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-03-08T10:05:24Z",
+      "side": 1,
+      "message": "This feels super hacky. Is there not a way we can do this properly within proper django forms?",
+      "range": {
+        "startLine": 293,
+        "startChar": 0,
+        "endLine": 303,
+        "endChar": 17
+      },
+      "revId": "00e29fe3234f6b3f2bdaa36b804a94937f653f01",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
