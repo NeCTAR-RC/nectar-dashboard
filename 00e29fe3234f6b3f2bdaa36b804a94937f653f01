@@ -137,6 +137,52 @@
       "revId": "00e29fe3234f6b3f2bdaa36b804a94937f653f01",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23ea2099_f8c83201",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-14T23:07:10Z",
+      "side": 1,
+      "message": "Should just be able to set this in HORIZON_CONFIG",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 71
+      },
+      "revId": "00e29fe3234f6b3f2bdaa36b804a94937f653f01",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ae82164_e1bbbfe3",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-14T23:07:10Z",
+      "side": 1,
+      "message": "If you add this setting to HORIZON_CONFIG then you wan\u0027t need to pass this in at all, it will already be available in the template",
+      "range": {
+        "startLine": 600,
+        "startChar": 34,
+        "endLine": 600,
+        "endChar": 68
+      },
+      "revId": "00e29fe3234f6b3f2bdaa36b804a94937f653f01",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
