@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "399a686d_c6c2902e",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/quota_sanity/test_context.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-14T23:07:10Z",
+      "side": 1,
+      "message": "Import modules as opposed to classes variables etc.\n\nSo just do\nfrom nectar_dashboard.rcallocation import quota_sanity",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 18
+      },
+      "revId": "a419dba1912b4a7f5c8052066090b65e99d114e8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
