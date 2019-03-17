@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "310b9a19_4f47f11b",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 11
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-03-17T22:24:43Z",
+      "side": 1,
+      "message": "This is looking really good. There\u0027s no reason why this function can\u0027t exist when no warnings, so I\u0027d recommend you move this function into allocations.js static file instead - and maybe comment it a little.",
+      "range": {
+        "startLine": 294,
+        "startChar": 0,
+        "endLine": 297,
+        "endChar": 2
+      },
+      "revId": "ca65ee9bd3f7a70e06b41ca70920a9bfa5b1e7f7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
