@@ -88,7 +88,6 @@ class UserAllocationsListView(views.AllocationsListView):
         contact_email = self.request.user.username
         managed_projects = get_managed_projects(self.request)
         return (models.AllocationRequest.objects.all()
-                .exclude(status=models.AllocationRequest.LEGACY)
                 .filter(parent_request=None)
                 .filter(Q(project_id__in=managed_projects) |
                         Q(contact_email__exact=contact_email))

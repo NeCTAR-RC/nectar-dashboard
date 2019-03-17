@@ -58,10 +58,7 @@ class AllocationApproveForm(d_forms.ModelForm):
         self.fields['requested_allocation_home'].widget.attrs[
             'readonly'] = True
 
-        if self.instance.status == 'L':
-            self.instance.status = 'M'
-        else:
-            self.instance.status = 'A'
+        self.instance.status = 'A'
 
 
 class AllocationRejectForm(d_forms.ModelForm):
@@ -84,10 +81,7 @@ class AllocationRejectForm(d_forms.ModelForm):
 
     def __init__(self, **kwargs):
         super(AllocationRejectForm, self).__init__(**kwargs)
-        if self.instance.status == 'L':
-            self.instance.status = 'O'
-            self.fields['status_explanation'].required = False
-        elif self.instance.status == 'X':
+        if self.instance.status == 'X':
             self.instance.status = 'J'
         else:
             self.instance.status = 'R'
