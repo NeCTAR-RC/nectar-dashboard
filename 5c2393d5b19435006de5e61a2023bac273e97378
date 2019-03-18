@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c99fe6e1_4e1425c9",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 13
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-18T21:36:43Z",
+      "side": 1,
+      "message": "tab",
+      "revId": "5c2393d5b19435006de5e61a2023bac273e97378",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91c8e721_74c23761",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 13
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-03-18T21:36:43Z",
+      "side": 1,
+      "message": "tab",
+      "range": {
+        "startLine": 295,
+        "startChar": 0,
+        "endLine": 295,
+        "endChar": 1
+      },
+      "revId": "5c2393d5b19435006de5e61a2023bac273e97378",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
