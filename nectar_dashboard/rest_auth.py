@@ -162,4 +162,5 @@ class CanUpdate(ModifyPermission):
 
 
 class CanAmend(ModifyPermission):
-    states = [models.AllocationRequest.APPROVED]
+    states = [models.AllocationRequest.APPROVED,
+              models.AllocationRequest.DECLINED]
