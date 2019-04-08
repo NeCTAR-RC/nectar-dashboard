@@ -95,13 +95,6 @@ class RequestTestCase(TestCase):
         self.assertStatusCode(response, 200)
 
         expected_model, form = request_allocation(user=self.user)
-
-        # Tells the server to skip the sanity checks.  (For these to work in
-        # this test, the request needs to be populated with sane quotas for
-        # resources that mirror those understood by the sanity check code.
-        # The sanity checks will be tested another way.)
-        form['ignore_warnings'] = True
-
         response = self.client.post(
             reverse('horizon:allocation:request:request'),
             form)
@@ -128,19 +121,13 @@ class RequestTestCase(TestCase):
             backup_values[field] = form[field]
             form[field] = value
 
-        # Tells the server to skip the sanity checks.  (For these to work in
-        # this test, the request needs to be populated with sane quotas for
-        # resources that mirror those understood by the sanity check code.
-        # The sanity checks will be tested another way.)
-        form['ignore_warnings'] = True
-
         response = self.client.post(
             reverse('horizon:allocation:request:request'),
             form)
 
         if form_errors:
             # No redirect invalid fields
-            self.assertStatusCode(response, 200)
+            assert response.status_code == 200
             assert response.context['form'].errors == form_errors
 
             for field, value in backup_values.items():
@@ -154,7 +141,7 @@ class RequestTestCase(TestCase):
 
         # Check to make sure we were redirected back to the index of
         # our requests.
-        self.assertStatusCode(response, 302)
+        assert response.status_code == 302
         assert response.get('location').endswith(
             reverse('horizon:allocation:user_requests:index'))
 
