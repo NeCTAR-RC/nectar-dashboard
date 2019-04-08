@@ -227,10 +227,16 @@ function get_dns_service_name(project_name) {
   return zone;
 }
 
+function populate_dns_service_name() {
+  if ($('#id_project_name').length) {
+    var project_name = $('#id_project_name').val();
+    var zone = get_dns_service_name(project_name);
+    $('#id_dns_domain').val(zone);
+  }
+}
+
 $('#id_project_name').on('input', function(e) {
-  var project_name = $(this).val();
-  var zone = get_dns_service_name(project_name);
-  $('#id_dns_domain').val(zone);
+  populate_dns_service_name();
 });
 
 (function($) {
@@ -601,6 +607,8 @@ $(function() {
     });
 
     apply_popover();
+
+    populate_dns_service_name();
 });
 
 $("form#new-allocation").on("change","#id_start_date", function() {
