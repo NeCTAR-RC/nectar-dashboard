@@ -82,7 +82,7 @@
               ram_gb = parseInt(opts['quota_limits']['maxTotalRAMSize'] / 1024);
               num_cores = parseInt(opts['quota_limits']['maxTotalCores']);
 
-              var ig = $(this).find('.input-group')
+              var ig = $(this).find('.quota').find('.input-group')
               ig.after('<div class="resource-custom-override">' +
                        '  <label class="radio-inline">' +
                        '    <input type="radio" name="resource_custom_override" value="default">' +
