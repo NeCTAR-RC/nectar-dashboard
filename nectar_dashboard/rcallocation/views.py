@@ -491,7 +491,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                         quota_valid = False
                     else:
                         selected_zones.append(group_form.cleaned_data['zone'])
-                if formset.is_valid() and not ignore_warnings:
+                if not ignore_warnings:
                     sc_context.add_quotas(formset)
 
         valid = quota_valid and \
