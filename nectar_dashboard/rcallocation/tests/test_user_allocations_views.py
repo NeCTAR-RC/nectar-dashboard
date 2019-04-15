@@ -28,17 +28,22 @@ from .common import allocation_to_dict, request_allocation
 
 class RequestTestCase(TestCase):
 
-    def assert_allocation(self, model, quotas=[],
+    def assert_allocation(self, model, quotas=[], requestable=True,
                           institutions=[], publications=[],
                           grants=[], investigators=[], **attributes):
         for field, value in attributes.items():
-            assert getattr(model, field) == value
+            self.assertEqual(getattr(model, field), value)
         self.assertEqual(model.contact_email, self.user.name)
         # Sort by requested quota so we can easily compare by iterating
-        quotas_l = models.Quota.objects.filter(
-            group__allocation=model).order_by('requested_quota')
+        # (Note that this is a bit dodgy since the requested quotas are
+        # typically fuzzed ... and there is a small probability that two
+        # different quota values will be the same.)
+        kwargs = {'group__allocation': model}
+        if requestable:
+            kwargs['resource__requestable'] = True
+        quotas_l = models.Quota.objects.filter(**kwargs) \
+                   .order_by('requested_quota')
         quotas = sorted(quotas, key=itemgetter('requested_quota'))
-
         self.assertEqual(quotas_l.count(), len(quotas))
         for i, quota_model in enumerate(quotas_l):
             self.assertEqual(quota_model.resource.id, quotas[i]['resource'])
@@ -49,19 +54,21 @@ class RequestTestCase(TestCase):
 
         institutions_l = model.institutions.all()
         for i, institution_model in enumerate(institutions_l):
-            assert institution_model.name == institutions[i]['name']
+            self.assertEqual(institution_model.name, institutions[i]['name'])
 
         publications_l = model.publications.all()
         for i, pub_model in enumerate(publications_l):
-            assert pub_model.publication == publications[i]['publication']
+            self.assertEqual(pub_model.publication,
+                             publications[i]['publication'])
 
         grants_l = model.grants.all()
         for i, grant_model in enumerate(grants_l):
-            assert grant_model.grant_type == grants[i]['grant_type']
+            self.assertEqual(grant_model.grant_type, grants[i]['grant_type'])
 
         investigators_l = model.investigators.all()
         for i, investigator_model in enumerate(investigators_l):
-            assert investigator_model.email == investigators[i]['email']
+            self.assertEqual(investigator_model.email,
+                             investigators[i]['email'])
 
     @mock.patch.object(api.nova, 'tenant_absolute_limits')
     def test_edit_allocation_request(self, mock_nova_limits):
@@ -78,6 +85,10 @@ class RequestTestCase(TestCase):
         self.assertStatusCode(response, 200)
         expected_model, form = request_allocation(user=self.user,
                                                   model=allocation)
+
+        # Tells the server to skip the sanity checks.  (The request
+        # has fuzz'd quota values which tyically won't pass muster.)
+        form['ignore_warnings'] = True
 
         response = self.client.post(
             reverse('horizon:allocation:user_requests:edit_request',
@@ -112,4 +123,5 @@ class RequestTestCase(TestCase):
             del quota['id']
             del quota['allocation']
 
-        assert old_state == initial_state
+        self.assertEqual(old_state, initial_state,
+                         msg="allocation fields changed unexpectedly")

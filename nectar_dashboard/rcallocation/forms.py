@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.forms import ModelForm, ValidationError
 from django.forms import TextInput, Select, CharField, Textarea, HiddenInput
+from django.forms import BooleanField
 from django.forms.forms import NON_FIELD_ERRORS
 from django.utils.safestring import mark_safe
 from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
@@ -15,6 +16,7 @@ class FORValidationError(Exception):
 
 class BaseAllocationForm(ModelForm):
     error_css_class = 'has-error'
+    ignore_warnings = BooleanField(widget=HiddenInput(), required=False)
 
     class Meta:
         model = AllocationRequest
@@ -69,6 +71,7 @@ class BaseAllocationForm(ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 'form-control ' + field.widget.attrs.get('class', ''))
+        self.warnings = []
 
     def _in_groups(self, field):
         for group in self.groups:
