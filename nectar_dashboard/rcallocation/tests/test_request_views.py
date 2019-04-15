@@ -10,36 +10,19 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from openstack_dashboard.test.helpers import TestCase
 from nectar_dashboard.rcallocation import models
-from .common import request_allocation
+from nectar_dashboard.rcallocation.tests.common import quota_spec
+from nectar_dashboard.rcallocation.tests.common import request_allocation
 
-from nectar_dashboard.rcallocation.tests import factories
 
 class RequestTestCase(TestCase):
 
     def setUp(self):
         super(RequestTestCase, self).setUp()
-        melbourne = factories.ZoneFactory(name='melbourne')
-        monash = factories.ZoneFactory(name='monash')
-        nectar = factories.ZoneFactory(name='nectar')
-
-        volume_st = factories.ServiceTypeFactory(catalog_name='volume')
-        object_st = factories.ServiceTypeFactory(catalog_name='object')
-        compute_st = factories.ServiceTypeFactory(catalog_name='compute')
-        volume_st.zones.add(melbourne)
-        volume_st.zones.add(monash)
-        object_st.zones.add(nectar)
-        compute_st.zones.add(nectar)
-
-        factories.ResourceFactory(quota_name='object', service_type=object_st)
-        factories.ResourceFactory(quota_name='gigabytes',
-                                  service_type=volume_st)
-        factories.ResourceFactory(quota_name='cores', service_type=compute_st)
 
     def assert_allocation(self, model, quotas=[],
                           institutions=[], publications=[],
@@ -49,13 +32,21 @@ class RequestTestCase(TestCase):
             self.assertEqual(getattr(model, field), value)
         self.assertEqual(model.contact_email, self.user.name)
         quotas_l = models.Quota.objects.filter(group__allocation=model)
+        # (For ... reasons ... there may be zero-valued quotas in the list)
+        quotas = filter(lambda q: q['quota'] > 0 or q['requested_quota'] > 0,
+                        quotas)
         self.assertEqual(quotas_l.count(), len(quotas))
-        for i, quota_model in enumerate(quotas_l):
-            self.assertEqual(quota_model.resource.id, quotas[i]['resource'])
-            self.assertEqual(quota_model.group.zone.name, quotas[i]['zone'])
-            self.assertEqual(quota_model.requested_quota,
-                             quotas[i]['requested_quota'])
-            self.assertEqual(quota_model.quota, quotas[i]['quota'])
+        # (The order of the quotas don't need to match ...)
+        for qm in quotas_l:
+            matched = filter(
+                lambda q: (q['resource'] == qm.resource.id
+                           and q['zone'] == qm.group.zone.name),
+                quotas)
+            self.assertEqual(len(matched), 1)
+            self.assertEqual(qm.group.zone.name, matched[0]['zone'])
+            self.assertEqual(qm.requested_quota,
+                             matched[0]['requested_quota'])
+            self.assertEqual(qm.quota, matched[0]['quota'])
 
         institutions_l = model.institutions.all()
         for i, institution_model in enumerate(institutions_l):
@@ -95,6 +86,10 @@ class RequestTestCase(TestCase):
         self.assertStatusCode(response, 200)
 
         expected_model, form = request_allocation(user=self.user)
+
+        # Tells the server to skip the sanity checks.  (The request
+        # has fuzz'd quota values which tyically won't pass muster.)
+        form['ignore_warnings'] = True
         response = self.client.post(
             reverse('horizon:allocation:request:request'),
             form)
@@ -102,8 +97,9 @@ class RequestTestCase(TestCase):
         # Check to make sure we were redirected back to the index of
         # our requests.
         self.assertStatusCode(response, 302)
-        assert response.get('location').endswith(
-            reverse('horizon:allocation:user_requests:index'))
+        self.assertTrue(response.get('location').endswith(
+            reverse('horizon:allocation:user_requests:index')),
+            msg="incorrect redirect location")
         model = (models.AllocationRequest.objects
                  .get(project_description=form['project_description'],
                       parent_request_id=None))
@@ -117,9 +113,13 @@ class RequestTestCase(TestCase):
         backup_values = {}
 
         for field, value in kwargs.items():
-            assert field in form
+            self.assertTrue(field in form, "field %s not in form" % field)
             backup_values[field] = form[field]
             form[field] = value
+
+        # Tells the server to skip the sanity checks.  (The request
+        # has fuzz'd quota values which tyically won't pass muster.)
+        form['ignore_warnings'] = True
 
         response = self.client.post(
             reverse('horizon:allocation:request:request'),
@@ -127,8 +127,8 @@ class RequestTestCase(TestCase):
 
         if form_errors:
             # No redirect invalid fields
-            assert response.status_code == 200
-            assert response.context['form'].errors == form_errors
+            self.assertStatusCode(response, 200)
+            self.assertEqual(response.context['form'].errors, form_errors)
 
             for field, value in backup_values.items():
                 form[field] = backup_values[field]
@@ -141,9 +141,10 @@ class RequestTestCase(TestCase):
 
         # Check to make sure we were redirected back to the index of
         # our requests.
-        assert response.status_code == 302
-        assert response.get('location').endswith(
-            reverse('horizon:allocation:user_requests:index'))
+        self.assertStatusCode(response, 302)
+        self.assertTrue(response.get('location').endswith(
+            reverse('horizon:allocation:user_requests:index')),
+            msg="incorrect redirect location")
 
         model = (models.AllocationRequest.objects
                  .get(project_description=form['project_description'],
@@ -172,3 +173,61 @@ class RequestTestCase(TestCase):
             use_case='',
             form_errors={'use_case': [u'This field is required.']}
         )
+
+    def test_request_quotas_ok(self):
+        response = self.client.get(
+            reverse('horizon:allocation:request:request'))
+        self.assertStatusCode(response, 200)
+        quota_specs = [
+            quota_spec('compute', 'instances', requested_quota=1),
+            quota_spec('compute', 'cores', requested_quota=2),
+        ]
+        expected_model, form = request_allocation(user=self.user,
+                                                  quota_specs=quota_specs)
+        response = self.client.post(
+            reverse('horizon:allocation:request:request'),
+            form)
+
+        # If there are no warnings, we are redirected back to the index
+        # of our requests.
+        self.assertStatusCode(response, 302)
+        self.assertTrue(response.get('location').endswith(
+            reverse('horizon:allocation:user_requests:index')),
+            msg="incorrect redirect location")
+        model = (models.AllocationRequest.objects
+                 .get(project_description=form['project_description'],
+                      parent_request_id=None))
+        self.assert_allocation(model, **expected_model)
+
+    def test_request_quotas_warn(self):
+        response = self.client.get(
+            reverse('horizon:allocation:request:request'))
+        self.assertStatusCode(response, 200)
+        quota_specs = [
+            quota_spec('compute', 'instances', requested_quota=2),
+            quota_spec('compute', 'cores', requested_quota=1),
+        ]
+        expected_model, form = request_allocation(user=self.user,
+                                                  quota_specs=quota_specs)
+        response = self.client.post(
+            reverse('horizon:allocation:request:request'),
+            form)
+
+        # If there are warnings we will get a 200
+        self.assertStatusCode(response, 200)
+
+        # Repeat request ignoring warnings
+        form['ignore_warnings'] = True
+        response = self.client.post(
+            reverse('horizon:allocation:request:request'),
+            form)
+
+        # redirect means success; see above
+        self.assertStatusCode(response, 302)
+        self.assertTrue(response.get('location').endswith(
+            reverse('horizon:allocation:user_requests:index')),
+            msg="incorrect redirect location")
+        model = (models.AllocationRequest.objects
+                 .get(project_description=form['project_description'],
+                      parent_request_id=None))
+        self.assert_allocation(model, **expected_model)
