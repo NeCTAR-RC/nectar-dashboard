@@ -68,6 +68,40 @@ class ResourceFactory(factory.django.DjangoModelFactory):
     unit = fuzzy.FuzzyText()
 
 
+#
+# Common factory initialization for zones, service types and resources
+#
+melbourne = ZoneFactory(name='melbourne')
+monash = ZoneFactory(name='monash')
+tas = ZoneFactory(name='tas')
+nectar = ZoneFactory(name='nectar')
+volume_st = ServiceTypeFactory(catalog_name='volume')
+object_st = ServiceTypeFactory(catalog_name='object')
+compute_st = ServiceTypeFactory(catalog_name='compute')
+network_st = ServiceTypeFactory(catalog_name='network')
+volume_st.zones.add(melbourne)
+volume_st.zones.add(monash)
+volume_st.zones.add(tas)
+object_st.zones.add(nectar)
+compute_st.zones.add(nectar)
+network_st.zones.add(nectar)
+objects = ResourceFactory(quota_name='object', service_type=object_st)
+volumes = ResourceFactory(quota_name='gigabytes',
+                          service_type=volume_st)
+cores = ResourceFactory(quota_name='cores', service_type=compute_st)
+instances = ResourceFactory(quota_name='instances',
+                            service_type=compute_st)
+memory = ResourceFactory(quota_name='ram', service_type=compute_st,
+                         requestable=False)
+router = ResourceFactory(quota_name='router', service_type=network_st)
+network = ResourceFactory(quota_name='network',
+                          service_type=network_st)
+loadbalancer = ResourceFactory(quota_name='loadbalancer',
+                               service_type=network_st)
+floatingip = ResourceFactory(quota_name='floatingip',
+                             service_type=network_st)
+
+
 class QuotaGroupFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.QuotaGroup'
@@ -142,27 +176,6 @@ class AllocationFactory(factory.django.DjangoModelFactory):
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
 
-        melbourne = ZoneFactory(name='melbourne')
-        monash = ZoneFactory(name='monash')
-        tas = ZoneFactory(name='tas')
-        nectar = ZoneFactory(name='nectar')
-
-        volume_st = ServiceTypeFactory(catalog_name='volume')
-        object_st = ServiceTypeFactory(catalog_name='object')
-        compute_st = ServiceTypeFactory(catalog_name='compute')
-        volume_st.zones.add(melbourne)
-        volume_st.zones.add(monash)
-        volume_st.zones.add(tas)
-        object_st.zones.add(nectar)
-        compute_st.zones.add(nectar)
-
-        objects = ResourceFactory(quota_name='object', service_type=object_st)
-        volumes = ResourceFactory(quota_name='gigabytes',
-                                  service_type=volume_st)
-        cores = ResourceFactory(quota_name='cores', service_type=compute_st)
-        instances = ResourceFactory(quota_name='instances',
-                                    service_type=compute_st)
-        ram = ResourceFactory(quota_name='ram', service_type=compute_st)
 
         if create_quotas:
             group_volume_monash = QuotaGroupFactory(allocation=allocation,
@@ -177,10 +190,18 @@ class AllocationFactory(factory.django.DjangoModelFactory):
             group_compute = QuotaGroupFactory(allocation=allocation,
                                               service_type=compute_st,
                                               zone=nectar)
+            group_network = QuotaGroupFactory(allocation=allocation,
+                                              service_type=network_st,
+                                              zone=nectar)
             QuotaFactory(group=group_object, resource=objects)
             QuotaFactory(group=group_volume_monash, resource=volumes)
             QuotaFactory(group=group_volume_melbourne, resource=volumes)
             QuotaFactory(group=group_compute, resource=cores)
             QuotaFactory(group=group_compute, resource=instances)
+            QuotaFactory(group=group_compute, resource=memory)
+            QuotaFactory(group=group_network, resource=router)
+            QuotaFactory(group=group_network, resource=network)
+            QuotaFactory(group=group_network, resource=loadbalancer)
+            QuotaFactory(group=group_network, resource=floatingip)
 
         return allocation
