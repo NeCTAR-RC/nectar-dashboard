@@ -15,15 +15,19 @@ from datetime import date, timedelta
 from django.forms.models import model_to_dict
 from factory import fuzzy
 
+from nectar_dashboard.rcallocation import allocation_home_choices
+from nectar_dashboard.rcallocation import for_choices
+from nectar_dashboard.rcallocation import grant_type
 from nectar_dashboard.rcallocation import models
-from nectar_dashboard.rcallocation import for_choices, project_duration_choices, \
-    allocation_home_choices, grant_type
+from nectar_dashboard.rcallocation import project_duration_choices
+from nectar_dashboard.rcallocation.tests import factories
+
 
 FOR_CHOICES = dict(for_choices.FOR_CHOICES)
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
-
+GROUP_NAMES = ['compute', 'object', 'volume', 'network']   # ... and more
 
 def allocation_to_dict(model):
     allocation = model_to_dict(model)
@@ -44,9 +48,40 @@ def allocation_to_dict(model):
     return allocation
 
 
+def factory_setup():
+    melbourne = factories.ZoneFactory(name='melbourne')
+    monash = factories.ZoneFactory(name='monash')
+    nectar = factories.ZoneFactory(name='nectar')
+
+    volume_st = factories.ServiceTypeFactory(catalog_name='volume')
+    object_st = factories.ServiceTypeFactory(catalog_name='object')
+    compute_st = factories.ServiceTypeFactory(catalog_name='compute')
+    network_st = factories.ServiceTypeFactory(catalog_name='network')
+    volume_st.zones.add(melbourne)
+    volume_st.zones.add(monash)
+    object_st.zones.add(nectar)
+    compute_st.zones.add(nectar)
+    network_st.zones.add(nectar)
+
+    factories.ResourceFactory(quota_name='object', service_type=object_st)
+    factories.ResourceFactory(quota_name='gigabytes',
+                              service_type=volume_st)
+    factories.ResourceFactory(quota_name='cores', service_type=compute_st)
+    factories.ResourceFactory(quota_name='instances', service_type=compute_st)
+    factories.ResourceFactory(quota_name='memory', service_type=compute_st)
+    factories.ResourceFactory(quota_name='network', service_type=network_st)
+    factories.ResourceFactory(quota_name='router', service_type=network_st)
+    factories.ResourceFactory(quota_name='loadbalancer',
+                              service_type=network_st)
+    factories.ResourceFactory(quota_name='floatingip', service_type=network_st)
+
+
 def get_groups(service_type, allocation=None):
     quota_fuzz = fuzzy.FuzzyInteger(1, 100000)
-    st = models.ServiceType.objects.get(catalog_name=service_type)
+    try:
+        st = models.ServiceType.objects.get(catalog_name=service_type)
+    except models.ServiceType.DoesNotExist:
+        raise Exception("Can't find service type '%s'" % service_type)
     resources = st.resource_set.filter(requestable=True)
     groups = []
     allocated_zones = []
@@ -84,8 +119,42 @@ def get_groups(service_type, allocation=None):
     return groups
 
 
-def request_allocation(user, model=None, compute_groups=None,
-                       volume_groups=None, object_groups=None,
+def add_quota_forms(form, all_quotas, service_type, group_list,
+                    prefix_start='a'):
+    new_prefix = prefix_start
+    for group in group_list:
+        if group['id']:
+            prefix = group['id']
+        else:
+            prefix = new_prefix
+            new_prefix = next_char(new_prefix)
+
+        quotas = group.pop('quotas')
+        form['%s_%s-INITIAL_FORMS' %
+             (service_type, prefix)] = len(quotas) if group['id'] else 0
+        resource_count = models.Resource.objects.filter(
+            service_type__catalog_name=service_type,
+            requestable=True).count()
+        form['%s_%s-TOTAL_FORMS' % (service_type, prefix)] = resource_count
+        form['%s_%s-MAX_NUM_FORMS' % (service_type, prefix)] = 1000
+
+        for i, quota in enumerate(quotas):
+            all_quotas.append({'resource': quota['resource'],
+                               'zone': group['zone'],
+                               'requested_quota': quota['requested_quota'],
+                               'quota': quota['quota']})
+            for k, v in quota.items():
+                form['%s_%s-%s-%s' % (service_type, prefix, i, k)] = v
+
+        for k, v in group.items():
+            form['%s_%s-%s' % (service_type, prefix, k)] = v
+
+
+def next_char(c):
+    return chr(ord(c) + 1)
+
+
+def request_allocation(user, model=None, groups=None,
                        institutions=None, publications=None, grants=None,
                        investigators=None):
 
@@ -120,9 +189,9 @@ def request_allocation(user, model=None, compute_groups=None,
                   }
 
     if model:
-        compute_groups = get_groups('compute', model)
-        volume_groups = get_groups('volume', model)
-        object_groups = get_groups('object', model)
+        groups = {}
+        for name in GROUP_NAMES:
+            groups[name] = get_groups(name, model)
 
         institutions = [{'id': ins.id,
                          'name': ins.name}
@@ -153,14 +222,12 @@ def request_allocation(user, model=None, compute_groups=None,
                          for inv in model.investigators.all()]
 
     else:
-        if not volume_groups:
-            volume_groups = get_groups('volume')
+        if groups is None:
+            groups = {}
 
-        if not object_groups:
-            object_groups = get_groups('object')
-
-        if not compute_groups:
-            compute_groups = get_groups('compute')
+        for name in GROUP_NAMES:
+            if name not in groups:
+                groups[name] = get_groups(name)
 
         if not institutions:
             institutions = [
@@ -194,46 +261,12 @@ def request_allocation(user, model=None, compute_groups=None,
                 'additional_researchers': 'None'
             }]
 
-    def next_char(c):
-        return chr(ord(c) + 1)
-
     form = model_dict.copy()
     all_quotas = []
 
-    def add_quota_forms(service_type, groups, prefix_start='a'):
-        new_prefix = prefix_start
-        for group in groups:
-            if group['id']:
-                prefix = group['id']
-            else:
-                prefix = new_prefix
-                new_prefix = next_char(new_prefix)
-
-            quotas = group.pop('quotas')
-            form['%s_%s-INITIAL_FORMS' %
-                 (service_type, prefix)] = len(quotas) if group['id'] else 0
-            resource_count = models.Resource.objects.filter(
-                service_type__catalog_name=service_type,
-                requestable=True).count()
-            form['%s_%s-TOTAL_FORMS' % (service_type, prefix)] = resource_count
-            form['%s_%s-MAX_NUM_FORMS' % (service_type, prefix)] = 1000
-
-            for i, quota in enumerate(quotas):
-                all_quotas.append({'resource': quota['resource'],
-                                   'zone': group['zone'],
-                                   'requested_quota': quota['requested_quota'],
-                                   'quota': quota['quota']})
-                for k, v in quota.items():
-                    form['%s_%s-%s-%s' % (service_type, prefix, i, k)] = v
-
-            for k, v in group.items():
-                form['%s_%s-%s' % (service_type, prefix, k)] = v
-
     prefix_start = 'b' if model else 'a'
-    add_quota_forms('compute', compute_groups, prefix_start)
-    add_quota_forms('volume', volume_groups, prefix_start)
-    add_quota_forms('object', object_groups, prefix_start)
-
+    for name, group_list in groups.items():
+        add_quota_forms(form, all_quotas, name, group_list, prefix_start)
     form['institutions-INITIAL_FORMS'] = model.institutions.count() \
         if model else 0
     form['institutions-TOTAL_FORMS'] = len(institutions)
