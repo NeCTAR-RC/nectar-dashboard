@@ -16,30 +16,15 @@ from django.core.urlresolvers import reverse
 
 from openstack_dashboard.test.helpers import TestCase
 from nectar_dashboard.rcallocation import models
-from .common import request_allocation
+from nectar_dashboard.rcallocation.tests.common import factory_setup
+from nectar_dashboard.rcallocation.tests.common import request_allocation
 
-from nectar_dashboard.rcallocation.tests import factories
 
 class RequestTestCase(TestCase):
 
     def setUp(self):
         super(RequestTestCase, self).setUp()
-        melbourne = factories.ZoneFactory(name='melbourne')
-        monash = factories.ZoneFactory(name='monash')
-        nectar = factories.ZoneFactory(name='nectar')
-
-        volume_st = factories.ServiceTypeFactory(catalog_name='volume')
-        object_st = factories.ServiceTypeFactory(catalog_name='object')
-        compute_st = factories.ServiceTypeFactory(catalog_name='compute')
-        volume_st.zones.add(melbourne)
-        volume_st.zones.add(monash)
-        object_st.zones.add(nectar)
-        compute_st.zones.add(nectar)
-
-        factories.ResourceFactory(quota_name='object', service_type=object_st)
-        factories.ResourceFactory(quota_name='gigabytes',
-                                  service_type=volume_st)
-        factories.ResourceFactory(quota_name='cores', service_type=compute_st)
+        factory_setup()
 
     def assert_allocation(self, model, quotas=[],
                           institutions=[], publications=[],
@@ -50,12 +35,17 @@ class RequestTestCase(TestCase):
         self.assertEqual(model.contact_email, self.user.name)
         quotas_l = models.Quota.objects.filter(group__allocation=model)
         self.assertEqual(quotas_l.count(), len(quotas))
-        for i, quota_model in enumerate(quotas_l):
-            self.assertEqual(quota_model.resource.id, quotas[i]['resource'])
-            self.assertEqual(quota_model.group.zone.name, quotas[i]['zone'])
-            self.assertEqual(quota_model.requested_quota,
-                             quotas[i]['requested_quota'])
-            self.assertEqual(quota_model.quota, quotas[i]['quota'])
+        # (The order of the quotas don't need to match ...)
+        for qm in quotas_l:
+            matched = filter(
+                lambda q: (q['resource'] == qm.resource.id
+                           and q['zone'] == qm.group.zone.name),
+                quotas)
+            self.assertEqual(len(matched), 1)
+            self.assertEqual(qm.group.zone.name, matched[0]['zone'])
+            self.assertEqual(qm.requested_quota,
+                             matched[0]['requested_quota'])
+            self.assertEqual(qm.quota, matched[0]['quota'])
 
         institutions_l = model.institutions.all()
         for i, institution_model in enumerate(institutions_l):
@@ -95,6 +85,7 @@ class RequestTestCase(TestCase):
         self.assertStatusCode(response, 200)
 
         expected_model, form = request_allocation(user=self.user)
+
         response = self.client.post(
             reverse('horizon:allocation:request:request'),
             form)
@@ -127,7 +118,7 @@ class RequestTestCase(TestCase):
 
         if form_errors:
             # No redirect invalid fields
-            assert response.status_code == 200
+            self.assertStatusCode(response, 200)
             assert response.context['form'].errors == form_errors
 
             for field, value in backup_values.items():
@@ -141,7 +132,7 @@ class RequestTestCase(TestCase):
 
         # Check to make sure we were redirected back to the index of
         # our requests.
-        assert response.status_code == 302
+        self.assertStatusCode(response, 302)
         assert response.get('location').endswith(
             reverse('horizon:allocation:user_requests:index'))
 

@@ -150,11 +150,13 @@ class AllocationFactory(factory.django.DjangoModelFactory):
         volume_st = ServiceTypeFactory(catalog_name='volume')
         object_st = ServiceTypeFactory(catalog_name='object')
         compute_st = ServiceTypeFactory(catalog_name='compute')
+        network_st = ServiceTypeFactory(catalog_name='network')
         volume_st.zones.add(melbourne)
         volume_st.zones.add(monash)
         volume_st.zones.add(tas)
         object_st.zones.add(nectar)
         compute_st.zones.add(nectar)
+        network_st.zones.add(nectar)
 
         objects = ResourceFactory(quota_name='object', service_type=object_st)
         volumes = ResourceFactory(quota_name='gigabytes',
@@ -163,6 +165,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
         instances = ResourceFactory(quota_name='instances',
                                     service_type=compute_st)
         ram = ResourceFactory(quota_name='ram', service_type=compute_st)
+        router = ResourceFactory(quota_name='router', service_type=network_st)
 
         if create_quotas:
             group_volume_monash = QuotaGroupFactory(allocation=allocation,
@@ -177,10 +180,14 @@ class AllocationFactory(factory.django.DjangoModelFactory):
             group_compute = QuotaGroupFactory(allocation=allocation,
                                               service_type=compute_st,
                                               zone=nectar)
+            group_network = QuotaGroupFactory(allocation=allocation,
+                                              service_type=network_st,
+                                              zone=nectar)
             QuotaFactory(group=group_object, resource=objects)
             QuotaFactory(group=group_volume_monash, resource=volumes)
             QuotaFactory(group=group_volume_melbourne, resource=volumes)
             QuotaFactory(group=group_compute, resource=cores)
             QuotaFactory(group=group_compute, resource=instances)
+            QuotaFactory(group=group_network, resource=router)
 
         return allocation
