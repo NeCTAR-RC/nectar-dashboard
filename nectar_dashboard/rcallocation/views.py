@@ -46,10 +46,10 @@ class AllocationDetailView(mixins.UserPassesTestMixin, DetailView,
                        .filter(status=models.AllocationRequest.APPROVED)
                        .filter(parent_request=self.object.pk)[:1])
 
-        if allocations:
-            kwargs['previous_allocation'] = allocations[0]
-        elif self.object.status == models.AllocationRequest.APPROVED:
+        if self.object.status == models.AllocationRequest.APPROVED:
             kwargs['previous_allocation'] = self.object
+        elif allocations:
+            kwargs['previous_allocation'] = allocations[0]
         return (super(AllocationDetailView, self).get_context_data(**kwargs))
 
     def test_func(self):
