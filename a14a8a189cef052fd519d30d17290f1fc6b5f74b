@@ -1,0 +1,159 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c275929e_69b966d5",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-06T01:25:40Z",
+      "side": 1,
+      "message": "not needed (see below)",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 37
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "921431d2_65900c67",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-06T01:25:40Z",
+      "side": 1,
+      "message": "forms.HiddenInput",
+      "range": {
+        "startLine": 19,
+        "startChar": 42,
+        "endLine": 19,
+        "endChar": 54
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d27fb334_210e0cec",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-06T01:25:40Z",
+      "side": 1,
+      "message": "forms.BooleanField",
+      "range": {
+        "startLine": 19,
+        "startChar": 22,
+        "endLine": 19,
+        "endChar": 34
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3f2caf6_502001a2",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-06T01:25:40Z",
+      "side": 1,
+      "message": "ideally in another commit",
+      "range": {
+        "startLine": 70,
+        "startChar": 47,
+        "endLine": 70,
+        "endChar": 99
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db81773a_07849185",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit_notes.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-06T01:25:40Z",
+      "side": 1,
+      "message": "ideally in another commit",
+      "range": {
+        "startLine": 13,
+        "startChar": 47,
+        "endLine": 13,
+        "endChar": 99
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f511abba_c0e06023",
+        "filename": "nectar_dashboard/rcallocation/tests/test_request_views.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-06T01:25:40Z",
+      "side": 1,
+      "message": "Why remove this line?",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 1
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7366792_60d69d1d",
+        "filename": "nectar_dashboard/test/settings.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-06T01:25:40Z",
+      "side": 1,
+      "message": "Please add this to the bottom under the #nectar stuff comment\n\nCan do HORIZON_CONFIG[\u0027WARNING_INFO_URL\u0027] \u003d \u0027xyz\u0027\n\nJust makes it easier to do a diff of this file when we go to a newer version of horizon",
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
