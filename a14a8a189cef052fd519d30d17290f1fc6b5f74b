@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "eb48765d_57eccb81",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-05-07T04:31:48Z",
+      "side": 1,
+      "message": "Nit pick.  The precise details of the imports don\u0027t matter.  If they did, you would have fixed all of the other places where widgets are imported; e.g. see the previous line.",
+      "parentUuid": "c275929e_69b966d5",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 37
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "921431d2_65900c67",
         "filename": "nectar_dashboard/rcallocation/forms.py",
         "patchSetId": 1
@@ -71,6 +95,54 @@
     },
     {
       "key": {
+        "uuid": "e2e12121_48618932",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-05-07T04:31:48Z",
+      "side": 1,
+      "message": "See above",
+      "parentUuid": "921431d2_65900c67",
+      "range": {
+        "startLine": 19,
+        "startChar": 42,
+        "endLine": 19,
+        "endChar": 54
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "359ad52a_59abccae",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-05-07T04:31:48Z",
+      "side": 1,
+      "message": "See above",
+      "parentUuid": "d27fb334_210e0cec",
+      "range": {
+        "startLine": 19,
+        "startChar": 22,
+        "endLine": 19,
+        "endChar": 34
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a3f2caf6_502001a2",
         "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
         "patchSetId": 1
@@ -91,6 +163,30 @@
       "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2baa2de_6758b7d8",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-05-07T04:31:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a3f2caf6_502001a2",
+      "range": {
+        "startLine": 70,
+        "startChar": 47,
+        "endLine": 70,
+        "endChar": 99
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "7c27a6b1_80a91b64",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit_notes.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-05-07T04:31:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "db81773a_07849185",
+      "range": {
+        "startLine": 13,
+        "startChar": 47,
+        "endLine": 13,
+        "endChar": 99
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f511abba_c0e06023",
         "filename": "nectar_dashboard/rcallocation/tests/test_request_views.py",
         "patchSetId": 1
@@ -137,6 +257,30 @@
       "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd69de11_a265dfc0",
+        "filename": "nectar_dashboard/rcallocation/tests/test_request_views.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-05-07T04:31:48Z",
+      "side": 1,
+      "message": "I dunno.  I was adding / removing \"import pdb\".  Does it really matter?",
+      "parentUuid": "f511abba_c0e06023",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 1
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
