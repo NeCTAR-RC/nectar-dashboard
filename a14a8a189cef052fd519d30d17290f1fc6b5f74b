@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "793b9a22_bac26a24",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-07T06:50:57Z",
+      "side": 1,
+      "message": "Just trying to adhere to a style, yes some old code doesn\u0027t but that doesn\u0027t mean new code can\u0027t",
+      "parentUuid": "eb48765d_57eccb81",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 37
+      },
+      "revId": "a14a8a189cef052fd519d30d17290f1fc6b5f74b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "921431d2_65900c67",
         "filename": "nectar_dashboard/rcallocation/forms.py",
         "patchSetId": 1
