@@ -11,15 +11,25 @@
 #   under the License.
 #
 
+from openstack_dashboard.test import helpers
 from rest_framework import test
 
+from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 from nectar_dashboard.rcallocation.tests import utils
+
+
+class BaseTestCase(helpers.TestCase):
+
+    def setUp(self):
+        super(BaseTestCase, self).setUp()
+        common.factory_setup()
 
 
 class AllocationAPITest(test.APITestCase):
 
     def setUp(self, *args, **kwargs):
+        common.factory_setup()
         self.user = utils.get_user(id='user1',
                                    username='bob',
                                    project_name='proj1')
