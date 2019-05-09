@@ -677,3 +677,10 @@ function change_core_hours(number_of_cores, hours_diff){
     var input_number_core_hours = $("input#id_core_hours");
     input_number_core_hours.val(estimated_core_hours);
 }
+
+function submit_ignore() {
+    // Submit the allocation form with the hidden field set to tell the
+    // server side to not to check for quota sanity and other warnings.
+    document.getElementById("id_ignore_warnings").value = '1';
+    document.getElementById("new-allocation").submit();   // sic
+}
