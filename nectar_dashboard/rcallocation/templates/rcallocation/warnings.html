@@ -1,0 +1,10 @@
+<div class="alert alert-warning" role="alert">
+  <h4><span class="fa fa-warning"></span> Warnings</h4>
+  <p>Please review the following warnings. Then either modify the form and "Submit" it again, or "Submit ignoring warnings".</p>
+  <p>
+    <ul style="padding-left:20px;">
+      {% for warning in warnings %}
+      <li>{{warning.1}}   <a href="{{HORIZON_CONFIG.WARNING_INFO_URL}}#{{warning.0}}" class="alert-link" target="_blank">more info</a></li>
+      {% endfor %}
+    </ul>
+</div>
