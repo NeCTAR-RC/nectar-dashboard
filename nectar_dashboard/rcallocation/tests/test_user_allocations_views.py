@@ -85,6 +85,10 @@ class RequestTestCase(base.BaseTestCase):
         expected_model, form = common.request_allocation(user=self.user,
                                                          model=allocation)
 
+        # Tells the server to skip the sanity checks.  (The request
+        # has fuzz'd quota values which tyically won't pass muster.)
+        form['ignore_warnings'] = True
+
         response = self.client.post(
             reverse('horizon:allocation:user_requests:edit_request',
                     args=(allocation.id,)),
