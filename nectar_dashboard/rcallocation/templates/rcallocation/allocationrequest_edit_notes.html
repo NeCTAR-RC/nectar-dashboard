@@ -10,7 +10,7 @@
 {% block main %}
 <div class="dash_block">
   {% if form.errors %}
-  <div class="alert alert-danger" role="alert">Please fix up the below errors</div>
+  <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit</div>
   {% endif %}
   <form id="new-allocation"
 	action="{% url 'horizon:allocation:requests:edit_notes' object.pk %}"

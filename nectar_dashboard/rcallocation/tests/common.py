@@ -122,6 +122,56 @@ def get_groups(service_type, allocation=None):
     return groups
 
 
+def quota_specs_to_groups(quota_specs):
+    # Populate default (zero) quota specs for all known resources
+    all_quota_specs = {}
+    service_quotas = {}
+    groups = {}
+    for st in models.ServiceType.objects.all():
+        service_quotas[st.catalog_name] = []
+        for z in st.zones.all():
+            for r in models.Resource.objects.filter(service_type=st,
+                                                    requestable=True):
+                key = "%s_%s_%s" % (st.catalog_name, z.name, r.quota_name)
+                all_quota_specs[key] = quota_spec(st.catalog_name,
+                                                  r.quota_name,
+                                                  zone=z.name)
+    # Override with supplied quota specs
+    for qs in quota_specs:
+        key = "%s_%s_%s" % (qs['service'], qs['zone'], qs['resource'])
+        all_quota_specs[key] = qs
+    for qs in all_quota_specs.values():
+        st = models.ServiceType.objects.get(catalog_name=qs['service'])
+        r = models.Resource.objects.get(quota_name=qs['resource'],
+                                                   service_type=st)
+        service_quotas[st.catalog_name].append(
+            {'id': '',
+             'requested_quota': qs['requested_quota'],
+             'quota': qs['quota'],
+             'resource': r.id,
+             'zone': qs['zone'],
+             'group': ''})
+    for service, quotas in service_quotas.items():
+        group_list = []
+        for zone in set(map(lambda q: q['zone'], quotas)):
+            group_quotas = filter(lambda q: q['zone'] == zone, quotas)
+            if len(group_quotas) > 0:
+                group_list.append({'id': '',
+                                   'zone': zone,
+                                   'service_type': service,
+                                   'quotas': group_quotas})
+        groups[service] = group_list
+    return groups
+
+
+def quota_spec(service, resource, quota=0, requested_quota=0, zone='nectar'):
+    return {'service': service,
+            'resource': resource,
+            'quota': quota,
+            'requested_quota': requested_quota,
+            'zone': zone}
+
+
 def add_quota_forms(form, all_quotas, service_type, group_list,
                     prefix_start='a'):
     new_prefix = prefix_start
@@ -157,7 +207,7 @@ def next_char(c):
     return chr(ord(c) + 1)
 
 
-def request_allocation(user, model=None, groups=None,
+def request_allocation(user, model=None, quota_specs=None,
                        institutions=None, publications=None, grants=None,
                        investigators=None):
 
@@ -225,12 +275,12 @@ def request_allocation(user, model=None, groups=None,
                          for inv in model.investigators.all()]
 
     else:
-        if groups is None:
+        if quota_specs is None:
             groups = {}
-
-        for name in GROUP_NAMES:
-            if name not in groups:
+            for name in GROUP_NAMES:
                 groups[name] = get_groups(name)
+        else:
+            groups = quota_specs_to_groups(quota_specs)
 
         if not institutions:
             institutions = [
