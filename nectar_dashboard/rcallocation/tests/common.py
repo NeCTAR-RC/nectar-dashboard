@@ -51,6 +51,7 @@ def allocation_to_dict(model):
 def factory_setup():
     melbourne = factories.ZoneFactory(name='melbourne')
     monash = factories.ZoneFactory(name='monash')
+    tas = factories.ZoneFactory(name='tas')
     nectar = factories.ZoneFactory(name='nectar')
 
     volume_st = factories.ServiceTypeFactory(catalog_name='volume')
@@ -59,18 +60,18 @@ def factory_setup():
     network_st = factories.ServiceTypeFactory(catalog_name='network')
     volume_st.zones.add(melbourne)
     volume_st.zones.add(monash)
+    volume_st.zones.add(tas)
     object_st.zones.add(nectar)
     compute_st.zones.add(nectar)
     network_st.zones.add(nectar)
-
     factories.ResourceFactory(quota_name='object', service_type=object_st)
-    factories.ResourceFactory(quota_name='gigabytes',
-                              service_type=volume_st)
+    factories.ResourceFactory(quota_name='gigabytes', service_type=volume_st)
     factories.ResourceFactory(quota_name='cores', service_type=compute_st)
     factories.ResourceFactory(quota_name='instances', service_type=compute_st)
-    factories.ResourceFactory(quota_name='memory', service_type=compute_st)
-    factories.ResourceFactory(quota_name='network', service_type=network_st)
+    factories.ResourceFactory(quota_name='ram', service_type=compute_st,
+                              requestable=False)
     factories.ResourceFactory(quota_name='router', service_type=network_st)
+    factories.ResourceFactory(quota_name='network', service_type=network_st)
     factories.ResourceFactory(quota_name='loadbalancer',
                               service_type=network_st)
     factories.ResourceFactory(quota_name='floatingip', service_type=network_st)
