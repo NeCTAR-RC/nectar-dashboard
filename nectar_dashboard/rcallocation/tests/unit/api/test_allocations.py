@@ -65,7 +65,7 @@ class AllocationTests(base.AllocationAPITest):
                          'field_of_research_2', 'field_of_research_3',
                          'for_percentage_1', 'for_percentage_2',
                          'for_percentage_3', 'quotas']
-        self.assertEqual(public_fields, response.data.keys())
+        self.assertEqual(public_fields, list(response.data.keys()))
 
     def test_get_allocation_negative(self):
         self.client.force_authenticate(user=self.user)

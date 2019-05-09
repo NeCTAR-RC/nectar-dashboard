@@ -11,20 +11,14 @@
 #   under the License.
 #
 
-from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from openstack_dashboard.test.helpers import TestCase
 from nectar_dashboard.rcallocation import models
-from nectar_dashboard.rcallocation.tests.common import factory_setup
-from nectar_dashboard.rcallocation.tests.common import request_allocation
+from nectar_dashboard.rcallocation.tests import base
+from nectar_dashboard.rcallocation.tests import common
 
 
-class RequestTestCase(TestCase):
-
-    def setUp(self):
-        super(RequestTestCase, self).setUp()
-        factory_setup()
+class RequestTestCase(base.BaseTestCase):
 
     def assert_allocation(self, model, quotas=[],
                           institutions=[], publications=[],
@@ -34,13 +28,14 @@ class RequestTestCase(TestCase):
             self.assertEqual(getattr(model, field), value)
         self.assertEqual(model.contact_email, self.user.name)
         quotas_l = models.Quota.objects.filter(group__allocation=model)
+        # (For ... reasons ... there may be zero-valued quotas in the list)
+        quotas = [q for q in quotas if q['quota'] > 0
+                  or q['requested_quota'] > 0]
         self.assertEqual(quotas_l.count(), len(quotas))
         # (The order of the quotas don't need to match ...)
         for qm in quotas_l:
-            matched = filter(
-                lambda q: (q['resource'] == qm.resource.id
-                           and q['zone'] == qm.group.zone.name),
-                quotas)
+            matched = [q for q in quotas if q['resource'] == qm.resource.id
+                       and q['zone'] == qm.group.zone.name]
             self.assertEqual(len(matched), 1)
             self.assertEqual(qm.group.zone.name, matched[0]['zone'])
             self.assertEqual(qm.requested_quota,
@@ -84,7 +79,7 @@ class RequestTestCase(TestCase):
             reverse('horizon:allocation:request:request'))
         self.assertStatusCode(response, 200)
 
-        expected_model, form = request_allocation(user=self.user)
+        expected_model, form = common.request_allocation(user=self.user)
 
         response = self.client.post(
             reverse('horizon:allocation:request:request'),
@@ -93,8 +88,9 @@ class RequestTestCase(TestCase):
         # Check to make sure we were redirected back to the index of
         # our requests.
         self.assertStatusCode(response, 302)
-        assert response.get('location').endswith(
-            reverse('horizon:allocation:user_requests:index'))
+        self.assertTrue(response.get('location').endswith(
+            reverse('horizon:allocation:user_requests:index')),
+            msg="incorrect redirect location")
         model = (models.AllocationRequest.objects
                  .get(project_description=form['project_description'],
                       parent_request_id=None))
@@ -104,11 +100,11 @@ class RequestTestCase(TestCase):
                          **kwargs):
         response = self.client.get(
             reverse('horizon:allocation:request:request'))
-        expected_model, form = request_allocation(user=self.user)
+        expected_model, form = common.request_allocation(user=self.user)
         backup_values = {}
 
         for field, value in kwargs.items():
-            assert field in form
+            self.assertTrue(field in form, "field %s not in form" % field)
             backup_values[field] = form[field]
             form[field] = value
 
@@ -119,7 +115,7 @@ class RequestTestCase(TestCase):
         if form_errors:
             # No redirect invalid fields
             self.assertStatusCode(response, 200)
-            assert response.context['form'].errors == form_errors
+            self.assertEqual(response.context['form'].errors, form_errors)
 
             for field, value in backup_values.items():
                 form[field] = backup_values[field]
@@ -133,8 +129,9 @@ class RequestTestCase(TestCase):
         # Check to make sure we were redirected back to the index of
         # our requests.
         self.assertStatusCode(response, 302)
-        assert response.get('location').endswith(
-            reverse('horizon:allocation:user_requests:index'))
+        self.assertTrue(response.get('location').endswith(
+            reverse('horizon:allocation:user_requests:index')),
+            msg="incorrect redirect location")
 
         model = (models.AllocationRequest.objects
                  .get(project_description=form['project_description'],
