@@ -18,8 +18,8 @@ from openstack_dashboard import api
 
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import mixins
-
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import quota_sanity
 from nectar_dashboard.rcallocation import tables
 from nectar_dashboard.rcallocation import utils
 
@@ -410,7 +410,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
-        kwargs = {'form': form}
+        kwargs['form'] = form
         # quota
         kwargs['quota_formsets'] = self.get_quota_formsets()
 
@@ -444,6 +444,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         kwargs = {'form': form}
+        ignore_warnings = request.POST.get('ignore_warnings', False)
 
         formset_investigator_class = self.get_formset_investigator_class()
         if formset_investigator_class:
@@ -463,7 +464,13 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         if formset_grant_class:
             kwargs['grant_formset'] = self.get_formset(formset_grant_class)
 
+        # Primary validation of quotas + gathering of the values
+        # into a form that can be used for quota sanity checks.
         quota_valid = True
+        if not ignore_warnings:
+            sc_context = quota_sanity.QuotaSanityContext(
+                requested=self.ONLY_REQUESTABLE_RESOURCES)
+
         quota_formsets = self.get_quota_formsets()
         for service_type, form_tuple in quota_formsets:
             selected_zones = []
@@ -478,10 +485,55 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                         quota_valid = False
                     else:
                         selected_zones.append(group_form.cleaned_data['zone'])
-        if quota_valid and all(map(methodcaller('is_valid'), kwargs.values())):
-            return self.form_valid(quota_formsets=quota_formsets, **kwargs)
+                if form.is_valid() and quota_valid and not ignore_warnings:
+                    quotas_to_check = self._prep_quotas(form, group_form,
+                                                        formset)
+                    sc_context.add_quotas(quotas_to_check)
+
+        valid = quota_valid and \
+            all(map(methodcaller('is_valid'), kwargs.values()))
+        kwargs['quota_formsets'] = quota_formsets
+
+        if valid:
+            if ignore_warnings:
+                return self.form_valid(**kwargs)
+            warnings = sc_context.do_checks()
+            if len(warnings) == 0:
+                return self.form_valid(**kwargs)
+            else:
+                kwargs['warnings'] = warnings
+                return self.form_invalid(**kwargs)
         else:
-            return self.form_invalid(quota_formsets=quota_formsets, **kwargs)
+            return self.form_invalid(**kwargs)
+
+    def _prep_quotas(self, form, group_form, formset):
+        # Connect up the quotas, groups and allocation so that the
+        # quotas can be properly identified by the sanity checker.
+        object = form.save(commit=False)
+        group = group_form.save(commit=False)
+        group.allocation = object
+        zone = group_form.cleaned_data.get('zone', None)
+        if zone is None:
+            zone_name = 'nectar'
+        else:
+            zone_name = zone.name
+        try:
+            group.zone = models.Zone.objects.filter(name=zone_name)[0]
+        except IndexError:
+            raise Exception("Unknown zone %s" % zone_name)
+
+        quotas_to_check = []
+        for quota_data in formset.cleaned_data:
+            q = quota_data.get('id', None)
+            if q is None:
+                q = models.Quota()
+                q.resource = quota_data['resource']
+            q.quota = quota_data.get('quota', 0)
+            q.requested_quota = quota_data.get('requested_quota', 0)
+            q.group = group
+            quotas_to_check.append(q)
+        return quotas_to_check
+
 
     @transaction.atomic
     def form_valid(self, form, investigator_formset=None,
@@ -558,7 +610,8 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
 
     def form_invalid(self, form, investigator_formset=None,
                      institution_formset=None, publication_formset=None,
-                     grant_formset=None, quota_formsets=None):
+                     grant_formset=None, quota_formsets=None,
+                     warnings=[]):
         """If the form is invalid, re-render the context data with the
         data-filled forms and errors.
         """
@@ -568,4 +621,5 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                                   institution_formset=institution_formset,
                                   publication_formset=publication_formset,
                                   grant_formset=grant_formset,
-                                  quota_formsets=quota_formsets))
+                                  quota_formsets=quota_formsets,
+                                  warnings=warnings))
