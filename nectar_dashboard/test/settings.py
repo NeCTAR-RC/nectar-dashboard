@@ -357,6 +357,9 @@ ALLOCATION_GLOBAL_READ_ROLES = ['read_only']
 ALLOCATION_GLOBAL_ADMIN_ROLES = ['admin']
 ALLOCATION_APPROVER_ROLES = ['tenantmanager']
 
+HORIZON_CONFIG['WARNING_INFO_URL'] = \
+    "https://support.ehelp.edu.au/support/home"
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
     'rest_framework.pagination.LimitOffsetPagination',
