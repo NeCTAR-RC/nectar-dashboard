@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-from datetime import date, timedelta
+import datetime
 from django.forms.models import model_to_dict
 from factory import fuzzy
 
@@ -20,6 +20,7 @@ from nectar_dashboard.rcallocation import grant_type
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import project_duration_choices
 from nectar_dashboard.rcallocation.tests import factories
+
 
 FOR_CHOICES = dict(for_choices.FOR_CHOICES)
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
@@ -208,8 +209,8 @@ def request_allocation(user, model=None, quota_specs=None,
                        institutions=None, publications=None, grants=None,
                        investigators=None):
 
-    _1_year = date.today() + timedelta(days=365)
-    start_date = fuzzy.FuzzyDate(date.today(), _1_year).fuzz()
+    _1_year = datetime.date.today() + datetime.timedelta(days=365)
+    start_date = fuzzy.FuzzyDate(datetime.date.today(), _1_year).fuzz()
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
     forp_2 = fuzzy.FuzzyInteger(1, 9 - forp_1).fuzz()
