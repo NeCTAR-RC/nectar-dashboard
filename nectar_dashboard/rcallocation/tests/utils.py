@@ -20,7 +20,7 @@ from openstack_auth import user
 
 def get_user(id='123', username='bob', project_name='foo', roles=['member']):
     roles = [{'name': role} for role in roles]
-    project_id = 'id'+project_name
+    project_id = 'id' + project_name
     project = {'id': project_id}
     token = mock.Mock(project=project, tenant=project)
     return user.User(id=id,

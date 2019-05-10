@@ -1,20 +1,14 @@
 import logging
-from collections import defaultdict
 
 from django.db.models import Q
-from django.forms.models import inlineformset_factory
-from django.core.exceptions import PermissionDenied
-
-from horizon.utils.memoized import memoized
 from openstack_dashboard.api import keystone
 
-from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation.user_allocations import forms
+from nectar_dashboard.rcallocation.user_allocations import tables
 from nectar_dashboard.rcallocation import utils
 from nectar_dashboard.rcallocation import views
 
-from .forms import UserAllocationRequestForm
-from .tables import UserAllocationListTable
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
@@ -31,7 +25,7 @@ class RestrictedAllocationsEditView(BaseAllocationUpdateView):
     page_title = 'Update'
     template_name = "rcallocation/allocationrequest_user_update.html"
     model = models.AllocationRequest
-    form_class = UserAllocationRequestForm
+    form_class = forms.UserAllocationRequestForm
     success_url = "../../"
 
 
@@ -63,7 +57,7 @@ def get_managed_projects(request):
             user=request.user.id,
             include_subtree=False,
             include_names=True)
-    except:
+    except Exception:
         role_assignments = []
 
     for ra in role_assignments:
@@ -74,13 +68,12 @@ def get_managed_projects(request):
 
 
 class UserAllocationsListView(views.AllocationsListView):
-    """
-    A simple paginated view of the allocation requests, ordered by
+    """A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
     by status?
     """
     context_object_name = "allocation_list"
-    table_class = UserAllocationListTable
+    table_class = tables.UserAllocationListTable
     template_name = 'rcallocation/allocationrequest_user_list.html'
     page_title = 'My Requests'
 
@@ -89,8 +82,8 @@ class UserAllocationsListView(views.AllocationsListView):
         managed_projects = get_managed_projects(self.request)
         return (models.AllocationRequest.objects.all()
                 .filter(parent_request=None)
-                .filter(Q(project_id__in=managed_projects) |
-                        Q(contact_email__exact=contact_email))
+                .filter(Q(project_id__in=managed_projects)
+                        | Q(contact_email__exact=contact_email))
                 .order_by('status')
                 .prefetch_related('quotas'))
 
