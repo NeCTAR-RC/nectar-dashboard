@@ -1,7 +1,6 @@
+from django.core import urlresolvers
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
-from django.core import urlresolvers
-
 from horizon import tables
 
 from nectar_dashboard.rcallocation import models
@@ -17,8 +16,8 @@ class EditRequest(tables.LinkAction):
 
     def allowed(self, request, instance):
         return instance.can_be_edited() or (
-            instance.can_admin_edit() and
-            utils.user_is_allocation_admin(request.user))
+            instance.can_admin_edit()
+            and utils.user_is_allocation_admin(request.user))
 
 
 class ViewHistory(tables.LinkAction):

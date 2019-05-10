@@ -1,61 +1,62 @@
-from django import forms
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
-from django.forms import ModelForm, ValidationError
-from django.forms import TextInput, Select, CharField, Textarea, HiddenInput
+from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
 from django.utils.safestring import mark_safe
-from nectar_dashboard.rcallocation.models import AllocationRequest, Quota, \
-    ChiefInvestigator, Institution, Publication, Grant, QuotaGroup, Resource
+
+from nectar_dashboard.rcallocation import models
 
 
 class FORValidationError(Exception):
     pass
 
 
-class BaseAllocationForm(ModelForm):
+class BaseAllocationForm(forms.ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
-        model = AllocationRequest
+        model = models.AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'modified_time', 'parent_request',
                    'allocation_home', 'provisioned',
                    'project_id', 'notes', 'notifications')
 
         widgets = {
-            'status_explanation': Textarea(
+            'status_explanation': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'start_date': TextInput(attrs={'class': 'datepicker2 col-md-12',
-                                           'style': 'border-radius:0;'}),
-            'estimated_project_duration': Select(attrs={'class': 'col-md-6'}),
-            'convert_trial_project': Select(
+            'start_date': forms.TextInput(
+                attrs={'class': 'datepicker2 col-md-12',
+                       'style': 'border-radius:0;'}),
+            'estimated_project_duration': forms.Select(
+                attrs={'class': 'col-md-6'}),
+            'convert_trial_project': forms.Select(
                 attrs={'class': 'col-md-6'},
                 choices=[
                     (False, 'No, start with a blank project.'),
                     (True, 'Yes, move resources from my pt- project to '
                            'this new project.'),
                 ]),
-            'project_name': TextInput(attrs={'class': 'col-md-12'}),
-            'contact_email': TextInput(attrs={'readonly': 'readonly'}),
-            'use_case': Textarea(attrs={'class': 'col-md-6',
+            'project_name': forms.TextInput(attrs={'class': 'col-md-12'}),
+            'contact_email': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'use_case': forms.Textarea(attrs={'class': 'col-md-6',
                                         'style': 'height:120px; width:420px'}),
-            'usage_patterns': Textarea(
+            'usage_patterns': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'requested_allocation_home': Select(attrs={'class': 'col-md-6'}),
-            'geographic_requirements': Textarea(
+            'requested_allocation_home': forms.Select(
+                attrs={'class': 'col-md-6'}),
+            'geographic_requirements': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'field_of_research_1': Select(attrs={'class': 'col-md-6'}),
-            'field_of_research_2': Select(attrs={'class': 'col-md-6'}),
-            'field_of_research_3': Select(attrs={'class': 'col-md-6'}),
-            'for_percentage_1': Select(attrs={'class': 'col-md-2'}),
-            'for_percentage_2': Select(attrs={'class': 'col-md-2'}),
-            'for_percentage_3': Select(attrs={'class': 'col-md-2'}),
-            'nectar_support': TextInput(attrs={'class': 'col-md-12'}),
-            'ncris_support': TextInput(attrs={'class': 'col-md-12'}),
+            'field_of_research_1': forms.Select(attrs={'class': 'col-md-6'}),
+            'field_of_research_2': forms.Select(attrs={'class': 'col-md-6'}),
+            'field_of_research_3': forms.Select(attrs={'class': 'col-md-6'}),
+            'for_percentage_1': forms.Select(attrs={'class': 'col-md-2'}),
+            'for_percentage_2': forms.Select(attrs={'class': 'col-md-2'}),
+            'for_percentage_3': forms.Select(attrs={'class': 'col-md-2'}),
+            'nectar_support': forms.TextInput(attrs={'class': 'col-md-12'}),
+            'ncris_support': forms.TextInput(attrs={'class': 'col-md-12'}),
         }
 
     groups = (
@@ -78,8 +79,8 @@ class BaseAllocationForm(ModelForm):
 
     def visible_fields(self):
         return [field for field in self
-                if (not field.is_hidden and
-                    not self._in_groups(field))]
+                if (not field.is_hidden
+                    and not self._in_groups(field))]
 
     def grouped_fields(self):
         grouped_fields = []
@@ -92,7 +93,7 @@ class BaseAllocationForm(ModelForm):
             self.cleaned_data = self.clean()
         except FORValidationError as e:
             self._errors['FOR_ERRORS'] = self.error_class([e.message])
-        except ValidationError as e:
+        except forms.ValidationError as e:
             self._errors[NON_FIELD_ERRORS] = self.error_class([e.message])
 
     def get_for_errors(self):
@@ -101,7 +102,7 @@ class BaseAllocationForm(ModelForm):
     def clean_project_name(self):
         data = self.cleaned_data['project_name']
         if data.startswith('pt-'):
-            raise ValidationError("Projects can not start with pt-")
+            raise forms.ValidationError("Projects can not start with pt-")
 
         return data
 
@@ -132,7 +133,7 @@ class BaseAllocationForm(ModelForm):
 
 class AllocationRequestForm(BaseAllocationForm):
 
-    project_name = CharField(
+    project_name = forms.CharField(
         validators=[
             RegexValidator(regex=r'^[a-zA-Z][-_a-zA-Z0-9]{1,31}$',
                            message='Letters, numbers, underscore and '
@@ -144,16 +145,16 @@ class AllocationRequestForm(BaseAllocationForm):
                   'The name should contain letters, numbers, underscores and '
                   'hyphens only, must start with a letter and be between than '
                   '5 and 32 characters in length.',
-        widget=TextInput(attrs={'autofocus': 'autofocus'}))
+        widget=forms.TextInput(attrs={'autofocus': 'autofocus'}))
 
     def clean(self):
         cleaned_data = super(AllocationRequestForm, self).clean()
         if 'project_name' in self._errors:
             return cleaned_data
 
-        allocations = (AllocationRequest.objects
-                       .filter(project_name=cleaned_data['project_name'],
-                               parent_request_id=None))
+        allocations = models.AllocationRequest.objects.filter(
+            project_name=cleaned_data['project_name'],
+            parent_request_id=None)
 
         project_id = None
 
@@ -187,15 +188,15 @@ class AllocationAmendRequestForm(BaseAllocationForm):
         pass
 
 
-class BaseQuotaForm(ModelForm):
+class BaseQuotaForm(forms.ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
-        model = Quota
+        model = models.Quota
         fields = '__all__'
 
         widgets = {
-            'resource': HiddenInput(),
+            'resource': forms.HiddenInput(),
         }
 
     def __init__(self, **kwargs):
@@ -205,7 +206,7 @@ class BaseQuotaForm(ModelForm):
             self.res = inst.resource
         else:
             self.res = self.initial.get('resource')
-        if self.res and self.res.resource_type == Resource.BOOLEAN:
+        if self.res and self.res.resource_type == models.Resource.BOOLEAN:
             self.fields['requested_quota'].widget = IntegerCheckboxInput(
                 attrs={'data-toggle': 'toggle'})
 
@@ -229,7 +230,7 @@ class IntegerCheckboxInput(forms.CheckboxInput):
 
 class QuotaForm(BaseQuotaForm):
     class Meta(BaseQuotaForm.Meta):
-        model = Quota
+        model = models.Quota
         exclude = ('quota',)
 
     def __init__(self, **kwargs):
@@ -252,7 +253,7 @@ class BaseQuotaGroupForm(forms.ModelForm):
         super(BaseQuotaGroupForm, self).__init__(**kwargs)
 
     class Meta:
-        model = QuotaGroup
+        model = models.QuotaGroup
         exclude = ('allocation',)
 
 
@@ -280,7 +281,7 @@ class QuotaGroupForm(BaseQuotaGroupForm):
 
 
 # Base ModelForm
-class NectarBaseModelForm(ModelForm):
+class NectarBaseModelForm(forms.ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
@@ -290,9 +291,9 @@ class NectarBaseModelForm(ModelForm):
 # ChiefInvestigatorForm
 class ChiefInvestigatorForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
-        model = ChiefInvestigator
+        model = models.ChiefInvestigator
         widgets = {
-            'additional_researchers': Textarea(
+            'additional_researchers': forms.Textarea(
                 attrs={'style': 'height:120px; width:420px'}),
         }
 
@@ -307,7 +308,7 @@ class ChiefInvestigatorForm(NectarBaseModelForm):
 
 class InstitutionForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
-        model = Institution
+        model = models.Institution
 
     def __init__(self, **kwargs):
         super(InstitutionForm, self).__init__(**kwargs)
@@ -320,7 +321,7 @@ class InstitutionForm(NectarBaseModelForm):
 
 class PublicationForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
-        model = Publication
+        model = models.Publication
 
     def __init__(self, **kwargs):
         super(PublicationForm, self).__init__(**kwargs)
@@ -333,7 +334,7 @@ class PublicationForm(NectarBaseModelForm):
 
 class GrantForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
-        model = Grant
+        model = models.Grant
 
     def __init__(self, **kwargs):
         super(GrantForm, self).__init__(**kwargs)
