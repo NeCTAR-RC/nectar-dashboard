@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2013 Hewlett-Packard Development Company, L.P.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -36,6 +34,7 @@ class User(object):
     def __init__(self, user_dict):
         for k, v in user_dict.items():
             setattr(self, k, v)
+
 
 class ProjectManageMixin(object):
     def _get_project(self):
@@ -78,7 +77,7 @@ class ManageMembersView(ProjectManageMixin, tables.DataTableView):
         project_members = []
         try:
             project_members = self._get_project_members()
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve project users.'))
         return project_members
