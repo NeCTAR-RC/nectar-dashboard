@@ -19,14 +19,12 @@ import logging
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-
 from openstack_dashboard import api
 
-from . import api as api_ext
+from nectar_dashboard.project_members import api as api_ext
 
 
 LOG = logging.getLogger(__name__)
@@ -48,7 +46,7 @@ class AddUserToProjectForm(forms.SelfHandlingForm):
                                               role=role_id)
             messages.success(request,
                              _('User added successfully.'))
-        except:
+        except Exception:
             exceptions.handle(request, _('Unable to add user to project.'))
             return False
         return True
