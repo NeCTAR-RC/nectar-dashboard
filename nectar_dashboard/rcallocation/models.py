@@ -2,21 +2,24 @@
 # Original: Tom Fifield <fifieldt@unimelb.edu.au> - 2011-10
 # Modified by Martin Paulo
 import datetime
-from dateutil.relativedelta import relativedelta
 import logging
 
-from django.core.mail import EmailMessage
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.core.urlresolvers import reverse
-from django.db import models
-from django.template.loader import get_template
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
+from django.core.mail import EmailMessage
+from django.core.urlresolvers import reverse
+from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator
+from django.db import models
+from django.template import Context
+from django.template.loader import get_template
 from django.utils import timezone
 
-import for_choices
-from allocation_home_choices import ALLOC_HOME_CHOICE
-from project_duration_choices import DURATION_CHOICE
-from grant_type import GRANT_TYPES
+from nectar_dashboard.rcallocation import allocation_home_choices
+from nectar_dashboard.rcallocation import for_choices
+from nectar_dashboard.rcallocation import grant_type
+from nectar_dashboard.rcallocation import project_duration_choices
+
 
 LOG = logging.getLogger(__name__)
 
@@ -138,7 +141,7 @@ class AllocationRequest(models.Model):
 
     estimated_project_duration = models.IntegerField(
         'Estimated project duration',
-        choices=DURATION_CHOICE,
+        choices=project_duration_choices.DURATION_CHOICE,
         blank=False,
         null=False,
         default=1,
@@ -172,7 +175,7 @@ class AllocationRequest(models.Model):
 
     requested_allocation_home = models.CharField(
         "Allocation home location",
-        choices=ALLOC_HOME_CHOICE[:-1],
+        choices=allocation_home_choices.ALLOC_HOME_CHOICE[:-1],
         blank=False,
         null=False,
         default='national',
@@ -272,7 +275,7 @@ class AllocationRequest(models.Model):
 
     allocation_home = models.CharField(
         "Allocation Home",
-        choices=ALLOC_HOME_CHOICE[1:],
+        choices=allocation_home_choices.ALLOC_HOME_CHOICE[1:],
         blank=True,
         null=True,
         max_length=128,
@@ -307,15 +310,13 @@ class AllocationRequest(models.Model):
         self.status = status
 
     def is_active(self):
-        """
-        Return True if the allocation has either been approved,
+        """Return True if the allocation has either been approved,
         false otherwise.
         """
         return self.status.lower() == 'a'
 
     def is_rejected(self):
-        """
-        Return True if the allocation has either been accepted or
+        """Return True if the allocation has either been accepted or
         rejected, false otherwise.
         """
         return self.status.lower() in ('r', 'j')
@@ -324,8 +325,7 @@ class AllocationRequest(models.Model):
         return self.status.lower() in ('e', 'n')
 
     def amendment_requested(self):
-        """
-        Return True if the user has requested an extention
+        """Return True if the user has requested an extention
         """
         return self.status.lower() in ('x', 'j')
 
@@ -365,12 +365,11 @@ class AllocationRequest(models.Model):
 
     def notify_via_e_mail(self, sender, recipient_list, template, cc_list=[],
                           bcc_list=[], reply_to=None):
-        """
-        Send an email to the requester notifying them that their
+        """Send an email to the requester notifying them that their
         allocation has been processed.
         """
         if not sender and recipient_list:
-            # TODO (shauno): log this problem
+            # TODO(shauno): log this problem
             raise Exception
 
         plaintext = get_template(template)
@@ -445,7 +444,7 @@ class AllocationRequest(models.Model):
                 self.modified_time = timezone.now()
                 try:
                     self.send_notifications()
-                except:
+                except Exception:
                     LOG.error(
                         'Could not send notification email for allocation %s.'
                         % self.project_name)
@@ -454,8 +453,7 @@ class AllocationRequest(models.Model):
         super(AllocationRequest, self).save(*args, **kwargs)
 
     def get_all_fields(self):
-        """
-        Returns a list of all non None fields, each entry containing
+        """Returns a list of all non None fields, each entry containing
         the fields label, field name, and value (if the display value
         exists it is preferred)
         """
@@ -534,6 +532,7 @@ class Resource(models.Model):
     class Meta:
         unique_together = ('service_type', 'quota_name')
         ordering = ['id']
+
 
 class QuotaGroup(models.Model):
     allocation = models.ForeignKey(AllocationRequest, related_name='quotas')
@@ -662,7 +661,7 @@ class Publication(models.Model):
 class Grant(models.Model):
     grant_type = models.CharField(
         "Type",
-        choices=GRANT_TYPES,
+        choices=grant_type.GRANT_TYPES,
         blank=False,
         null=False,
         default='arc',

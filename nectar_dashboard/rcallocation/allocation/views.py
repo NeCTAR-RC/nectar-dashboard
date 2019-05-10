@@ -1,10 +1,10 @@
 from django.views.generic.edit import UpdateView
 
-from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import forms
+from nectar_dashboard.rcallocation import mixins
+from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import utils
 from nectar_dashboard.rcallocation import views
-from nectar_dashboard.rcallocation import mixins
 
 from nectar_dashboard.rcallocation.allocation import forms as allocation_forms
 
