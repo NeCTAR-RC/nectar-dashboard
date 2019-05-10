@@ -1,7 +1,7 @@
-from nectar_dashboard.rcallocation import forms
+from nectar_dashboard.rcallocation import forms as base_forms
 
 
-class UserAllocationRequestForm(forms.AllocationRequestForm):
-    class Meta(forms.AllocationRequestForm.Meta):
+class UserAllocationRequestForm(base_forms.AllocationRequestForm):
+    class Meta(base_forms.AllocationRequestForm.Meta):
         exclude = ('status_explanation',
-                   ) + forms.AllocationRequestForm.Meta.exclude
+                   ) + base_forms.AllocationRequestForm.Meta.exclude

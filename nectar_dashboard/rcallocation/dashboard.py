@@ -9,4 +9,5 @@ class AllocationsDashboard(horizon.Dashboard):
     panels = ('request', 'requests', 'approved_requests', 'user_requests')
     default_panel = 'request'
 
+
 horizon.register(AllocationsDashboard)
