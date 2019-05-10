@@ -88,8 +88,8 @@ class RequestTestCase(TestCase):
         # our requests.
         self.assertStatusCode(response, 302)
         self.assertEqual(
-            'http://testserver' +
-            reverse('horizon:allocation:user_requests:index'),
+            'http://testserver'
+            + reverse('horizon:allocation:user_requests:index'),
             response.get('location'))
         model = (models.AllocationRequest.objects.get(
             project_description=form['project_description'],

@@ -11,7 +11,8 @@
 #   under the License.
 #
 
-from datetime import date, timedelta
+import datetime
+
 from django.forms.models import model_to_dict
 from factory import fuzzy
 
@@ -28,6 +29,7 @@ DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
 GROUP_NAMES = ['compute', 'object', 'volume', 'network']   # ... and more
+
 
 def allocation_to_dict(model):
     allocation = model_to_dict(model)
@@ -158,8 +160,8 @@ def request_allocation(user, model=None, groups=None,
                        institutions=None, publications=None, grants=None,
                        investigators=None):
 
-    _1_year = date.today() + timedelta(days=365)
-    start_date = fuzzy.FuzzyDate(date.today(), _1_year).fuzz()
+    _1_year = datetime.date.today() + datetime.timedelta(days=365)
+    start_date = fuzzy.FuzzyDate(datetime.date.today(), _1_year).fuzz()
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
     forp_2 = fuzzy.FuzzyInteger(1, 9 - forp_1).fuzz()

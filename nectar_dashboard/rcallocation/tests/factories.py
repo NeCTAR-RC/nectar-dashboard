@@ -11,7 +11,8 @@
 #   under the License.
 #
 
-from datetime import date, timedelta
+import datetime
+
 import factory
 from factory import fuzzy
 
@@ -25,8 +26,8 @@ ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
 
 for_code = fuzzy.FuzzyChoice(FOR_CHOICES.keys())
-_1_year = date.today() + timedelta(days=365)
-_3_years = date.today() + timedelta(days=365 * 3)
+_1_year = datetime.date.today() + datetime.timedelta(days=365)
+_3_years = datetime.date.today() + datetime.timedelta(days=365 * 3)
 duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys())
 percent = fuzzy.FuzzyInteger(1, 100)
 alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
@@ -120,7 +121,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
 
     created_by = fuzzy.FuzzyText()
     contact_email = 'test@example.com'
-    start_date = fuzzy.FuzzyDate(date.today(), _1_year)
+    start_date = fuzzy.FuzzyDate(datetime.date.today(), _1_year)
     use_case = fuzzy.FuzzyText()
     usage_patterns = fuzzy.FuzzyText()
     geographic_requirements = fuzzy.FuzzyText()

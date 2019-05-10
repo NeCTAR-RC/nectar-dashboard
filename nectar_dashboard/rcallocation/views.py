@@ -1,28 +1,27 @@
 from collections import OrderedDict
-import logging
 import json
+import logging
 from operator import methodcaller
 import re
 
-from django.views.generic import DetailView
-from django.views.generic.edit import UpdateView
-from django.views.generic.edit import ModelFormMixin
-from django.forms.models import inlineformset_factory
-from django.db import transaction
 from django.db.models import Q
+from django.db import transaction
+from django.forms.models import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.template import loader
+from django.views.generic import DetailView
+from django.views.generic.edit import ModelFormMixin
+from django.views.generic.edit import UpdateView
 from horizon import tables as horizon_tables
-
 from novaclient import exceptions as n_exc
-
 from openstack_dashboard import api
 
-from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import forms
+from nectar_dashboard.rcallocation import mixins
+
+from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import tables
 from nectar_dashboard.rcallocation import utils
-from nectar_dashboard.rcallocation import mixins
 
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
@@ -30,8 +29,7 @@ LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 class AllocationDetailView(mixins.UserPassesTestMixin, DetailView,
                            ModelFormMixin):
-    """
-    A class that handles rendering the details view, and then the
+    """A class that handles rendering the details view, and then the
     posting of the associated accept/reject action
     """
 
@@ -59,8 +57,7 @@ class AllocationDetailView(mixins.UserPassesTestMixin, DetailView,
 
 class AllocationsListView(mixins.UserPassesTestMixin,
                           horizon_tables.DataTableView):
-    """
-    A simple paginated view of the allocation requests, ordered by
+    """A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
     by status?
     """
@@ -88,8 +85,7 @@ class AllocationsListView(mixins.UserPassesTestMixin,
 
 class AllocationHistoryView(mixins.UserPassesTestMixin,
                             horizon_tables.DataTableView):
-    """
-    A simple paginated view of the allocation requests, ordered by
+    """A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
     by status?
     """
@@ -563,8 +559,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
     def form_invalid(self, form, investigator_formset=None,
                      institution_formset=None, publication_formset=None,
                      grant_formset=None, quota_formsets=None):
-        """
-        If the form is invalid, re-render the context data with the
+        """If the form is invalid, re-render the context data with the
         data-filled forms and errors.
         """
         return self.render_to_response(

@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2013 Hewlett-Packard Development Company, L.P.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -21,12 +19,10 @@ from django.core.urlresolvers import reverse
 from django.template import defaultfilters
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
-
 from horizon import tables
-
 from openstack_dashboard import api
 
-from .constants import PROJECTS_ADD_MEMBER_URL
+from nectar_dashboard.project_members import constants
 
 
 LOG = logging.getLogger(__name__)
@@ -34,7 +30,7 @@ LOG = logging.getLogger(__name__)
 
 class UserFilterAction(tables.FilterAction):
     def filter(self, table, users, filter_string):
-        """ Naive case-insensitive search """
+        """Naive case-insensitive search """
         q = filter_string.lower()
         return [user for user in users
                 if q in user.name.lower()
@@ -87,7 +83,7 @@ class AddMembersLink(tables.LinkAction):
     name = "add_user_link"
     verbose_name = _("Add...")
     classes = ("ajax-modal", "btn-create")
-    url = PROJECTS_ADD_MEMBER_URL
+    url = constants.PROJECTS_ADD_MEMBER_URL
 
     def allowed(self, request, user=None):
         return api.keystone.keystone_can_edit_project()
@@ -99,9 +95,6 @@ class AddMembersLink(tables.LinkAction):
 class UsersTable(tables.DataTable):
     name = tables.Column('name', verbose_name=_('User Name'),
                          filters=[defaultfilters.urlize])
-    #email = tables.Column('email', verbose_name=_('Email'),
-    #                      filters=[defaultfilters.urlize])
-    #id = tables.Column('id', verbose_name=_('User ID'))
 
 
 class ProjectMembersTable(UsersTable):
