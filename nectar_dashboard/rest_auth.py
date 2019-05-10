@@ -93,8 +93,7 @@ class Permission(permissions.BasePermission):
 
 
 class IsAdmin(Permission):
-    """
-    Global permission check for admins role
+    """Global permission check for admins role
     """
     roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES
 

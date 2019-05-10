@@ -94,9 +94,9 @@ class RequestTestCase(base.BaseTestCase):
         # our requests.
         self.assertStatusCode(response, 302)
         self.assertTrue(response.get('location') in [
-            'http://testserver%s' +
-              reverse('horizon:allocation:user_requests:index'),
-             '../../'])
+            'http://testserver%s'
+            + reverse('horizon:allocation:user_requests:index'),
+            '../../'])
         model = (models.AllocationRequest.objects.get(
             project_description=form['project_description'],
             parent_request_id=None))
