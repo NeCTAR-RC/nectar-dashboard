@@ -1,7 +1,5 @@
 from django.core.urlresolvers import reverse
 from django.forms.models import inlineformset_factory
-from django.http import HttpResponseRedirect
-from django.db import transaction
 
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import models

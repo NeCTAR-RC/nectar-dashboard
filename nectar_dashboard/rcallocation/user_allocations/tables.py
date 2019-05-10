@@ -1,5 +1,7 @@
-from horizon import tables as horizon_tables
 from functools import partial
+
+from horizon import tables as horizon_tables
+
 from nectar_dashboard.rcallocation import tables
 
 

@@ -16,11 +16,10 @@
 
 from django.conf.urls import url
 
-from .views import ManageMembersView
-from .views import AddUserToProjectView
+from nectar_dashboard.project_members import views
 
 
 urlpatterns = [
-    url(r'^$', ManageMembersView.as_view(), name='index'),
-    url(r'^add/$', AddUserToProjectView.as_view(), name='add_member'),
+    url(r'^$', views.ManageMembersView.as_view(), name='index'),
+    url(r'^add/$', views.AddUserToProjectView.as_view(), name='add_member'),
 ]

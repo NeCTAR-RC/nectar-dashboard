@@ -12,20 +12,17 @@
 #
 
 from django.conf import settings
-
 from django_filters import rest_framework as filters
-
 from rest_framework.decorators import detail_route
 from rest_framework import permissions
-
 from rest_framework import response
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework import viewsets
 
 from nectar_dashboard.rcallocation import models
-from nectar_dashboard import rest_auth
 from nectar_dashboard.rcallocation import utils
+from nectar_dashboard import rest_auth
 
 
 class PermissionMixin(object):
@@ -34,9 +31,9 @@ class PermissionMixin(object):
         if self.request.user.is_authenticated:
             roles = set([role['name'].lower()
                          for role in self.request.user.roles])
-            required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES +
-                           settings.ALLOCATION_APPROVER_ROLES +
-                           settings.ALLOCATION_GLOBAL_READ_ROLES)
+            required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+                           + settings.ALLOCATION_APPROVER_ROLES
+                           + settings.ALLOCATION_GLOBAL_READ_ROLES)
             if required & roles:
                 return True
         return False
@@ -46,8 +43,8 @@ def is_write_admin(user):
     if user.is_authenticated:
         roles = set([role['name'].lower()
                      for role in user.roles])
-        required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES +
-                       settings.ALLOCATION_APPROVER_ROLES)
+        required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+                       + settings.ALLOCATION_APPROVER_ROLES)
         if required & roles:
             return True
     return False
