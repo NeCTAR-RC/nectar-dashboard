@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from nectar_dashboard.rcallocation import views
 from nectar_dashboard.rcallocation.allocation import views as allocation_views
+from nectar_dashboard.rcallocation import views
 
 
 urlpatterns = [
