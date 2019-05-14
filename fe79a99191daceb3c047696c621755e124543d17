@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3e27e7c1_798d7ab9",
+        "filename": "nectar_dashboard/rcallocation/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-14T23:41:31Z",
+      "side": 1,
+      "message": "I think this should be called \"Allocation Home\" as that is what it is known by in the rest of the system and in the forms etc. Maybe something for Jo",
+      "range": {
+        "startLine": 66,
+        "startChar": 50,
+        "endLine": 66,
+        "endChar": 58
+      },
+      "revId": "fe79a99191daceb3c047696c621755e124543d17",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
