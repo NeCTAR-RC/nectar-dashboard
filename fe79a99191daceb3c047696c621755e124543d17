@@ -22,6 +22,30 @@
       "revId": "fe79a99191daceb3c047696c621755e124543d17",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ef4dedf_ccd5e3f6",
+        "filename": "nectar_dashboard/rcallocation/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-05-14T23:55:37Z",
+      "side": 1,
+      "message": "This has already been discussed with Jo and Paul Coddington.  The request is to change the terminology that Users and Allocations people see because it is confusing.  It is on the spreadsheet: https://docs.google.com/spreadsheets/d/1fIslzoeCd9pAVt0SrwmcrNlVtMYq796KFOIzNgowKAo/edit?pli\u003d1#gid\u003d0",
+      "parentUuid": "3e27e7c1_798d7ab9",
+      "range": {
+        "startLine": 66,
+        "startChar": 50,
+        "endLine": 66,
+        "endChar": 58
+      },
+      "revId": "fe79a99191daceb3c047696c621755e124543d17",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
