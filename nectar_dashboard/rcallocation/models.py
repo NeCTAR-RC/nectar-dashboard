@@ -292,6 +292,10 @@ class AllocationRequest(models.Model):
         default=True,
         help_text="Send notifications for this allocation")
 
+    enforce_home = models.BooleanField(
+        default=False,
+        help_text="Enforce allocation home on a project")
+
     class Meta:
         ordering = ['-modified_time']
 
