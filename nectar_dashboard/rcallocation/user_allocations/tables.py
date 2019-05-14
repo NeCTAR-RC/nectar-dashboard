@@ -43,3 +43,4 @@ class UserAllocationListTable(tables.AllocationListTable):
         self.columns['project'].transform = partial(
             self.columns['project'].transform,
             link=self.view_url)
+        self.columns.pop('requested_home')

@@ -60,8 +60,10 @@ class AllocationListTable(tables.DataTable):
                            verbose_name="State")
     project = tables.Column(allocation_title,
                             verbose_name="Name", )
-    allocation_home = tables.Column('requested_allocation_home',
-                                    verbose_name='Requested Home Location')
+    requested_home = tables.Column('requested_allocation_home',
+                                    verbose_name='Requested Home')
+    allocation_home = tables.Column('allocation_home',
+                                    verbose_name='Approval')
     contact = tables.Column("contact_email", verbose_name="Contact")
     modified_time = tables.Column("modified_time",
                                   verbose_name="Last Updated",
