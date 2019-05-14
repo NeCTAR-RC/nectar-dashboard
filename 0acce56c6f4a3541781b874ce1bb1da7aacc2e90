@@ -22,6 +22,30 @@
       "revId": "0acce56c6f4a3541781b874ce1bb1da7aacc2e90",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8cabe826_235a0820",
+        "filename": "nectar_dashboard/rcallocation/tests/factories.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-05-14T04:02:44Z",
+      "side": 1,
+      "message": "I don\u0027t think so.  This is creating factories that (as far as I can work out) need to be created once only, and are used later in some conditional code that creates other factories.  This is the simple way.  The other way is to have this code create a map of factories which the conditional code then accesses.\n\nThis stuff is so fragile because of the various different complicated ways that requests and formsets are being created during testing.  Can we just please leave it alone?  \n\nI have spent many, many hours trying to get the tests for quota checking to work ... over MONTHS of elapsed time.  There is no need to keep polishing this (turd).  It is TEST code.  (But if you want to, please just merge this changeset, and put the turd polishing onto \u003e\u003eyour\u003c\u003c todo list.",
+      "parentUuid": "ae51a906_47a21ac6",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 102,
+        "endChar": 53
+      },
+      "revId": "0acce56c6f4a3541781b874ce1bb1da7aacc2e90",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
