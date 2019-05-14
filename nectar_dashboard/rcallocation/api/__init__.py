@@ -220,7 +220,7 @@ class AllocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by', 'notes', 'status_explanation',
-                   'allocation_home', 'parent_request')
+                   'allocation_home', 'parent_request', 'enforce_home')
         read_only_fields = ('status', 'submit_date', 'end_date',
                             'motified_time', 'contact_email', 'approver_email',
                             'project_id', 'provisioned', 'notifications')
