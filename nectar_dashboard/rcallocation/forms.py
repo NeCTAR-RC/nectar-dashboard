@@ -19,7 +19,8 @@ class BaseAllocationForm(forms.ModelForm):
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'modified_time', 'parent_request',
                    'allocation_home', 'provisioned',
-                   'project_id', 'notes', 'notifications')
+                   'project_id', 'notes', 'notifications',
+                   'enforce_home')
 
         widgets = {
             'status_explanation': forms.Textarea(
