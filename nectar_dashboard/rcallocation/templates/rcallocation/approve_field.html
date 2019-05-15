@@ -9,7 +9,9 @@
     <div class="controls">
       <div class="input-group">
         {{ field }}
+        {% if field.field.widget.input_type == "number" %}
         <span class="input-group-addon label-resource-unit"></span>
+        {% endif %}
       </div>
       <span class="label-resource-help"></span>
       {% for error in field.errors %}
