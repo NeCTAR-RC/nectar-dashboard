@@ -77,32 +77,45 @@
              hide the input box or allow a custom value and show it.
           */
           if (resource['quota_name'] == 'ram') {
-            // quota_limits will only exist for an allocation that has a project
+
+            var ig = $(this).find('.quota').find('.input-group')
+            ig.after('<div class="resource-custom-override">' +
+                     '  <label class="radio-inline">' +
+                     '    <input type="radio" name="resource_custom_override" value="default">' +
+                     '      Default (4GB per core)' +
+                     '  </label>' +
+                     '  <label class="radio-inline">' +
+                     '    <input type="radio" name="resource_custom_override" value="custom">' +
+                     '      Custom' +
+                     '  </label>' +
+                     '</div>');
+
+            var ram_input = ig.find('input');
+            var ram_gb = ram_input.val();
+            var is_default_ram = (ram_gb == 0);
+
+            // nova project quotas are only available if a project exists
+            // already, and the form isn't being returned due to an error
             if ('quota_limits' in opts) {
-              ram_gb = parseInt(opts['quota_limits']['maxTotalRAMSize'] / 1024);
-              num_cores = parseInt(opts['quota_limits']['maxTotalCores']);
-
-              var ig = $(this).find('.quota').find('.input-group')
-              ig.after('<div class="resource-custom-override">' +
-                       '  <label class="radio-inline">' +
-                       '    <input type="radio" name="resource_custom_override" value="default">' +
-                       '      Default (4GB per core)' +
-                       '  </label>' +
-                       '  <label class="radio-inline">' +
-                       '    <input type="radio" name="resource_custom_override" value="custom">' +
-                       '      Custom' +
-                       '  </label>' +
-                       '</div>');
-
-              // check if we have a RAM value is default
-              if (ram_gb == (num_cores * 4)) {
-                $(this).find('input:radio[name="resource_custom_override"]').val(['default']);
-                ig.hide();
-              } else {
-                $(this).find('input:radio[name="resource_custom_override"]').val(['custom']);
-                ig.find('input').val(ram_gb);
+              var quota_limits = opts['quota_limits'];
+              if ('maxTotalRAMSize' in quota_limits) {
+                ram_gb = parseInt(quota_limits['maxTotalRAMSize'] / 1024);
+                num_cores = parseInt(quota_limits['maxTotalCores']);
+                is_default_ram = (ram_gb == num_cores * 4);
               }
-           }
+            }
+
+            // if ram value is default (e.g. cores x 4 or 0) then hide the
+            // input field and choose the default radio setting, otherwise
+            // choose the custom setting and set the value in the input
+            var radio_override = $(this).find('input:radio[name="resource_custom_override"]')
+            if (is_default_ram) {
+              radio_override.val(['default']);
+              ig.hide();
+            } else {
+              radio_override.val(['custom']);
+              ram_input.val(ram_gb);
+            }
           }
         });
 

@@ -366,7 +366,8 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
 
         # Get quota limits for Nova
         quota_limits = {}
-        if self.object:
+        is_invalid = kwargs.get('is_invalid')
+        if self.object and self.object.project_id and not is_invalid:
             try:
                 quota_limits = api.nova.tenant_absolute_limits(
                     self.request, reserved=True,
@@ -568,4 +569,5 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                                   institution_formset=institution_formset,
                                   publication_formset=publication_formset,
                                   grant_formset=grant_formset,
-                                  quota_formsets=quota_formsets))
+                                  quota_formsets=quota_formsets,
+                                  is_invalid=True))
