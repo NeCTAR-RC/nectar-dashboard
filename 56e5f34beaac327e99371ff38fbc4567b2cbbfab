@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3d80da8b_0a5f8e52",
+        "filename": "nectar_dashboard/rcallocation/tables.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-15T02:58:38Z",
+      "side": 1,
+      "message": "Keep it consistent by calling it \"Allocation Home\"",
+      "range": {
+        "startLine": 66,
+        "startChar": 50,
+        "endLine": 66,
+        "endChar": 58
+      },
+      "revId": "56e5f34beaac327e99371ff38fbc4567b2cbbfab",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
