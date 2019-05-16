@@ -46,6 +46,52 @@
       "revId": "986a05d8f956b0427e0a10bb1a289c39beac1ae8",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d03852fe_62296bd1",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/warnings.html",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-16T01:18:48Z",
+      "side": 1,
+      "message": "Could remove this text and leave it blank to allow for below?",
+      "range": {
+        "startLine": 7,
+        "startChar": 24,
+        "endLine": 7,
+        "endChar": 40
+      },
+      "revId": "986a05d8f956b0427e0a10bb1a289c39beac1ae8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6142aac_4456696a",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/warnings.html",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-05-16T01:18:48Z",
+      "side": 1,
+      "message": "maybe this text could be \"more information\"",
+      "range": {
+        "startLine": 15,
+        "startChar": 88,
+        "endLine": 15,
+        "endChar": 92
+      },
+      "revId": "986a05d8f956b0427e0a10bb1a289c39beac1ae8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
