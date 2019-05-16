@@ -25,7 +25,7 @@ def credentials(request):
     if request.method == 'POST':
         passwordForm = forms.Form(request.POST)
         sys_random = random.SystemRandom()
-        password = hashlib.sha(str(sys_random.getrandbits(256))).hexdigest()
+        password = hashlib.sha1(str(sys_random.getrandbits(256))).hexdigest()
         password = base64.encodestring(password)[:20]
 
         project_id = request.user.token.tenant['id']
