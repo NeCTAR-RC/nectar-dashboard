@@ -4,6 +4,7 @@ import logging
 from operator import methodcaller
 import re
 
+from django.contrib.auth import mixins
 from django.db.models import Q
 from django.db import transaction
 from django.forms.models import inlineformset_factory
@@ -17,8 +18,6 @@ from novaclient import exceptions as n_exc
 from openstack_dashboard import api
 
 from nectar_dashboard.rcallocation import forms
-from nectar_dashboard.rcallocation import mixins
-
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import quota_sanity
 from nectar_dashboard.rcallocation import tables
