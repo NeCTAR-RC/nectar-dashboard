@@ -31,7 +31,7 @@ from nectar_dashboard.rcallocation import utils
 class PermissionMixin(object):
 
     def is_read_admin(self):
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             roles = set([role['name'].lower()
                          for role in self.request.user.roles])
             required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES +
@@ -43,7 +43,7 @@ class PermissionMixin(object):
 
 
 def is_write_admin(user):
-    if user.is_authenticated():
+    if user.is_authenticated:
         roles = set([role['name'].lower()
                      for role in user.roles])
         required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES +
@@ -183,7 +183,7 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
                      'group__service_type')
 
     def get_queryset(self):
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return self.queryset
         if self.is_read_admin():
             return self.queryset
@@ -291,7 +291,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     filter_class = AllocationFilter
 
     def get_queryset(self):
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return self.queryset
         if self.is_read_admin():
             return self.queryset
@@ -310,7 +310,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     def get_serializer_class(self):
         if self.is_read_admin():
             return AdminAllocationSerializer
-        elif self.request.user.is_authenticated():
+        elif self.request.user.is_authenticated:
             return AllocationSerializer
         else:
             return PublicAllocationSerializer
@@ -402,7 +402,7 @@ class AllocationRelatedViewSet(viewsets.ModelViewSet, PermissionMixin):
     def get_queryset(self):
         if self.is_read_admin():
             return self.queryset
-        elif self.request.user.is_authenticated():
+        elif self.request.user.is_authenticated:
             return self.queryset.filter(
                 allocation__contact_email=self.request.user.username)
 
