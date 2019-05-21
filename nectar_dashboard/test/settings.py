@@ -13,29 +13,29 @@
 import os
 import tempfile
 
-import six
-
 from django.utils.translation import pgettext_lazy
-from horizon.test.settings import *  # noqa: F403,H303
-from horizon.utils import secret_key
-from openstack_dashboard import exceptions
 
+from horizon.test.settings import *  # noqa: F403,H303
 from horizon.utils.escape import monkeypatch_escape
+from horizon.utils import secret_key
+
+from openstack_dashboard import enabled
+from openstack_dashboard import exceptions
+from openstack_dashboard import theme_settings
+from openstack_dashboard.utils import settings as settings_utils
 
 # this is used to protect from client XSS attacks, but it's worth
 # enabling in our test setup to find any issues it might cause
 monkeypatch_escape()
 
-from openstack_dashboard.utils import settings as settings_utils
-
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
+
 ROOT_PATH = os.path.abspath(os.path.join(TEST_DIR, ".."))
 MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'media'))
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'static'))
 STATIC_URL = '/static/'
 WEBROOT = '/'
-
 
 SECRET_KEY = secret_key.generate_or_read_from_file(
     os.path.join(tempfile.gettempdir(), '.secret_key_store'))
@@ -49,8 +49,6 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append(
     'openstack_dashboard.context_processors.openstack'
 )
 
-CUSTOM_THEME_PATH = 'themes/default'
-
 # 'key', 'label', 'path'
 AVAILABLE_THEMES = [
     (
@@ -63,14 +61,8 @@ AVAILABLE_THEMES = [
         'themes/material'
     ),
 ]
-
-SELECTABLE_THEMES = [
-    (
-        'default',
-        pgettext_lazy('Default style theme', 'Default'),
-        'themes/default'
-    ),
-]
+AVAILABLE_THEMES, SELECTABLE_THEMES, DEFAULT_THEME = \
+    theme_settings.get_available_themes(AVAILABLE_THEMES, 'default', None)
 
 # Theme Static Directory
 THEME_COLLECTION_DIR = 'themes'
@@ -84,7 +76,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.messages',
     'django.contrib.humanize',
-    'django_nose',
     'openstack_auth',
     'compressor',
     'horizon',
@@ -110,7 +101,7 @@ HORIZON_CONFIG = {
         "help_text": "Password must be between 8 and 18 characters."
     },
     'user_home': None,
-    'help_url': "http://docs.openstack.org",
+    'help_url': "https://docs.openstack.org/",
     'exceptions': {'recoverable': exceptions.RECOVERABLE,
                    'not_found': exceptions.NOT_FOUND,
                    'unauthorized': exceptions.UNAUTHORIZED},
@@ -128,13 +119,10 @@ STATICFILES_DIRS = settings_utils.get_xstatic_dirs(
     settings_utils.BASE_XSTATIC_MODULES, HORIZON_CONFIG
 )
 
-# Load the pluggable dashboard settings
-import openstack_dashboard.enabled
-
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
 settings_utils.update_dashboards(
     [
-        openstack_dashboard.enabled,
+        enabled,
     ],
     HORIZON_CONFIG,
     INSTALLED_APPS,
@@ -150,6 +138,7 @@ settings_utils.find_static_files(HORIZON_CONFIG, AVAILABLE_THEMES,
 # image form. If set to 'off', there will be no file form field on the create
 # image form. See documentation for deployment considerations.
 HORIZON_IMAGES_UPLOAD_MODE = 'legacy'
+IMAGES_ALLOW_LOCATION = True
 
 AVAILABLE_REGIONS = [
     ('http://localhost:5000/v3', 'local'),
@@ -234,6 +223,14 @@ LOGGING['loggers'].update(
             'handlers': ['test'],
             'propagate': False,
         },
+        'oslo_policy': {
+            'handlers': ['test'],
+            'propagate': False,
+        },
+        'stevedore': {
+            'handlers': ['test'],
+            'propagate': False,
+        },
         'iso8601': {
             'handlers': ['null'],
             'propagate': False,
@@ -255,26 +252,6 @@ SECURITY_GROUP_RULES = {
         'to_port': '80',
     },
 }
-
-NOSE_ARGS = ['--nocapture',
-             '--nologcapture',
-             '--cover-package=openstack_dashboard',
-             '--cover-inclusive',
-             '--all-modules']
-# TODO(amotoki): Need to investigate why --with-html-output
-# is unavailable in python3.
-# NOTE(amotoki): Most horizon plugins import this module in their test
-# settings and they do not necessarily have nosehtmloutput in test-reqs.
-# Assuming nosehtmloutput potentially breaks plugins tests,
-# we check the availability of htmloutput module (from nosehtmloutput).
-try:
-    import htmloutput  # noqa: F401
-    has_html_output = True
-except ImportError:
-    has_html_output = False
-if six.PY2 and has_html_output:
-    NOSE_ARGS += ['--with-html-output',
-                  '--html-out-file=ut_openstack_dashboard_nose_results.html']
 
 POLICY_FILES_PATH = os.path.join(ROOT_PATH, "conf")
 POLICY_FILES = {
@@ -307,9 +284,34 @@ TEST_GLOBAL_MOCKS_ON_PANELS = {
                    '.aggregates.panel.Aggregates.can_access'),
         'return_value': True,
     },
+    'cgroups': {
+        'method': ('openstack_dashboard.dashboards.project'
+                   '.cgroups.panel.CGroups.allowed'),
+        'return_value': True,
+    },
+    'cg_snapshots': {
+        'method': ('openstack_dashboard.dashboards.project'
+                   '.cg_snapshots.panel.CGSnapshots.allowed'),
+        'return_value': True,
+    },
     'domains': {
         'method': ('openstack_dashboard.dashboards.identity'
                    '.domains.panel.Domains.can_access'),
+        'return_value': True,
+    },
+    'qos': {
+        'method': ('openstack_dashboard.dashboards.project'
+                   '.network_qos.panel.NetworkQoS.can_access'),
+        'return_value': True,
+    },
+    'rbac_policies': {
+        'method': ('openstack_dashboard.dashboards.admin'
+                   '.rbac_policies.panel.RBACPolicies.can_access'),
+        'return_value': True,
+    },
+    'server_groups': {
+        'method': ('openstack_dashboard.dashboards.project'
+                   '.server_groups.panel.ServerGroups.can_access'),
         'return_value': True,
     },
     'trunk-project': {
@@ -322,9 +324,20 @@ TEST_GLOBAL_MOCKS_ON_PANELS = {
                    '.trunks.panel.Trunks.can_access'),
         'return_value': True,
     },
-    'qos': {
+    'volume_groups': {
         'method': ('openstack_dashboard.dashboards.project'
-                   '.network_qos.panel.NetworkQoS.can_access'),
+                   '.volume_groups.panel.VolumeGroups.allowed'),
+        'return_value': True,
+    },
+    'vg_snapshots': {
+        'method': ('openstack_dashboard.dashboards.project'
+                   '.vg_snapshots.panel.GroupSnapshots.allowed'),
+        'return_value': True,
+    },
+    'application_credentials': {
+        'method': ('openstack_dashboard.dashboards.identity'
+                   '.application_credentials.panel'
+                   '.ApplicationCredentialsPanel.can_access'),
         'return_value': True,
     },
 }
