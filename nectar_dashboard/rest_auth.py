@@ -55,7 +55,7 @@ class Permission(permissions.BasePermission):
     states = []
 
     def has_role(self, user, required):
-        if user.is_authenticated():
+        if user.is_authenticated:
             roles = set([role['name'].lower() for role in user.roles])
             required = set(required)
             if required & roles:
@@ -104,7 +104,7 @@ class ApproverOrOwner(Permission):
     roles = settings.ALLOCATION_APPROVER_ROLES
 
     def has_permission(self, request, view):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return True
         return False
 

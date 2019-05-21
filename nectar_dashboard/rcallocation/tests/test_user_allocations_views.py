@@ -87,10 +87,10 @@ class RequestTestCase(TestCase):
         # Check to make sure we were redirected back to the index of
         # our requests.
         self.assertStatusCode(response, 302)
-        self.assertEqual(
-            'http://testserver' +
-            reverse('horizon:allocation:user_requests:index'),
-            response.get('location'))
+        self.assertTrue(response.get('location') in [
+            'http://testserver%s'
+            + reverse('horizon:allocation:user_requests:index'),
+            '../../'])
         model = (models.AllocationRequest.objects.get(
             project_description=form['project_description'],
             parent_request_id=None))
