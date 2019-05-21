@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2437aaf_0598f708",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2019-05-21T07:05:20Z",
+      "side": 0,
+      "message": "I think you can get a tz aware datetime with datetime.datetime.now(datetime.timezone.utc) too. which saves an additional import. Not that it is important. Also not sure how to get specify that here though.\n\nJust FYI.",
+      "range": {
+        "startLine": 97,
+        "startChar": 49,
+        "endLine": 97,
+        "endChar": 73
+      },
+      "revId": "b7d0dac3fce82a1dc871b43d8969f119f649fcba",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
