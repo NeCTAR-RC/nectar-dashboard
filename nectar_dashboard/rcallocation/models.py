@@ -10,8 +10,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.loader import get_template
-from django.template import Context
 from django.conf import settings
+from django.utils import timezone
 
 import for_choices
 from allocation_home_choices import ALLOC_HOME_CHOICE
@@ -94,7 +94,7 @@ class AllocationRequest(models.Model):
     submit_date = models.DateField('Submission Date',
                                    default=datetime.date.today)
     modified_time = models.DateTimeField('Modified Date',
-                                         default=datetime.datetime.utcnow)
+                                         default=timezone.now)
 
     # The ordering of the following fields are important, as it
     # governs the order they appear on the forms
@@ -442,7 +442,7 @@ class AllocationRequest(models.Model):
         self.end_date = self.start_date + duration_relativedelta
         if not kwargs.pop('provisioning', None):
             if not self.is_archived():
-                self.modified_time = datetime.datetime.utcnow()
+                self.modified_time = timezone.now()
                 try:
                     self.send_notifications()
                 except:
