@@ -374,7 +374,7 @@ class AllocationRequest(models.Model):
             raise Exception
 
         plaintext = get_template(template)
-        ctx = Context({"request": self})
+        ctx = {"request": self}
         text = plaintext.render(ctx)
         subject, body = text.split('')
         email = EmailMessage(
