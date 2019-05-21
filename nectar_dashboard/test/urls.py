@@ -1,3 +1,6 @@
+#
+#    (c) Copyright 2015 Hewlett-Packard Development Company, L.P.
+#
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
@@ -20,7 +23,6 @@ from django.conf.urls.static import static
 from django.conf.urls import url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views import defaults
-
 from oslo_utils import importutils
 from rest_framework import routers
 
@@ -33,6 +35,7 @@ from openstack_dashboard import views
 
 import horizon
 
+
 router = routers.DefaultRouter()
 for name, class_str, base_name in settings.REST_VIEW_SETS:
     klass = importutils.import_class(class_str)
@@ -43,7 +46,7 @@ urlpatterns = [
     url(r'^auth/', include('openstack_auth.urls')),
     url(r'^api/', include(rest.urls)),
     url(r'^jasmine/(.*?)$', jasmine.dispatcher),
-    url(r'', include(horizon.urls)),
+    url(r'', horizon.base._wrapped_include(horizon.urls)),
     url(r'^ngdetails/',
         browsers_views.AngularDetailsView.as_view(),
         name='ngdetails'),
