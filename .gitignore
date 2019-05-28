@@ -21,3 +21,4 @@ coverage.xml
 .cache/
 .tox/
 nectar_dashboard.egg-info/*
+.vscode
