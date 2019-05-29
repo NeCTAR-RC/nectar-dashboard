@@ -48,8 +48,8 @@ def allocation_title(allocation,
                      '<br/>'
                      '<small class="muted">%s</small>' %
                      (escape(url),
-                      escape(unicode(allocation.project_name)),
-                      escape(unicode(allocation.project_description))))
+                      escape(allocation.project_name),
+                      escape(allocation.project_description)))
     return data
 
 
