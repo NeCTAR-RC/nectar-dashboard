@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 try:
-    from setuptools import setup, find_packages
+    from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
@@ -16,7 +16,7 @@ setup(
     author='Sam Morrison',
     author_email='sorrison@gmail.com',
     url='https://github.com/NeCTAR-RC/nectar-dashboard',
-    packages=find_packages(exclude=['ez_setup', 'examples', 'tests', 'local']),
+    packages=['nectar_dashboard'],
     include_package_data=True,
     install_requires=["djangorestframework",
                       "django-filter",
