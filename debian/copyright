@@ -1,5 +1,5 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: python-nectar-dashboard
+Upstream-Name: python3-nectar-dashboard
 Source: <https://github.com/NeCTAR-RC/nectar-dashboard>
 
 Files: *

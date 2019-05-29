@@ -1,27 +1,27 @@
-Source: python-nectar-dashboard
+Source: python3-nectar-dashboard
 Section: unknown
 Priority: optional
 Maintainer: Sam Morrison <sorrison@gmail.com>
-Build-Depends: debhelper (>= 9), python-all (>= 2.6), python-setuptools, python-pip (>= 1.2)
-Standards-Version: 3.9.6
+Build-Depends: debhelper (>= 10~), python-all, python3-all, python3-setuptools, python3-pip
+Standards-Version: 4.1.4
 Homepage: https://github.com/NeCTAR-RC/nectar-dashboard
 
-Package: python-nectar-dashboard
+Package: python3-nectar-dashboard
 Architecture: any
 Depends: openstack-dashboard (>= 15.0.0),
          openstack-dashboard (<< 16.0.0),
          ${misc:Depends},
          ${python:Depends},
-         python-dateutil,
-         python-pymysql,
-         python-djangorestframework,
-         python-django-filters,
-         python-trove-dashboard,
-         python-heat-dashboard,
-         python-murano-dashboard,
-         python-neutron-lbaas-dashboard,
-         python-sahara-dashboard,
-         python-manila-ui,
-         python-django-cors-headers,
+         python3-dateutil,
+         python3-pymysql,
+         python3-djangorestframework,
+         python3-django-filters,
+         python3-trove-dashboard,
+         python3-heat-dashboard,
+         python3-murano-dashboard,
+         python3-neutron-lbaas-dashboard,
+         python3-sahara-dashboard,
+         python3-manila-ui,
+         python3-django-cors-headers,
 Description: NeCTAR openstack dashboard
  NeCTAR modifications and themes for the openstack dashboard
