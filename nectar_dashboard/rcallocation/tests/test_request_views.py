@@ -29,15 +29,13 @@ class RequestTestCase(base.BaseTestCase):
         self.assertEqual(model.contact_email, self.user.name)
         quotas_l = models.Quota.objects.filter(group__allocation=model)
         # (For ... reasons ... there may be zero-valued quotas in the list)
-        quotas = filter(lambda q: q['quota'] > 0 or q['requested_quota'] > 0,
-                        quotas)
+        quotas = [q for q in quotas if q['quota'] > 0
+                  or q['requested_quota'] > 0]
         self.assertEqual(quotas_l.count(), len(quotas))
         # (The order of the quotas don't need to match ...)
         for qm in quotas_l:
-            matched = filter(
-                lambda q: (q['resource'] == qm.resource.id
-                           and q['zone'] == qm.group.zone.name),
-                quotas)
+            matched = [q for q in quotas if q['resource'] == qm.resource.id
+                       and q['zone'] == qm.group.zone.name]
             self.assertEqual(len(matched), 1)
             self.assertEqual(qm.group.zone.name, matched[0]['zone'])
             self.assertEqual(qm.requested_quota,
