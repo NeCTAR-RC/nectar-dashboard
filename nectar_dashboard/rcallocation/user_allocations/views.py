@@ -67,7 +67,7 @@ def get_managed_projects(request):
     return []
 
 
-class UserAllocationsListView(views.AllocationsListView):
+class UserAllocationsListView(views.BaseAllocationsListView):
     """A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
     by status?

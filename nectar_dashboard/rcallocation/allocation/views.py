@@ -7,6 +7,11 @@ from nectar_dashboard.rcallocation import utils
 from nectar_dashboard.rcallocation import views
 
 from nectar_dashboard.rcallocation.allocation import forms as allocation_forms
+from nectar_dashboard.rcallocation.allocation import tables
+
+
+class PendingAllocationsListView(views.BaseAllocationsListView):
+    table_class = tables.PendingAllocationListTable
 
 
 class AllocationUpdateView(views.BaseAllocationView):

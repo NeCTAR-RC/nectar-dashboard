@@ -33,10 +33,10 @@ class UserEditChangeRequest(tables.EditRequest):
         return instance.can_user_edit_amendment()
 
 
-class UserAllocationListTable(tables.AllocationListTable):
+class UserAllocationListTable(tables.BaseAllocationListTable):
     view_url = "horizon:allocation:user_requests:allocation_view"
 
-    class Meta(tables.AllocationListTable.Meta):
+    class Meta(tables.BaseAllocationListTable.Meta):
         row_actions = (UserEditRequest, UserAmendRequest,
                        UserEditChangeRequest)
 
@@ -46,3 +46,4 @@ class UserAllocationListTable(tables.AllocationListTable):
             self.columns['project'].transform,
             link=self.view_url)
         self.columns.pop('requested_home')
+        self.columns.pop('approver')

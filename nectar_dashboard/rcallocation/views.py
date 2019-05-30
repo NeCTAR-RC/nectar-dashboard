@@ -55,14 +55,13 @@ class AllocationDetailView(mixins.UserPassesTestMixin, DetailView,
         return utils.user_is_allocation_admin(self.request.user)
 
 
-class AllocationsListView(mixins.UserPassesTestMixin,
-                          horizon_tables.DataTableView):
+class BaseAllocationsListView(mixins.UserPassesTestMixin,
+                              horizon_tables.DataTableView):
     """A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
     by status?
     """
     context_object_name = "allocation_list"
-    table_class = tables.AllocationListTable
     template_name = 'rcallocation/allocationrequest_list.html'
     page_title = 'Requests'
 
