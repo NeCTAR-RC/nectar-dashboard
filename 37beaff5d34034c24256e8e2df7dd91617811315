@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0b7109df_cd466556",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2019-05-30T00:09:48Z",
+      "side": 1,
+      "message": "what is this now in py3? is it a tuple? should we update public_fields to what this is instead?",
+      "range": {
+        "startLine": 68,
+        "startChar": 44,
+        "endLine": 68,
+        "endChar": 65
+      },
+      "revId": "37beaff5d34034c24256e8e2df7dd91617811315",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
