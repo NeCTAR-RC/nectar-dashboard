@@ -174,14 +174,14 @@ class AllocationRequestForm(BaseAllocationForm):
                                           'least 5 characters in length.'))
 
         if allocations:
-            self._errors["project_name"] = \
-                [mark_safe(
+            self.add_error(
+               'project_name',
+               forms.ValidationError(mark_safe(
                     'That project identifier already exists. If your '
                     'allocation has been approved already, please go'
                     ' <a href="%s">here</a> '
                     'to amend it. Otherwise, choose a different identifier.'
-                    % reverse('horizon:allocation:user_requests:index'))]
-            del cleaned_data["project_name"]
+                    % reverse('horizon:allocation:user_requests:index'))))
 
         return cleaned_data
 
