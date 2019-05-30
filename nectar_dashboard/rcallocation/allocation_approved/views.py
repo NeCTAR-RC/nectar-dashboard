@@ -1,14 +1,16 @@
 import logging
 
+from nectar_dashboard.rcallocation.allocation_approved import tables
 from nectar_dashboard.rcallocation.models import AllocationRequest
-from nectar_dashboard.rcallocation.views import AllocationsListView
+from nectar_dashboard.rcallocation.views import BaseAllocationsListView
 
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
-class ApprovedAllocationsListView(AllocationsListView):
+class ApprovedAllocationsListView(BaseAllocationsListView):
     page_title = 'Approved Requests'
+    table_class = tables.ApprovedAllocationListTable
 
     def get_data(self):
         return [ar for ar in

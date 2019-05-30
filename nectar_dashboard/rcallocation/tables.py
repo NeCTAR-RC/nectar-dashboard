@@ -53,16 +53,18 @@ def allocation_title(allocation,
     return data
 
 
-class AllocationListTable(tables.DataTable):
+class BaseAllocationListTable(tables.DataTable):
     status = tables.Column(status_icon,
                            classes=['text-center'],
                            verbose_name="State")
     project = tables.Column(allocation_title,
                             verbose_name="Name", )
     requested_home = tables.Column('requested_allocation_home',
-                                    verbose_name='Requested Home')
+                                    verbose_name='Requested Home Location')
     allocation_home = tables.Column('allocation_home',
-                                    verbose_name='Allocation Home')
+                                    verbose_name='Current Home Location')
+    approver = tables.Column('approver_email',
+                             verbose_name='Approver')
     contact = tables.Column("contact_email", verbose_name="Contact")
     modified_time = tables.Column("modified_time",
                                   verbose_name="Last Updated",
