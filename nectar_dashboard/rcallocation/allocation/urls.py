@@ -5,7 +5,7 @@ from nectar_dashboard.rcallocation import views
 
 
 urlpatterns = [
-    url(r'^$', views.AllocationsListView.as_view(),
+    url(r'^$', allocation_views.PendingAllocationsListView.as_view(),
         name='allocation_requests'),
     url(r'^view/(?P<pk>\d+)/$', views.AllocationDetailView.as_view(),
         name='allocation_view'),
