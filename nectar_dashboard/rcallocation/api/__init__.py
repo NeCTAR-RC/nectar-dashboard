@@ -312,7 +312,8 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         kwargs = {'created_by': self.request.user.token.project['id']}
         if not serializer.validated_data.get('contact_email'):
             kwargs['contact_email'] = self.request.user.username
-        serializer.save(**kwargs)
+        allocation = serializer.save(**kwargs)
+        allocation.send_notifications()
 
     def get_serializer_class(self):
         if self.is_read_admin():
@@ -354,6 +355,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.status = models.AllocationRequest.UPDATE_PENDING
         allocation.provisioned = False
         allocation.save()
+        allocation.send_notifications()
         return response.Response(self.get_serializer_class()(allocation).data)
 
     @decorators.detail_route(methods=['post'])
