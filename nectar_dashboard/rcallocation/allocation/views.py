@@ -46,6 +46,8 @@ class AllocationApproveView(views.BaseAllocationView):
 
 
 class AllocationRejectView(views.BaseAllocationView):
+    IGNORE_WARNINGS = True
+
     page_title = "Decline"
     template_name = "rcallocation/allocationrequest_reject.html"
     model = models.AllocationRequest
