@@ -614,6 +614,9 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                 for instance in formset.deleted_objects:
                     instance.delete()
 
+        # Send notification email
+        self.object.send_notifications(extra_context={'request': self.request})
+
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form, investigator_formset=None,
