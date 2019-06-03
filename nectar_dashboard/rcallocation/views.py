@@ -552,7 +552,11 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
 
         # Set the editor attribute
         setattr(object, self.editor_attr, self.request.user.username)
+
+        # Update fields and save allocation
         object.provisioned = False
+        object.update_end_date(commit=False)
+        object.update_modified_time(commit=False)
         object.save()
         self.object = object
 
@@ -606,6 +610,9 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                     instance.save()
                 for instance in formset.deleted_objects:
                     instance.delete()
+
+        # Send notification email
+        self.object.send_notifications(extra_context={'request': self.request})
 
         return HttpResponseRedirect(self.get_success_url())
 
