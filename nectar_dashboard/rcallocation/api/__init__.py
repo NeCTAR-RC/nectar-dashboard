@@ -348,7 +348,10 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         utils.copy_allocation(allocation)
         allocation.status = models.AllocationRequest.UPDATE_PENDING
         allocation.provisioned = False
+        allocation.update_end_date(commit=False)
+        allocation.update_modified_time(commit=False)
         allocation.save()
+        allocation.send_notifications()
         return response.Response(self.get_serializer_class()(allocation).data)
 
     @decorators.detail_route(methods=['post'])
