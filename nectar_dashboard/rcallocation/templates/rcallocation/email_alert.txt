@@ -1,52 +1,53 @@
-Allocation request [{{ request.project_description }}]
-
+{% block subject %}Allocation request [{{ allocation.project_description }}]{% endblock %}
+
+{% block body %}
 {% block preamble %}{% endblock %}
 Allocation Request Received
 ---------------------------
 
 {% spaceless %}
-{% if request.status == 'N' %}
-An allocation request has been created by "{{request.contact_email}}"
-on {{request.submit_date}}.
-{% elif request.status == 'E' %}
-An allocation request has been edited by "{{request.contact_email}}".
-{% elif request.status == 'X' %}
-A request for an extension/change to the allocation for project {{request.project_description}} on the project {{ request.project_name }} ({{request.project_id}}) has been created by "{{request.contact_email}}".
+{% if allocation.status == 'N' %}
+An allocation request has been created by "{{ allocation.contact_email }}"
+on {{ allocation.submit_date }}.
+{% elif allocation.status == 'E' %}
+An allocation request has been edited by "{{ allocation.contact_email }}".
+{% elif allocation.status == 'X' %}
+A request for an extension/change to the allocation for project {{ allocation.project_description }} on the project {{ allocation.project_name }} ({{ allocation.project_id }}) has been created by "{{ allocation.contact_email }}".
 {% else %}
-An allocation request has been created by "{{request.contact_email}}".
+An allocation request has been created by "{{ allocation.contact_email }}".
 {% endif %}{% endspaceless %}
-{% if request_link %}You can view the request at:
-{{ request_link }}{% endif %}
+You can view the request at: {{ base_url }}{% url 'horizon:allocation:user_requests:allocation_view' pk=allocation.pk %}
 
-Project name: {{ request.project_description }}
-Start date:   {{ request.start_date }}
-End date:     {{ request.end_date }}
+Project name: {{ allocation.project_description }}
+Start date:   {{ allocation.start_date }}
+End date:     {{ allocation.end_date }}
 
 Quota
 -----
 {% spaceless %}
-{% for quota in request.quotas.all %}
-{{ quota.resource|title }} ({{ quota.zone }}): {{ quota.requested_quota }} {{ quota.units }}{% endfor %}
+{% for quota in quotas %}
+* {{ quota.service_type }} - {{ quota.resource|title }}: {% if quota.resource_type == 'boolean' %}Enabled{% else %}{{ quota.requested_quota }} {{ quota.unit }}{% endif %}{% endfor %}{{ quota.resource.resource_type }}
 {% endspaceless %}
 
 Use Case Details
 ----------------
 
 Use Case:
-{{ request.use_case }}
+{{ allocation.use_case }}
 
 Usage pattern:
-{{ request.usage_patterns|default:"Not given." }}
+{{ allocation.usage_patterns|default:"Not given." }}
 
 Geographical Requirements:
-{{ request.geographic_requirements|default:"None given." }}
+{{ allocation.geographic_requirements|default:"None given." }}
 
 Fields Of Research breakdown:
 {% spaceless %}
-{% if request.field_of_research_1 %}{{ request.get_field_of_research_1_display }} ({{ request.for_percentage_1 }}%){% endif %}
-{% if request.field_of_research_2 %}{{ request.get_field_of_research_2_display }} ({{ request.for_percentage_2 }}%){% endif %}
-{% if request.field_of_research_3 %}{{ request.get_field_of_research_3_display }} ({{ request.for_percentage_3 }}%){% endif %}
+{% if allocation.field_of_research_1 %}{{ allocation.get_field_of_research_1_display }} ({{ allocation.for_percentage_1 }}%){% endif %}
+{% if allocation.field_of_research_2 %}{{ allocation.get_field_of_research_2_display }} ({{ allocation.for_percentage_2 }}%){% endif %}
+{% if allocation.field_of_research_3 %}{{ allocation.get_field_of_research_3_display }} ({{ allocation.for_percentage_3 }}%){% endif %}
 {% endspaceless %}
 
 Kind Regards,
 The Nectar Research Cloud Team.
+{% endblock %}
