@@ -11,6 +11,7 @@ from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.template.loader import get_template
+from django.template.loader import render_to_string
 
 from nectar_dashboard.rcallocation import allocation_home_choices
 from nectar_dashboard.rcallocation import for_choices
@@ -360,89 +361,59 @@ class AllocationRequest(models.Model):
     def can_approve_change(self):
         return self.amendment_requested() and not self.is_archived()
 
-    def notify_via_e_mail(self, sender, recipient_list, template, cc_list=[],
-                          bcc_list=[], reply_to=None):
-        """Send an email to the requester notifying them that their
-        allocation has been processed.
-        """
-        if not sender and recipient_list:
-            # TODO(shauno): log this problem
-            raise Exception
+    def get_quotas_context(self):
+        quotas = []
+        for quota in Quota.objects.filter(group__allocation=self):
+            quotas.append({'service_type': quota.group.service_type.name,
+                           'resource': quota.resource.name,
+                           'resource_type': quota.resource.resource_type,
+                           'unit': quota.resource.unit,
+                           'zone': quota.group.zone.display_name,
+                           'quota': quota.quota,
+                           'requested_quota': quota.requested_quota})
+        return quotas
 
-        plaintext = get_template(template)
-        ctx = {"request": self}
-        text = plaintext.render(ctx)
-        subject, body = text.split('')
-        email = EmailMessage(
-            subject.strip(),
-            body,
-            sender,
-            recipient_list,
-            cc=cc_list
-        )
-
-        if bcc_list:
-            email.bcc = bcc_list
-
-        if reply_to:
-            email.extra_headers = {'Reply-To': reply_to}
-
-        email.send()
-
-    def notify_user(self, template):
-        to = [self.contact_email]
-        cc = settings.ALLOCATION_EMAIL_RECIPIENTS
-        sender = settings.ALLOCATION_EMAIL_FROM
-        reply_to = settings.ALLOCATION_EMAIL_REPLY_TO
-        self.notify_via_e_mail(
-            template=template,
-            sender=sender,
-            recipient_list=to,
-            cc_list=cc,
-            reply_to=reply_to,
-        )
-
-    def notify_admin(self, template):
-        self.notify_via_e_mail(
-            sender=settings.ALLOCATION_EMAIL_FROM,
-            recipient_list=settings.ALLOCATION_EMAIL_RECIPIENTS,
-            template=template,
-            cc_list=[self.contact_email],
-            bcc_list=settings.ALLOCATION_EMAIL_BCC_RECIPIENTS,
-            reply_to=settings.ALLOCATION_EMAIL_REPLY_TO,
-        )
-
-    def send_notifications(self):
+    def send_email_notification(self, template_name, extra_context={}):
         if not self.notifications:
             return
-        status = self.status.lower()
-        if status in ['n', 'e', 'x']:
-            if status == 'n':
+        email = EmailMessage(to=(self.contact_email,),
+                             from_email=settings.ALLOCATION_EMAIL_FROM,
+                             cc=settings.ALLOCATION_EMAIL_RECIPIENTS,
+                             bcc=settings.ALLOCATION_EMAIL_BCC_RECIPIENTS,
+                             reply_to=[settings.ALLOCATION_EMAIL_REPLY_TO])
+        # Create context
+        context = extra_context.copy()
+        context['allocation'] = self
+        context['quotas'] = self.get_quotas_context()
+        ar_previous = AllocationRequest.objects.filter(
+            parent_request=self, provisioned=True).first()
+        if ar_previous:
+            context['quotas_previous'] = ar_previous.get_quotas_context()
+        context['base_url'] = 'https://dashboard.rc.nectar.org.au'
+        if 'request' in context:
+            context['base_url'] = '{}://{}'.format(
+                context['request'].scheme, context['request'].get_host())
+        # Render template, get body and subject and send email
+        text = render_to_string(template_name, context)
+        email.subject, delimiter, email.body = text.partition('\n\n')
+        email.send()
+
+    def send_notifications(self, extra_context={}):
+        if self.status in [self.NEW, self.SUBMITTED, self.UPDATE_PENDING]:
+            if self.status == self.NEW:
                 template = 'rcallocation/email_alert_acknowledge.txt'
             else:
                 template = 'rcallocation/email_alert.txt'
-            self.notify_admin(template)
-            if status == 'n':
+            self.send_email_notification(template, extra_context=extra_context)
+            if self.status == self.NEW:
                 # N is a special state showing that the
                 # request has been created but no email has
                 # been sent. Progress it once it's been sent.
-                self.status = 'E'
+                self.status = self.SUBMITTED
+                self.save()
         elif self.is_rejected():
             template = 'rcallocation/email_alert_rejected.txt'
-            self.notify_user(template)
-
-    def save(self, *args, **kwargs):
-        if not kwargs.pop('provisioning', None):
-            if not self.is_archived():
-                try:
-                    self.send_notifications()
-                except Exception:
-                    LOG.error(
-                        'Could not send notification email for allocation %s.'
-                        % self.project_name)
-                    if settings.DEBUG:
-                        raise
-        super(AllocationRequest, self).save(*args, **kwargs)
+            self.send_email_notification(template, extra_context=extra_context)
 
     def get_all_fields(self):
         """Returns a list of all non None fields, each entry containing
