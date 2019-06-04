@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e5cef71e_661a4fba",
+        "filename": "nectar_dashboard/rcallocation/allocation/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-06-04T04:34:48Z",
+      "side": 1,
+      "message": "The table_actions could be inherited, but not the row_actions.  The row actions are different for each of the 3 table views.\n\nSetting up a superclass just to inherit one attribute is not going to help readability / resuability.",
+      "parentUuid": "23c84326_f9139480",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 49
+      },
+      "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a2ae81b9_c9c81323",
         "filename": "nectar_dashboard/rcallocation/allocation/tables.py",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d12c09cf_8221bebb",
+        "filename": "nectar_dashboard/rcallocation/allocation/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-06-04T04:34:48Z",
+      "side": 1,
+      "message": "The verbose name is different in the parent.  Jo was adamant about that.",
+      "parentUuid": "a2ae81b9_c9c81323",
+      "range": {
+        "startLine": 14,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 62
+      },
+      "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "8a62493b_04d15b73",
+        "filename": "nectar_dashboard/rcallocation/allocation_approved/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-06-04T04:34:48Z",
+      "side": 1,
+      "message": "Agreed.  Fixing",
+      "parentUuid": "c35c50e6_77037589",
+      "range": {
+        "startLine": 14,
+        "startChar": 14,
+        "endLine": 14,
+        "endChar": 37
+      },
+      "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6dd257e7_11dd4ee1",
         "filename": "nectar_dashboard/rcallocation/user_allocations/tables.py",
         "patchSetId": 1
@@ -91,6 +163,30 @@
       "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b7e3703_81036e3b",
+        "filename": "nectar_dashboard/rcallocation/user_allocations/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-06-04T04:34:48Z",
+      "side": 1,
+      "message": "Agreed. Fixing",
+      "parentUuid": "6dd257e7_11dd4ee1",
+      "range": {
+        "startLine": 44,
+        "startChar": 14,
+        "endLine": 44,
+        "endChar": 25
+      },
+      "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
