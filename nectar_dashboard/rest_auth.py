@@ -14,6 +14,7 @@
 from django.conf import settings
 from django.contrib import auth
 
+from openstack_auth import exceptions as oa_exceptions
 from openstack_auth import user as auth_user
 
 from rest_framework import authentication
@@ -32,9 +33,10 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
             return None
         try:
             request.user = auth.authenticate(request=request,
+                                             auth_url=None,
                                              token=token,
                                              project_id=project_id)
-        except exceptions.KeystoneAuthException:
+        except oa_exceptions.KeystoneAuthException:
             raise exceptions.AuthenticationFailed()
 
         auth_user.set_session_from_user(request, request.user)
