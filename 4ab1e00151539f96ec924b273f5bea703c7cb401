@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23c84326_f9139480",
+        "filename": "nectar_dashboard/rcallocation/allocation/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-04T03:21:42Z",
+      "side": 1,
+      "message": "not needed if you inherit from BaseAllocationListTable.Meta",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 49
+      },
+      "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2ae81b9_c9c81323",
+        "filename": "nectar_dashboard/rcallocation/allocation/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-04T03:21:42Z",
+      "side": 1,
+      "message": "already in the parent class, should it be here or in base?",
+      "range": {
+        "startLine": 14,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 62
+      },
+      "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c35c50e6_77037589",
+        "filename": "nectar_dashboard/rcallocation/allocation_approved/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-04T03:21:42Z",
+      "side": 1,
+      "message": "should be ApprovedAllocationListTable for super not the parent class",
+      "range": {
+        "startLine": 14,
+        "startChar": 14,
+        "endLine": 14,
+        "endChar": 37
+      },
+      "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6dd257e7_11dd4ee1",
+        "filename": "nectar_dashboard/rcallocation/user_allocations/tables.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-04T03:21:42Z",
+      "side": 1,
+      "message": "This shouldn\u0027t be changed, same as the other super",
+      "range": {
+        "startLine": 44,
+        "startChar": 14,
+        "endLine": 44,
+        "endChar": 25
+      },
+      "revId": "4ab1e00151539f96ec924b273f5bea703c7cb401",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
