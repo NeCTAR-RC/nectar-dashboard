@@ -1,22 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+import setuptools
 
 readme = open('README.rst').read()
 
-setup(
+setuptools.setup(
     name='nectar-dashboard',
-    version='0.1.0',
+    version='4.0',
     description='nectar-dashboard',
     long_description=readme,
     author='Sam Morrison',
     author_email='sorrison@gmail.com',
     url='https://github.com/NeCTAR-RC/nectar-dashboard',
-    packages=['nectar_dashboard'],
+    packages=setuptools.find_packages(),
     include_package_data=True,
     install_requires=["djangorestframework",
                       "django-filter",
