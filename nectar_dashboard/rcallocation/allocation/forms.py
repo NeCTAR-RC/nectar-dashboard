@@ -52,6 +52,11 @@ class AllocationApproveForm(forms.ModelForm):
         self.fields['status_explanation'].label = 'Comment'
         self.initial['status_explanation'] = ''
         self.fields['allocation_home'].required = True
+        self.fields['allocation_home'].label = \
+            'Approved Allocation Home'
+        self.fields['allocation_home'].help_text = \
+            '''Approved Allocation home of the location
+               which the approver needs to select'''
         self.fields['allocation_home'].widget.attrs['class'] = 'form-control'
         self.fields['requested_allocation_home'].label = \
             'Requested Allocation Home'
