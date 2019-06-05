@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "521d55e1_2a0af08d",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1000104
+      },
+      "writtenOn": "2019-06-05T06:35:53Z",
+      "side": 1,
+      "message": "this seems to be config rather than code, maybe we can discuss about storing it in config somewhere?",
+      "range": {
+        "startLine": 67,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 9
+      },
+      "revId": "c639a5180b85260b4ba70621772bd96e8b3fc2a6",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
