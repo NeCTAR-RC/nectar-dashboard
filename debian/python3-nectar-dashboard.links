@@ -1,1 +1,1 @@
-usr/share/nectar-dashboard/theme usr/share/openstack-dashboard/openstack_dashboard/themes/nectar
+usr/share/nectar-dashboard/theme usr/lib/python3/dist-packages/openstack_dashboard/themes/nectar
