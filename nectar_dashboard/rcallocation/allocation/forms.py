@@ -46,6 +46,11 @@ class AllocationApproveForm(forms.ModelForm):
         self.fields['status_explanation'].label = 'Comment'
         self.initial['status_explanation'] = ''
         self.fields['allocation_home'].required = True
+        self.fields['allocation_home'].help_text = \
+            '''The Approver should set the allocation home to 'national'
+            if the request qualifies for National funding under the
+            current RC-NAS policy.  Otherwise they should set it to
+            their own node.'''
         self.fields['allocation_home'].widget.attrs['class'] = 'form-control'
         self.fields['requested_allocation_home'].label = \
             'Requested Allocation Home'
