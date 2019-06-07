@@ -1,13 +1,14 @@
 {
     "context_is_admin":  "role:admin",
     "default": "role:admin",
+    "image_admin": "role:admin or role:image_admin",
 
     "add_image": "",
     "delete_image": "",
     "get_image": "",
     "get_images": "",
     "modify_image": "",
-    "publicize_image": "role:admin",
+    "publicize_image": "rule:image_admin",
     "communitize_image": "",
     "copy_from": "",
 
@@ -24,13 +25,13 @@
     "get_members": "",
     "modify_member": "",
 
-    "manage_image_cache": "role:admin",
+    "manage_image_cache": "rule:image_admin",
 
     "get_task": "",
     "get_tasks": "",
     "add_task": "",
     "modify_task": "",
-    "tasks_api_access": "role:admin",
+    "tasks_api_access": "rule:image_admin",
 
     "deactivate": "",
     "reactivate": "",
