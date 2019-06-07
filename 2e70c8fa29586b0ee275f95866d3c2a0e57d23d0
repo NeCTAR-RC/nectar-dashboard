@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7add3d6_86b4298a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-07T04:27:51Z",
+      "side": 1,
+      "message": "I don\u0027t see a change to the allocation request form in this commit",
+      "range": {
+        "startLine": 10,
+        "startChar": 1,
+        "endLine": 11,
+        "endChar": 50
+      },
+      "revId": "2e70c8fa29586b0ee275f95866d3c2a0e57d23d0",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9283f72_8f9a398f",
+        "filename": "nectar_dashboard/rcallocation/allocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-07T04:27:51Z",
+      "side": 1,
+      "message": "I think this is a bit redundant and isn\u0027t needed",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 52
+      },
+      "revId": "2e70c8fa29586b0ee275f95866d3c2a0e57d23d0",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "20888457_31631254",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_detail_base.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-07T04:27:51Z",
+      "side": 1,
+      "message": "this is also redundant. We don\u0027t say \"current\" for the other fields.",
+      "range": {
+        "startLine": 324,
+        "startChar": 16,
+        "endLine": 324,
+        "endChar": 24
+      },
+      "revId": "2e70c8fa29586b0ee275f95866d3c2a0e57d23d0",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
