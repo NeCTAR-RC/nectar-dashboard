@@ -1,5 +1,5 @@
-PROJECTS_INDEX_URL = 'horizon:project:members:index'
+PROJECTS_INDEX_URL = 'horizon:identity:members:index'
 PROJECTS_INDEX_VIEW_TEMPLATE = 'project-members/index.html'
-PROJECTS_ADD_MEMBER_URL = 'horizon:project:members:add_member'
+PROJECTS_ADD_MEMBER_URL = 'horizon:identity:members:add_member'
 PROJECTS_ADD_MEMBER_VIEW_TEMPLATE = 'project-members/add.html'
 PROJECTS_ADD_MEMBER_AJAX_VIEW_TEMPLATE = 'project-members/_add.html'
