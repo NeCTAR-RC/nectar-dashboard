@@ -357,6 +357,18 @@ ALLOCATION_GLOBAL_READ_ROLES = ['read_only']
 ALLOCATION_GLOBAL_ADMIN_ROLES = ['admin']
 ALLOCATION_APPROVER_ROLES = ['tenantmanager']
 
+ALLOCATION_HOME_ZONE_MAPPINGS = {
+    'auckland': ['auckland'],
+    'ersa': ['sa'],
+    'intersect': ['intersect'],
+    'monash': ['monash-01', 'monash-02', 'monash-03'],
+    'nci': ['NCI'],
+    'qcif': ['QRIScloud'],
+    'swinburne': ['swinburne-01'],
+    'tpac': ['tasmania', 'tasmania-s'],
+    'uom': ['melbourne-qh2-uom'],
+}
+
 HORIZON_CONFIG['WARNING_INFO_URL'] = \
     "https://support.ehelp.edu.au/support/home"
 

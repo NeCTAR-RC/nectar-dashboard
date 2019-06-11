@@ -13,7 +13,7 @@
 
 from django.conf import settings
 from django_filters import rest_framework as filters
-from rest_framework.decorators import detail_route
+from rest_framework import decorators
 from rest_framework import permissions
 from rest_framework import response
 from rest_framework import serializers
@@ -61,6 +61,11 @@ class ZoneViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (rest_auth.ReadOrAdmin,)
     queryset = models.Zone.objects.all()
     serializer_class = ZoneSerializer
+
+    @decorators.list_route()
+    def compute_homes(self, request):
+        zone_map = settings.ALLOCATION_HOME_ZONE_MAPPINGS
+        return response.Response(zone_map)
 
 
 class ResourceSerializer(serializers.ModelSerializer):
@@ -327,7 +332,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
             permission_classes = []
         return [permission() for permission in permission_classes]
 
-    @detail_route(methods=['post'])
+    @decorators.detail_route(methods=['post'])
     def approve(self, request, pk=None):
         allocation = self.get_object()
         utils.copy_allocation(allocation)
@@ -337,7 +342,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.save()
         return response.Response(self.get_serializer_class()(allocation).data)
 
-    @detail_route(methods=['post'])
+    @decorators.detail_route(methods=['post'])
     def amend(self, request, pk=None):
         allocation = self.get_object()
         utils.copy_allocation(allocation)
@@ -346,7 +351,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.save()
         return response.Response(self.get_serializer_class()(allocation).data)
 
-    @detail_route(methods=['post'])
+    @decorators.detail_route(methods=['post'])
     def delete(self, request, pk=None):
         allocation = self.get_object()
         allocation.status = models.AllocationRequest.DELETED
