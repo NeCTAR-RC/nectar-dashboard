@@ -20,6 +20,6 @@ import horizon
 
 
 class Members(horizon.Panel):
-    name = _("Users")
+    name = _('Project Members')
     slug = 'members'
     permissions = ('openstack.roles.tenantmanager',)

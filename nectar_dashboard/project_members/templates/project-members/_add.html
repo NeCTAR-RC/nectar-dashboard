@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block form_id %}add_project_user_form{% endblock %}
-{% block form_action %}{% url 'horizon:project:members:add_member' %}{% endblock %}
+{% block form_action %}{% url 'horizon:identity:members:add_member' %}{% endblock %}
 
 {% block modal-header %}{% trans "Add User to Project" %}{% endblock %}
 
@@ -20,5 +20,5 @@
 
 {% block modal-footer %}
   <input class="btn btn-primary pull-right" type="submit" value="{% trans "Add User to Project" %}" />
-  <a href="{% url 'horizon:project:members:index' %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+  <a href="{% url 'horizon:identity:members:index' %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
 {% endblock %}
