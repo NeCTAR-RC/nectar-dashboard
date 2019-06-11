@@ -482,7 +482,7 @@ class AllocationRequest(models.Model):
                     )
         return fields
 
-    def __unicode__(self):
+    def __str__(self):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
 
 
@@ -490,7 +490,7 @@ class Zone(models.Model):
     name = models.CharField(primary_key=True, max_length=32)
     display_name = models.CharField(max_length=64)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.display_name
 
 
@@ -501,7 +501,7 @@ class ServiceType(models.Model):
     zones = models.ManyToManyField(Zone)
     notes = models.TextField(null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -522,7 +522,7 @@ class Resource(models.Model):
                                      choices=RESOURCE_TYPES,
                                      default=INTEGER)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def codename(self):
@@ -541,7 +541,7 @@ class QuotaGroup(models.Model):
     class Meta:
         unique_together = ("allocation", "zone", "service_type")
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0} {1} {2}'.format(self.allocation.id,
                                     self.service_type, self.zone)
 
@@ -559,7 +559,7 @@ class Quota(models.Model):
     class Meta:
         unique_together = ("group", "resource")
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0} {1} {2}'.format(self.group.allocation.id,
                                     self.resource, self.group.zone)
 
@@ -615,7 +615,7 @@ class ChiefInvestigator(models.Model):
         investigators and other research collaborators"""
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0} {1} {2}'.format(self.title, self.given_name, self.surname)
 
 
@@ -637,7 +637,7 @@ class Institution(models.Model):
     class Meta:
         unique_together = ("allocation", "name")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -653,7 +653,7 @@ class Publication(models.Model):
     allocation = models.ForeignKey(AllocationRequest,
                                    related_name='publications')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.publication
 
 
@@ -716,6 +716,6 @@ class Grant(models.Model):
         unique_together = ("allocation", "grant_type", "funding_body_scheme",
                            "grant_id", "first_year_funded", "total_funding")
 
-    def __unicode__(self):
+    def __str__(self):
         return "Funding : {0} , total funding: {1}".format(
             self.funding_body_scheme, self.total_funding)
