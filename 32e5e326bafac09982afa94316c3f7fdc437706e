@@ -22,6 +22,30 @@
       "revId": "32e5e326bafac09982afa94316c3f7fdc437706e",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3482d72_0fa64f15",
+        "filename": "nectar_dashboard/rcallocation/allocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-06-11T05:10:36Z",
+      "side": 1,
+      "message": "Java-ism.  Fixing",
+      "parentUuid": "8be60616_34643f6f",
+      "range": {
+        "startLine": 64,
+        "startChar": 15,
+        "endLine": 64,
+        "endChar": 49
+      },
+      "revId": "32e5e326bafac09982afa94316c3f7fdc437706e",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
