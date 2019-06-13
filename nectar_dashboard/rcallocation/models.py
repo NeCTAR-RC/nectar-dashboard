@@ -174,7 +174,7 @@ class AllocationRequest(models.Model):
 
     requested_allocation_home = models.CharField(
         "Allocation home location",
-        choices=allocation_home_choices.ALLOC_HOME_CHOICE[:-1],
+        choices=allocation_home_choices.ALLOC_HOME_CHOICE,
         blank=False,
         null=False,
         default='national',

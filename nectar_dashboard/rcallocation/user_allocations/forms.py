@@ -44,3 +44,5 @@ class UserAllocationRequestAmendForm(base_forms.AllocationAmendRequestForm):
         self.fields['start_date'].label = 'Extension start date'
         self.fields['estimated_project_duration'].label = \
             'Estimated extension duration'
+        self.initial['requested_allocation_home'] = \
+            self.instance.allocation_home
