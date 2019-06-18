@@ -134,3 +134,8 @@ class EditNotesForm(forms.ModelForm):
     class Meta:
         model = models.AllocationRequest
         fields = ('notes',)
+
+    def clean(self):
+        super().clean()
+        # On the next 'save' call, don't update the modified time
+        self.instance.save_no_modification = True

@@ -292,6 +292,11 @@ class AllocationRequest(models.Model):
         default=True,
         help_text="Send notifications for this allocation")
 
+    # When this is set to True, the next 'save' will be performed
+    # without updating the 'modified_time' field, and without sending
+    # notifications.  (This is for admin notes ...)
+    save_no_modification = False
+
     class Meta:
         ordering = ['-modified_time']
 
@@ -438,7 +443,7 @@ class AllocationRequest(models.Model):
         duration_relativedelta = relativedelta(
             months=self.estimated_project_duration)
         self.end_date = self.start_date + duration_relativedelta
-        if not kwargs.pop('provisioning', None):
+        if not (kwargs.pop('provisioning', None) or self.save_no_modification):
             if not self.is_archived():
                 self.modified_time = timezone.now()
                 try:
@@ -449,6 +454,8 @@ class AllocationRequest(models.Model):
                         % self.project_name)
                     if settings.DEBUG:
                         raise
+        else:
+            self.save_no_modification = False
         super(AllocationRequest, self).save(*args, **kwargs)
 
     def get_all_fields(self):
