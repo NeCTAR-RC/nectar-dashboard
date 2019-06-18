@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "db8fba07_1c1d6d92",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-18T23:29:00Z",
+      "side": 1,
+      "message": "does this template need updating too?",
+      "range": {
+        "startLine": 419,
+        "startChar": 41,
+        "endLine": 419,
+        "endChar": 67
+      },
+      "revId": "b0e3f6bb134369406ba3d33a757905e61da7f201",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "998e5db3_44649521",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-18T23:29:00Z",
+      "side": 1,
+      "message": "not sure about this, is this meant to be allocation? Can\u0027t see \u0027request\u0027 variable used in a template",
+      "range": {
+        "startLine": 615,
+        "startChar": 54,
+        "endLine": 615,
+        "endChar": 77
+      },
+      "revId": "b0e3f6bb134369406ba3d33a757905e61da7f201",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
