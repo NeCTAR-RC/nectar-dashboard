@@ -32,7 +32,7 @@ LOG = logging.getLogger(__name__)
 
 def _six_months_from_now():
     return datetime.date.today() + datetime.timedelta(
-        days=30 * 6),
+        days=30 * 6)
 
 
 class AllocationRequest(models.Model):
