@@ -16,6 +16,24 @@
       "revId": "2035e1ae2529256f7eb715f9651ec0b9dc5928fd",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10f6e247_bef920ed",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-06-21T00:33:18Z",
+      "side": 1,
+      "message": "That also implies that the tests for the API are not covering this.",
+      "parentUuid": "76c028de_4d0b5419",
+      "revId": "2035e1ae2529256f7eb715f9651ec0b9dc5928fd",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
