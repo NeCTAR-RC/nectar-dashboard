@@ -73,9 +73,7 @@ class BaseAllocationsListView(mixins.UserPassesTestMixin,
                                 models.AllocationRequest.UPDATE_PENDING)
                 ).filter(
                     parent_request=None).order_by(
-                        'modified_time').prefetch_related(
-                            'quotas', 'investigators', 'institutions',
-                            'publications', 'grants')]
+                        'submit_date')]
 
     def test_func(self):
         # Direct uses of this view needs alloc admin access

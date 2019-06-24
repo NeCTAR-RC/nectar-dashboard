@@ -17,6 +17,4 @@ class ApprovedAllocationsListView(BaseAllocationsListView):
                 AllocationRequest.objects.filter(
                     parent_request=None).filter(
                     status__in=('A', 'X', 'J')).order_by(
-                    'project_name').prefetch_related(
-                    'quotas', 'investigators', 'institutions',
-                    'publications', 'grants')]
+                    'project_name')]

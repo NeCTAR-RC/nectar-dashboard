@@ -84,8 +84,7 @@ class UserAllocationsListView(views.BaseAllocationsListView):
                 .filter(parent_request=None)
                 .filter(Q(project_id__in=managed_projects)
                         | Q(contact_email__exact=contact_email))
-                .order_by('status')
-                .prefetch_related('quotas'))
+                .order_by('status'))
 
     def test_func(self):
         # Any user is allowed to list allocations.  The filter should
