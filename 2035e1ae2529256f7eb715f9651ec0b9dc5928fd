@@ -57,6 +57,30 @@
       "revId": "2035e1ae2529256f7eb715f9651ec0b9dc5928fd",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ec8dbe9_d74f47cd",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1000231
+      },
+      "writtenOn": "2019-06-24T02:16:02Z",
+      "side": 1,
+      "message": "Don\u0027t need to override the save() method to achieve that. We can set the auto_now option on the modified_time field:\n\nhttps://docs.djangoproject.com/en/1.11/ref/models/fields/#django.db.models.DateField.auto_now",
+      "parentUuid": "d7749c28_501ffdef",
+      "range": {
+        "startLine": 372,
+        "startChar": 0,
+        "endLine": 377,
+        "endChar": 33
+      },
+      "revId": "2035e1ae2529256f7eb715f9651ec0b9dc5928fd",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
