@@ -95,8 +95,7 @@ class AllocationRequest(models.Model):
 
     submit_date = models.DateField('Submission Date',
                                    default=datetime.date.today)
-    modified_time = models.DateTimeField('Modified Date',
-                                         default=timezone.now)
+    modified_time = models.DateTimeField('Modified Date', auto_now=True)
 
     # The ordering of the following fields are important, as it
     # governs the order they appear on the forms
@@ -440,7 +439,6 @@ class AllocationRequest(models.Model):
         self.end_date = self.start_date + duration_relativedelta
         if not kwargs.pop('provisioning', None):
             if not self.is_archived():
-                self.modified_time = timezone.now()
                 try:
                     self.send_notifications()
                 except Exception:
