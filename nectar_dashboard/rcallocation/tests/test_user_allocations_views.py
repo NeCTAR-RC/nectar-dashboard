@@ -111,7 +111,7 @@ class RequestTestCase(base.BaseTestCase):
 
         # some fields are changed during the archive process, these
         # fields should not be compared.
-        for invalid_field in ['modified_time', 'id', 'parent_request']:
+        for invalid_field in ['id', 'parent_request']:
             del old_state[invalid_field]
             del initial_state[invalid_field]
 
