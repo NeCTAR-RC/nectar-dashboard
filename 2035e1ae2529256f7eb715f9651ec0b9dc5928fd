@@ -34,6 +34,29 @@
       "revId": "2035e1ae2529256f7eb715f9651ec0b9dc5928fd",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7749c28_501ffdef",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-24T01:23:02Z",
+      "side": 1,
+      "message": "we want to update modified time when ever the object is changed so I think this should stay in the save method",
+      "range": {
+        "startLine": 372,
+        "startChar": 0,
+        "endLine": 377,
+        "endChar": 33
+      },
+      "revId": "2035e1ae2529256f7eb715f9651ec0b9dc5928fd",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
