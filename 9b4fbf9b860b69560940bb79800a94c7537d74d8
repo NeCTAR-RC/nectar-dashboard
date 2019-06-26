@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "185daca3_72f10e4b",
+        "filename": "nectar_dashboard/rcallocation/migrations/0031_submit_date-to-time.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-26T06:22:55Z",
+      "side": 1,
+      "message": "think this is in another review?",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 10
+      },
+      "revId": "9b4fbf9b860b69560940bb79800a94c7537d74d8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d4ed8fc_0de69c5f",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-26T06:22:55Z",
+      "side": 1,
+      "message": "I wonder if we should do this the \"correct\" django way and use auto_now_add\u003dTrue here instead?",
+      "range": {
+        "startLine": 97,
+        "startChar": 40,
+        "endLine": 97,
+        "endChar": 59
+      },
+      "revId": "9b4fbf9b860b69560940bb79800a94c7537d74d8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
