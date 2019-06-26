@@ -12,6 +12,7 @@ from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.template.loader import get_template
+from django.utils import timezone
 
 from nectar_dashboard.rcallocation import allocation_home_choices
 from nectar_dashboard.rcallocation import for_choices
@@ -92,8 +93,9 @@ class AllocationRequest(models.Model):
 
     created_by = models.CharField(null=False, blank=False, max_length=100)
 
-    submit_date = models.DateField('Submission Date',
-                                   default=datetime.date.today)
+    submit_date = models.DateTimeField('Submission Date',
+                                       auto_now_add=True)
+
     modified_time = models.DateTimeField('Modified Date', auto_now=True)
 
     # The ordering of the following fields are important, as it
