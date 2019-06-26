@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "913f59cc_6f620895",
+        "filename": "nectar_dashboard/rcallocation/migrations/0031_submit_date-to-time.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-06-26T06:28:17Z",
+      "side": 1,
+      "message": "Ooops.  I thought I had removed that from there.",
+      "parentUuid": "185daca3_72f10e4b",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 10
+      },
+      "revId": "9b4fbf9b860b69560940bb79800a94c7537d74d8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0d4ed8fc_0de69c5f",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "9b4fbf9b860b69560940bb79800a94c7537d74d8",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57abfcef_c98bc4fc",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-06-26T06:28:17Z",
+      "side": 1,
+      "message": "No.  Because we only want to update this on *some* updates.  Otherwise submit_date and modified_time will mean the same thing.",
+      "parentUuid": "0d4ed8fc_0de69c5f",
+      "range": {
+        "startLine": 97,
+        "startChar": 40,
+        "endLine": 97,
+        "endChar": 59
+      },
+      "revId": "9b4fbf9b860b69560940bb79800a94c7537d74d8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
