@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "215c5c75_43b502df",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-26T07:11:28Z",
+      "side": 1,
+      "message": "auto_now_add\u003dTrue and default\u003dtimezone.now do exactly the same thing, just auto_now_add is more djangoy. (think you’re getting confused between auto_now and auto_now_add",
+      "range": {
+        "startLine": 97,
+        "startChar": 39,
+        "endLine": 97,
+        "endChar": 60
+      },
+      "revId": "81d00495ff4219fd647d4e49f4d95e51c1e996a1",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
