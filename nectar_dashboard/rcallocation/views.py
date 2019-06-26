@@ -10,6 +10,7 @@ from django.db import transaction
 from django.forms.models import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.template import loader
+from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.edit import UpdateView
@@ -551,6 +552,14 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         # Set the editor attribute
         setattr(object, self.editor_attr, self.request.user.username)
         object.provisioned = False
+
+        # Force update of submit_date if this a request / ammendment
+        # submission or resubmission
+        if object.status in [models.AllocationRequest.NEW,
+                             models.AllocationRequest.SUBMITTED,
+                             models.AllocationRequest.UPDATE_PENDING]:
+            object.submit_date = timezone.now()
+
         object.save()
         self.object = object
 
