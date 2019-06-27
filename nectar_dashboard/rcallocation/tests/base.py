@@ -14,6 +14,8 @@
 from openstack_dashboard.test import helpers
 from rest_framework import test
 
+from keystoneclient.v2_0 import roles
+
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 from nectar_dashboard.rcallocation.tests import utils
@@ -24,6 +26,29 @@ class BaseTestCase(helpers.TestCase):
     def setUp(self):
         super(BaseTestCase, self).setUp()
         common.factory_setup()
+
+
+class BaseApproverTestCase(helpers.BaseAdminViewTests):
+    """Sets an active user with the "AllocationAdmin" role.
+
+    For testing approver-only views and functionality.
+    """
+
+    def setUp(self):
+        super(BaseApproverTestCase, self).setUp()
+        common.factory_setup()
+
+    def setActiveUser(self, *args, **kwargs):
+        if "roles" not in kwargs:
+            allocation_admin_role_dict = {'id': '142',
+                                          'name': 'allocationadmin'}
+            allocation_admin_role = roles.Role(roles.RoleManager,
+                                               allocation_admin_role_dict,
+                                               loaded=True)
+            self.roles.add(allocation_admin_role)
+            self.roles.allocation_admin = allocation_admin_role
+            kwargs['roles'] = [self.roles.allocation_admin._info]
+            super(BaseApproverTestCase, self).setActiveUser(*args, **kwargs)
 
 
 class AllocationAPITest(test.APITestCase):
