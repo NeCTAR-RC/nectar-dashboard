@@ -31,7 +31,7 @@ LOG = logging.getLogger(__name__)
 
 
 class AddUserToProjectForm(forms.SelfHandlingForm):
-    email = forms.EmailField(label=mark_safe("User's AAF email address"),
+    email = forms.EmailField(label=mark_safe("Username"),
                              required=True)
 
     def handle(self, request, data):

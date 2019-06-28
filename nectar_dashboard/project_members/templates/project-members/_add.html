@@ -14,11 +14,11 @@
 </div>
 <div class="right">
     <h3>{% trans "Description" %}:</h3>
-    <p>{% trans "Enter the AAF email address of the user. This is the email address shown in the top right of the dashboard when the user is logged in." %}</p>
+    <p>{% trans "Enter the username of the user. This is the email address shown in the top right of the dashboard when the user is logged in." %}</p>
 </div>
 {% endblock %}
 
 {% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Add User to Project" %}" />
-  <a href="{% url 'horizon:identity:members:index' %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+  <a href="{% url 'horizon:identity:members:index' %}" class="btn btn-default cancel">{% trans "Cancel" %}</a>
+  <input class="btn btn-primary" type="submit" value="{% trans "Add User to Project" %}" />
 {% endblock %}
