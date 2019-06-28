@@ -22,6 +22,30 @@
       "revId": "80f9a96239eb9c772c8d8ec6f374b4388be2c73b",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "43909f4e_285a31d1",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-06-28T05:33:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76739d93_0d9ef03b",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 91
+      },
+      "revId": "80f9a96239eb9c772c8d8ec6f374b4388be2c73b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
