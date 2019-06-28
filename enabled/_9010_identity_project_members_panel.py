@@ -5,9 +5,6 @@ PANEL_DASHBOARD = 'identity'
 # The slug of the panel group the PANEL is associated with.
 PANEL_GROUP = 'default'
 
-# If set, it will update the default panel of the PANEL_DASHBOARD.
-DEFAULT_PANEL = 'members'
-
 # Python panel class of the PANEL to be added.
 ADD_PANEL = \
     'nectar_dashboard.project_members.panel.Members'
