@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76739d93_0d9ef03b",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-06-28T00:14:02Z",
+      "side": 1,
+      "message": "whoops",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 91
+      },
+      "revId": "80f9a96239eb9c772c8d8ec6f374b4388be2c73b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
