@@ -221,6 +221,7 @@ class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
     chief_investigator = serializers.SerializerMethodField()
+    allocation_home_display = serializers.SerializerMethodField()
 
     class Meta:
         model = models.AllocationRequest
@@ -233,6 +234,10 @@ class AllocationSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_status_display(obj):
         return obj.get_status_display()
+
+    @staticmethod
+    def get_allocation_home_display(obj):
+        return obj.get_allocation_home_display()
 
     @staticmethod
     def get_chief_investigator(obj):
