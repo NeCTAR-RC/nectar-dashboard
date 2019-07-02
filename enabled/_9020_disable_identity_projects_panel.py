@@ -5,5 +5,8 @@ PANEL_DASHBOARD = 'identity'
 # The slug of the panel group the PANEL is associated with.
 PANEL_GROUP = 'default'
 
+# This was the default panel, but we disabled it and use app creds instead.
+DEFAULT_PANEL = 'application_credentials'
+
 # If set to True, the panel will be removed from PANEL_DASHBOARD/PANEL_GROUP.
 REMOVE_PANEL = True
