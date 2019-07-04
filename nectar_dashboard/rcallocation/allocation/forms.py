@@ -12,7 +12,7 @@ class AllocationApproveForm(forms.ModelForm):
     class Meta:
         model = models.AllocationRequest
         fields = (
-            'project_name', 'project_description', 'start_date',
+            'project_name', 'project_description',
             'estimated_project_duration', 'status_explanation',
             'requested_allocation_home', 'allocation_home',
         )
@@ -23,7 +23,6 @@ class AllocationApproveForm(forms.ModelForm):
             'project_name': forms.TextInput(attrs={'readonly': 'readonly'}),
             'project_description': forms.TextInput(
                 attrs={'readonly': 'readonly'}),
-            'start_date': forms.TextInput(attrs={'readonly': 'readonly'}),
             'status_explanation': forms.Textarea(
                 attrs={'class': 'col-md-6 form-control',
                        'style': 'height:120px; width:420px'}),
@@ -39,9 +38,6 @@ class AllocationApproveForm(forms.ModelForm):
         self.fields['project_description'].widget.attrs[
             'class'] = 'form-control'
         self.fields['project_description'].required = False
-        self.fields['start_date'].widget.attrs['class'] = 'form-control'
-        self.fields['start_date'].widget.attrs['style'] = 'border-radius:0;'
-        self.fields['start_date'].required = False
         self.fields['estimated_project_duration'].widget.attrs[
             'class'] = 'form-control'
         self.fields['estimated_project_duration'].required = False
