@@ -624,60 +624,6 @@ $(function() {
     populate_dns_service_name();
 });
 
-$("form#new-allocation").on("change","#id_start_date", function() {
-    var input_start_date = $(this).val();
-    // get the duration in months
-    var duration = $("select#id_estimated_project_duration").val();
-    //convert diff hours between start date and duration in months
-    var diff_hours = convert_diff_days(input_start_date, duration);
-    // find number of cores
-    var input_number_cores = $("input#id_cores");
-    var number_cores = parseInt(input_number_cores.val());
-    change_core_hours(number_cores, diff_hours);
-});
-
-$("form#new-allocation").on("change","#id_estimated_project_duration", function() {
-    // get the duration in months
-    var duration = $(this).val();
-    // get the start date
-    var input_start_date = $("input#id_start_date").val();
-    //convert diff hours between start date and duration in months
-    var diff_hours = convert_diff_days(input_start_date, duration);
-    // find number of cores
-    var input_number_cores = $("input#id_cores");
-    var number_cores = parseInt(input_number_cores.val());
-    // change the core hours
-    change_core_hours(number_cores, diff_hours);
-});
-
-$("form#new-allocation").on("change","#id_cores", function() {
-    // get the cores
-    var number_cores = parseInt($(this).val());
-    // get the start date
-    var input_start_date = $("input#id_start_date").val();
-    // get the duration in months
-    var duration = $("select#id_estimated_project_duration").val();
-    //convert diff hours between start date and duration in months
-    var diff_hours = convert_diff_days(input_start_date, duration);
-    // change the core hours
-    change_core_hours(number_cores, diff_hours);
-});
-
-function convert_diff_days(input_start_date, duration_in_month){
-    var one_hour_time =1000*60*60;
-    var start_date =  new Date(input_start_date);
-    var end_date = new Date(input_start_date);
-    end_date.setMonth(end_date.getMonth() + parseInt(duration_in_month));
-    var hours_diff = Math.round((end_date.getTime() - start_date.getTime()) / one_hour_time);
-    return hours_diff;
-}
-
-function change_core_hours(number_of_cores, hours_diff){
-    var estimated_core_hours =Math.round(number_of_cores * hours_diff * 0.5);
-    var input_number_core_hours = $("input#id_core_hours");
-    input_number_core_hours.val(estimated_core_hours);
-}
-
 function submit_ignore() {
     // Submit the allocation form with the hidden field set to tell the
     // server side to not to check for quota sanity and other warnings.
