@@ -19,8 +19,7 @@ An allocation request has been created by "{{request.contact_email}}".
 {{ request_link }}{% endif %}
 
 Project name: {{ request.project_description }}
-Start date:   {{ request.start_date }}
-End date:     {{ request.end_date }}
+Duration:     {{ request.estimated_project_duration }} months
 
 Quota
 -----
