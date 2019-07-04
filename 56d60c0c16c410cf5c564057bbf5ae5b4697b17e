@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bebc24b0_6d2546db",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-07-04T23:33:11Z",
+      "side": 1,
+      "message": "Would be nice if it was clear that this is in months",
+      "range": {
+        "startLine": 139,
+        "startChar": 4,
+        "endLine": 139,
+        "endChar": 30
+      },
+      "revId": "56d60c0c16c410cf5c564057bbf5ae5b4697b17e",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
