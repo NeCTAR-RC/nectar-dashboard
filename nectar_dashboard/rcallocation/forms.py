@@ -27,9 +27,6 @@ class BaseAllocationForm(forms.ModelForm):
             'status_explanation': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'start_date': forms.TextInput(
-                attrs={'class': 'datepicker2 col-md-12',
-                       'style': 'border-radius:0;'}),
             'estimated_project_duration': forms.Select(
                 attrs={'class': 'col-md-6'}),
             'convert_trial_project': forms.Select(

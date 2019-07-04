@@ -31,17 +31,11 @@ class UserAllocationRequestAmendForm(base_forms.AllocationAmendRequestForm):
                 attrs={'readonly': 'readonly'}),
             'contact_email': forms.TextInput(
                 attrs={'readonly': 'readonly'}),
-            'start_date': forms.TextInput(
-                attrs={'class': 'datepicker col-md-12',
-                       'style': 'border-radius:0;'}),
         }
 
     def __init__(self, **kwargs):
-        initial = kwargs['initial']
-        initial['start_date'] = datetime.date.today
         super(UserAllocationRequestAmendForm, self).__init__(**kwargs)
         self.instance.status = self.next_status
-        self.fields['start_date'].label = 'Extension start date'
         self.fields['estimated_project_duration'].label = \
             'Estimated extension duration'
         self.initial['requested_allocation_home'] = \
