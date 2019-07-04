@@ -4,7 +4,6 @@
 import datetime
 import logging
 
-from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
@@ -127,15 +126,15 @@ class AllocationRequest(models.Model):
 
     start_date = models.DateField(
         'Start date',
-        default=datetime.date.today,
-        help_text="""The day on which you want your Project Allocation to
-                     go live. Format: yyyy-mm-dd""")
+        editable=False,
+        null=True,
+        help_text='The day when the allocation starts')
 
     end_date = models.DateField(
-        'Estimated end date',
+        'End date',
         editable=False,
-        default=_six_months_from_now,
-        help_text='The day on which your project will end.')
+        null=True,
+        help_text='The day when the allocation ends.')
 
     estimated_project_duration = models.IntegerField(
         'Estimated project duration',
@@ -433,10 +432,6 @@ class AllocationRequest(models.Model):
             self.notify_user(template)
 
     def save(self, *args, **kwargs):
-        # calculate the end date based on the start date and duration
-        duration_relativedelta = relativedelta(
-            months=self.estimated_project_duration)
-        self.end_date = self.start_date + duration_relativedelta
         if not kwargs.pop('provisioning', None):
             if not self.is_archived():
                 try:

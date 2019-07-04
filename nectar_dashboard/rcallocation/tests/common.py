@@ -211,8 +211,6 @@ def request_allocation(user, model=None, quota_specs=None,
                        institutions=None, publications=None, grants=None,
                        investigators=None):
 
-    _1_year = datetime.date.today() + datetime.timedelta(days=365)
-    start_date = fuzzy.FuzzyDate(datetime.date.today(), _1_year).fuzz()
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
     forp_2 = fuzzy.FuzzyInteger(1, 9 - forp_1).fuzz()
@@ -224,7 +222,6 @@ def request_allocation(user, model=None, quota_specs=None,
 
     model_dict = {'project_name': fuzzy.FuzzyText().fuzz(),
                   'project_description': fuzzy.FuzzyText().fuzz(),
-                  'start_date': start_date,  # only used for asserting
                   'estimated_project_duration': duration,
                   'field_of_research_1': for_code.fuzz(),
                   'field_of_research_2': for_code.fuzz(),
