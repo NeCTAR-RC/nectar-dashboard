@@ -92,9 +92,9 @@ class BaseAllocationForm(forms.ModelForm):
         try:
             self.cleaned_data = self.clean()
         except FORValidationError as e:
-            self._errors['FOR_ERRORS'] = self.error_class([e.message])
+            self._errors['FOR_ERRORS'] = self.error_class([e])
         except forms.ValidationError as e:
-            self._errors[NON_FIELD_ERRORS] = self.error_class([e.message])
+            self._errors[NON_FIELD_ERRORS] = self.error_class([e])
 
     def get_for_errors(self):
         return self._errors.get('FOR_ERRORS', [])
