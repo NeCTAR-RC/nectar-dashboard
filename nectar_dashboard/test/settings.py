@@ -30,6 +30,10 @@ from nectar_dashboard import enabled as nectar_enabled
 # enabling in our test setup to find any issues it might cause
 monkeypatch_escape()
 
+# This tells the 0001_initial migration for the 'user_info' app to
+# treat the app's models as 'managed' for testing.
+MANAGE_MODELS_FOR_TESTING = True
+
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 
 ROOT_PATH = os.path.abspath(os.path.join(TEST_DIR, ".."))
