@@ -11,6 +11,7 @@
 #   under the License.
 #
 
+import datetime
 import mock
 
 from rest_framework import status
@@ -111,6 +112,34 @@ class AllocationTests(base.AllocationAPITest):
         allocation = models.AllocationRequest.objects.get(
             id=self.allocation.id)
         self.assertEqual(self.allocation.status, allocation.status)
+
+    def test_update_allocation_dates(self):
+        self.client.force_authenticate(user=self.admin_user)
+        start_date = datetime.date(2019, 4, 2)
+        end_date = datetime.date(2019, 5, 2)
+        response = self.client.patch(
+            '/rest_api/allocations/1/',
+            {'start_date': start_date.strftime('%Y-%m-%d'),
+             'end_date': end_date.strftime('%Y-%m-%d')})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id)
+        self.assertEqual(start_date, allocation.start_date)
+        self.assertEqual(end_date, allocation.end_date)
+
+    def test_update_allocation_dates_user(self):
+        self.client.force_authenticate(user=self.user)
+        start_date = datetime.date(2019, 4, 3)
+        end_date = datetime.date(2019, 5, 3)
+        response = self.client.patch(
+            '/rest_api/allocations/1/',
+            {'start_date': start_date.strftime('%Y-%m-%d'),
+             'end_date': end_date.strftime('%Y-%m-%d')})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id)
+        self.assertIsNone(allocation.start_date)
+        self.assertIsNone(allocation.end_date)
 
     def test_update_allocation_unauthenticated(self):
         response = self.client.patch('/rest_api/allocations/1/',

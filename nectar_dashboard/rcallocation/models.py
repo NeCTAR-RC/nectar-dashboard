@@ -126,13 +126,11 @@ class AllocationRequest(models.Model):
 
     start_date = models.DateField(
         'Start date',
-        editable=False,
         null=True,
         help_text='The day when the allocation starts')
 
     end_date = models.DateField(
         'End date',
-        editable=False,
         null=True,
         help_text='The day when the allocation ends.')
 

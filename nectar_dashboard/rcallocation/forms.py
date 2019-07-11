@@ -19,7 +19,7 @@ class BaseAllocationForm(forms.ModelForm):
     class Meta:
         model = models.AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
-                   'modified_time', 'parent_request',
+                   'start_date', 'end_date', 'modified_time', 'parent_request',
                    'allocation_home', 'provisioned',
                    'project_id', 'notes', 'notifications')
 
