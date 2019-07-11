@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "User Lookup" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Nectar User Lookup") %}
+{% endblock page_header %}
+
+{% block main %}
+  {% include 'user_info/_lookup.html' %}
+{% endblock %}
+
