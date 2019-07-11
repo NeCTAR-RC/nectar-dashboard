@@ -1,0 +1,21 @@
+{% if field %}
+<div class="form-group {% if field.errors %}has-error{% endif %}">
+  <label class="control-label" for="id_{{ field.html_name }}">
+    <span class="field-label">{{ field.label }}</span>
+    {% if field.field.required %}
+    <span class="glyphicon glyphicon-asterisk text-primary"></span>
+    {% endif %}
+    {% if field.help_text %}
+    <img class="help-popover" src="{{ STATIC_URL }}rcportal/img/help.png" data-content="{{ field.help_text }}" data-original-title="{{ field.label }}" data-html="true">
+    {% endif %}
+  </label>
+  {% block field %}
+  <div>
+    {{ field }}
+  </div>
+  {% endblock %}
+  {% for error in field.errors %}
+  <span class="help-block">{{ error }}</span>
+  {% endfor %}
+</div>
+{% endif %}
