@@ -1,0 +1,23 @@
+{% if field %}
+  <tr class="col-md-6">
+    <th width="200">
+      {{ field.label }}
+      {% if field.field.required %}
+        <span class="glyphicon glyphicon-asterisk text-primary"></span>
+      {% endif %}
+      {% if field.help_text %}
+        <img class="help-popover" src="{{ STATIC_URL }}rcportal/img/help.png"
+             data-content="{{ field.help_text }}"
+             data-original-title="{{ field.label }}" data-html="true">
+      {% endif %}
+    </th>
+    <td class="form-group {% if field.errors %}has-error{% endif %}">
+      {% block field %}
+      {{ field }}
+      {% endblock %}
+      {% for error in field.errors %}
+      <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    </td>
+  </tr>
+ {% endif %}

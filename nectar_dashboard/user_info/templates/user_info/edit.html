@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "User Info" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Matching Nectar Users") %}
+{% endblock page_header %}
+
+{% block main %}
+<form id="user-info"
+      action=""
+      method="post">
+  <fieldset>
+    {% csrf_token %}
+    {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+    <table>
+      {% include "user_info/field2.html" with value=object.user_id label="Keystone user id" %}
+      {% include "user_info/field2.html" with value=object.displayname label="Full name" %}
+      {% include "user_info/field2.html" with value=object.email label="Email" %}
+      {% include "user_info/field2.html" with value=object.first_name label="First name" %}
+      {% include "user_info/field2.html" with value=object.surname label="Surname" %}
+      {% include "user_info/field2.html" with value=object.home_organization label="Home Organization" %}
+      {% include "user_info/field.html" with field=form.affiliation %}
+      {% include "user_info/field.html" with field=form.orcid %}
+      {% include "user_info/field.html" with field=form.phone_number %}
+      {% include "user_info/field.html" with field=form.mobile_number %}
+    </table>
+  </fieldset>
+  <input type="submit" value="Save" class="btn btn-primary">
+</form>
+{% endblock %}
+
