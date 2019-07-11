@@ -89,6 +89,8 @@ INSTALLED_APPS = (
     'nectar_dashboard.rcallocation.user_allocations',
     'nectar_dashboard.reset_password',
     'nectar_dashboard.project_members',
+    'nectar_dashboard.user_info',
+    'nectar_dashboard.user_info.lookup',
 )
 
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
