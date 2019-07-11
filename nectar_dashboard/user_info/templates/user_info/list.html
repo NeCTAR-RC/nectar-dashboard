@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Matching Users" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Matching Nectar Users") %}
+{% endblock page_header %}
+
+{% block main %}
+<form id="user_info_lookup_form" ng-controller="DummyController"
+      name="" autocomplete="" class="" action="" method="GET">
+  {% csrf_token %}
+  <div class="left">
+    <div class="form-group ">
+      <input id="id_verb" name="verb" value="" type="hidden" />
+      <input name="q" minlength="3" class="form-control"
+             required id="id_q" />
+      <div class="btn-toolbar pull-right">
+	<button class="btn btn-primary" id="id_lookup" type="submit"
+                onclick="document.getElementById('id_verb').value='lookup';">
+          Lookup email
+        </button>
+	<button class="btn btn-primary" id="id_search" type="submit"
+                onclick="document.getElementById('id_verb').value='search';">
+          Substring search
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+  {{ table.render }}
+{% endblock %}
