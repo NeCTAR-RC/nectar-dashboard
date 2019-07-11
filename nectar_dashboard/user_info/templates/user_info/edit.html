@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "User Info" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("My Details") %}
+{% endblock page_header %}
+
+{% block main %}
+<div id="change_password_modal"
+     data-backdrop="static"
+     tabindex="-1"
+     class="static_page">
+  <div class="">
+    <div class="">
+
+      <div class="modal-header">
+
+        <h3 class="modal-title">{{ page_title }}</h3>
+      </div>
+      <form id="user-info"
+	    action="."
+	    method="post">
+	<div class="modal-body clearfix">
+	  <div class="row">
+            <div class="col-sm-6">
+	      <fieldset>
+		{% csrf_token %}
+		{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+		{% endfor %}
+		{% include "user_info/field2.html" with value=object.displayname label="Full name" %}
+		{% include "user_info/field2.html" with value=object.first_name label="First name" %}
+		{% include "user_info/field2.html" with value=object.surname label="Family name" %}
+		{% include "user_info/field2.html" with value=object.email label="Email" %}
+		{% include "user_info/field2.html" with value=object.home_organization label="Home Organization" %}
+		{% include "user_info/field.html" with field=form.affiliation %}
+		{% include "user_info/field.html" with field=form.orcid %}
+		{% include "user_info/field.html" with field=form.phone_number %}
+		{% include "user_info/field.html" with field=form.mobile_number %}
+	      </fieldset>
+	    </div>
+	    <div class="col-sm-6">
+	      <h3>Description:</h3>
+	      <p>View and update your user details. NOTE: Some information is not editable via this page.  To correct mistakes in your name or email, please contact your organization's IT support, and ask them to correct the details they publish about you via their AAF Identity Provider (IdP).</p>
+            </div>
+	  </div>
+	</div>
+	<div class="modal-footer">
+	  <input type="submit" value="Save" class="btn btn-primary">
+	</div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
