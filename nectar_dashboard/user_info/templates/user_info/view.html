@@ -35,6 +35,11 @@
         {% include "user_info/field.html" with field=form.email %}
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-6">
+        {{ object.shibboleth_dict }}
+      </div>
+    </div>
   </fieldset>
 </form>
 {% endblock %}
