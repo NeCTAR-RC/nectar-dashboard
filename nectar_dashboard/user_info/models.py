@@ -12,6 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import pickle
+
 from django.core.urlresolvers import reverse
 from django.db import models
 
@@ -32,8 +34,7 @@ class User(models.Model):
     email = models.CharField(max_length=250, blank=True, null=True)
     state = models.CharField(max_length=10, blank=True, null=True)
     terms_accepted_at = models.DateTimeField(blank=True, null=True)
-    # What is the type to use for a binary blob?
-    # shibboleth_attributes = models.TextField(blank=True, null=True)
+    shibboleth_attributes = models.BinaryField(blank=True, null=True)
     registered_at = models.DateTimeField(blank=True, null=True)
     terms_version = models.CharField(max_length=64, blank=True, null=True)
     ignore_username_not_email = models.IntegerField(blank=True, null=True)
@@ -45,3 +46,7 @@ class User(models.Model):
     def get_absolute_url(self):
         return reverse('horizon:user-info:update:view',
                        args=[self.id])
+
+    @property
+    def shibboleth_dict(self):
+        return pickle.loads(self.shibboleth_attributes)
