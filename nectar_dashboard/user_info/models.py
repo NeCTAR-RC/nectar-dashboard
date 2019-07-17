@@ -50,5 +50,3 @@ class User(models.Model):
     @property
     def shibboleth_dict(self):
         return pickle.loads(self.shibboleth_attributes)
-
-    
