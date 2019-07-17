@@ -22,6 +22,30 @@
       "revId": "2c9edc02fc6f22c389f9afc05b0429d35cc1eb26",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e28d5ce_c5fd9e65",
+        "filename": "nectar_dashboard/rcallocation/quota_sanity.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-07-17T04:50:54Z",
+      "side": 1,
+      "message": "Good catch.  (I will use the settings map directly ...)",
+      "parentUuid": "15f113ca_4a13b040",
+      "range": {
+        "startLine": 78,
+        "startChar": 34,
+        "endLine": 78,
+        "endChar": 58
+      },
+      "revId": "2c9edc02fc6f22c389f9afc05b0429d35cc1eb26",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
