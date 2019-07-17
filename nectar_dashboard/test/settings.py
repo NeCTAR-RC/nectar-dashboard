@@ -357,6 +357,7 @@ ALLOCATION_GLOBAL_READ_ROLES = ['read_only']
 ALLOCATION_GLOBAL_ADMIN_ROLES = ['admin']
 ALLOCATION_APPROVER_ROLES = ['tenantmanager']
 
+# Mappings for compute zones
 ALLOCATION_HOME_ZONE_MAPPINGS = {
     'auckland': ['auckland'],
     'ersa': ['sa'],
@@ -367,6 +368,19 @@ ALLOCATION_HOME_ZONE_MAPPINGS = {
     'swinburne': ['swinburne-01'],
     'tpac': ['tasmania', 'tasmania-s'],
     'uom': ['melbourne-qh2-uom'],
+}
+
+# Mappings for storage (volume and share) zones
+ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS = {
+    'auckland': ['auckland'],
+    'ersa': ['sa'],
+    'intersect': ['intersect'],
+    'monash': ['monash-02-cephfs', 'monash'],
+    'nci': ['NCI'],
+    'qcif': ['QRIScloud-GPFS', 'QRIScloud', 'QRIScloud-RDS'],
+    'swinburne': ['swinburne'],
+    'tpac': ['tasmania'],
+    'uom': ['melbourne'],
 }
 
 HORIZON_CONFIG['WARNING_INFO_URL'] = \
