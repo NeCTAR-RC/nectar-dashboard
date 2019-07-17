@@ -1,3 +1,5 @@
+from django.conf import settings
+
 import logging
 
 
@@ -12,10 +14,23 @@ NO_INSTANCE = 'NO_INSTANCE'
 LARGE_MEM = 'LARGE_MEM'
 SMALL_MEM = 'SMALL_MEM'
 CINDER_WITHOUT_INSTANCES = 'CINDER_WITHOUT_INSTANCES'
+CINDER_NOT_LOCAL = 'CINDER_NOT_LOCAL'
+MANILA_NOT_LOCAL = 'MANILA_NOT_LOCAL'
 NO_ROUTER = 'NO_ROUTER'
 NO_NETWORK = 'NO_NETWORK'
 FLOATING_IP_DEP = 'FLOATING_IP_DEP'
 LOAD_BALANCER_DEP = 'LOAD_BALANCER_DEP'
+
+
+def is_node_local(home):
+    return home and home not in ['', 'national', 'unassigned']
+
+
+def storage_zone_to_home(zone):
+    for home, zones in settings.ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS.items():
+        if zone in zones:
+            return home
+    return None
 
 
 def instance_vcpu_check(context):
@@ -65,6 +80,34 @@ def cinder_instance_check(context):
     return None
 
 
+def cinder_local_check(context):
+    alloc_home = context.form.cleaned_data.get('allocation_home', None)
+    if is_node_local(alloc_home):
+        for q in context.get_all('volume.gigabytes'):
+            if q['value'] <= 0:
+                continue
+            zone_home = storage_zone_to_home(q['zone'])
+            if zone_home and zone_home != alloc_home:
+                return (CINDER_NOT_LOCAL,
+                        '%s-local allocation requests volume storage in %s'
+                        % (alloc_home, q['zone']))
+    return None
+
+
+def manila_local_check(context):
+    alloc_home = context.form.cleaned_data.get('allocation_home', None)
+    if is_node_local(alloc_home):
+        for q in context.get_all('share.shares'):
+            if q['value'] <= 0:
+                continue
+            zone_home = storage_zone_to_home(q['zone'])
+            if zone_home and zone_home != alloc_home:
+                return (MANILA_NOT_LOCAL,
+                        '%s-local allocation requests shares in %s'
+                        % (alloc_home, q['zone']))
+    return None
+
+
 def neutron_checks(context):
     ips = context.get('network.floatingip')
     networks = context.get('network.network')
@@ -89,17 +132,20 @@ STD_CHECKS = [instance_vcpu_check,
               no_instance_check,
               nondefault_ram_check,
               cinder_instance_check,
+              cinder_local_check,
+              manila_local_check,
               neutron_checks]
 
 
 class QuotaSanityContext(object):
 
-    def __init__(self, requested=True,
+    def __init__(self, form=None, requested=True,
                  quotas=[], checks=STD_CHECKS):
         self.all_quotas = {}
         self._do_add(quotas)
         self.checks = checks
         self.requested = requested
+        self.form = form
 
     def add_quotas(self, quotas_to_check):
         self._do_add(self._convert_quotas(quotas_to_check))
