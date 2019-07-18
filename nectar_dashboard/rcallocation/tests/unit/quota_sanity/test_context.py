@@ -71,18 +71,24 @@ class QuotaSanityChecksTest(testcases.TestCase):
         self.assertEqual(None, quota_sanity.nondefault_ram_check(context))
 
         quotas = [build_quota('compute', 'cores', 1),
-                  build_quota('compute', 'ram', 4096)]
+                  build_quota('compute', 'ram', 4)]
         context = quota_sanity.QuotaSanityContext(quotas=quotas)
         self.assertEqual(None, quota_sanity.nondefault_ram_check(context))
 
         quotas = [build_quota('compute', 'cores', 2),
-                  build_quota('compute', 'ram', 8191)]
+                  build_quota('compute', 'ram', 7)]
         context = quota_sanity.QuotaSanityContext(quotas=quotas)
         self.assertEqual(quota_sanity.SMALL_MEM,
                          quota_sanity.nondefault_ram_check(context)[0])
 
         quotas = [build_quota('compute', 'cores', 2),
-                  build_quota('compute', 'ram', 8193)]
+                  build_quota('compute', 'ram', 8)]
+        context = quota_sanity.QuotaSanityContext(quotas=quotas)
+        self.assertEqual(None,
+                         quota_sanity.nondefault_ram_check(context))
+
+        quotas = [build_quota('compute', 'cores', 2),
+                  build_quota('compute', 'ram', 9)]
         context = quota_sanity.QuotaSanityContext(quotas=quotas)
         self.assertEqual(quota_sanity.LARGE_MEM,
                          quota_sanity.nondefault_ram_check(context)[0])
