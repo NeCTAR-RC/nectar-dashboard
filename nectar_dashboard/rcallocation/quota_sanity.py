@@ -47,12 +47,12 @@ def nondefault_ram_check(context):
     vcpus = context.get('compute.cores')
     mem = context.get('compute.ram')
     if vcpus > 0 and mem > 0:
-        if vcpus * 4096 < mem:
+        if vcpus * 4 < mem:
             return (LARGE_MEM,
-                    "non-default RAM (%d MB) > 4GB per core ratio" % mem)
-        elif vcpus * 4096 > mem:
+                    "non-default RAM (%d GB) > 4GB per core ratio" % mem)
+        elif vcpus * 4 > mem:
             return (SMALL_MEM,
-                    "non-default RAM (%d MB) < 4GB per core ratio" % mem)
+                    "non-default RAM (%d GB) < 4GB per core ratio" % mem)
     return None
 
 
