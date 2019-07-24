@@ -25,8 +25,9 @@ def credentials(request):
     if request.method == 'POST':
         passwordForm = forms.Form(request.POST)
         sys_random = random.SystemRandom()
-        password = hashlib.sha1(str(sys_random.getrandbits(256))).hexdigest()
-        password = base64.encodestring(password)[:20]
+        rand_str = str(sys_random.getrandbits(256)).encode()
+        enc_str = hashlib.sha1(rand_str).hexdigest().encode()
+        password = base64.b64encode(enc_str).decode()[:20]
 
         project_id = request.user.token.tenant['id']
         endpoint, __ = utils.fix_auth_url_version_prefix(request.user.endpoint)
