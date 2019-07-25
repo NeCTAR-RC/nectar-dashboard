@@ -264,7 +264,8 @@ class QuotaGroupForm(BaseQuotaGroupForm):
         self.fields['service_type'].widget = forms.HiddenInput()
         self.fields['service_type'].initial = self.service_type
         self.fields['zone'].required = False
-        self.fields['zone'].queryset = self.service_type.zones
+        self.fields['zone'].queryset = \
+            self.service_type.zones.filter(enabled=True)
         if len(self.service_type.zones.all()) == 1:
             self.fields['zone'].widget = forms.HiddenInput()
             self.fields['zone'].initial = 'nectar'

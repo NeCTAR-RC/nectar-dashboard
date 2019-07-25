@@ -450,6 +450,7 @@ class AllocationRequest(models.Model):
 class Zone(models.Model):
     name = models.CharField(primary_key=True, max_length=32)
     display_name = models.CharField(max_length=64)
+    enabled = models.BooleanField(default=True)
 
     def __str__(self):
         return self.display_name

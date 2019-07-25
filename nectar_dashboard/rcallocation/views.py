@@ -341,7 +341,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
             kwargs['grantFormTmpl'] = self.formset_grant_tmpl
 
         zones = {}
-        for zone in models.Zone.objects.all():
+        for zone in models.Zone.objects.filter(enabled=True):
             zones[zone.name] = zone.display_name
 
         service_types = {}
@@ -349,7 +349,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
             service_types[st.catalog_name] = {
                 'name': st.name,
                 'zones': [{'name': z.name, 'display_name': z.display_name}
-                          for z in st.zones.all()],
+                          for z in st.zones.filter(enabled=True)],
             }
 
         resources = {}
