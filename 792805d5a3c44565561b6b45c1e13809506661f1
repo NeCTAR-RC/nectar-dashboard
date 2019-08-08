@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5455baca_1437e527",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 465,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-08T23:48:55Z",
+      "side": 1,
+      "message": "could this be called sites? or another way to do it would be to declare as attribute approvers on the Site model?",
+      "range": {
+        "startLine": 465,
+        "startChar": 4,
+        "endLine": 465,
+        "endChar": 14
+      },
+      "revId": "792805d5a3c44565561b6b45c1e13809506661f1",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
