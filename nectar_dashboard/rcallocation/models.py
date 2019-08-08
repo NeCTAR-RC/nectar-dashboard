@@ -447,10 +447,42 @@ class AllocationRequest(models.Model):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
 
 
-class Zone(models.Model):
+class Site(models.Model):
+
     name = models.CharField(primary_key=True, max_length=32)
     display_name = models.CharField(max_length=64)
     enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.display_name
+
+
+class Approver(models.Model):
+
+    email = models.EmailField(blank=False)
+    display_name = models.CharField(max_length=64)
+    enabled = models.BooleanField(default=True)
+    authorized = models.ManyToManyField(Site)
+
+    def __str__(self):
+        return self.display_name
+
+
+class Zone(models.Model):
+    STORAGE = 'S'
+    COMPUTE = 'C'
+    ZONE_KIND_CHOICES = (
+        (STORAGE, 'Storage'),
+        (COMPUTE, 'Compute'),
+    )
+
+    name = models.CharField(primary_key=True, max_length=32)
+    display_name = models.CharField(max_length=64)
+    enabled = models.BooleanField(default=True)
+    kind = models.CharField(max_length=1, blank=False, default=STORAGE,
+                            choices=ZONE_KIND_CHOICES)
+    site = models.ForeignKey('Site', on_delete=models.SET_NULL,
+                             null=True, blank=True)
 
     def __str__(self):
         return self.display_name
