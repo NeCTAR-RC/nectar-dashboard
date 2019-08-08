@@ -1,0 +1,10 @@
+{% if field %}
+  <tr class="col-md-6">
+    <th width="200">{{ field.label }}</th>
+    <td>
+      {% block field %}
+      {{ field }}
+      {% endblock %}
+    </td>
+  </tr>
+{% endif %}

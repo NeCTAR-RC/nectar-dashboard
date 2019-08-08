@@ -13,9 +13,51 @@
 #    under the License.
 
 import pickle
+import re
 
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
+
+
+FACULTY = 'faculty'
+STUDENT = 'student'
+STAFF = 'staff'
+EMPLOYEE = 'employee'
+MEMBER = 'member'
+AFFILIATE = 'affiliate'
+ALUM = 'alum'
+LIBRARY_WALK_IN = 'library-walk-in'
+
+AFFILIATION_CHOICES = [(FACULTY, 'Faculty'),
+                       (STUDENT, 'Student'),
+                       (STAFF, 'Staff'),
+                       (EMPLOYEE, 'Employee'),
+                       (MEMBER, 'Member'),
+                       (AFFILIATE, 'Affiliate'),
+                       (ALUM, 'Alumnus'),
+                       (LIBRARY_WALK_IN, 'Library walk-in')]
+
+STATE_NEW = 'new'
+STATE_REGISTERED = 'registered'
+STATE_CREATED = 'created'
+
+STATE_CHOICES = [(STATE_NEW, STATE_NEW),
+                 (STATE_REGISTERED, STATE_REGISTERED),
+                 (STATE_CREATED, STATE_CREATED)]
+
+
+def validate_phone(value):
+    if not re.compile(r'^(\+[\d]+)?[\d\s]*$').match(value):
+        raise ValidationError('Invalid phone number: %(value)s',
+                              params={'value': value})
+
+
+class PhoneField(models.CharField):
+    default_validators = [validate_phone]
+
+    def to_python(self, value):
+        return value.strip() if value else None
 
 
 class User(models.Model):
@@ -32,12 +74,24 @@ class User(models.Model):
     user_id = models.CharField(max_length=64, blank=True, null=True)
     displayname = models.CharField(max_length=250, blank=True, null=True)
     email = models.CharField(max_length=250, blank=True, null=True)
-    state = models.CharField(max_length=10, blank=True, null=True)
+    state = models.CharField(max_length=10, blank=True, null=True,
+                             choices=STATE_CHOICES,
+                             default=STATE_NEW)
     terms_accepted_at = models.DateTimeField(blank=True, null=True)
     shibboleth_attributes = models.BinaryField(blank=True, null=True)
     registered_at = models.DateTimeField(blank=True, null=True)
     terms_version = models.CharField(max_length=64, blank=True, null=True)
     ignore_username_not_email = models.IntegerField(blank=True, null=True)
+
+    first_name = models.CharField(max_length=250, blank=True, null=True)
+    surname = models.CharField(max_length=250, blank=True, null=True)
+    phone_number = PhoneField(max_length=64, blank=True, null=True)
+    mobile_number = PhoneField(max_length=64, blank=True, null=True)
+    home_organization = models.CharField(max_length=250, blank=True, null=True)
+    orcid = models.CharField(max_length=64, blank=True, null=True)
+    affiliation = models.CharField(max_length=64, blank=True, null=True,
+                                   choices=AFFILIATION_CHOICES,
+                                   default=MEMBER)
 
     class Meta:
         managed = False
@@ -50,5 +104,3 @@ class User(models.Model):
     @property
     def shibboleth_dict(self):
         return pickle.loads(self.shibboleth_attributes)
-
-    
