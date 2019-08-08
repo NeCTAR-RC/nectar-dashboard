@@ -34,6 +34,13 @@ def _six_months_from_now():
 
 
 class AllocationRequest(models.Model):
+    """An AllocationRequest represents a point in time in the history of
+    a Nectar allocation.  The history is represented by the parent request
+    chain.  When a significant change is made.  The id (pk) of the most
+    recent AllocationRequest record for an allocation should remain the
+    same.
+    """
+
     NEW = 'N'
     SUBMITTED = 'E'
     APPROVED = 'A'
@@ -447,10 +454,59 @@ class AllocationRequest(models.Model):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
 
 
-class Zone(models.Model):
+class Site(models.Model):
+    """A Site represents site in the Nectar federation that the allocation
+    system knows about.
+    """
+
     name = models.CharField(primary_key=True, max_length=32)
     display_name = models.CharField(max_length=64)
     enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.display_name
+
+
+class Approver(models.Model):
+    """An Approver is a person who is authorized to approve local
+    or national allocations for or on behalf of a Site.  An
+    approver may be authorized to approve for multiple sites.
+    This information is "advisory"; i.e. it is used to warn an
+    approver if they are about to make decisions that require
+    another site's authority.
+
+    This represents the current state only.  It is not avisable
+    to attempt to use it to determine which Site has approved
+    an allocation request.
+    """
+
+    email = models.EmailField(blank=False)
+    display_name = models.CharField(max_length=64)
+    sites = models.ManyToManyField(Site)
+
+    def __str__(self):
+        return self.display_name
+
+
+class Zone(models.Model):
+    """A Zone represents a resource pool for purposes of setting
+    quotas or restricting access via the allocations system.
+    """
+
+    STORAGE = 'S'
+    COMPUTE = 'C'
+    ZONE_KIND_CHOICES = (
+        (STORAGE, 'Storage'),
+        (COMPUTE, 'Compute'),
+    )
+
+    name = models.CharField(primary_key=True, max_length=32)
+    display_name = models.CharField(max_length=64)
+    enabled = models.BooleanField(default=True)
+    kind = models.CharField(max_length=1, blank=False, default=STORAGE,
+                            choices=ZONE_KIND_CHOICES)
+    site = models.ForeignKey('Site', on_delete=models.SET_NULL,
+                             null=True, blank=True)
 
     def __str__(self):
         return self.display_name
