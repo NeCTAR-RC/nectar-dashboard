@@ -22,6 +22,52 @@
       "revId": "792805d5a3c44565561b6b45c1e13809506661f1",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2bea8873_ef35d6a4",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-08T23:48:55Z",
+      "side": 1,
+      "message": "I don\u0027t think this is needed as there is already a link between a zone and a service type.",
+      "range": {
+        "startLine": 482,
+        "startChar": 4,
+        "endLine": 483,
+        "endChar": 54
+      },
+      "revId": "792805d5a3c44565561b6b45c1e13809506661f1",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e878cc05_58f07880",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 495,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-08T23:48:55Z",
+      "side": 1,
+      "message": "here",
+      "range": {
+        "startLine": 495,
+        "startChar": 4,
+        "endLine": 495,
+        "endChar": 40
+      },
+      "revId": "792805d5a3c44565561b6b45c1e13809506661f1",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
