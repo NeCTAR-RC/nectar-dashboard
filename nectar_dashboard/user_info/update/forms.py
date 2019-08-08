@@ -21,7 +21,22 @@ class UserBaseForm(forms.ModelForm):
 
 
 class UserEditForm(UserBaseForm):
-    pass
+
+    class Meta(UserBaseForm.Meta):
+        widgets = {
+            'persistent_id': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'user_id': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'displayname': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'email': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'first_name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'surname': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'home_organization': forms.TextInput(
+                attrs={'readonly': 'readonly'}),
+            'orcid': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'phone_number': forms.TextInput(),
+            'mobile_number': forms.TextInput(),
+            'affiliation': forms.TextInput(),
+        }
 
 
 class UserViewForm(UserBaseForm):
@@ -32,6 +47,14 @@ class UserViewForm(UserBaseForm):
             'user_id': forms.TextInput(attrs={'readonly': 'readonly'}),
             'displayname': forms.TextInput(attrs={'readonly': 'readonly'}),
             'email': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'first_name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'surname': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'home_organization': forms.TextInput(
+                attrs={'readonly': 'readonly'}),
+            'orcid': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'phone_number': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'mobile_number': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'affiliation': forms.TextInput(attrs={'readonly': 'readonly'}),
         }
 
     def is_valid(self):
