@@ -6,7 +6,7 @@ import horizon
 class UserInfoDashboard(horizon.Dashboard):
     name = _("User Info")
     slug = "user-info"
-    panels = ('lookup')
+    panels = ('lookup', 'update')
     default_panel = 'lookup'
 
 
