@@ -4,6 +4,7 @@ from django.db.models import Q
 from django import forms
 from django.utils.safestring import mark_safe
 
+from nectar_dashboard.user_info import forms as base_forms
 from nectar_dashboard.user_info import models
 
 LOG = logging.getLogger(__name__)
@@ -24,3 +25,26 @@ class UserLookupForm(forms.Form):
         else:
             self.add_error('email', 'No users match this identifier')
             return False
+
+
+class UserViewForm(base_forms.UserBaseForm):
+
+    class Meta(base_forms.UserBaseForm.Meta):
+        widgets = {
+            'persistent_id': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'user_id': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'displayname': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'email': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'first_name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'surname': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'home_organization': forms.TextInput(
+                attrs={'readonly': 'readonly'}),
+            'orcid': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'phone_number': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'mobile_number': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'affiliation': forms.TextInput(attrs={'readonly': 'readonly'}),
+        }
+
+    def is_valid(self):
+        # Just in case ...
+        return False

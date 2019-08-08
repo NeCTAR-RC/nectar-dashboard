@@ -12,7 +12,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.views.generic import detail
 from django.views.generic import edit
 
 from nectar_dashboard.user_info import models
@@ -25,7 +24,7 @@ class UserEditView(edit.UpdateView):
     """
     model = models.User
     form_class = forms.UserEditForm
-    template_name = "user_info/view.html"
+    template_name = "user_info/edit.html"
 
 
 class UserEditSelfView(UserEditView):
@@ -33,15 +32,3 @@ class UserEditSelfView(UserEditView):
     def get_object(self):
         user_id = self.request.user.keystone_user_id
         return models.User.objects.get(user_id=user_id)
-
-
-class UserView(detail.DetailView, edit.ModelFormMixin):
-    """A simple form for listing the user's details
-    """
-    model = models.User
-    form_class = forms.UserViewForm
-    template_name = "user_info/view.html"
-
-    def get(self, *args, **kwargs):
-        res = super(detail.DetailView, self).get(*args, **kwargs)
-        return res

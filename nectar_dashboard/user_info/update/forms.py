@@ -2,38 +2,25 @@ import logging
 
 from django import forms
 
-from nectar_dashboard.user_info import models
+from nectar_dashboard.user_info import forms as base_forms
 
 LOG = logging.getLogger(__name__)
 
 
-class UserBaseForm(forms.ModelForm):
+class UserEditForm(base_forms.UserBaseForm):
 
-    class Meta:
-        model = models.User
-        fields = '__all__'
-
-    def __init(self):
-        super(UserBaseForm, self).__init()
-        for name, field in self.fields.items():
-            if 'readonly' in field.widget.attrs:
-                field.disabled = True
-
-
-class UserEditForm(UserBaseForm):
-    pass
-
-
-class UserViewForm(UserBaseForm):
-
-    class Meta(UserBaseForm.Meta):
+    class Meta(base_forms.UserBaseForm.Meta):
         widgets = {
             'persistent_id': forms.TextInput(attrs={'readonly': 'readonly'}),
             'user_id': forms.TextInput(attrs={'readonly': 'readonly'}),
             'displayname': forms.TextInput(attrs={'readonly': 'readonly'}),
             'email': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'first_name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'surname': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'home_organization': forms.TextInput(
+                attrs={'readonly': 'readonly'}),
+            'orcid': forms.TextInput(),
+            'phone_number': forms.TextInput(),
+            'mobile_number': forms.TextInput(),
+            'affiliation': forms.Select(),
         }
-
-    def is_valid(self):
-        # Just in case ...
-        return False

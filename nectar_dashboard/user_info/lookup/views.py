@@ -14,6 +14,8 @@
 
 from django.core.urlresolvers import reverse
 from django.db.models import Q
+
+from django.views.generic import detail
 from django.views.generic import edit
 
 from horizon import tables as horizon_tables
@@ -52,3 +54,15 @@ class UserListView(horizon_tables.DataTableView):
         email = self.kwargs['email']
         return models.User.objects.filter(Q(user_id__iexact=email)
                                           | Q(email__iexact=email))
+
+
+class UserDetailView(detail.DetailView, edit.ModelFormMixin):
+    """A simple form for listing the user's details
+    """
+    model = models.User
+    form_class = forms.UserViewForm
+    template_name = "user_info/view.html"
+
+    def get(self, *args, **kwargs):
+        res = super(detail.DetailView, self).get(*args, **kwargs)
+        return res
