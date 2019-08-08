@@ -34,6 +34,13 @@ def _six_months_from_now():
 
 
 class AllocationRequest(models.Model):
+    """An AllocationRequest represents a point in time in the history of
+    a Nectar allocation.  The history is represented by the parent request
+    chain.  When a significant change is made.  The id (pk) of the most
+    recent AllocationRequest record for an allocation should remain the
+    same.
+    """
+
     NEW = 'N'
     SUBMITTED = 'E'
     APPROVED = 'A'
@@ -447,7 +454,49 @@ class AllocationRequest(models.Model):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
 
 
+class Site(models.Model):
+    """A Site represents site in the Nectar federation that the allocation
+    system knows about.
+    """
+
+    name = models.CharField(unique=True, max_length=32)
+    display_name = models.CharField(max_length=64)
+    enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.display_name
+
+
+class Approver(models.Model):
+    """An Approver is a person who is authorized to approve local
+    or national allocations for or on behalf of a Site.  An
+    approver may be authorized to approve for multiple sites.
+    This information is "advisory"; i.e. it is used to warn an
+    approver if they are about to make decisions that require
+    another site's authority.
+
+    This represents the current state only.  It is not avisable
+    to attempt to use it to determine which Site has approved
+    an allocation request.
+    """
+
+    name = models.EmailField(unique=True, blank=False)
+    display_name = models.CharField(max_length=64)
+    sites = models.ManyToManyField(Site)
+
+    def __str__(self):
+        return self.display_name
+
+
 class Zone(models.Model):
+    """A Zone represents a resource pool in which quotas may be set.
+    There is a distinguished Zone ("nectar") for resources or capabilities
+    that are deemed to be global / Nectar-wide.
+
+    The relationship between these zones and nova "availability zones"
+    is not necessarily 1-to-1, even discounting the "nectar" zone.
+    """
+
     name = models.CharField(primary_key=True, max_length=32)
     display_name = models.CharField(max_length=64)
     enabled = models.BooleanField(default=True)
@@ -457,6 +506,12 @@ class Zone(models.Model):
 
 
 class ServiceType(models.Model):
+    """A ServiceType is a group of related Resources provided by a
+    logical service.  For example the "Compute" service type groups
+    the instance count and VCPU count resources and the resources that
+    represent the permission to launch memory and cpu-intensive flavors.
+    """
+
     catalog_name = models.CharField(primary_key=True, max_length=32)
     name = models.CharField(max_length=64)
     description = models.TextField(null=True, blank=True)
@@ -468,6 +523,12 @@ class ServiceType(models.Model):
 
 
 class Resource(models.Model):
+    """A Resource represents a resource or capability that is controlled
+    / rationed by way of quotas.  Resources that are numerically quantifiable
+    have resource type "integer" and unit; e.g RAM is measured in gigabytes.
+    Resources that represent a capability have a resource type "boolean".
+    """
+
     INTEGER = 'integer'
     BOOLEAN = 'boolean'
     RESOURCE_TYPES = (
@@ -496,6 +557,10 @@ class Resource(models.Model):
 
 
 class QuotaGroup(models.Model):
+    """A QuotaGroup object relates a group of Quotas (for resources in
+    one ServiceType) to a Zone and an AllocationRequest.
+    """
+
     allocation = models.ForeignKey(AllocationRequest, related_name='quotas')
     zone = models.ForeignKey(Zone)
     service_type = models.ForeignKey(ServiceType)
@@ -509,6 +574,11 @@ class QuotaGroup(models.Model):
 
 
 class Quota(models.Model):
+    """A Quota object represent the actual value for a given Resource
+    for a particular allocation.  (The relation to the allocation is
+    via the QuotaGroup.)
+    """
+
     group = models.ForeignKey(QuotaGroup)
     resource = models.ForeignKey(Resource)
     requested_quota = models.PositiveIntegerField(
