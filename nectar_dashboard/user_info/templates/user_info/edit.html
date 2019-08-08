@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "User Info" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Matching Nectar Users") %}
+{% endblock page_header %}
+
+{% block main %}
+<form id="user-info"
+      action=""
+      method="post">
+  <fieldset>
+    {% csrf_token %}
+    {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+    <table>
+      {% include "user_info/field.html" with field=form.persistent_id %}
+      {% include "user_info/field.html" with field=form.user_id %}
+      {% include "user_info/field.html" with field=form.displayname %}
+      {% include "user_info/field.html" with field=form.first_name %}
+      {% include "user_info/field.html" with field=form.surname %}
+      {% include "user_info/field.html" with field=form.email %}
+      {% include "user_info/field.html" with field=form.affiliation %}
+      {% include "user_info/field.html" with field=form.home_organization %}
+      {% include "user_info/field.html" with field=form.orcid %}
+      {% include "user_info/field.html" with field=form.phone_number %}
+      {% include "user_info/field.html" with field=form.mobile_number %}
+    </table>
+  </fieldset>
+  <input type="submit" value="Update">
+</form>
+{% endblock %}
+

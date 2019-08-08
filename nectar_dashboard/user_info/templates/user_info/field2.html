@@ -11,13 +11,10 @@
              data-original-title="{{ field.label }}" data-html="true">
       {% endif %}
     </th>
-    <td class="form-group {% if field.errors %}has-error{% endif %}">
+    <td>
       {% block field %}
       {{ field }}
       {% endblock %}
-      {% for error in field.errors %}
-      <span class="help-block">{{ error }}</span>
-      {% endfor %}
     </td>
   </tr>
- {% endif %}
+{% endif %}

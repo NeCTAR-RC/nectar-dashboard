@@ -25,7 +25,7 @@ class UserEditView(edit.UpdateView):
     """
     model = models.User
     form_class = forms.UserEditForm
-    template_name = "user_info/view.html"
+    template_name = "user_info/edit.html"
 
 
 class UserEditSelfView(UserEditView):
