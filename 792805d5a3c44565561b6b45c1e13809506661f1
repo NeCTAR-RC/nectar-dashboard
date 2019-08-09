@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2d9c8987_f3d5facb",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 465,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-09T00:03:20Z",
+      "side": 1,
+      "message": "makes sense",
+      "parentUuid": "5455baca_1437e527",
+      "range": {
+        "startLine": 465,
+        "startChar": 4,
+        "endLine": 465,
+        "endChar": 14
+      },
+      "revId": "792805d5a3c44565561b6b45c1e13809506661f1",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2bea8873_ef35d6a4",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 1
@@ -59,6 +83,30 @@
       "writtenOn": "2019-08-08T23:48:55Z",
       "side": 1,
       "message": "here",
+      "range": {
+        "startLine": 495,
+        "startChar": 4,
+        "endLine": 495,
+        "endChar": 40
+      },
+      "revId": "792805d5a3c44565561b6b45c1e13809506661f1",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77c3bb46_9ee1ff04",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 495,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-09T00:03:20Z",
+      "side": 1,
+      "message": "So you are saying that we should start adding zones to the Compute service types?   Won\u0027t that break things?  The purpose of this is to replace the two site -\u003e zone maps in the local_settings.py file.",
+      "parentUuid": "e878cc05_58f07880",
       "range": {
         "startLine": 495,
         "startChar": 4,
