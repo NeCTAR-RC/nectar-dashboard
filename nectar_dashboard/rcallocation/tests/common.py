@@ -77,6 +77,19 @@ def factory_setup():
     factories.ResourceFactory(quota_name='floatingip', service_type=network_st)
 
 
+def approver_setup():
+    qcif = models.Site.objects.create(name="qcif", display_name="QCIF")
+    melbourne = models.Site.objects.create(name="melbourne",
+                                           display_name="Melbourne")
+    test_user = models.Approver.objects.create(email="test_user",
+                                               display_name="One")
+    test_user2 = models.Approver.objects.create(email="test_user2",
+                                                display_name="Two")
+    models.Approver.objects.create(email="test_user3", display_name="Three")
+    test_user.sites.add(qcif)
+    test_user2.sites.add(melbourne)
+
+
 def get_groups(service_type, allocation=None):
     quota_fuzz = fuzzy.FuzzyInteger(1, 100000)
     try:
