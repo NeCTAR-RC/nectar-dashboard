@@ -1,6 +1,11 @@
+from unittest import mock
+
+from django.contrib.auth import models
+
 from openstack_dashboard.test import helpers
 
 from nectar_dashboard.rcallocation import quota_sanity
+from nectar_dashboard.rcallocation.tests import common
 
 
 def build_quota(service, resource, value, zone='nectar'):
@@ -23,11 +28,17 @@ class FakeForm(object):
 DUMMY_FORM = FakeForm({})
 
 
-def build_context(quotas, form=DUMMY_FORM):
-    return quota_sanity.QuotaSanityContext(quotas=quotas, form=form)
+def build_context(quotas, form=DUMMY_FORM, approver=None):
+    if approver is None:
+        return quota_sanity.QuotaSanityContext(quotas=quotas, form=form)
+    else:
+        user = models.User(username=approver)
+        return quota_sanity.QuotaSanityContext(quotas=quotas, form=form,
+                                               user=user, approving=True)
 
 
 class QuotaSanityContextTest(helpers.TestCase):
+
     def test_empty_context(self):
         context = quota_sanity.QuotaSanityContext()
         self.assertEqual(0, len(context.all_quotas))
@@ -232,3 +243,40 @@ class QuotaSanityChecksTest(helpers.TestCase):
         context = build_context(quotas)
         self.assertEqual(quota_sanity.LOAD_BALANCER_DEP,
                          quota_sanity.neutron_checks(context)[0])
+
+
+QS_LOG = 'nectar_dashboard.rcallocation.quota_sanity.LOG'
+
+
+class QuotaSanityApproverChecksTest(helpers.TestCase):
+
+    def setUp(self):
+        super(QuotaSanityApproverChecksTest, self).setUp()
+        common.approver_setup()
+
+    def test_approver_authority_checks(self):
+        quotas = [build_quota('volume', 'gigabytes', 1, 'QRIScloud')]
+        context = build_context(quotas, approver="test_user")
+        self.assertEqual([], quota_sanity.approver_checks(context))
+
+    def test_not_approver(self):
+        quotas = [build_quota('volume', 'gigabytes', 1, 'QRIScloud')]
+        context = build_context(quotas, approver="not_a_user")
+        with mock.patch(QS_LOG) as mock_log:
+            self.assertEqual(quota_sanity.APPROVER_PROBLEM,
+                             quota_sanity.approver_checks(context)[0])
+            mock_log.warning.assert_called_once()
+
+    def test_no_approver_sites(self):
+        quotas = [build_quota('volume', 'gigabytes', 1, 'QRIScloud')]
+        context = build_context(quotas, approver="test_user3")
+        with mock.patch(QS_LOG) as mock_log:
+            self.assertEqual(quota_sanity.APPROVER_PROBLEM,
+                             quota_sanity.approver_checks(context)[0])
+            mock_log.warning.assert_called_once()
+
+    def test_approver_not_authorized(self):
+        quotas = [build_quota('volume', 'gigabytes', 1, 'QRIScloud')]
+        context = build_context(quotas, approver="test_user2")
+        self.assertEqual(quota_sanity.APPROVER_NOT_AUTHORIZED,
+                         quota_sanity.approver_checks(context)[0][0])
