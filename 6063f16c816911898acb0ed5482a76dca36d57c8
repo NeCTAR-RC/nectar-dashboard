@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e062fc5b_b7d5913d",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-20T22:42:51Z",
+      "side": 1,
+      "message": "also best to not have this a primary key too, sorry didn\u0027t see this last time.\nUsually always better to have the autoid for the primary key. Eg. Site\u0027s names change ivec -\u003e pawsey, sapac -\u003e ersa, qcif -\u003e QRIScloud etc.",
+      "range": {
+        "startLine": 462,
+        "startChar": 28,
+        "endLine": 462,
+        "endChar": 45
+      },
+      "revId": "6063f16c816911898acb0ed5482a76dca36d57c8",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
