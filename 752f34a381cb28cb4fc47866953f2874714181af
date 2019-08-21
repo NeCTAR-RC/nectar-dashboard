@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18b5fe0b_aa8fdf94",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/quota_sanity/test_context.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T23:41:29Z",
+      "side": 1,
+      "message": "For python3 should be\n\nfrom unittest import mock\n\nmock.patch()",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 22
+      },
+      "revId": "752f34a381cb28cb4fc47866953f2874714181af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc992ec3_77bc979a",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/quota_sanity/test_context.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T23:41:29Z",
+      "side": 1,
+      "message": "import module as opposed to class\n\nfrom django.contrib.auth import models\nmodels.User()",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 43
+      },
+      "revId": "752f34a381cb28cb4fc47866953f2874714181af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61cf71bb_ea75abd1",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T23:41:29Z",
+      "side": 1,
+      "message": "this looks a bit confusing as then the approver is equal to the user submitting the form in some cases.\n\nWhich then in the called method an assumption is made that approver \u003d\u003d an approver when it really equals the logged in user. I wonder if instead of calling it approver it\u0027s called user, or maybe the how request object should be passed in?",
+      "range": {
+        "startLine": 474,
+        "startChar": 16,
+        "endLine": 474,
+        "endChar": 43
+      },
+      "revId": "752f34a381cb28cb4fc47866953f2874714181af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
