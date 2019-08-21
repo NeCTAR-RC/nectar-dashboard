@@ -144,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "35a783ec_88249181",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-21T05:42:15Z",
+      "side": 1,
+      "message": "Done.  It is \u0027username\u0027 now",
+      "parentUuid": "9fd847bd_3701f06f",
+      "range": {
+        "startLine": 483,
+        "startChar": 4,
+        "endLine": 483,
+        "endChar": 8
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "03124fbb_3cfb040f",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 7
