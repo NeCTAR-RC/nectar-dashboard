@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "a534665b_233115b0",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T01:37:46Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "09cfdece_ed1a6122",
+      "range": {
+        "startLine": 462,
+        "startChar": 0,
+        "endLine": 463,
+        "endChar": 50
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b2b9b02c_31c311dd",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 7
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "I thought about this.  It was \u0027email\u0027 in the first-cut.  However, the field is ultimately being compared against the \u0027request.user.username\u0027 which is (or should be) the approver\u0027s nectar account name.  It looks like an email ... but it isn\u0027t.\n\nI suppose a corollary is that \u0027username\u0027 might be a better name for this field.",
       "parentUuid": "b2b9b02c_31c311dd",
+      "range": {
+        "startLine": 483,
+        "startChar": 4,
+        "endLine": 483,
+        "endChar": 8
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9fd847bd_3701f06f",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T01:37:46Z",
+      "side": 1,
+      "message": "Yeah username would be ideal here then",
+      "parentUuid": "a05b279d_0f9c999b",
       "range": {
         "startLine": 483,
         "startChar": 4,
@@ -143,6 +191,30 @@
     },
     {
       "key": {
+        "uuid": "26724099_d6fe2b5c",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T01:37:46Z",
+      "side": 1,
+      "message": "consistent with some and inconsistent with others :-)",
+      "parentUuid": "0cac69fb_2e64613b",
+      "range": {
+        "startLine": 484,
+        "startChar": 4,
+        "endLine": 484,
+        "endChar": 16
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "be15f6b6_73fc564d",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 7
@@ -172,6 +244,24 @@
       "side": 1,
       "message": "That is a good point.  But I would prefer to add this when we implement the future changes to replace the Keystone ApprovalAdmin role.",
       "parentUuid": "be15f6b6_73fc564d",
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b550de58_7e92684e",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T01:37:46Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3b43510f_d2f194ea",
       "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
