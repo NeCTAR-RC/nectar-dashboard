@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca80a5f7_3e71d634",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T00:26:17Z",
+      "side": 1,
+      "message": "do we need name and display_name, how would they differ?",
+      "range": {
+        "startLine": 462,
+        "startChar": 0,
+        "endLine": 463,
+        "endChar": 50
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2b9b02c_31c311dd",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T00:26:17Z",
+      "side": 1,
+      "message": "call this field email?",
+      "range": {
+        "startLine": 483,
+        "startChar": 4,
+        "endLine": 483,
+        "endChar": 8
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03124fbb_3cfb040f",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T00:26:17Z",
+      "side": 1,
+      "message": "could then just call this `name`",
+      "range": {
+        "startLine": 484,
+        "startChar": 4,
+        "endLine": 484,
+        "endChar": 16
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be15f6b6_73fc564d",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-21T00:26:17Z",
+      "side": 1,
+      "message": "might need an enabled attribute on an Approver too, as I assume we\u0027ll link allocations to approvers in the future and so will need to keep them around but disabled when they cease to become an approver",
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
