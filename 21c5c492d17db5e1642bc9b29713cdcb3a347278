@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "09cfdece_ed1a6122",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-21T00:47:00Z",
+      "side": 1,
+      "message": "\u0027ersa\u0027 versus \u0027eRSA\u0027 and \u0027tpac\u0027 versus \u0027TPAC\u0027 for example.",
+      "parentUuid": "ca80a5f7_3e71d634",
+      "range": {
+        "startLine": 462,
+        "startChar": 0,
+        "endLine": 463,
+        "endChar": 50
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b2b9b02c_31c311dd",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 7
@@ -45,6 +69,30 @@
       "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a05b279d_0f9c999b",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-21T00:47:00Z",
+      "side": 1,
+      "message": "I thought about this.  It was \u0027email\u0027 in the first-cut.  However, the field is ultimately being compared against the \u0027request.user.username\u0027 which is (or should be) the approver\u0027s nectar account name.  It looks like an email ... but it isn\u0027t.\n\nI suppose a corollary is that \u0027username\u0027 might be a better name for this field.",
+      "parentUuid": "b2b9b02c_31c311dd",
+      "range": {
+        "startLine": 483,
+        "startChar": 4,
+        "endLine": 483,
+        "endChar": 8
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "0cac69fb_2e64613b",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-21T00:47:00Z",
+      "side": 1,
+      "message": "Yea ... but no.  See above.   And display_name is consistent with other objects in the model",
+      "parentUuid": "03124fbb_3cfb040f",
+      "range": {
+        "startLine": 484,
+        "startChar": 4,
+        "endLine": 484,
+        "endChar": 16
+      },
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "be15f6b6_73fc564d",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 7
@@ -85,6 +157,24 @@
       "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b43510f_d2f194ea",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-21T00:47:00Z",
+      "side": 1,
+      "message": "That is a good point.  But I would prefer to add this when we implement the future changes to replace the Keystone ApprovalAdmin role.",
+      "parentUuid": "be15f6b6_73fc564d",
+      "revId": "21c5c492d17db5e1642bc9b29713cdcb3a347278",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
