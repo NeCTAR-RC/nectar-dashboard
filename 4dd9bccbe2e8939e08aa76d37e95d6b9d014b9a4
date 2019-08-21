@@ -22,6 +22,30 @@
       "revId": "4dd9bccbe2e8939e08aa76d37e95d6b9d014b9a4",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c446161_c84f89cc",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-21T00:47:00Z",
+      "side": 1,
+      "message": "Fixed",
+      "parentUuid": "edb60d52_af028ddf",
+      "range": {
+        "startLine": 483,
+        "startChar": 29,
+        "endLine": 483,
+        "endChar": 45
+      },
+      "revId": "4dd9bccbe2e8939e08aa76d37e95d6b9d014b9a4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
