@@ -252,6 +252,17 @@ $('#id_project_name').on('input', function(e) {
   populate_dns_service_name();
 });
 
+// Redirect UoM users to MRC dashboard
+$('#id_requested_allocation_home').on('change', function() {
+  if (this.value == 'uom') {
+    $('.submit-form-button').attr('disabled', true);
+    $('#modal-uom-dashboard').modal('show')
+  }
+  else {
+    $('.submit-form-button').removeAttr('disabled');
+  }
+});
+
 (function($) {
 
     function create_form_row(formset, opts) {

@@ -104,7 +104,7 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        {% include "rcallocation/field.html" with field=form.start_date %}
+        {% include "rcallocation/field.html" with field=form.requested_allocation_home %}
         {% include "rcallocation/field.html" with field=form.estimated_project_duration %}
         {% block convert_trial_project %}
         {% include "rcallocation/field.html" with field=form.convert_trial_project %}
@@ -174,7 +174,6 @@
         <hr/>
         {% include "rcallocation/field.html" with field=form.use_case %}
         {% include "rcallocation/field.html" with field=form.usage_patterns %}
-        {% include "rcallocation/field.html" with field=form.requested_allocation_home %}
         {% include "rcallocation/field.html" with field=form.geographic_requirements %}
         {% include "rcallocation/field.html" with field=form.estimated_number_users %}
       </div>
@@ -288,12 +287,35 @@
       </div>
     </div>
     <div class="form-actions">
-      <input class="btn btn-success" type="submit" value="Submit">
+      <input class="btn btn-success submit-form-button" type="submit" value="Submit">
       {% if warnings|length > 0 %}
-      <input class="btn btn-success" type="button"
+      <input class="btn btn-success submit-form-button" type="button"
              onClick="submit_ignore()" value="Submit ignoring warnings">
       {% endif %}
     </div>
+
+    <!-- MRC dashboard model dialog -->
+    <div id="modal-uom-dashboard" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Please make your request on Melbourne Research Cloud</h4>
+          </div>
+          <div class="modal-body">
+            <p>You have selected Allocation Home: <b>Victoria (Melbourne)</b>.</p>
+            <p>University of Melbourne research cloud projects now run on the Melbourne Research Cloud.</p>
+            <p>Please visit <a href="https://dashboard.cloud.unimelb.edu.au/allocation">https://dashboard.cloud.unimelb.edu.au</a> to make your request there instead.</p>
+            <p>If you are seeking an extension to an existing Nectar project with the <b>Victoria (Melbourne)</b> home, your project should have already been migrated, and can be found on the Melboure Research Cloud dashboard <a href="https://dashboard.cloud.unimelb.edu.au/allocation/user_requests/">Allocation Requests page</a>.</p>
+            <p>If you are having trouble with your Melbourne Research Cloud request, please email <a href="mailto:rc-support@unimelb.edu.au">rc-support@unimelb.edu.au</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       /* For browsers that don't recognize the autofocus attribute... */
       if (!("autofocus" in document.createElement("input"))) {
