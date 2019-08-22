@@ -252,6 +252,33 @@ $('#id_project_name').on('input', function(e) {
   populate_dns_service_name();
 });
 
+
+// Show UoM users modal to MRC dashboard
+function uom_redirect_modal(show) {
+  if (show) {
+    $('.submit-form-button').attr('disabled', true);
+    $('#modal-uom-dashboard').modal('show')
+  }
+  else {
+    $('.submit-form-button').removeAttr('disabled');
+  }
+}
+
+// Show/hide UoM modal on change
+$('#id_requested_allocation_home').on('change', function() {
+  var show = this.value == 'uom';
+  uom_redirect_modal(show);
+});
+
+
+// Show UoM modal on first load for renewals
+$(function(){
+  var home = $('#id_requested_allocation_home').val();
+  var show = home == 'uom';
+  uom_redirect_modal(show);
+});
+
+
 (function($) {
 
     function create_form_row(formset, opts) {
