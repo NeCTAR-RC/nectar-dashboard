@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "af953852_aee1a17e",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 3
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-22T23:26:34Z",
+      "side": 1,
+      "message": "Missing id\u003d ?   \nShould this button (\"submit ignoring warnings\") be disabled as well by the JS?",
+      "revId": "d1976c6e7a150da29257c93798b0e15d3e0e24ca",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
