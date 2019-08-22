@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "759cf717_be1fb494",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/quota_sanity/test_context.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-22T01:00:27Z",
+      "side": 1,
+      "message": "Fixed",
+      "parentUuid": "18b5fe0b_aa8fdf94",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 22
+      },
+      "revId": "752f34a381cb28cb4fc47866953f2874714181af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bc992ec3_77bc979a",
         "filename": "nectar_dashboard/rcallocation/tests/unit/quota_sanity/test_context.py",
         "patchSetId": 7
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "ae101902_f2dd306e",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/quota_sanity/test_context.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-22T01:00:27Z",
+      "side": 1,
+      "message": "Fixed",
+      "parentUuid": "bc992ec3_77bc979a",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 43
+      },
+      "revId": "752f34a381cb28cb4fc47866953f2874714181af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "61cf71bb_ea75abd1",
         "filename": "nectar_dashboard/rcallocation/views.py",
         "patchSetId": 7
@@ -68,6 +116,30 @@
       "revId": "752f34a381cb28cb4fc47866953f2874714181af",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07347e20_59e4baf7",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-22T01:00:27Z",
+      "side": 1,
+      "message": "Yea.  It was wrong.  I am now going to pass a \"user\" and an \"approving\" flag.",
+      "parentUuid": "61cf71bb_ea75abd1",
+      "range": {
+        "startLine": 474,
+        "startChar": 16,
+        "endLine": 474,
+        "endChar": 43
+      },
+      "revId": "752f34a381cb28cb4fc47866953f2874714181af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
