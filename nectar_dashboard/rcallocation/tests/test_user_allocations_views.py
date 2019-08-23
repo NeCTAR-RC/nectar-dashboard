@@ -77,6 +77,7 @@ class RequestTestCase(base.BaseTestCase):
         allocation = AllocationFactory.create(contact_email=self.user.name)
         initial_state = common.allocation_to_dict(
             models.AllocationRequest.objects.get(pk=allocation.pk))
+        initial_mod = allocation.modified_time
 
         response = self.client.get(
             reverse('horizon:allocation:user_requests:edit_request',
@@ -108,6 +109,10 @@ class RequestTestCase(base.BaseTestCase):
         old_model = (models.AllocationRequest.objects.get(
             parent_request_id=model.id))
         old_state = common.allocation_to_dict(old_model)
+
+        # check modification dates
+        self.assertEqual(initial_mod, old_model.modified_time)
+        self.assertTrue(initial_mod < model.modified_time)
 
         # some fields are changed during the archive process, these
         # fields should not be compared.
