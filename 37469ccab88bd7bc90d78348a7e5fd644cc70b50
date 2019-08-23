@@ -22,6 +22,30 @@
       "revId": "37469ccab88bd7bc90d78348a7e5fd644cc70b50",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "15663152_87fd71c8",
+        "filename": "nectar_dashboard/rcallocation/migrations/0037_populate_sites_and_approvers.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-08-23T06:54:36Z",
+      "side": 1,
+      "message": "That only does part of the job.   Then someone needs to work out the sites and deal with all of the people who are no longer approvers.  (And fill in their names.)\n\nThe other way would be to take this code and run it by hand.\n\nThe other other way would be to 1) implement the API for this functionality, 2) implement the corresponding functionality in the openstack allocations plugin, 3) massage this code into a script (shell) to populate.\n\nThoughts?",
+      "parentUuid": "a50279c8_c8a6191a",
+      "range": {
+        "startLine": 31,
+        "startChar": 2,
+        "endLine": 41,
+        "endChar": 49
+      },
+      "revId": "37469ccab88bd7bc90d78348a7e5fd644cc70b50",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
