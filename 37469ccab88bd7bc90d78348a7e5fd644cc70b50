@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a50279c8_c8a6191a",
+        "filename": "nectar_dashboard/rcallocation/migrations/0037_populate_sites_and_approvers.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-23T01:16:59Z",
+      "side": 1,
+      "message": "on second thought I don\u0027t think this is a good idea having all these details in a public repo,\n\nI thought the data migration would just find all the existing approver_email records and create an approver record out of them?",
+      "range": {
+        "startLine": 31,
+        "startChar": 2,
+        "endLine": 41,
+        "endChar": 49
+      },
+      "revId": "37469ccab88bd7bc90d78348a7e5fd644cc70b50",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
