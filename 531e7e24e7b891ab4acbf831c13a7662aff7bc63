@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "49a0e186_90f21ab6",
+        "filename": "nectar_dashboard/rcallocation/utils.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-25T23:15:13Z",
+      "side": 1,
+      "message": "think you want manager.get()` here as you\u0027re expecting just one as opposed to a list?",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 31,
+        "endChar": 18
+      },
+      "revId": "531e7e24e7b891ab4acbf831c13a7662aff7bc63",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f6a87db_cfbc3337",
+        "filename": "nectar_dashboard/rcallocation/utils.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-08-25T23:15:13Z",
+      "side": 1,
+      "message": "would it be better to return the whole obejct here, just makes it easier in the future if we ever need to do anything else on this object",
+      "range": {
+        "startLine": 64,
+        "startChar": 11,
+        "endLine": 64,
+        "endChar": 24
+      },
+      "revId": "531e7e24e7b891ab4acbf831c13a7662aff7bc63",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
