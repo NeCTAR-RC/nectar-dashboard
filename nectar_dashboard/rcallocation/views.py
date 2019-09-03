@@ -41,14 +41,31 @@ class AllocationDetailView(mixins.UserPassesTestMixin, DetailView,
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
-        allocations = (models.AllocationRequest.objects
-                       .filter(status=models.AllocationRequest.APPROVED)
-                       .filter(parent_request=self.object.pk)[:1])
+        # We need to figure out two things:
+        # 1. the latest 'approved' allocation record prior to the one
+        #    that we are looking at
+        # 2. whether that 'approved' record is the current approval.
+        if self.object.is_active():
+            approved = self.object
+            approved_is_current = not self.object.is_archived()
+        else:
+            parent = (self.object.parent_request or self.object).pk
+            all_approved = \
+                list(models.AllocationRequest.objects
+                     .filter(status=models.AllocationRequest.APPROVED)
+                     .filter(parent_request=parent))
+            if len(all_approved) == 0:
+                approved = None
+                approved_is_current = False
+            else:
+                mod_time = self.object.modified_time
+                approved = next(
+                    (a for a in all_approved if a.modified_time < mod_time),
+                    None)
+                approved_is_current = approved == all_approved[0]
 
-        if self.object.status == models.AllocationRequest.APPROVED:
-            kwargs['previous_allocation'] = self.object
-        elif allocations:
-            kwargs['previous_allocation'] = allocations[0]
+        kwargs['approved_allocation'] = approved
+        kwargs['approved_is_current'] = approved_is_current
         return (super(AllocationDetailView, self).get_context_data(**kwargs))
 
     def test_func(self):
