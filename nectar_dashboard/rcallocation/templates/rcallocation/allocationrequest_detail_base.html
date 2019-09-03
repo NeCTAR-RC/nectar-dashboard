@@ -77,6 +77,7 @@
         </div>
       </div>
       <div class="row">
+        {% if not allocation.is_active %}
         <div class="col-md-6">
           <h3>Requested Quota</h3>
           <table class="table table-hover">
@@ -94,10 +95,11 @@
             {% endfor %}
           </table>
         </div>
+        {% endif %}
         <div class="col-md-6">
-          {% if previous_allocation and not allocation.is_archived %}
           <h3>Current Quota</h3>
           <table class="table table-hover">
+          {% if previous_allocation %}
             {% for quotagroup in previous_allocation.quotas.all %}
             {% for quota in quotagroup.quota_set.all %}
               <tr>
@@ -110,15 +112,12 @@
               </tr>
             {% endfor %}
             {% endfor %}
-          </table>
-          {% elif not allocation.is_archived %}
-          <h3>Current Quota</h3>
-          <table class="table table-hover">
+          {% else %}
               <tr>
                   <td colspan="2">No current allocation.</td>
               </tr>
-          </table>
           {% endif %}
+          </table>
         </div>
       </div>
       <div class="row">
