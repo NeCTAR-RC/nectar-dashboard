@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b6227cad_e2b15362",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_detail.html",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-09-18T05:22:24Z",
+      "side": 1,
+      "message": "could you not just negate this instead of adding the else",
+      "range": {
+        "startLine": 11,
+        "startChar": 2,
+        "endLine": 11,
+        "endChar": 33
+      },
+      "revId": "420270110a01eb78e3974b0aafe2ced3c17b0174",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
