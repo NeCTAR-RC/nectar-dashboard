@@ -93,6 +93,30 @@
       "revId": "4c88cf5b34d4d92138ed3a640eb64c7293ec0970",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab75fec8_2fc5d100",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-09-18T02:36:59Z",
+      "side": 1,
+      "message": "I rewrote this anyway.  It won\u0027t be perfect ... until we sort out the bad mod dates.",
+      "parentUuid": "e6f8321d_d21979b7",
+      "range": {
+        "startLine": 55,
+        "startChar": 12,
+        "endLine": 55,
+        "endChar": 59
+      },
+      "revId": "4c88cf5b34d4d92138ed3a640eb64c7293ec0970",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
