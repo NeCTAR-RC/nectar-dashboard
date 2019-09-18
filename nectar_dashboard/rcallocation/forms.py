@@ -239,6 +239,8 @@ class QuotaForm(BaseQuotaForm):
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
         self.fields['group'].required = False
+        if self.instance.quota:
+            self.initial['requested_quota'] = self.instance.quota
 
 
 class BaseQuotaGroupForm(forms.ModelForm):
