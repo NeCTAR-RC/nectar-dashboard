@@ -229,6 +229,12 @@ class IntegerCheckboxInput(forms.CheckboxInput):
 
 
 class QuotaForm(BaseQuotaForm):
+    """This version of the form class that allows editing of the requested
+    quota values.  If the allocation record being edited is in approved
+    state, we pre-fill the requested quota values from the current quota
+    values.
+    """
+
     class Meta(BaseQuotaForm.Meta):
         model = models.Quota
         exclude = ('quota',)
@@ -239,6 +245,12 @@ class QuotaForm(BaseQuotaForm):
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
         self.fields['group'].required = False
+        inst = kwargs.get('instance', None)
+        if inst and inst.quota:
+            allocation = inst.group.allocation
+            if allocation.status == models.AllocationRequest.APPROVED:
+                self.initial['requested_quota'] = inst.quota
+                print("set requested quota", inst.resource, inst.quota)
 
 
 class BaseQuotaGroupForm(forms.ModelForm):
