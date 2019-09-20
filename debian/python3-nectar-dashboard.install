@@ -1,3 +1,3 @@
 theme/* /usr/share/nectar-dashboard/theme
 policy/* /usr/share/nectar-dashboard/policy
-enabled/* /usr/lib/python3/dist-packages/openstack_dashboard/local/enabled
+nectar_dashboard/enabled/* /usr/lib/python3/dist-packages/openstack_dashboard/local/enabled
