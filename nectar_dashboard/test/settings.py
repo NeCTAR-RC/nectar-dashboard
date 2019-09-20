@@ -24,6 +24,8 @@ from openstack_dashboard import exceptions
 from openstack_dashboard import theme_settings
 from openstack_dashboard.utils import settings as settings_utils
 
+from nectar_dashboard import enabled as nectar_enabled
+
 # this is used to protect from client XSS attacks, but it's worth
 # enabling in our test setup to find any issues it might cause
 monkeypatch_escape()
@@ -82,13 +84,6 @@ INSTALLED_APPS = (
     'openstack_dashboard',
     'rest_framework',
     'django_filters',
-    'nectar_dashboard.rcallocation',
-    'nectar_dashboard.rcallocation.allocation',
-    'nectar_dashboard.rcallocation.allocation_approved',
-    'nectar_dashboard.rcallocation.request',
-    'nectar_dashboard.rcallocation.user_allocations',
-    'nectar_dashboard.reset_password',
-    'nectar_dashboard.project_members',
 )
 
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
@@ -122,7 +117,7 @@ STATICFILES_DIRS = settings_utils.get_xstatic_dirs(
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
 settings_utils.update_dashboards(
     [
-        enabled,
+        enabled, nectar_enabled,
     ],
     HORIZON_CONFIG,
     INSTALLED_APPS,
