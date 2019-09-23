@@ -22,6 +22,30 @@
       "revId": "420270110a01eb78e3974b0aafe2ced3c17b0174",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a69abb3_fea2c30c",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_detail.html",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-09-23T23:59:16Z",
+      "side": 1,
+      "message": "Fized",
+      "parentUuid": "b6227cad_e2b15362",
+      "range": {
+        "startLine": 11,
+        "startChar": 2,
+        "endLine": 11,
+        "endChar": 33
+      },
+      "revId": "420270110a01eb78e3974b0aafe2ced3c17b0174",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
