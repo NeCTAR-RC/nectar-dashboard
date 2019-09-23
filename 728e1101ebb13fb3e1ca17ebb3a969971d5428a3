@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f5db8ae3_54db2bc4",
+        "filename": "nectar_dashboard/user_info/lookup/forms.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-09-23T03:36:58Z",
+      "side": 1,
+      "message": "maybe here we could take some search text and look in email and displayname fields for matches?",
+      "revId": "728e1101ebb13fb3e1ca17ebb3a969971d5428a3",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a835679_c811d979",
+        "filename": "nectar_dashboard/user_info/lookup/tables.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-09-23T03:36:58Z",
+      "side": 1,
+      "message": "I don\u0027t think this should be visible, ID is internal.",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 64
+      },
+      "revId": "728e1101ebb13fb3e1ca17ebb3a969971d5428a3",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68d58052_90e319c7",
+        "filename": "nectar_dashboard/user_info/lookup/tables.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-09-23T03:36:58Z",
+      "side": 1,
+      "message": "I think this should not be shown either.",
+      "range": {
+        "startLine": 39,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 70
+      },
+      "revId": "728e1101ebb13fb3e1ca17ebb3a969971d5428a3",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "48bb3767_1f68947b",
+        "filename": "nectar_dashboard/user_info/lookup/views.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-09-23T03:36:58Z",
+      "side": 1,
+      "message": "looks like this method doesn\u0027t do anything extra and so this could go",
+      "range": {
+        "startLine": 34,
+        "startChar": 1,
+        "endLine": 36,
+        "endChar": 59
+      },
+      "revId": "728e1101ebb13fb3e1ca17ebb3a969971d5428a3",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32125c2c_e5e15ad0",
+        "filename": "nectar_dashboard/user_info/utils.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-09-23T03:36:58Z",
+      "side": 1,
+      "message": "o",
+      "range": {
+        "startLine": 20,
+        "startChar": 11,
+        "endLine": 20,
+        "endChar": 12
+      },
+      "revId": "728e1101ebb13fb3e1ca17ebb3a969971d5428a3",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
