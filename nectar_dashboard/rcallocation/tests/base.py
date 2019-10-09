@@ -25,6 +25,8 @@ class BaseTestCase(helpers.TestCase):
 
     def setUp(self):
         super(BaseTestCase, self).setUp()
+        common.sites_setup()
+        common.approvers_setup()
         common.factory_setup()
 
 

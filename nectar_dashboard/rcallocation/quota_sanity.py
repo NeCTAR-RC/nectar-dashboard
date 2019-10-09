@@ -1,6 +1,8 @@
+import logging
+
 from django.conf import settings
 
-import logging
+from nectar_dashboard.rcallocation import models
 
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
@@ -20,6 +22,8 @@ NO_ROUTER = 'NO_ROUTER'
 NO_NETWORK = 'NO_NETWORK'
 FLOATING_IP_DEP = 'FLOATING_IP_DEP'
 LOAD_BALANCER_DEP = 'LOAD_BALANCER_DEP'
+APPROVER_PROBLEM = 'APPROVER_PROBLEM'
+APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 
 
 def is_node_local(home):
@@ -127,6 +131,38 @@ def neutron_checks(context):
                 'use of advanced networks requires at least 1 network')
 
 
+def approver_checks(context):
+    if context.user is None or not context.approving:
+        return
+    username = context.user.username
+    try:
+        approver = models.Approver.objects.get(username=username)
+    except models.Approver.DoesNotExist:
+        LOG.warning("No Approver object found for '%s'", username)
+        return (APPROVER_PROBLEM,
+                'problem with approver registration: contact Core Services')
+    sites = approver.sites.all()
+    if len(sites) == 0:
+        LOG.warning("Approver object for '%s' has no associated sites",
+                    username)
+        return (APPROVER_PROBLEM,
+                'problem with approver registration: contact Core Services')
+
+    mappings = settings.ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS
+    approver_zones = []
+    for s in sites:
+        approver_zones.extend(mappings.get(s.name, []))
+    other_zones = set()
+    for q in context.all_quotas.values():
+        if q['value'] > 0 and q['zone'] != 'nectar':
+            if not q['zone'] in approver_zones:
+                other_zones.add(q['zone'])
+
+    return [(APPROVER_NOT_AUTHORIZED,
+             """quota should be authorized by the other site before
+             approving '%s' storage quota""" % z) for z in other_zones]
+
+
 STD_CHECKS = [instance_vcpu_check,
               no_vcpu_check,
               no_instance_check,
@@ -134,18 +170,21 @@ STD_CHECKS = [instance_vcpu_check,
               cinder_instance_check,
               cinder_local_check,
               manila_local_check,
-              neutron_checks]
+              neutron_checks,
+              approver_checks]
 
 
 class QuotaSanityContext(object):
 
-    def __init__(self, form=None, requested=True,
-                 quotas=[], checks=STD_CHECKS):
+    def __init__(self, form=None, requested=True, user=None,
+                 quotas=[], approving=False, checks=STD_CHECKS):
         self.all_quotas = {}
         self._do_add(quotas)
         self.checks = checks
         self.requested = requested
         self.form = form
+        self.user = user
+        self.approving = approving
 
     def add_quotas(self, quotas_to_check):
         self._do_add(self._convert_quotas(quotas_to_check))
@@ -171,30 +210,18 @@ class QuotaSanityContext(object):
                            'value': value,
                            'name': name,
                            'zone': q.group.zone.name})
-            # print "%s -> %s" % (key, value)
-        return quotas
-
-    def _old__cleaned_quotas(self, formset):
-        quotas = []
-        for d in formset.cleaned_data:
-            if d['id']:
-                value = d['requested_quota'] \
-                        if self.requested else d['quota']
-                name = "%s.%s" % (
-                    d['id'].resource.service_type.catalog_name,
-                    d['id'].resource.quota_name)
-                quotas.append({'quota': d['id'],
-                               'value': value,
-                               'name': name,
-                               'zone': d['id'].group.zone.name})
         return quotas
 
     def do_checks(self):
         res = []
         for check in self.checks:
             info = check(self)
+            # A check may return a tuple or a list of tuples
             if info:
-                res.append(info)
+                if isinstance(info, list):
+                    res.extend(info)
+                else:
+                    res.append(info)
         return res
 
     def get(self, quota_name, zone='nectar'):

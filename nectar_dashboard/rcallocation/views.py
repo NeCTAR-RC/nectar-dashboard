@@ -471,6 +471,8 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         if not ignore_warnings:
             sc_context = quota_sanity.QuotaSanityContext(
                 form=form,
+                user=self.request.user,
+                approving=self.editor_attr == 'approver_email',
                 requested=self.ONLY_REQUESTABLE_RESOURCES)
 
         quota_formsets = self.get_quota_formsets()
