@@ -95,6 +95,44 @@ class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ResourceSerializer
 
 
+class SiteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Site
+        fields = '__all__'
+
+
+class SiteViewSet(viewsets.ModelViewSet):
+    permission_classes = (rest_auth.ReadOrAdmin,)
+    queryset = models.Site.objects.all()
+    serializer_class = SiteSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        # Sites should be disabled, not destroyed.
+        return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class ApproverSerializer(serializers.ModelSerializer):
+    sites = SiteSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Approver
+        fields = '__all__'
+
+
+class ApproverViewSet(viewsets.ModelViewSet):
+    # This viewset exposes approver email addresses, and might
+    # in the future control who is permitted to approve allocations.
+    # Lock it down to admins.
+    permission_classes = (rest_auth.IsAdmin,)
+    queryset = models.Approver.objects.all()
+    serializer_class = ApproverSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        # Approvers should be disabled, not destroyed.
+        return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
 class QuotaSerializer(serializers.ModelSerializer):
     zone = serializers.SerializerMethodField()
     allocation = serializers.SerializerMethodField()
