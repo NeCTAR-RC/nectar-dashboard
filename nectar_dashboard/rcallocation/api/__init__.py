@@ -95,6 +95,33 @@ class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ResourceSerializer
 
 
+class SiteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Site
+        fields = '__all__'
+
+
+class SiteViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (rest_auth.ReadOrAdmin,)
+    queryset = models.Site.objects.all()
+    serializer_class = SiteSerializer
+
+
+class ApproverSerializer(serializers.ModelSerializer):
+    sites = SiteSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Approver
+        fields = '__all__'
+
+
+class ApproverViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (rest_auth.ApproverOrOwner,)
+    queryset = models.Approver.objects.all()
+    serializer_class = ApproverSerializer
+
+
 class QuotaSerializer(serializers.ModelSerializer):
     zone = serializers.SerializerMethodField()
     allocation = serializers.SerializerMethodField()
