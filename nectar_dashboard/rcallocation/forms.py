@@ -20,7 +20,7 @@ class BaseAllocationForm(forms.ModelForm):
         model = models.AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
-                   'allocation_home', 'provisioned',
+                   'allocation_home', 'associated_site', 'provisioned',
                    'project_id', 'notes', 'notifications')
 
         widgets = {
@@ -43,6 +43,9 @@ class BaseAllocationForm(forms.ModelForm):
             'usage_patterns': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
+            'associated_site': forms.CheckboxInput(
+                attrs={'class': 'col-md-6'}),
+            'national': forms.CheckboxInput(attrs={'class': 'col-md-6'}),
             'geographic_requirements': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
