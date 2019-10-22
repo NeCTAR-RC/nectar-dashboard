@@ -240,6 +240,14 @@ class AllocationTests(base.AllocationAPITest):
             '/rest_api/allocations/%s/approve/' % allocation.id)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_approve_no_site(self):
+        self.client.force_authenticate(user=self.approver_user)
+        allocation = factories.AllocationFactory.create(
+            associated_site=None)
+        response = self.client.post(
+            '/rest_api/allocations/%s/approve/' % allocation.id)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_approve_invalid_role(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
