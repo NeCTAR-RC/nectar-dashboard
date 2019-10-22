@@ -14,7 +14,7 @@ class AllocationApproveForm(forms.ModelForm):
         fields = (
             'project_name', 'project_description',
             'estimated_project_duration', 'status_explanation',
-            'allocation_home',
+            'associated_site', 'national',
         )
 
         exclude = ('nectar_support', 'ncris_support',)
@@ -26,8 +26,8 @@ class AllocationApproveForm(forms.ModelForm):
             'status_explanation': forms.Textarea(
                 attrs={'class': 'col-md-6 form-control',
                        'style': 'height:120px; width:420px'}),
-            'allocation_home': forms.Select(attrs={'class': 'col-md-6'}),
-
+            'associated_site': forms.Select(attrs={'class': 'col-md-6'}),
+            'national': forms.CheckboxInput(attrs={'class': 'col-md-6'}),
         }
 
     def __init__(self, **kwargs):
@@ -43,13 +43,15 @@ class AllocationApproveForm(forms.ModelForm):
         self.fields['status_explanation'].help_text = 'Reviewer Comment'
         self.fields['status_explanation'].label = 'Comment'
         self.initial['status_explanation'] = ''
-        self.fields['allocation_home'].required = True
-        self.fields['allocation_home'].help_text = \
-            '''The Approver should set the allocation home to 'national'
-            if the request qualifies for National funding under the
-            current RC-NAS policy.  Otherwise they should set it to
-            their own node.'''
-        self.fields['allocation_home'].widget.attrs['class'] = 'form-control'
+        self.fields['associated_site'].required = True
+        self.fields['associated_site'].help_text = \
+            '''The Approver will normally set the Associated Site to their
+            own node.'''
+        self.fields['associated_site'].widget.attrs['class'] = 'form-control'
+        self.fields['national'].required = False
+        self.fields['national'].help_text = \
+            '''The Approver should check 'National funding' for all allocations
+            that meet the Nectar national funding criteria.'''
 
         self.instance.status = 'A'
 

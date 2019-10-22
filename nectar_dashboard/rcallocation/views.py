@@ -483,10 +483,11 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
             kwargs['grant_formset'] = self.get_formset(formset_grant_class)
 
         # Primary validation of quotas + gathering of the values
-        # into a form that can be used for quota sanity checks.
+        # into a format that can be used for quota sanity checks.
         quota_valid = True
         if not ignore_warnings:
             sc_context = quota_sanity.QuotaSanityContext(
+                allocation=self.object,
                 form=form,
                 user=self.request.user,
                 approving=self.editor_attr == 'approver_email',
