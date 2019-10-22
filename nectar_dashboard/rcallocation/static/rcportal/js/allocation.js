@@ -253,38 +253,14 @@ $('#id_project_name').on('input', function(e) {
 });
 
 
-// Show UoM users modal to MRC dashboard
-function uom_redirect_modal(show) {
-  var formgroup = $('#id_requested_allocation_home').closest('div.form-group');
-  var inputgroup = $('#id_requested_allocation_home').closest('div.input-group');
-  if (show) {
-    formgroup.addClass('has-error');
-    $('.submit-form-button').attr('disabled', true);
-    $('#modal-uom-dashboard').modal('show');
-    var msg = '<span id="allocation_home_uom_error" class="help-block">You must use the Melbourne Research Cloud dashboard instead</span>';
-    if (!$("#allocation_home_uom_error").length) {
-      inputgroup.append(msg);
-    }
-  }
-  else {
-    $('.submit-form-button').removeAttr('disabled');
-    $('#allocation_home_uom_error').remove();
-    formgroup.removeClass('has-error');
-  }
-}
-
-// Show/hide UoM modal on change
-$('#id_requested_allocation_home').on('change', function() {
-  var show = this.value == 'uom';
-  uom_redirect_modal(show);
-});
-
-
-// Show UoM modal on first load for renewals
+// Show UoM modal on first load of a new allocation request form if
+// the contact email matches the hard-wired UoM email pattern.
 $(function(){
-  var home = $('#id_requested_allocation_home').val();
-  var show = home == 'uom';
-  uom_redirect_modal(show);
+  var email = $('#id_contact_email').val();
+  var show = email.match(/^.+@(.+\.)*unimelb\.edu\.au$/);
+  if (show != null && isNewAllocationRequest() /* see template */ ) {
+    $('#modal-uom-dashboard').modal('show');
+  }
 });
 
 

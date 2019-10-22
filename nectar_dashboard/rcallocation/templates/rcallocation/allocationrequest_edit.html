@@ -37,6 +37,11 @@
 {% block js %}
 {{ block.super }}
 <script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
+<script>
+  function isNewAllocationRequest() {
+    return {% if object.pk %} false; {% else %} true; {% endif %}
+  }
+</script>
 {% endblock %}
 
 {% block main %}
@@ -104,7 +109,6 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        {% include "rcallocation/field.html" with field=form.requested_allocation_home %}
         {% include "rcallocation/field.html" with field=form.estimated_project_duration %}
         {% block convert_trial_project %}
         {% include "rcallocation/field.html" with field=form.convert_trial_project %}
@@ -300,14 +304,13 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Please make your request on Melbourne Research Cloud</h4>
+            <h4 class="modal-title">Notice for University of Melbourne users</h4>
           </div>
           <div class="modal-body">
-            <p>You have selected Allocation Home: <b>Victoria (Melbourne)</b>.</p>
-            <p>If you believe you are eligible for a national allocation under the Nectar <a href="https://support.ehelp.edu.au/support/solutions/articles/6000226889">National Allocation policy</a>, or if you already have one, please set Allocation Home to <b>National</b>.</p>
-            <p>University of Melbourne research cloud projects with local allocations now run on the Melbourne Research Cloud.  Please visit <a href="https://dashboard.cloud.unimelb.edu.au/allocation">https://dashboard.cloud.unimelb.edu.au</a> and make your request there instead.</p>
-            <p>If you are seeking an extension to an existing Nectar project with the <b>Victoria (Melbourne)</b> home, your project should have already been migrated, and can be found on the Melbourne Research Cloud dashboard <a href="https://dashboard.cloud.unimelb.edu.au/allocation/user_requests/">Allocation Requests page</a>.</p>
-            <p>If you are having trouble with your Melbourne Research Cloud request, please email <a href="mailto:rc-support@unimelb.edu.au">rc-support@unimelb.edu.au</a>.</p>
+            <p>It is University of Melbourne policy that new requests for local cloud allocations should be made through the Melbourne Research Cloud dashboard.</p>
+            <p>If you are applying for a Nectar national cloud allocation under the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000226889">National Allocation policy</a>, please click "Close" and proceed.</p>
+            <p>If you are applying for a University of Melbourne local cloud allocation, please visit <a href="https://dashboard.cloud.unimelb.edu.au/allocation">https://dashboard.cloud.unimelb.edu.au</a> and submit your request there.</p>
+            <p>If you are having trouble with a Melbourne Research Cloud request, or if you need advice on whether to applying for a "national" or "local" allocation, please email <a href="mailto:rc-support@unimelb.edu.au">rc-support@unimelb.edu.au</a>.</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
