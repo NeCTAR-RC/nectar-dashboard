@@ -233,7 +233,6 @@ def request_allocation(user, model=None, quota_specs=None,
     forp_3 = 10 - (forp_1 + forp_2)
     for_code = fuzzy.FuzzyChoice(FOR_CHOICES.keys())
     quota = fuzzy.FuzzyInteger(1, 100000)
-    alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
     grant_type = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
 
     model_dict = {'project_name': fuzzy.FuzzyText().fuzz(),
@@ -249,7 +248,6 @@ def request_allocation(user, model=None, quota_specs=None,
                   'use_case': fuzzy.FuzzyText().fuzz(),
                   'estimated_number_users': quota.fuzz(),
                   'geographic_requirements': fuzzy.FuzzyText().fuzz(),
-                  'requested_allocation_home': alloc_home.fuzz(),
                   'nectar_support': 'nectar supporting',
                   'ncris_support': 'ncris supporting',
                   }

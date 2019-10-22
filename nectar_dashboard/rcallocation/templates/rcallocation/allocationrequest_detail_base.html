@@ -144,15 +144,6 @@
               <span class="label label-warning">No Submission</span>
             {% endif %}
           </p>
-          <h3>Requested Allocation Home</h3>
-          <p>
-            {% if allocation.requested_allocation_home %}
-              {{ allocation.get_requested_allocation_home_display }}
-            {% else %}
-              <span class="label label-warning">No Submission</span>
-            {% endif %}
-          </p>
-
           <h3>Additional Location Requirements</h3>
           <p>
             {% if allocation.geographic_requirements %}
