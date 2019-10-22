@@ -127,7 +127,6 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     use_case = fuzzy.FuzzyText()
     usage_patterns = fuzzy.FuzzyText()
     geographic_requirements = fuzzy.FuzzyText()
-    requested_allocation_home = alloc_home
     project_description = fuzzy.FuzzyText()
     field_of_research_1 = for_code
     field_of_research_2 = for_code

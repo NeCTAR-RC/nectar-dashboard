@@ -15,10 +15,12 @@ class BaseAllocationForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
                                          required=False)
+    status = forms.BooleanField(widget=forms.HiddenInput(),
+                                required=False)
 
     class Meta:
         model = models.AllocationRequest
-        exclude = ('status', 'created_by', 'submit_date', 'approver_email',
+        exclude = ('created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
                    'allocation_home', 'provisioned',
                    'project_id', 'notes', 'notifications')
@@ -43,8 +45,6 @@ class BaseAllocationForm(forms.ModelForm):
             'usage_patterns': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'requested_allocation_home': forms.Select(
-                attrs={'class': 'col-md-6'}),
             'geographic_requirements': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),

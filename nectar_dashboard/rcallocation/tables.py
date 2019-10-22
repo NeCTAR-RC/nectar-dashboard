@@ -59,8 +59,6 @@ class BaseAllocationListTable(tables.DataTable):
                            verbose_name="State")
     project = tables.Column(allocation_title,
                             verbose_name="Name", )
-    requested_home = tables.Column('requested_allocation_home',
-                                    verbose_name='Requested Home Location')
     allocation_home = tables.Column('allocation_home',
                                     verbose_name='Current Home Location')
     approver = tables.Column('approver_email',
