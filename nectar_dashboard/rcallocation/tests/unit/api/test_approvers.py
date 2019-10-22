@@ -94,8 +94,8 @@ class ApproverTest(base.AllocationAPITest):
         self.assertEqual(jim.display_name, 'Adolphus Spriggs')
         sites = list(jim.sites.all())
         self.assertEqual(len(sites), 2)
-        self.assertEqual(sites[0].id, self.qcif.id)
-        self.assertEqual(sites[1].id, self.uom.id)
+        self.assertTrue(self.qcif.id in (s.id for s in sites))
+        self.assertTrue(self.uom.id in (s.id for s in sites))
 
     def test_delete_approver(self):
         self.client.force_authenticate(user=self.admin_user)

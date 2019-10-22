@@ -121,6 +121,7 @@ class QuotaSanityChecksTest(helpers.TestCase):
                          quota_sanity.nondefault_ram_check(context)[0])
 
     def test_cinder_checks(self):
+        common.sites_setup()
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('volume', 'gigabytes', 0, 'QRIScloud')]
         context = build_context(quotas)
@@ -137,44 +138,45 @@ class QuotaSanityChecksTest(helpers.TestCase):
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.cinder_local_check(context))
 
-        form = FakeForm({'allocation_home': 'national'})
+        form = FakeForm({'associated_site': None})
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('volume', 'gigabytes', 10, 'QRIScloud')]
         context = build_context(quotas, form=form)
         self.assertIsNone(quota_sanity.cinder_local_check(context))
 
-        form = FakeForm({'allocation_home': 'qcif'})
+        form = FakeForm({'associated_site': common.get_site('qcif')})
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('volume', 'gigabytes', 10, 'QRIScloud')]
         context = build_context(quotas, form=form)
         self.assertIsNone(quota_sanity.cinder_local_check(context))
 
-        form = FakeForm({'allocation_home': 'monash'})
+        form = FakeForm({'associated_site': common.get_site('monash')})
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('volume', 'gigabytes', 10, 'QRIScloud')]
         context = build_context(quotas, form=form)
         self.assertEqual(quota_sanity.CINDER_NOT_LOCAL,
                          quota_sanity.cinder_local_check(context)[0])
 
-        form = FakeForm({'allocation_home': 'monash'})
+        form = FakeForm({'associated_site': common.get_site('monash')})
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('volume', 'gigabytes', 10, 'monash-03')]
         context = build_context(quotas, form=form)
         self.assertIsNone(quota_sanity.cinder_local_check(context))
 
     def test_manila_checks(self):
+        common.sites_setup()
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('volume', 'gigabytes', 10, 'QRIScloud-GPFS')]
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.manila_local_check(context))
 
-        form = FakeForm({'allocation_home': 'national'})
+        form = FakeForm({'associated_site': None})
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('share', 'shares', 10, 'QRIScloud-GPFS')]
         context = build_context(quotas, form=form)
         self.assertIsNone(quota_sanity.manila_local_check(context))
 
-        form = FakeForm({'allocation_home': 'monash'})
+        form = FakeForm({'associated_site': common.get_site('uom')})
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('share', 'shares', 10, 'QRIScloud-GPFS')]
         context = build_context(quotas, form=form)
