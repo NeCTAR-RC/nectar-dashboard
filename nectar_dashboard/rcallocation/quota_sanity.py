@@ -26,10 +26,6 @@ APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 
 
-def is_node_local(home):
-    return home and home not in ['', 'national', 'unassigned']
-
-
 def storage_zone_to_home(zone):
     for home, zones in settings.ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS.items():
         if zone in zones:
@@ -85,30 +81,30 @@ def cinder_instance_check(context):
 
 
 def cinder_local_check(context):
-    alloc_home = context.form.cleaned_data.get('allocation_home', None)
-    if is_node_local(alloc_home):
+    associated_site = context.get_field('associated_site')
+    if associated_site:
         for q in context.get_all('volume.gigabytes'):
             if q['value'] <= 0:
                 continue
             zone_home = storage_zone_to_home(q['zone'])
-            if zone_home and zone_home != alloc_home:
+            if zone_home and zone_home != associated_site.name:
                 return (CINDER_NOT_LOCAL,
                         '%s-local allocation requests volume storage in %s'
-                        % (alloc_home, q['zone']))
+                        % (associated_site.name, q['zone']))
     return None
 
 
 def manila_local_check(context):
-    alloc_home = context.form.cleaned_data.get('allocation_home', None)
-    if is_node_local(alloc_home):
+    associated_site = context.get_field('associated_site')
+    if associated_site:
         for q in context.get_all('share.shares'):
             if q['value'] <= 0:
                 continue
             zone_home = storage_zone_to_home(q['zone'])
-            if zone_home and zone_home != alloc_home:
+            if zone_home and zone_home != associated_site.name:
                 return (MANILA_NOT_LOCAL,
                         '%s-local allocation requests shares in %s'
-                        % (alloc_home, q['zone']))
+                        % (associated_site.name, q['zone']))
     return None
 
 
@@ -177,7 +173,8 @@ STD_CHECKS = [instance_vcpu_check,
 class QuotaSanityContext(object):
 
     def __init__(self, form=None, requested=True, user=None,
-                 quotas=[], approving=False, checks=STD_CHECKS):
+                 quotas=[], approving=False, checks=STD_CHECKS,
+                 allocation=None):
         self.all_quotas = {}
         self._do_add(quotas)
         self.checks = checks
@@ -185,6 +182,7 @@ class QuotaSanityContext(object):
         self.form = form
         self.user = user
         self.approving = approving
+        self.allocation = allocation
 
     def add_quotas(self, quotas_to_check):
         self._do_add(self._convert_quotas(quotas_to_check))
@@ -235,3 +233,9 @@ class QuotaSanityContext(object):
     def get_all(self, quota_name):
         return [q for q in self.all_quotas.values()
                 if q['name'] == quota_name and q['value'] > 0]
+
+    def get_field(self, name):
+        value = self.form.cleaned_data.get(name)
+        if value is None and self.allocation:
+            value = getattr(self.allocation, name, None)
+        return value
