@@ -14,6 +14,7 @@
 from django.conf import settings
 from django_filters import rest_framework as filters
 from rest_framework import decorators
+from rest_framework import exceptions
 from rest_framework import permissions
 from rest_framework import response
 from rest_framework import serializers
@@ -263,19 +264,60 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
+def valid_site(name):
+    if name == '' or name == 'None':
+        return None
+    try:
+        return models.Site.objects.get(name=name)
+    except models.Site.DoesNotExist:
+        raise serializers.ValidationError("Site '%s' does not exist" % name)
+
+
+class AllocationHomeField(serializers.Field):
+    def to_representation(self, obj):
+        return obj.allocation_home
+
+    def to_internal_value(self, data):
+        if data in ('unassigned', 'national'):
+            raise serializers.ValidationError(
+                "'allocation_home' must be a real site name")
+        site = valid_site(data)
+        if site is None:
+            raise serializers.ValidationError(
+                "'allocation_home' must be a real site name")
+        return {'allocation_home': {'national': False,
+                                    'associated_site': site}}
+
+
+class AssociatedSiteField(serializers.Field):
+    def to_representation(self, obj):
+        return obj.name if obj else None
+
+    def to_internal_value(self, data):
+        site = valid_site(data)
+        return site
+
+
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
     chief_investigator = serializers.SerializerMethodField()
+    allocation_home = AllocationHomeField(source='*',
+                                          required=False)
     allocation_home_display = serializers.SerializerMethodField()
+    associated_site = AssociatedSiteField(allow_null=True,
+                                          required=False)
 
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by', 'notes', 'status_explanation',
-                   'allocation_home', 'parent_request')
+                   'parent_request')
         read_only_fields = ('status', 'start_date', 'end_date',
+                            'national', 'associated_site',
                             'contact_email', 'approver_email',
-                            'project_id', 'provisioned', 'notifications')
+                            'project_id', 'provisioned', 'notifications',
+                            'allocation_home',
+                            'allocation_home_display')
 
     @staticmethod
     def get_status_display(obj):
@@ -283,7 +325,7 @@ class AllocationSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_allocation_home_display(obj):
-        return obj.get_allocation_home_display()
+        return obj.allocation_home_display
 
     @staticmethod
     def get_chief_investigator(obj):
@@ -329,7 +371,9 @@ class AllocationFilter(filters.FilterSet):
         model = models.AllocationRequest
         fields = ('status', 'parent_request_id', 'project_id',
                   'project_name', 'provisioned', 'parent_request',
-                  'allocation_home', 'contact_email', 'approver_email',
+                  # 'allocation_home', not working ...
+                  'associated_site', 'national',
+                  'contact_email', 'approver_email',
                   'start_date', 'end_date', 'modified_time', 'created_by')
 
 
@@ -352,12 +396,35 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
                 'quotas__quota_set__resource__service_type',
                 'quotas__quota_set__resource', 'investigators')
 
+    def _perform_create_or_update(self, serializer, kwargs):
+        data = serializer.validated_data
+        compat_info = data.get('allocation_home')
+        if not self.is_read_admin():
+            if data.get('national') \
+               or data.get('associated_site') \
+               or data.get('allocation_home'):
+                raise exceptions.PermissionDenied()
+        if compat_info:
+            if data.get('associated_site') or data.get('national'):
+                raise serializers.ValidationError(
+                    "Cannot use 'allocation_home' with 'national' or "
+                    + "'associated_site'")
+            kwargs.update(compat_info)
+            data.pop('allocation_home')
+        return serializer.save(**kwargs)
+
     def perform_create(self, serializer):
         kwargs = {'created_by': self.request.user.token.project['id']}
         if not serializer.validated_data.get('contact_email'):
             kwargs['contact_email'] = self.request.user.username
-        allocation = serializer.save(**kwargs)
+        allocation = self._perform_create_or_update(serializer, kwargs)
         allocation.send_notifications()
+
+    def perform_update(self, serializer):
+        if serializer.validated_data.get('allocation_home'):
+            raise serializers.ValidationError(
+                "Cannot update 'allocation_home'")
+        self._perform_create_or_update(serializer, {})
 
     def get_serializer_class(self):
         if self.is_read_admin():
@@ -385,6 +452,16 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     @decorators.detail_route(methods=['post'])
     def approve(self, request, pk=None):
         allocation = self.get_object()
+        # There are two ways to deal with this.  'approve' could infer the
+        # associated site from the request.user.username ... except that
+        # "cores" people don't have a single site.  Or it could just say
+        # that the associated site must have already been set explicitly;
+        # e.g. via an earlier 'create' or 'amend'.
+        if (allocation.associated_site is None):
+            return response.Response(
+                {'error': "The associated_site attribute must be set "
+                 "before approving"},
+                status=status.HTTP_400_BAD_REQUEST)
         utils.copy_allocation(allocation)
         allocation.status = models.AllocationRequest.APPROVED
         allocation.provisioned = False
