@@ -284,6 +284,24 @@ class AllocationRequest(models.Model):
         help_text="""Allocation home of the allocation""",
     )
 
+    associated_site = models.ForeignKey(
+        'Site',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        help_text="""The Nectar site that is primarily associated
+        with this allocation.  Under normal circumstances, this will
+        be the site whose approver has most recently approved the
+        allocation""",
+    )
+
+    national = models.BooleanField(
+        "National funding",
+        default=False,
+        help_text="""If true, this indicates that the allocation
+        was most recently assessed as meeting the criteria for Nectar
+        National funding""")
+
     provisioned = models.BooleanField(default=False)
 
     notes = models.TextField(
