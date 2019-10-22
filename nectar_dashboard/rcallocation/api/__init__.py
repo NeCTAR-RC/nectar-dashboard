@@ -260,12 +260,17 @@ class AllocationSerializer(serializers.ModelSerializer):
     status_display = serializers.SerializerMethodField()
     chief_investigator = serializers.SerializerMethodField()
     allocation_home_display = serializers.SerializerMethodField()
+    associated_site = serializers.PrimaryKeyRelatedField(
+        allow_null=True,
+        required=False,
+        queryset=models.Site.objects.all())
 
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by', 'notes', 'status_explanation',
                    'allocation_home', 'parent_request')
         read_only_fields = ('status', 'start_date', 'end_date',
+                            'national', 'associated_site',
                             'contact_email', 'approver_email',
                             'project_id', 'provisioned', 'notifications')
 
@@ -321,7 +326,7 @@ class AllocationFilter(filters.FilterSet):
         model = models.AllocationRequest
         fields = ('status', 'parent_request_id', 'project_id',
                   'project_name', 'provisioned', 'parent_request',
-                  'allocation_home', 'contact_email', 'approver_email',
+                  'associated_site', 'contact_email', 'approver_email',
                   'start_date', 'end_date', 'modified_time', 'created_by')
 
 
@@ -377,6 +382,15 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     @decorators.detail_route(methods=['post'])
     def approve(self, request, pk=None):
         allocation = self.get_object()
+        # There are two ways to deal with this.  'approve' could infer the
+        # associated site from the request.user.username ... except that
+        # "cores" people don't have a single site.  Or it could just say
+        # that the associated site must have already been set explicitly;
+        # e.g. via an earlier 'create' or 'amend'.
+        if (allocation.associated_site is None):
+            return response.Response(
+                {'error': 'The associated_site attribute must be set'},
+                status=status.HTTP_403_FORBIDDEN)
         utils.copy_allocation(allocation)
         allocation.status = models.AllocationRequest.APPROVED
         allocation.provisioned = False

@@ -68,6 +68,14 @@
                       <td>{{ allocation.project_id|default:"(Project not linked)" }}</td>
                     </tr>
                     <tr>
+                      <th>Associated Site</th>
+                      <td>{{ allocation.associated_site }}</td>
+                    </tr>
+                    <tr>
+                      <th>National funded</th>
+                      <td>{{ allocation.national|yesno }}</td>
+                    </tr>
+                    <tr>
                       <th>Provisioned</th>
                       <td>{{ allocation.provisioned|yesno }}</td>
                     </tr>
@@ -326,7 +334,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-            <h3>Allocation Home</h3>
+            <h3>Allocation Home (legacy)</h3>
               <table class="table table-hover">
                 <tr>
                     <th width="200">Home</th>
