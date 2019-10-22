@@ -8,7 +8,14 @@
 {% endblock page_header %}
 
 {% block description %}
-Enter the quotas and end date for the project to be created.
+Instructions for approving an allocation:
+<ul>
+  <li>Review / edit the requested Quotas and Duration for the project.</li>
+  <li>Record the Associated Site for the allocation.</li>
+  <li>Set the National flag if the allocation qualifies for Nectar national funding.</li>
+  <li>Add an optional Comment to be sent to the user.</li>
+  <li>Submit the form.</li>
+</ul>
 {% endblock description %}
 
 {% block form_action %}{% url 'horizon:allocation:requests:approve_request' object.pk %}{% endblock %}
