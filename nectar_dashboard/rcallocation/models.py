@@ -12,7 +12,6 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from nectar_dashboard.rcallocation import allocation_home_choices
 from nectar_dashboard.rcallocation import for_choices
 from nectar_dashboard.rcallocation import grant_type
 from nectar_dashboard.rcallocation import project_duration_choices
@@ -259,14 +258,23 @@ class AllocationRequest(models.Model):
         max_length=255,
         help_text="""Specify NCRIS capabilities supporting this request.""")
 
-    allocation_home = models.CharField(
-        "Allocation Home",
-        choices=allocation_home_choices.ALLOC_HOME_CHOICE[1:],
+    associated_site = models.ForeignKey(
+        'Site',
         blank=True,
         null=True,
-        max_length=128,
-        help_text="""Allocation home of the allocation""",
+        on_delete=models.PROTECT,
+        help_text="""The Nectar site that is primarily associated
+        with this allocation.  Under normal circumstances, this will
+        be the site whose approver has most recently approved the
+        allocation""",
     )
+
+    national = models.BooleanField(
+        "National funding",
+        default=False,
+        help_text="""If true, this indicates that the allocation
+        was most recently assessed as meeting the criteria for Nectar
+        National funding""")
 
     provisioned = models.BooleanField(default=False)
 
@@ -281,6 +289,24 @@ class AllocationRequest(models.Model):
 
     class Meta:
         ordering = ['-modified_time']
+
+    @property
+    def allocation_home(self):
+        if self.national:
+            return 'national'
+        elif not self.associated_site:
+            return 'unassigned'
+        else:
+            return self.associated_site.name
+
+    @property
+    def allocation_home_display(self):
+        if self.national:
+            return 'National'
+        elif not self.associated_site:
+            return 'Unassigned'
+        else:
+            return self.associated_site.display_name
 
     def get_absolute_url(self):
         return reverse('horizon:allocation:requests:allocation_view',
