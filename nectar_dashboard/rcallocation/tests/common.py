@@ -78,8 +78,16 @@ def factory_setup():
 
 
 def sites_setup():
-    models.Site.objects.create(name="qcif")
-    models.Site.objects.create(name="uom")
+    for s in factories.ALL_SITES:
+        display = s + " display"
+        models.Site.objects.get_or_create(name=s, display_name=display)
+
+
+def get_site(name):
+    try:
+        return models.Site.objects.get(name=name)
+    except models.Site.DoesNotExist:
+        return None
 
 
 def approvers_setup():
@@ -234,6 +242,7 @@ def request_allocation(user, model=None, quota_specs=None,
     for_code = fuzzy.FuzzyChoice(FOR_CHOICES.keys())
     quota = fuzzy.FuzzyInteger(1, 100000)
     grant_type = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
+    site = model.associated_site if model else None
 
     model_dict = {'project_name': fuzzy.FuzzyText().fuzz(),
                   'project_description': fuzzy.FuzzyText().fuzz(),
@@ -250,6 +259,7 @@ def request_allocation(user, model=None, quota_specs=None,
                   'geographic_requirements': fuzzy.FuzzyText().fuzz(),
                   'nectar_support': 'nectar supporting',
                   'ncris_support': 'ncris supporting',
+                  'associated_site': site,
                   }
 
     if model:
