@@ -174,7 +174,6 @@ class AllocationTests(base.AllocationAPITest):
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
-                'requested_allocation_home': 'uom',
                 'use_case': 'for testing'}
         response = self.client.post('/rest_api/allocations/', data)
         allocation = models.AllocationRequest.objects.get(id=2)
@@ -190,7 +189,6 @@ class AllocationTests(base.AllocationAPITest):
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
-                'requested_allocation_home': 'uom',
                 'use_case': 'for testing',
                 'contact_email': 'test_override@example.com'}
         response = self.client.post('/rest_api/allocations/', data)
@@ -210,7 +208,6 @@ class AllocationTests(base.AllocationAPITest):
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
-                'requested_allocation_home': 'uom',
                 'use_case': 'for testing'}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -219,7 +216,6 @@ class AllocationTests(base.AllocationAPITest):
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
-                'requested_allocation_home': 'uom',
                 'use_case': 'for testing'}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

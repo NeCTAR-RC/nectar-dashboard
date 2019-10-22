@@ -175,30 +175,14 @@ class AllocationRequest(models.Model):
         Will your instances be long running or created and deleted as needed
         Your answers here will help us.""")
 
-    requested_allocation_home = models.CharField(
-        "Allocation home location",
-        choices=allocation_home_choices.ALLOC_HOME_CHOICE,
-        blank=False,
-        null=False,
-        default='national',
-        max_length=128,
-        help_text="""You can provide a primary location where you expect to
-                use most resources, effectively the main Nectar site for your
-                allocation. Use of other locations is still possible.
-                This can also indicate a specific arrangement with a
-                Nectar site, for example where you obtain support, or if
-                your institution is a supporting member of that site.
-                Select unassigned if you have no preference.
-                """
-    )
-
     geographic_requirements = models.TextField(
         max_length=1024,
         blank=True,
-        verbose_name="Additional location requirements",
+        verbose_name="Special location requirements",
         help_text="""Indicate to the allocations committee any special
-                geographic requirements that you may need, e.g. to run
-                at more than one node.""")
+                geographic requirements that you may need; e.g. to run
+                at a specific node or at multiple nodes.  Please
+                include your reasons for these requirements.""")
 
     project_id = models.CharField(max_length=36, blank=True, null=True)
 

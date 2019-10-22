@@ -43,8 +43,6 @@ class BaseAllocationForm(forms.ModelForm):
             'usage_patterns': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'requested_allocation_home': forms.Select(
-                attrs={'class': 'col-md-6'}),
             'geographic_requirements': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),

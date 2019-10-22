@@ -252,42 +252,6 @@ $('#id_project_name').on('input', function(e) {
   populate_dns_service_name();
 });
 
-
-// Show UoM users modal to MRC dashboard
-function uom_redirect_modal(show) {
-  var formgroup = $('#id_requested_allocation_home').closest('div.form-group');
-  var inputgroup = $('#id_requested_allocation_home').closest('div.input-group');
-  if (show) {
-    formgroup.addClass('has-error');
-    $('.submit-form-button').attr('disabled', true);
-    $('#modal-uom-dashboard').modal('show');
-    var msg = '<span id="allocation_home_uom_error" class="help-block">You must use the Melbourne Research Cloud dashboard instead</span>';
-    if (!$("#allocation_home_uom_error").length) {
-      inputgroup.append(msg);
-    }
-  }
-  else {
-    $('.submit-form-button').removeAttr('disabled');
-    $('#allocation_home_uom_error').remove();
-    formgroup.removeClass('has-error');
-  }
-}
-
-// Show/hide UoM modal on change
-$('#id_requested_allocation_home').on('change', function() {
-  var show = this.value == 'uom';
-  uom_redirect_modal(show);
-});
-
-
-// Show UoM modal on first load for renewals
-$(function(){
-  var home = $('#id_requested_allocation_home').val();
-  var show = home == 'uom';
-  uom_redirect_modal(show);
-});
-
-
 (function($) {
 
     function create_form_row(formset, opts) {

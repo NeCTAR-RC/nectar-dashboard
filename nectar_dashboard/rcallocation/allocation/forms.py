@@ -14,7 +14,7 @@ class AllocationApproveForm(forms.ModelForm):
         fields = (
             'project_name', 'project_description',
             'estimated_project_duration', 'status_explanation',
-            'requested_allocation_home', 'allocation_home',
+            'allocation_home',
         )
 
         exclude = ('nectar_support', 'ncris_support',)
@@ -26,8 +26,6 @@ class AllocationApproveForm(forms.ModelForm):
             'status_explanation': forms.Textarea(
                 attrs={'class': 'col-md-6 form-control',
                        'style': 'height:120px; width:420px'}),
-            'requested_allocation_home': forms.Select(
-                attrs={'class': 'col-md-6'}),
             'allocation_home': forms.Select(attrs={'class': 'col-md-6'}),
 
         }
@@ -52,12 +50,6 @@ class AllocationApproveForm(forms.ModelForm):
             current RC-NAS policy.  Otherwise they should set it to
             their own node.'''
         self.fields['allocation_home'].widget.attrs['class'] = 'form-control'
-        self.fields['requested_allocation_home'].label = \
-            'Requested Allocation Home'
-        self.fields['requested_allocation_home'].widget.attrs[
-            'class'] = 'form-control'
-        self.fields['requested_allocation_home'].widget.attrs[
-            'readonly'] = True
 
         self.instance.status = 'A'
 
