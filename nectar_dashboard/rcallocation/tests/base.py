@@ -16,6 +16,8 @@ from rest_framework import test
 
 from keystoneclient.v3 import roles
 
+from nectar_dashboard.rcallocation import models
+
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 from nectar_dashboard.rcallocation.tests import utils
@@ -56,6 +58,7 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
 class AllocationAPITest(test.APITestCase):
 
     def setUp(self, *args, **kwargs):
+        common.sites_setup()
         common.factory_setup()
         self.user = utils.get_user(id='user1',
                                    username='bob',
@@ -72,4 +75,6 @@ class AllocationAPITest(test.APITestCase):
                                          project_name='admin-proj',
                                          roles=['admin'])
         self.allocation = factories.AllocationFactory.create(
-            contact_email=self.user.username, status='E', create_quotas=False)
+            contact_email=self.user.username,
+            status=models.AllocationRequest.SUBMITTED,
+            create_quotas=False)
