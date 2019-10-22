@@ -174,13 +174,18 @@ class AllocationTests(base.AllocationAPITest):
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
-                'use_case': 'for testing'}
+                'use_case': 'for testing',
+                'national': False,
+                'associated_site': ''}
         response = self.client.post('/rest_api/allocations/', data)
-        allocation = models.AllocationRequest.objects.get(id=2)
-        self.assertEqual(self.user.token.project['id'], allocation.created_by)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        allocation = models.AllocationRequest.objects.get(
+            project_name='test-project')
+        self.assertEqual(self.user.token.project['id'], allocation.created_by)
         self.assertEqual('test-project', response.data['project_name'])
         self.assertEqual(self.user.username, response.data['contact_email'])
+        self.assertIsNone(response.data['associated_site'])
+        self.assertFalse(response.data['national'])
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
 
@@ -192,10 +197,11 @@ class AllocationTests(base.AllocationAPITest):
                 'use_case': 'for testing',
                 'contact_email': 'test_override@example.com'}
         response = self.client.post('/rest_api/allocations/', data)
-        allocation = models.AllocationRequest.objects.get(id=2)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        allocation = models.AllocationRequest.objects.get(
+            project_name='test-project')
         self.assertEqual(self.admin_user.token.project['id'],
                          allocation.created_by)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual('test-project', response.data['project_name'])
         self.assertEqual('test_override@example.com',
                          response.data['contact_email'])
@@ -232,6 +238,14 @@ class AllocationTests(base.AllocationAPITest):
         self.client.force_authenticate(user=self.approver_user)
         allocation = factories.AllocationFactory.create(
             status=models.AllocationRequest.APPROVED)
+        response = self.client.post(
+            '/rest_api/allocations/%s/approve/' % allocation.id)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_approve_no_site(self):
+        self.client.force_authenticate(user=self.approver_user)
+        allocation = factories.AllocationFactory.create(
+            associated_site=None)
         response = self.client.post(
             '/rest_api/allocations/%s/approve/' % allocation.id)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
