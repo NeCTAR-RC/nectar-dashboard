@@ -11,4 +11,8 @@ manila-ui==2.18.0
 django==1.11.11
 django-cors-headers
 python-memcached
+# In novaclient 16.0.0 they have removed v2/list_extensions.py.  This breaks
+# horizon/stein.  Root cause has been fixed in Horizon commit:
+# 20b91e4216875cbef5c60161724d317a7287223a 
+python-novaclient<16.0.0
 XStatic-jQuery<2
