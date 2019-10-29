@@ -11,4 +11,5 @@ manila-ui==2.18.0
 django==1.11.11
 django-cors-headers
 python-memcached
+python-novaclient<16.0.0
 XStatic-jQuery<2
