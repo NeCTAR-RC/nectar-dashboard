@@ -78,8 +78,8 @@ def factory_setup():
 
 
 def sites_setup():
-    models.Site.objects.create(name="qcif")
-    models.Site.objects.create(name="uom")
+    for s in factories.ALL_SITES:
+        models.Site.objects.create(name=s, display_name=s)
 
 
 def approvers_setup():
@@ -235,6 +235,7 @@ def request_allocation(user, model=None, quota_specs=None,
     quota = fuzzy.FuzzyInteger(1, 100000)
     alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
     grant_type = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
+    site = model.associated_site if model else None
 
     model_dict = {'project_name': fuzzy.FuzzyText().fuzz(),
                   'project_description': fuzzy.FuzzyText().fuzz(),
@@ -250,6 +251,7 @@ def request_allocation(user, model=None, quota_specs=None,
                   'estimated_number_users': quota.fuzz(),
                   'geographic_requirements': fuzzy.FuzzyText().fuzz(),
                   'requested_allocation_home': alloc_home.fuzz(),
+                  'associated_site': site,
                   'nectar_support': 'nectar supporting',
                   'ncris_support': 'ncris supporting',
                   }
