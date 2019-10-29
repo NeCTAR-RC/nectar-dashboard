@@ -61,8 +61,10 @@ class BaseAllocationListTable(tables.DataTable):
                             verbose_name="Name", )
     requested_home = tables.Column('requested_allocation_home',
                                     verbose_name='Requested Home Location')
-    allocation_home = tables.Column('allocation_home',
-                                    verbose_name='Current Home Location')
+    associated_site = tables.Column('associated_site',
+                                    verbose_name='Current Associated Site')
+    national = tables.Column('national',
+                             verbose_name='National')
     approver = tables.Column('approver_email',
                              verbose_name='Approver')
     contact = tables.Column("contact_email", verbose_name="Contact")
