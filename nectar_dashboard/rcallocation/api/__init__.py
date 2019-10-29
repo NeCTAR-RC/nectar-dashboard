@@ -266,6 +266,7 @@ class AllocationSerializer(serializers.ModelSerializer):
         exclude = ('created_by', 'notes', 'status_explanation',
                    'allocation_home', 'parent_request')
         read_only_fields = ('status', 'start_date', 'end_date',
+                            'national', 'associated_site',
                             'contact_email', 'approver_email',
                             'project_id', 'provisioned', 'notifications')
 
@@ -321,7 +322,7 @@ class AllocationFilter(filters.FilterSet):
         model = models.AllocationRequest
         fields = ('status', 'parent_request_id', 'project_id',
                   'project_name', 'provisioned', 'parent_request',
-                  'allocation_home', 'contact_email', 'approver_email',
+                  'associated_site', 'contact_email', 'approver_email',
                   'start_date', 'end_date', 'modified_time', 'created_by')
 
 
@@ -377,6 +378,9 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     @decorators.detail_route(methods=['post'])
     def approve(self, request, pk=None):
         allocation = self.get_object()
+        if (allocation.associated_site is None):
+            return response.Response({'error': 'associated_site not set'},
+                                     status=status.HTTP_400_BAD_REQUEST)
         utils.copy_allocation(allocation)
         allocation.status = models.AllocationRequest.APPROVED
         allocation.provisioned = False
