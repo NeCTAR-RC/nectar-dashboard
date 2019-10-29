@@ -14,7 +14,7 @@ class AllocationApproveForm(forms.ModelForm):
         fields = (
             'project_name', 'project_description',
             'estimated_project_duration', 'status_explanation',
-            'requested_allocation_home', 'allocation_home',
+            'requested_allocation_home', 'associated_site', 'national',
         )
 
         exclude = ('nectar_support', 'ncris_support',)
@@ -28,8 +28,8 @@ class AllocationApproveForm(forms.ModelForm):
                        'style': 'height:120px; width:420px'}),
             'requested_allocation_home': forms.Select(
                 attrs={'class': 'col-md-6'}),
-            'allocation_home': forms.Select(attrs={'class': 'col-md-6'}),
-
+            'associated_site': forms.Select(attrs={'class': 'col-md-6'}),
+            'national': forms.CheckboxInput(attrs={'class': 'col-md-6'}),
         }
 
     def __init__(self, **kwargs):
@@ -45,13 +45,18 @@ class AllocationApproveForm(forms.ModelForm):
         self.fields['status_explanation'].help_text = 'Reviewer Comment'
         self.fields['status_explanation'].label = 'Comment'
         self.initial['status_explanation'] = ''
-        self.fields['allocation_home'].required = True
-        self.fields['allocation_home'].help_text = \
-            '''The Approver should set the allocation home to 'national'
-            if the request qualifies for National funding under the
-            current RC-NAS policy.  Otherwise they should set it to
-            their own node.'''
+        self.fields['allocation_home'].label = 'Allocation Home (legacy)'
         self.fields['allocation_home'].widget.attrs['class'] = 'form-control'
+        self.fields['allocation_home'].widget.attrs['readonly'] = True
+        self.fields['associated_site'].required = True
+        self.fields['associated_site'].help_text = \
+            '''The Approver will normally set the Associated Site to their
+            own node.'''
+        self.fields['associated_site'].widget.attrs['class'] = 'form-control'
+        self.fields['national'].required = True
+        self.fields['national'].help_text = \
+            '''The Approver should check National for all allocations
+            that meet the national funduing criteria.'''
         self.fields['requested_allocation_home'].label = \
             'Requested Allocation Home'
         self.fields['requested_allocation_home'].widget.attrs[
