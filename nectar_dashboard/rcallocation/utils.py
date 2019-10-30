@@ -1,3 +1,5 @@
+import re
+
 from nectar_dashboard.rcallocation import models
 
 
@@ -64,3 +66,26 @@ def copy_allocation(allocation):
         grant.save()
 
     return old_object
+
+
+def user_to_organization(user_name):
+    """Figure out the Organization that a Nectar / AAF user belongs to
+    based on the domain name of their AAF username.  This uses the
+    Site / Organization / EmailDomain entities to do the mapping, so
+    it may return None for some users, either because the tables are
+    incomplete, or because the user's domain is not attributable to
+    any organization; e.g. "gmail.com"
+    """
+
+    match = re.fullmatch("[^@]+@([^@]+)", user_name)
+    if match is None:
+        return None
+    parts = match.group(1).split('.')
+    for i in range(0, len(parts)):
+        domain = ".".join(parts[i:])
+        try:
+            domain_object = models.EmailDomain.objects.get(domain=domain)
+            return domain_object.organization
+        except models.EmailDomain.DoesNotExist:
+            pass
+    return None
