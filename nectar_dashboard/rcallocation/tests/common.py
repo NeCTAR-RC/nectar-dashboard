@@ -78,8 +78,14 @@ def factory_setup():
 
 
 def sites_setup():
-    models.Site.objects.create(name="qcif")
-    models.Site.objects.create(name="uom")
+    # In some versions, the Site objects are pre-populated by a migration
+    for name, display_name in [('qcif', 'QCIF'), ('uom', 'Melbourne')]:
+        try:
+            models.Site.objects.get(name=name)
+        except models.Site.DoesNotExist:
+            models.Site.objects.create(name=name,
+                                       display_name=display_name,
+                                       enabled=True)
 
 
 def approvers_setup():
