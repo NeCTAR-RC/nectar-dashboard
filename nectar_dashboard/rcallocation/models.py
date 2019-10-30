@@ -467,6 +467,43 @@ class Site(models.Model):
         return self.display_name
 
 
+class Organization(models.Model):
+    """This represents a high-level organization that Nectar users
+    (with allocations) may belong to.  There is no intention to model
+    organizations within organizations.  However, and Organization may
+    belong to more than one Site (e.g. CSIRO) or no Sites.
+
+    The Site <-> Organization relationship is not intended to constrain
+    the AllocationReqest.associated_site -> Site relationship.
+    """
+
+    # At some point, we should start using the Organization entities
+    # in place of the Institution entity and strings.  But this will
+    # require significant model changes and tidy-up of current and
+    # historic data
+
+    name = models.CharField(unique=True, max_length=32)
+    display_name = models.CharField(max_length=128)
+    site = models.ManyToManyField(Site,
+                                  related_name='sites',
+                                  related_query_name='site')
+
+    def __str__(self):
+        return self.name
+
+
+class EmailDomain(models.Model):
+    """This represents an email domain associated with an Organization.
+    An organization may have multiple email domains.
+    """
+
+    domain = models.CharField(unique=True, max_length=253)
+    organization = models.ForeignKey(Organization)
+
+    def __str__(self):
+        return self.domain
+
+
 class Approver(models.Model):
     """An Approver is a person who is authorized to approve local
     or national allocations for or on behalf of a Site.  An
