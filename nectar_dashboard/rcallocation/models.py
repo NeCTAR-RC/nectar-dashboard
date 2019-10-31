@@ -6,11 +6,11 @@ import logging
 
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.core.urlresolvers import reverse
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.template.loader import render_to_string
+from django.urls import reverse
 
 from nectar_dashboard.rcallocation import allocation_home_choices
 from nectar_dashboard.rcallocation import for_choices
@@ -84,7 +84,7 @@ class AllocationRequest(models.Model):
         (DELETED, 'Deleted'),
     )
     parent_request = models.ForeignKey('AllocationRequest', null=True,
-                                       blank=True)
+                                       blank=True, on_delete=models.SET_NULL)
 
     status = models.CharField(max_length=1, blank=False,
                               choices=REQUEST_STATUS_CHOICES,
@@ -536,7 +536,7 @@ class Resource(models.Model):
         (BOOLEAN, 'Boolean'),
     )
     name = models.CharField(max_length=64)
-    service_type = models.ForeignKey(ServiceType)
+    service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
     quota_name = models.CharField(max_length=32)
     unit = models.CharField(max_length=32)
     requestable = models.BooleanField(default=True)
@@ -561,9 +561,10 @@ class QuotaGroup(models.Model):
     one ServiceType) to a Zone and an AllocationRequest.
     """
 
-    allocation = models.ForeignKey(AllocationRequest, related_name='quotas')
-    zone = models.ForeignKey(Zone)
-    service_type = models.ForeignKey(ServiceType)
+    allocation = models.ForeignKey(AllocationRequest, related_name='quotas',
+                                   on_delete=models.CASCADE)
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ("allocation", "zone", "service_type")
@@ -579,8 +580,8 @@ class Quota(models.Model):
     via the QuotaGroup.)
     """
 
-    group = models.ForeignKey(QuotaGroup)
-    resource = models.ForeignKey(Resource)
+    group = models.ForeignKey(QuotaGroup, on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
     requested_quota = models.PositiveIntegerField(
         'Requested quota',
         default='0')
@@ -598,7 +599,8 @@ class Quota(models.Model):
 
 class ChiefInvestigator(models.Model):
     allocation = models.ForeignKey(AllocationRequest,
-                                   related_name='investigators')
+                                   related_name='investigators',
+                                   on_delete=models.CASCADE)
 
     title = models.CharField(
         'Title',
@@ -664,7 +666,8 @@ class Institution(models.Model):
                     you think will benefit most.""")
 
     allocation = models.ForeignKey(AllocationRequest,
-                                   related_name='institutions')
+                                   related_name='institutions',
+                                   on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ("allocation", "name")
@@ -683,7 +686,8 @@ class Publication(models.Model):
                 DOI/link if available.""")
 
     allocation = models.ForeignKey(AllocationRequest,
-                                   related_name='publications')
+                                   related_name='publications',
+                                   on_delete=models.CASCADE)
 
     def __str__(self):
         return self.publication
@@ -742,7 +746,8 @@ class Grant(models.Model):
         help_text="""Total funding amount in AUD"""
     )
 
-    allocation = models.ForeignKey(AllocationRequest, related_name='grants')
+    allocation = models.ForeignKey(AllocationRequest, related_name='grants',
+                                   on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ("allocation", "grant_type", "funding_body_scheme",

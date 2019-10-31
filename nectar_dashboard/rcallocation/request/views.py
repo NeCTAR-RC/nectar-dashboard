@@ -1,5 +1,5 @@
-from django.core.urlresolvers import reverse
 from django.forms.models import inlineformset_factory
+from django.urls import reverse
 
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import models

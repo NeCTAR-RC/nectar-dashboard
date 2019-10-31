@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='quota',
             name='zone',
-            field=models.ForeignKey(blank=True, to='rcallocation.Zone', null=True),
+            field=models.ForeignKey(blank=True, to='rcallocation.Zone', null=True,
+                                    on_delete=models.CASCADE),
         ),
     ]

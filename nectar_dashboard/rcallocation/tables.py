@@ -1,4 +1,4 @@
-from django.core import urlresolvers
+from django.urls import reverse
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from horizon import tables
@@ -42,7 +42,7 @@ def status_icon(allocation):
 
 def allocation_title(allocation,
                      link='horizon:allocation:requests:allocation_view'):
-    url = urlresolvers.reverse(link, args=(allocation.pk,))
+    url = reverse(link, args=(allocation.pk,))
     # Escape the data inside while allowing our HTML to render
     data = mark_safe('<a href="%s">%s</a>'
                      '<br/>'

@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 ('ncris_support', models.CharField(help_text=b'Specify NCRIS capabilities supporting this request.', max_length=255, verbose_name=b'List NCRIS capabilities supporting this request', blank=True)),
                 ('funding_national_percent', models.IntegerField(default=b'100', help_text=b'Percentage funded under the National\n                    Allocation Scheme.', error_messages={b'max_value': b'The maximum percent is 100', b'min_value': b'The minimum percent is 0'}, verbose_name=b'Nationally Funded Percentage [0..100]', validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(100)])),
                 ('funding_node', models.CharField(choices=[(b'nci', b'Australian Capital Territory (NCI)'), (b'intersect', b'New South Wales (Intersect)'), (b'qcif', b'Queensland (QCIF)'), (b'ersa', b'South Australia (eRSA)'), (b'tpac', b'Tasmania (TPAC)'), (b'uom', b'Victoria (Melbourne)'), (b'monash', b'Victoria (Monash)'), (b'pawsey', b'Western Australia (Pawsey)')], max_length=128, blank=True, help_text=b'You can choose the node that complements\n                    the National Funding.', null=True, verbose_name=b'Node Funding Remainder (if applicable)')),
-                ('parent_request', models.ForeignKey(blank=True, to='rcallocation.AllocationRequest', null=True)),
+                ('parent_request', models.ForeignKey(blank=True, to='rcallocation.AllocationRequest', null=True, on_delete=models.SET_NULL)),
             ],
         ),
         migrations.CreateModel(
@@ -68,7 +68,7 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(help_text=b'Email address must belong the university or\n            organisation for accountability.', max_length=254, verbose_name=b'Institutional email address')),
                 ('institution', models.CharField(help_text=b'The name of the institution or university of\n                    the chief investigator including the schools,\n                    faculty and/or department.', max_length=200, verbose_name=b'Institution')),
                 ('additional_researchers', models.TextField(default=b'', help_text=b'Please list all other primary investigators, partner\n        investigators and other research collaborators', max_length=1000, verbose_name=b'Please list all other primary investigators, partner investigators and other research collaborators', blank=True)),
-                ('allocation', models.ForeignKey(related_name='investigators', to='rcallocation.AllocationRequest')),
+                ('allocation', models.ForeignKey(related_name='investigators', to='rcallocation.AllocationRequest', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
                 ('grant_id', models.CharField(help_text=b'Specify the grant id.', max_length=200, verbose_name=b'Grant ID', blank=True)),
                 ('first_year_funded', models.IntegerField(default=2015, help_text=b'Specify the first year funded', error_messages={b'max_value': b'Please input a year between 1970 ~ 3000', b'min_value': b'Please input a year between 1970 ~ 3000'}, verbose_name=b'First year funded', validators=[django.core.validators.MinValueValidator(1970), django.core.validators.MaxValueValidator(3000)])),
                 ('total_funding', models.FloatField(help_text=b'Total funding amount in AUD', verbose_name=b'Total funding (AUD)', validators=[django.core.validators.MinValueValidator(1)])),
-                ('allocation', models.ForeignKey(related_name='grants', to='rcallocation.AllocationRequest')),
+                ('allocation', models.ForeignKey(related_name='grants', to='rcallocation.AllocationRequest', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(help_text=b'List the Australian research institutions and\n                    universities supported by this application. If this\n                    application is just for you, just write the name of\n                    your institution or university. If you are running a\n                    public web service list the Australian research\n                    institutions and universities that\n                    you think will benefit most.', max_length=200, verbose_name=b'Supported institutions')),
-                ('allocation', models.ForeignKey(related_name='institutions', to='rcallocation.AllocationRequest')),
+                ('allocation', models.ForeignKey(related_name='institutions', to='rcallocation.AllocationRequest', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -96,7 +96,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('publication', models.CharField(help_text=b'Please provide any traditional and non-traditional\n                research outputs using a citation style text reference\n                for each. eg. include article/title, journal/outlet, year,\n                DOI/link if available.', max_length=255, verbose_name=b'Publication/Output')),
-                ('allocation', models.ForeignKey(related_name='publications', to='rcallocation.AllocationRequest')),
+                ('allocation', models.ForeignKey(related_name='publications', to='rcallocation.AllocationRequest', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
                 ('requested_quota', models.IntegerField(default=b'0', verbose_name=b'Requested quota')),
                 ('quota', models.IntegerField(default=b'0', verbose_name=b'Allocated quota')),
                 ('units', models.CharField(default=b'GB', max_length=64, verbose_name=b'The units the quota is stored in.')),
-                ('allocation', models.ForeignKey(related_name='quotas', to='rcallocation.AllocationRequest')),
+                ('allocation', models.ForeignKey(related_name='quotas', to='rcallocation.AllocationRequest', on_delete=models.CASCADE)),
             ],
         ),
         migrations.AlterUniqueTogether(

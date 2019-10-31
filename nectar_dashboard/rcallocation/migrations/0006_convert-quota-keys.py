@@ -54,12 +54,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='quota',
             name='resource',
-            field=models.ForeignKey(to='rcallocation.Resource'),
+            field=models.ForeignKey(to='rcallocation.Resource',
+                                    on_delete=models.CASCADE),
         ),
         migrations.AlterField(
             model_name='quota',
             name='zone',
-            field=models.ForeignKey(to='rcallocation.Zone'),
+            field=models.ForeignKey(to='rcallocation.Zone',
+                                    on_delete=models.CASCADE),
         ),
         migrations.AlterField(
             model_name='zone',

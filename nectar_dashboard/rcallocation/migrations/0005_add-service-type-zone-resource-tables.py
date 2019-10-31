@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='resource',
             name='service_type',
-            field=models.ForeignKey(to='rcallocation.ServiceType'),
+            field=models.ForeignKey(to='rcallocation.ServiceType', on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='resource',

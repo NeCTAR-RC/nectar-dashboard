@@ -67,23 +67,24 @@ class Migration(migrations.Migration):
           migrations.AddField(
                model_name='quotagroup',
                name='allocation',
-               field=models.ForeignKey(related_name='quotas', to='rcallocation.AllocationRequest'),
+               field=models.ForeignKey(related_name='quotas', to='rcallocation.AllocationRequest',
+                                       on_delete=models.CASCADE),
           ),
           migrations.AddField(
                model_name='quotagroup',
                name='service_type',
-               field=models.ForeignKey(to='rcallocation.ServiceType'),
+               field=models.ForeignKey(to='rcallocation.ServiceType', on_delete=models.CASCADE),
           ),
           migrations.AddField(
                model_name='quotagroup',
                name='zone',
-               field=models.ForeignKey(to='rcallocation.Zone'),
+               field=models.ForeignKey(to='rcallocation.Zone', on_delete=models.CASCADE),
           ),
           migrations.RunPython(create_dummy_group),
           migrations.AddField(
                model_name='quota',
                name='group',
-               field=models.ForeignKey(default=1, to='rcallocation.QuotaGroup'),
+               field=models.ForeignKey(default=1, to='rcallocation.QuotaGroup', on_delete=models.CASCADE),
                preserve_default=False,
           ),
           migrations.RunPython(convert_quotas),

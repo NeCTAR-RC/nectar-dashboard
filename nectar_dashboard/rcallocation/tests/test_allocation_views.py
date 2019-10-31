@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation.tests import base

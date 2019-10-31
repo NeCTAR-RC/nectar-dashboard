@@ -1,7 +1,7 @@
-from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from nectar_dashboard.rcallocation import models
