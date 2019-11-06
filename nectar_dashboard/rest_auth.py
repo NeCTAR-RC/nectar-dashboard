@@ -165,3 +165,16 @@ class CanUpdate(ModifyPermission):
 class CanAmend(ModifyPermission):
     states = [models.AllocationRequest.APPROVED,
               models.AllocationRequest.DECLINED]
+
+
+class CanReadApprovers(Permission):
+    roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES \
+            + settings.ALLOCATION_APPROVER_ROLES
+
+
+class CanUpdateApprovers(ModifyPermission):
+    roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+
+
+class CanUpdateSites(ModifyPermission):
+    roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES

@@ -406,4 +406,6 @@ REST_VIEW_SETS = (
     ('service-types', 'nectar_dashboard.rcallocation.api.ServiceTypeViewSet', None),
     ('for-codes', 'nectar_dashboard.rcallocation.api.for.FORViewSet', 'for-codes'),
     ('for-tree', 'nectar_dashboard.rcallocation.api.for.AllocationTreeViewSet', 'for-tree'),
+    ('sites', 'nectar_dashboard.rcallocation.api.SiteViewSet', None),
+    ('approvers', 'nectar_dashboard.rcallocation.api.ApproverViewSet', None),
 )
