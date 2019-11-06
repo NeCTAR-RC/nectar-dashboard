@@ -109,7 +109,8 @@ class SiteViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         # Sites should be disabled, not destroyed.
-        return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return response.Response({'error': 'Sites should not be destroyed'},
+                                 status=status.HTTP_403_FORBIDDEN)
 
 
 class ApproverSerializer(serializers.ModelSerializer):
@@ -121,16 +122,21 @@ class ApproverSerializer(serializers.ModelSerializer):
 
 
 class ApproverViewSet(viewsets.ModelViewSet):
-    # This viewset exposes approver email addresses, and might
-    # in the future control who is permitted to approve allocations.
-    # Lock it down to admins.
-    permission_classes = (rest_auth.IsAdmin,)
     queryset = models.Approver.objects.all()
     serializer_class = ApproverSerializer
 
     def destroy(self, request, *args, **kwargs):
         # Approvers should be disabled, not destroyed.
-        return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return response.Response({'error':
+                                  'Approvers should not be destroyed'},
+                                 status=status.HTTP_403_FORBIDDEN)
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [rest_auth.CanReadApprovers]
+        else:
+            permission_classes = [rest_auth.CanUpdateApprovers]
+        return [permission() for permission in permission_classes]
 
 
 class QuotaSerializer(serializers.ModelSerializer):
