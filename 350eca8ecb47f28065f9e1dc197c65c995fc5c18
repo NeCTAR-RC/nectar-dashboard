@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "c853bbad_5b683c04",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_sites.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-11-07T04:37:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5731d2b1_2b2b8d47",
+      "range": {
+        "startLine": 68,
+        "startChar": 13,
+        "endLine": 68,
+        "endChar": 19
+      },
+      "revId": "350eca8ecb47f28065f9e1dc197c65c995fc5c18",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "34a6bf05_324b8fe6",
         "filename": "nectar_dashboard/rest_auth.py",
         "patchSetId": 2
@@ -94,6 +118,30 @@
     },
     {
       "key": {
+        "uuid": "55849b8b_e2b02f83",
+        "filename": "nectar_dashboard/rest_auth.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-11-07T04:37:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "34a6bf05_324b8fe6",
+      "range": {
+        "startLine": 170,
+        "startChar": 6,
+        "endLine": 170,
+        "endChar": 22
+      },
+      "revId": "350eca8ecb47f28065f9e1dc197c65c995fc5c18",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "604112cd_a7f58999",
         "filename": "nectar_dashboard/rest_auth.py",
         "patchSetId": 2
@@ -114,6 +162,30 @@
       "revId": "350eca8ecb47f28065f9e1dc197c65c995fc5c18",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3004bb9c_2206e2f8",
+        "filename": "nectar_dashboard/rest_auth.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-11-07T04:37:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "604112cd_a7f58999",
+      "range": {
+        "startLine": 175,
+        "startChar": 0,
+        "endLine": 180,
+        "endChar": 50
+      },
+      "revId": "350eca8ecb47f28065f9e1dc197c65c995fc5c18",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
