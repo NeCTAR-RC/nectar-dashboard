@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "028ba50d_8204f5aa",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-07T02:59:40Z",
+      "side": 1,
+      "message": "I think this should stay as a 405 as a 403 says to the user I need to have more privileges to delete a site which is false.",
+      "range": {
+        "startLine": 113,
+        "startChar": 47,
+        "endLine": 113,
+        "endChar": 65
+      },
+      "revId": "2628ac5de62651d3b43460a4edab660080809efb",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c45cdcd_bb0f3cd7",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-07T02:59:40Z",
+      "side": 1,
+      "message": "dito",
+      "range": {
+        "startLine": 132,
+        "startChar": 54,
+        "endLine": 132,
+        "endChar": 66
+      },
+      "revId": "2628ac5de62651d3b43460a4edab660080809efb",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}

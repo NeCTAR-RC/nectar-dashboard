@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59be7d36_34488674",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-07T02:59:40Z",
+      "side": 1,
+      "message": "I think this should be kept at a 405 as a 403 would make me think I need more permissions to delete the site as opposed to it\u0027s not allowed at all.",
+      "range": {
+        "startLine": 112,
+        "startChar": 33,
+        "endLine": 113,
+        "endChar": 66
+      },
+      "revId": "350eca8ecb47f28065f9e1dc197c65c995fc5c18",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30e5a685_c9f94cfa",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-07T02:59:40Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 130,
+        "startChar": 33,
+        "endLine": 132,
+        "endChar": 66
+      },
+      "revId": "350eca8ecb47f28065f9e1dc197c65c995fc5c18",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5731d2b1_2b2b8d47",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_sites.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-07T02:59:40Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 68,
+        "startChar": 13,
+        "endLine": 68,
+        "endChar": 19
+      },
+      "revId": "350eca8ecb47f28065f9e1dc197c65c995fc5c18",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "34a6bf05_324b8fe6",
+        "filename": "nectar_dashboard/rest_auth.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-07T02:59:40Z",
+      "side": 1,
+      "message": "maybe rename this to IsAdminOrApprover?",
+      "range": {
+        "startLine": 170,
+        "startChar": 6,
+        "endLine": 170,
+        "endChar": 22
+      },
+      "revId": "350eca8ecb47f28065f9e1dc197c65c995fc5c18",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "604112cd_a7f58999",
+        "filename": "nectar_dashboard/rest_auth.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-07T02:59:40Z",
+      "side": 1,
+      "message": "Don\u0027t think these are required and can just use IsAdmin",
+      "range": {
+        "startLine": 175,
+        "startChar": 0,
+        "endLine": 180,
+        "endChar": 50
+      },
+      "revId": "350eca8ecb47f28065f9e1dc197c65c995fc5c18",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
