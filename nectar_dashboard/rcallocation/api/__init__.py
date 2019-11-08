@@ -114,7 +114,9 @@ class SiteViewSet(viewsets.ModelViewSet):
 
 
 class ApproverSerializer(serializers.ModelSerializer):
-    sites = SiteSerializer(many=True, read_only=True)
+    sites = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=models.Site.objects.all())
 
     class Meta:
         model = models.Approver
