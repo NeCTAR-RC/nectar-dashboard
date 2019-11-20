@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "f36c8081_a906c9f1",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-20T05:17:45Z",
+      "side": 1,
+      "message": "this looks unrelated and potentially dangerous as means users could change the status of their allocation if they know what they\u0027re doing",
+      "range": {
+        "startLine": 18,
+        "startChar": 2,
+        "endLine": 19,
+        "endChar": 47
+      },
+      "revId": "982e7a8847273c531b66df0b9208586c1c352137",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1824aa35_6b1447ad",
+        "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-20T05:17:45Z",
+      "side": 1,
+      "message": "Ah ok I see why you have status.  You can use a different variable to know if this is a new allocation or not. Eg. the form will have an instance if it\u0027s an update",
+      "range": {
+        "startLine": 261,
+        "startChar": 1,
+        "endLine": 262,
+        "endChar": 37
+      },
+      "revId": "982e7a8847273c531b66df0b9208586c1c352137",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f9bbf593_76390861",
         "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
         "patchSetId": 2
