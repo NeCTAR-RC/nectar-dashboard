@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2f21e052_8b7d3179",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-11-21T04:31:01Z",
+      "side": 1,
+      "message": "Removed this",
+      "parentUuid": "f36c8081_a906c9f1",
+      "range": {
+        "startLine": 18,
+        "startChar": 2,
+        "endLine": 19,
+        "endChar": 47
+      },
+      "revId": "982e7a8847273c531b66df0b9208586c1c352137",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1824aa35_6b1447ad",
         "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "f2068c15_3ce99d11",
+        "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-11-21T04:31:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1824aa35_6b1447ad",
+      "range": {
+        "startLine": 261,
+        "startChar": 1,
+        "endLine": 262,
+        "endChar": 37
+      },
+      "revId": "982e7a8847273c531b66df0b9208586c1c352137",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f9bbf593_76390861",
         "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
         "patchSetId": 2
@@ -68,6 +116,30 @@
       "revId": "982e7a8847273c531b66df0b9208586c1c352137",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "704936bf_8e9e5418",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 2
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-11-21T04:31:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f9bbf593_76390861",
+      "range": {
+        "startLine": 306,
+        "startChar": 21,
+        "endLine": 306,
+        "endChar": 30
+      },
+      "revId": "982e7a8847273c531b66df0b9208586c1c352137",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
