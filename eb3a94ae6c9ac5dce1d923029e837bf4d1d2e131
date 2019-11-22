@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d56559a0_a6478f49",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-22T04:04:17Z",
+      "side": 1,
+      "message": "this field should also be removed and turned into a property based on associated_site and is_national",
+      "revId": "eb3a94ae6c9ac5dce1d923029e837bf4d1d2e131",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}

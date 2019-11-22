@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a60cd03_d9f52682",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-22T04:04:17Z",
+      "side": 1,
+      "message": "shouldn\u0027t `national` also be excluded?",
+      "revId": "ef725aef4c94b6dea1716f6242162c2daba9a70b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "22996039_cad92a52",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_base.html",
+        "patchSetId": 8
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-22T04:04:17Z",
+      "side": 1,
+      "message": "should this be here (along with all the other allocation_home and requested_allocation_home stuff? I thought this would be removed?",
+      "range": {
+        "startLine": 119,
+        "startChar": 14,
+        "endLine": 119,
+        "endChar": 130
+      },
+      "revId": "ef725aef4c94b6dea1716f6242162c2daba9a70b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
