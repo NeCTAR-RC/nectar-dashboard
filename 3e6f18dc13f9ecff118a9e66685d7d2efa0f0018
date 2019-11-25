@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb671a7e_5cca2b5f",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-11-25T00:54:51Z",
+      "side": 1,
+      "message": "this should be removed and turned into a property that is based on below 2 fields",
+      "range": {
+        "startLine": 261,
+        "startChar": 0,
+        "endLine": 269,
+        "endChar": 5
+      },
+      "revId": "3e6f18dc13f9ecff118a9e66685d7d2efa0f0018",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
