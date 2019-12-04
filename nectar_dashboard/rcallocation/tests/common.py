@@ -80,9 +80,17 @@ def factory_setup():
 def sites_setup():
     for s in factories.ALL_SITES:
         try:
-            models.Site.objects.get(name=s)
+            display = s + " display"
+            models.Site.objects.get(name=s, display_name=display)
         except models.Site.DoesNotExist:
-            models.Site.objects.create(name=s, display_name=s)
+            models.Site.objects.create(name=s, display_name=display)
+
+
+def get_site(name):
+    try:
+        return models.Site.objects.get(name=name)
+    except models.Site.DoesNotExist:
+        return None
 
 
 def approvers_setup():
