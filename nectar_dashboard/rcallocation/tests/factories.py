@@ -27,7 +27,7 @@ FOR_CHOICES = dict(for_choices.FOR_CHOICES)
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
-ALL_SITES = ['uom', 'qcif']
+ALL_SITES = ['uom', 'qcif', 'monash']
 
 for_code = fuzzy.FuzzyChoice(FOR_CHOICES.keys())
 _1_year = datetime.date.today() + datetime.timedelta(days=365)
@@ -142,7 +142,6 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     for_percentage_2 = 40
     for_percentage_3 = 10
     estimated_number_users = 1000
-    allocation_home = 'monash'
     associated_site = all_sites
     nectar_support = 'nectar supporting'
     ncris_support = 'ncris supporting'

@@ -14,7 +14,7 @@ class AllocationApproveForm(forms.ModelForm):
         fields = (
             'project_name', 'project_description',
             'estimated_project_duration', 'status_explanation',
-            'allocation_home', 'associated_site', 'national',
+            'associated_site', 'national',
         )
 
         exclude = ('nectar_support', 'ncris_support',)
@@ -43,8 +43,6 @@ class AllocationApproveForm(forms.ModelForm):
         self.fields['status_explanation'].help_text = 'Reviewer Comment'
         self.fields['status_explanation'].label = 'Comment'
         self.initial['status_explanation'] = ''
-        self.fields['allocation_home'].label = 'Allocation Home (legacy)'
-        self.fields['allocation_home'].widget.attrs['readonly'] = True
         self.fields['associated_site'].required = True
         self.fields['associated_site'].help_text = \
             '''The Approver will normally set the Associated Site to their

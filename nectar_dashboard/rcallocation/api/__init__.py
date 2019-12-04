@@ -263,24 +263,60 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
+def valid_site(name):
+    if name == '' or name == 'None':
+        return None
+    try:
+        return models.Site.objects.get(name=name)
+    except models.Site.DoesNotExist:
+        raise serializers.ValidationError("Site '%s' does not exist" % name)
+
+
+class AllocationHomeField(serializers.Field):
+    def to_representation(self, obj):
+        return obj.allocation_home
+
+    def to_internal_value(self, data):
+        if data in ('unassigned', 'national'):
+            raise serializers.ValidationError(
+                "'allocation_home' must be a real site name")
+        site = valid_site(data)
+        if site is None:
+            raise serializers.ValidationError(
+                "'allocation_home' must be a real site name")
+        return {'allocation_home': {'national': False,
+                                    'associated_site': site}}
+
+
+class AssociatedSiteField(serializers.Field):
+    def to_representation(self, obj):
+        return obj.name if obj else None
+
+    def to_internal_value(self, data):
+        site = valid_site(data)
+        return site
+
+
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
     chief_investigator = serializers.SerializerMethodField()
+    allocation_home = AllocationHomeField(source='*',
+                                          required=False)
     allocation_home_display = serializers.SerializerMethodField()
-    associated_site = serializers.PrimaryKeyRelatedField(
-        allow_null=True,
-        required=False,
-        queryset=models.Site.objects.all())
+    associated_site = AssociatedSiteField(allow_null=True,
+                                          required=False)
 
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by', 'notes', 'status_explanation',
-                   'allocation_home', 'parent_request')
+                   'parent_request')
         read_only_fields = ('status', 'start_date', 'end_date',
                             'national', 'associated_site',
                             'contact_email', 'approver_email',
-                            'project_id', 'provisioned', 'notifications')
+                            'project_id', 'provisioned', 'notifications',
+                            'allocation_home',
+                            'allocation_home_display')
 
     @staticmethod
     def get_status_display(obj):
@@ -288,7 +324,7 @@ class AllocationSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_allocation_home_display(obj):
-        return obj.get_allocation_home_display()
+        return obj.allocation_home_display
 
     @staticmethod
     def get_chief_investigator(obj):
@@ -322,7 +358,8 @@ class AdminAllocationSerializer(AllocationSerializer):
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by',)
-        read_only_fields = ('parent_request', 'approver_email', 'status'),
+        read_only_fields = ('parent_request', 'approver_email', 'status',
+                            'allocation_home_display'),
 
 
 class AllocationFilter(filters.FilterSet):
@@ -358,9 +395,18 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
                 'quotas__quota_set__resource', 'investigators')
 
     def perform_create(self, serializer):
+        data = serializer.validated_data
         kwargs = {'created_by': self.request.user.token.project['id']}
-        if not serializer.validated_data.get('contact_email'):
+        if not data.get('contact_email'):
             kwargs['contact_email'] = self.request.user.username
+        compat_info = data.get('allocation_home')
+        if compat_info:
+            if data.get('associated_site') or data.get('national'):
+                raise serializers.ValidationError(
+                    "Cannot use 'allocation_home' with 'national' or "
+                    + "'associated_site'")
+            kwargs.update(compat_info)
+            data.pop('allocation_home')
         allocation = serializer.save(**kwargs)
         allocation.send_notifications()
 
