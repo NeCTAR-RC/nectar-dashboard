@@ -11,6 +11,8 @@
 #   under the License.
 #
 
+import pdb
+
 from django.conf import settings
 from django_filters import rest_framework as filters
 from rest_framework import decorators
@@ -263,24 +265,77 @@ class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
+def valid_site(name):
+    if name is None or name == '' or name == 'None':
+        return None
+    try:
+        return models.Site.objects.get(name=name)
+    except models.Site.DoesNotExist:
+        raise serializers.ValidationError("Site '%s' does not exist" % name)
+
+
+class AllocationHomeField(serializers.Field):
+    def to_representation(self, obj):
+        # pdb.set_trace()
+        return obj.allocation_home
+
+    def to_internal_value(self, data):
+        # pdb.set_trace()
+        n = data.get('national', None)
+        h = data.get('allocation_home', None)
+        s = data.get('associated_site', None)
+        if h is not None and (n is not None or s is not None):
+            raise serializers.ValidationError(
+                "Cannot use 'allocation_home' with 'national' or "
+                + "'associated_site'")
+        elif h is None:
+            return {}
+        elif h == 'national':
+            raise serializers.ValidationError(
+                "Cannot use 'allocation_home' for national allocations")
+        else:
+            site = valid_site(h)
+            if site is None:
+                raise serializers.ValidationError(
+                    "'allocation_home' cannot be null or empty")
+            else:
+                return {{'national': False}, {'associated_site': site}}
+
+
+class AssociatedSiteField(serializers.Field):
+    def to_representation(self, obj):
+        # pdb.set_trace()
+        return obj.name if obj else None
+
+    def to_internal_value(self, data):
+        pdb.set_trace()
+        site = valid_site(data)
+        return {'associated_site': site}
+
+
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
     chief_investigator = serializers.SerializerMethodField()
+    allocation_home = AllocationHomeField(source='national.associated_site',
+                                          allow_null=True,
+                                          required=False,
+                                          default=None)
     allocation_home_display = serializers.SerializerMethodField()
-    associated_site = serializers.PrimaryKeyRelatedField(
-        allow_null=True,
-        required=False,
-        queryset=models.Site.objects.all())
+    associated_site = AssociatedSiteField(allow_null=True,
+                                          required=False,
+                                          default=None)
 
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by', 'notes', 'status_explanation',
-                   'allocation_home', 'parent_request')
+                   'parent_request')
         read_only_fields = ('status', 'start_date', 'end_date',
                             'national', 'associated_site',
                             'contact_email', 'approver_email',
-                            'project_id', 'provisioned', 'notifications')
+                            'project_id', 'provisioned', 'notifications',
+                            'allocation_home',
+                            'allocation_home_display')
 
     @staticmethod
     def get_status_display(obj):
@@ -288,7 +343,7 @@ class AllocationSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_allocation_home_display(obj):
-        return obj.get_allocation_home_display()
+        return obj.allocation_home_display
 
     @staticmethod
     def get_chief_investigator(obj):
@@ -322,7 +377,8 @@ class AdminAllocationSerializer(AllocationSerializer):
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by',)
-        read_only_fields = ('parent_request', 'approver_email', 'status'),
+        read_only_fields = ('parent_request', 'approver_email', 'status',
+                            'allocation_home_display'),
 
 
 class AllocationFilter(filters.FilterSet):

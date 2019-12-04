@@ -20,7 +20,7 @@ class BaseAllocationForm(forms.ModelForm):
         model = models.AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
-                   'allocation_home', 'associated_site', 'provisioned',
+                   'associated_site', 'provisioned',
                    'project_id', 'notes', 'notifications')
 
         widgets = {
