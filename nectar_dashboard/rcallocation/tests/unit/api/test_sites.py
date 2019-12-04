@@ -33,12 +33,12 @@ class SiteTest(base.AllocationAPITest):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/rest_api/sites/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(2, len(response.data['results']))
+        self.assertEqual(3, len(response.data['results']))
 
     def test_list_sites_unauthenticated(self):
         response = self.client.get('/rest_api/sites/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(2, len(response.data['results']))
+        self.assertEqual(3, len(response.data['results']))
 
     def test_create_site_no_permission(self):
         self.client.force_authenticate(user=self.user)

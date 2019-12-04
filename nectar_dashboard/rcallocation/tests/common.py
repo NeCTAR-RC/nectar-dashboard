@@ -85,6 +85,13 @@ def sites_setup():
             models.Site.objects.create(name=s, display_name=s)
 
 
+def get_site(name):
+    try:
+        return models.Site.objects.get(name=name)
+    except models.Site.DoesNotExist:
+        return None
+
+
 def approvers_setup():
     qcif = models.Site.objects.get(name="qcif")
     melbourne = models.Site.objects.get(name="uom")

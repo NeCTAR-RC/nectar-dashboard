@@ -26,10 +26,6 @@ APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 
 
-def is_node_local(home):
-    return home and home not in ['', 'national', 'unassigned']
-
-
 def storage_zone_to_home(zone):
     for home, zones in settings.ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS.items():
         if zone in zones:
@@ -85,30 +81,30 @@ def cinder_instance_check(context):
 
 
 def cinder_local_check(context):
-    alloc_home = context.form.cleaned_data.get('allocation_home', None)
-    if is_node_local(alloc_home):
+    associated_site = context.form.cleaned_data.get('associated_site', None)
+    if associated_site:
         for q in context.get_all('volume.gigabytes'):
             if q['value'] <= 0:
                 continue
             zone_home = storage_zone_to_home(q['zone'])
-            if zone_home and zone_home != alloc_home:
+            if zone_home and zone_home != associated_site.name:
                 return (CINDER_NOT_LOCAL,
                         '%s-local allocation requests volume storage in %s'
-                        % (alloc_home, q['zone']))
+                        % (associated_site.name, q['zone']))
     return None
 
 
 def manila_local_check(context):
-    alloc_home = context.form.cleaned_data.get('allocation_home', None)
-    if is_node_local(alloc_home):
+    associated_site = context.form.cleaned_data.get('associated_site', None)
+    if associated_site:
         for q in context.get_all('share.shares'):
             if q['value'] <= 0:
                 continue
             zone_home = storage_zone_to_home(q['zone'])
-            if zone_home and zone_home != alloc_home:
+            if zone_home and zone_home != associated_site.name:
                 return (MANILA_NOT_LOCAL,
                         '%s-local allocation requests shares in %s'
-                        % (alloc_home, q['zone']))
+                        % (associated_site.name, q['zone']))
     return None
 
 

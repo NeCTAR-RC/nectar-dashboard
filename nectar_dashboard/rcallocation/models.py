@@ -12,7 +12,6 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from nectar_dashboard.rcallocation import allocation_home_choices
 from nectar_dashboard.rcallocation import for_choices
 from nectar_dashboard.rcallocation import grant_type
 from nectar_dashboard.rcallocation import project_duration_choices
@@ -259,15 +258,6 @@ class AllocationRequest(models.Model):
         max_length=255,
         help_text="""Specify NCRIS capabilities supporting this request.""")
 
-    allocation_home = models.CharField(
-        "Allocation Home",
-        choices=allocation_home_choices.ALLOC_HOME_CHOICE[1:],
-        blank=True,
-        null=True,
-        max_length=128,
-        help_text="""Allocation home of the allocation""",
-    )
-
     associated_site = models.ForeignKey(
         'Site',
         blank=True,
@@ -299,6 +289,11 @@ class AllocationRequest(models.Model):
 
     class Meta:
         ordering = ['-modified_time']
+
+    def get_allocation_home(self):
+        return 'national' if self.national \
+            else 'nectar' if self.associated_site is None \
+            else self.associated_site.name
 
     def get_absolute_url(self):
         return reverse('horizon:allocation:requests:allocation_view',

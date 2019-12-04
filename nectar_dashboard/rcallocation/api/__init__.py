@@ -267,7 +267,7 @@ class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
     chief_investigator = serializers.SerializerMethodField()
-    allocation_home_display = serializers.SerializerMethodField()
+    allocation_home = serializers.SerializerMethodField()
     associated_site = serializers.PrimaryKeyRelatedField(
         allow_null=True,
         required=False,
@@ -276,19 +276,20 @@ class AllocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by', 'notes', 'status_explanation',
-                   'allocation_home', 'parent_request')
+                   'parent_request')
         read_only_fields = ('status', 'start_date', 'end_date',
                             'national', 'associated_site',
                             'contact_email', 'approver_email',
-                            'project_id', 'provisioned', 'notifications')
+                            'project_id', 'provisioned', 'notifications',
+                            'allocation_home')
 
     @staticmethod
     def get_status_display(obj):
         return obj.get_status_display()
 
     @staticmethod
-    def get_allocation_home_display(obj):
-        return obj.get_allocation_home_display()
+    def get_allocation_home(obj):
+        return obj.get_allocation_home()
 
     @staticmethod
     def get_chief_investigator(obj):
