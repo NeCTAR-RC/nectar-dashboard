@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "792b330a_5a151d6f",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-04T05:40:47Z",
+      "side": 1,
+      "message": "We can\u0027t drop the allocation_home_display field as that is used by api consumers (provisioner uses it for instance)\n\nWe should be able to return the sites friendly name or else National here to keep this compatible?",
+      "range": {
+        "startLine": 292,
+        "startChar": 0,
+        "endLine": 292,
+        "endChar": 3
+      },
+      "revId": "2dbef0b42d6232f0264b2ff7e65a612dd9c1f33e",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "994a9413_da358d7c",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-04T05:40:47Z",
+      "side": 1,
+      "message": "change this to \n\n@property\ndef allocation_home(self):\n\nthat way don\u0027t need to change other stuff as much",
+      "range": {
+        "startLine": 293,
+        "startChar": 4,
+        "endLine": 293,
+        "endChar": 34
+      },
+      "revId": "2dbef0b42d6232f0264b2ff7e65a612dd9c1f33e",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
