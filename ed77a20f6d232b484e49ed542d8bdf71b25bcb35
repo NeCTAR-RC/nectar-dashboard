@@ -1,0 +1,251 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b3a9d87_c18a4f19",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "it\u0027s not required to put this here as a SerializerMethodField is readonly, much like we don\u0027t have status_display and chief_investigator here",
+      "range": {
+        "startLine": 362,
+        "startChar": 30,
+        "endLine": 362,
+        "endChar": 52
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "52aa7ee7_8f52ffb9",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "I\u0027m wondering if we can keep allocation_home here. It might just work and I think there are sites using this filter. Can we also add national to the list of filters.",
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2d95ea8_d895b5d8",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "I think this should be a 400 error, that is what DRF uses mainly for posts that aren\u0027t valid.",
+      "range": {
+        "startLine": 447,
+        "startChar": 35,
+        "endLine": 447,
+        "endChar": 38
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0fc0fafb_9290a9ef",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "should this be required?",
+      "range": {
+        "startLine": 263,
+        "startChar": 8,
+        "endLine": 264,
+        "endChar": 18
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61dcaaf1_5921ed64",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_base.html",
+        "patchSetId": 15
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "change this too maybe to \"Allocation Classification\" ?",
+      "range": {
+        "startLine": 121,
+        "startChar": 50,
+        "endLine": 121,
+        "endChar": 65
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4565152_b20bd066",
+        "filename": "nectar_dashboard/rcallocation/tests/common.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "You should use models.Site.objects.get_or_create here",
+      "range": {
+        "startLine": 82,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 68
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a086e173_5ee123d5",
+        "filename": "nectar_dashboard/rcallocation/tests/factories.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "very very minor nit but you don\u0027t need to prefix this with an underscore here",
+      "range": {
+        "startLine": 41,
+        "startChar": 35,
+        "endLine": 41,
+        "endChar": 37
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f1eb3b54_09c021ef",
+        "filename": "nectar_dashboard/rcallocation/tests/factories.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "this looks redundant?",
+      "range": {
+        "startLine": 129,
+        "startChar": 1,
+        "endLine": 130,
+        "endChar": 47
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f72d1c23_06d543dc",
+        "filename": "nectar_dashboard/rcallocation/tests/factories.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "is this right? It looks as if the it will set the associated_site to a list of all sites as opposed to 1?",
+      "range": {
+        "startLine": 145,
+        "startChar": 22,
+        "endLine": 145,
+        "endChar": 31
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc5fb117_3f5d9a5c",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "users shouldn\u0027t be able to set national and associated site at all, only allocation admins",
+      "range": {
+        "startLine": 183,
+        "startChar": 2,
+        "endLine": 184,
+        "endChar": 38
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4f6b8144_b21e7ea9",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-05T23:57:38Z",
+      "side": 1,
+      "message": "shouldn\u0027t be allowed for this user context",
+      "range": {
+        "startLine": 204,
+        "startChar": 3,
+        "endLine": 206,
+        "endChar": 38
+      },
+      "revId": "ed77a20f6d232b484e49ed542d8bdf71b25bcb35",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
