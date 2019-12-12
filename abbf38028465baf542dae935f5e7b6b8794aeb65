@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c239e406_ae566d26",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-12T00:10:24Z",
+      "side": 1,
+      "message": "because it\u0027s not a model field it can be specified here, can be done like chief_investigator is done",
+      "range": {
+        "startLine": 374,
+        "startChar": 20,
+        "endLine": 374,
+        "endChar": 52
+      },
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bfd83250_802cac17",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-12T00:10:24Z",
+      "side": 1,
+      "message": "I think we should prefetch the site objects here and below too",
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5697d6da_dc8226ca",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-12T00:10:24Z",
+      "side": 1,
+      "message": "I don\u0027t think this is required as that is determined by the serializer. Eg. if normal user these fields won\u0027t be in the serializer at all meaning they will be ignored if the client sends them in",
+      "range": {
+        "startLine": 402,
+        "startChar": 8,
+        "endLine": 402,
+        "endChar": 36
+      },
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ecfa136b_98a60f84",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2019-12-12T00:10:24Z",
+      "side": 1,
+      "message": "this looks ok, but couldn\u0027t we allow this still anyway? I think just removing these lines and it would be ok?",
+      "range": {
+        "startLine": 424,
+        "startChar": 8,
+        "endLine": 426,
+        "endChar": 50
+      },
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
