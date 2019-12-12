@@ -65,6 +65,30 @@
     },
     {
       "key": {
+        "uuid": "bf01f0f3_7a30b3c5",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-12-12T02:09:17Z",
+      "side": 1,
+      "message": "Here\u0027s the thing.  If I remove this check, then the user is able to change the field.  I have tested it.  Here\u0027s a patch that demonstrates the problem.  (It disables the check and then modifies the unit test that tries to change \u0027associated_site\u0027 to check that nothing changed.  Something changes!)\n\nubuntu@steve-dashboard:~/nectar-dashboard$ git diff\ndiff --git a/nectar_dashboard/rcallocation/api/__init__.py b/nectar_dashboard/rcallocation/api/__init__.py\nindex 9a16d04..7d88cb9 100644\n--- a/nectar_dashboard/rcallocation/api/__init__.py\n+++ b/nectar_dashboard/rcallocation/api/__init__.py\n@@ -399,11 +399,11 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):\n     def _perform_create_or_update(self, serializer, kwargs):\n         data \u003d serializer.validated_data\n         compat_info \u003d data.get(\u0027allocation_home\u0027)\n-        if not self.is_read_admin():\n-            if data.get(\u0027national\u0027) \\\n-               or data.get(\u0027associated_site\u0027) \\\n-               or data.get(\u0027allocation_home\u0027):\n-                raise exceptions.PermissionDenied()\n+#        if not self.is_read_admin():\n+#            if data.get(\u0027national\u0027) \\\n+#               or data.get(\u0027associated_site\u0027) \\\n+#               or data.get(\u0027allocation_home\u0027):\n+#                raise exceptions.PermissionDenied()\n         if compat_info:\n             if data.get(\u0027associated_site\u0027) or data.get(\u0027national\u0027):\n                 raise serializers.ValidationError(\ndiff --git a/nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py b/nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py\nindex e100427..54ff19e 100644\n--- a/nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py\n+++ b/nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py\n@@ -166,7 +166,11 @@ class AllocationTests(base.AllocationAPITest):\n         response \u003d self.client.patch(\n             \u0027/rest_api/allocations/1/\u0027,\n             {\u0027associated_site\u0027: new_site})\n-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)\n+        # self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)\n+        self.assertEqual(response.status_code, status.HTTP_200_OK)\n+        allocation \u003d models.AllocationRequest.objects.get(\n+            id\u003dself.allocation.id)\n+        self.assertEqual(current_site, allocation.associated_site.name)\n \n     def test_update_allocation_home(self):\n         self.client.force_authenticate(user\u003dself.admin_user)",
+      "parentUuid": "5697d6da_dc8226ca",
+      "range": {
+        "startLine": 402,
+        "startChar": 8,
+        "endLine": 402,
+        "endChar": 36
+      },
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ecfa136b_98a60f84",
         "filename": "nectar_dashboard/rcallocation/api/__init__.py",
         "patchSetId": 16
@@ -76,6 +100,30 @@
       "writtenOn": "2019-12-12T00:10:24Z",
       "side": 1,
       "message": "this looks ok, but couldn\u0027t we allow this still anyway? I think just removing these lines and it would be ok?",
+      "range": {
+        "startLine": 424,
+        "startChar": 8,
+        "endLine": 426,
+        "endChar": 50
+      },
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e51a3ee7_ad7fea00",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-12-12T02:09:17Z",
+      "side": 1,
+      "message": "Hmm ... why allow it?  Do we think it is being updated by anyone\u0027s existing scripts?",
+      "parentUuid": "ecfa136b_98a60f84",
       "range": {
         "startLine": 424,
         "startChar": 8,
