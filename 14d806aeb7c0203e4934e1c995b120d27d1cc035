@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99f92080_4b9c0524",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 21
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-12-12T23:08:12Z",
+      "side": 1,
+      "message": "Really? None as a string?",
+      "range": {
+        "startLine": 278,
+        "startChar": 4,
+        "endLine": 278,
+        "endChar": 36
+      },
+      "revId": "14d806aeb7c0203e4934e1c995b120d27d1cc035",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d1c289a_b6421b29",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 21
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2019-12-12T23:08:12Z",
+      "side": 1,
+      "message": "I\u0027m not a fan of the logic here. I think it could be more readable like:\n\nif self.national:\n    return \u0027national\u0027\nif not self.associated_site:\n    return \u0027unassigned\u0027\nreturn self.associated_site.name\n\nWhat do you think? Same with the method below",
+      "range": {
+        "startLine": 295,
+        "startChar": 0,
+        "endLine": 297,
+        "endChar": 42
+      },
+      "revId": "14d806aeb7c0203e4934e1c995b120d27d1cc035",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
