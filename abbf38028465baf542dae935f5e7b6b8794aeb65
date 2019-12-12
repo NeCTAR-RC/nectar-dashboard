@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0f9fd9cd_009d5da8",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-12-12T03:26:21Z",
+      "side": 1,
+      "message": "The CharFilter approach requires them to be model fields too.",
+      "parentUuid": "c239e406_ae566d26",
+      "range": {
+        "startLine": 374,
+        "startChar": 20,
+        "endLine": 374,
+        "endChar": 52
+      },
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bfd83250_802cac17",
         "filename": "nectar_dashboard/rcallocation/api/__init__.py",
         "patchSetId": 16
