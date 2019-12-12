@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "67bd884d_c7986f89",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-12-12T07:01:28Z",
+      "side": 1,
+      "message": "Still cannot make it work.  A CharFilter class has hard-wired assumptions that it is filtering in a single field and that the field has just one field class.  Take a look at the code in https://github.com/carltongibson/django-filter/blob/master/django_filters/filters.py.  I don\u0027t even think we could implement this by subclassing or replacing Filter.",
+      "parentUuid": "0f9fd9cd_009d5da8",
+      "range": {
+        "startLine": 374,
+        "startChar": 20,
+        "endLine": 374,
+        "endChar": 52
+      },
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bfd83250_802cac17",
         "filename": "nectar_dashboard/rcallocation/api/__init__.py",
         "patchSetId": 16
@@ -63,6 +87,24 @@
       "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6cf8b753_4caeacaf",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-12-12T07:01:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bfd83250_802cac17",
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -113,6 +155,30 @@
     },
     {
       "key": {
+        "uuid": "96a0d86f_39754125",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-12-12T07:01:28Z",
+      "side": 1,
+      "message": "We have agreed that the test is need for now.",
+      "parentUuid": "bf01f0f3_7a30b3c5",
+      "range": {
+        "startLine": 402,
+        "startChar": 8,
+        "endLine": 402,
+        "endChar": 36
+      },
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ecfa136b_98a60f84",
         "filename": "nectar_dashboard/rcallocation/api/__init__.py",
         "patchSetId": 16
@@ -157,6 +223,30 @@
       "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1a38dbb_3e777eaf",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-12-12T07:01:28Z",
+      "side": 1,
+      "message": "I\u0027m convinced.  We will allow it.",
+      "parentUuid": "e51a3ee7_ad7fea00",
+      "range": {
+        "startLine": 424,
+        "startChar": 8,
+        "endLine": 426,
+        "endChar": 50
+      },
+      "revId": "abbf38028465baf542dae935f5e7b6b8794aeb65",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
