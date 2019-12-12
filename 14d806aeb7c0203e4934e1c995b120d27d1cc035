@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3ebc3e2e_27348794",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 21
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-12-12T23:24:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "99f92080_4b9c0524",
+      "range": {
+        "startLine": 278,
+        "startChar": 4,
+        "endLine": 278,
+        "endChar": 36
+      },
+      "revId": "14d806aeb7c0203e4934e1c995b120d27d1cc035",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1d1c289a_b6421b29",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 21
@@ -45,6 +69,30 @@
       "revId": "14d806aeb7c0203e4934e1c995b120d27d1cc035",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f096a5e_2e286352",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 21
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2019-12-12T23:24:26Z",
+      "side": 1,
+      "message": "I agree.  Fixed",
+      "parentUuid": "1d1c289a_b6421b29",
+      "range": {
+        "startLine": 295,
+        "startChar": 0,
+        "endLine": 297,
+        "endChar": 42
+      },
+      "revId": "14d806aeb7c0203e4934e1c995b120d27d1cc035",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
