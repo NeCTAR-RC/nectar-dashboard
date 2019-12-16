@@ -256,10 +256,12 @@ $('#id_project_name').on('input', function(e) {
 // Show UoM modal on first load of a new allocation request form if
 // the contact email matches the hard-wired UoM email pattern.
 $(function(){
-  var email = $('#id_contact_email').val();
-  var show = email.match(/^.+@(.+\.)*unimelb\.edu\.au$/);
-  if (show != null && isNewAllocationRequest() /* see template */ ) {
-    $('#modal-uom-dashboard').modal('show');
+  if ($('#id_contact_email').length) {
+    var email = $('#id_contact_email').val();
+    var show = email.match(/^.+@(.+\.)*unimelb\.edu\.au$/);
+    if (show != null && isNewAllocationRequest() /* see template */ ) {
+      $('#modal-uom-dashboard').modal('show');
+    }
   }
 });
 
