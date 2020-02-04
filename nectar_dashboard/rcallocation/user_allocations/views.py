@@ -53,18 +53,18 @@ def get_managed_projects(request):
     try:
         role_assignments = keystone.role_assignments_list(
             request,
-            project=request.user.project_id,
             user=request.user.id,
             include_subtree=False,
             include_names=True)
     except Exception:
-        role_assignments = []
+        return []
 
+    projects = []
     for ra in role_assignments:
         if ra.role['name'] == 'TenantManager':
-            return [request.user.project_id]
+            projects.append(ra.scope['project']['id'])
 
-    return []
+    return projects
 
 
 class UserAllocationsListView(views.BaseAllocationsListView):
