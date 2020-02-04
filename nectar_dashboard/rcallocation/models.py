@@ -731,7 +731,6 @@ class Grant(models.Model):
     first_year_funded = models.IntegerField(
         'First year funded',
         blank=False,
-        default=datetime.datetime.now().year,
         validators=[MinValueValidator(1970), MaxValueValidator(3000)],
         error_messages={
             'min_value': 'Please input a year between 1970 ~ 3000',
@@ -742,7 +741,6 @@ class Grant(models.Model):
     last_year_funded = models.IntegerField(
         'Last year funded',
         blank=False,
-        default=datetime.datetime.now().year + 1,
         validators=[MinValueValidator(1970), MaxValueValidator(3000)],
         error_messages={
             'min_value': 'Please input a year between 1970 ~ 3000',

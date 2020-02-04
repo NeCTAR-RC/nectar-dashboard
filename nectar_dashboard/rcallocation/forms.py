@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.validators import RegexValidator
 from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
@@ -350,7 +352,12 @@ class GrantForm(NectarBaseModelForm):
         model = models.Grant
 
     def __init__(self, **kwargs):
-        super(GrantForm, self).__init__(**kwargs)
+        initial = getattr(kwargs, 'initial', {})
+        if 'instance' not in kwargs:
+            initial['first_year_funded'] = datetime.datetime.now().year
+            initial['last_year_funded'] = datetime.datetime.now().year + 1
+
+        super(GrantForm, self).__init__(**kwargs, initial=initial)
         # make sure the empty is not permitted
         self.empty_permitted = False
         for field in self.fields.values():
