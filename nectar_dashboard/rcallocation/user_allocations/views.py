@@ -1,8 +1,8 @@
 import logging
 
 from django.db.models import Q
-from openstack_dashboard.api import keystone
 
+from nectar_dashboard.api import manuka
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation.user_allocations import forms
 from nectar_dashboard.rcallocation.user_allocations import tables
@@ -50,21 +50,8 @@ def check_tm_or_alloc_admin(request, object):
 
 
 def get_managed_projects(request):
-    try:
-        role_assignments = keystone.role_assignments_list(
-            request,
-            project=request.user.project_id,
-            user=request.user.id,
-            include_subtree=False,
-            include_names=True)
-    except Exception:
-        role_assignments = []
-
-    for ra in role_assignments:
-        if ra.role['name'] == 'TenantManager':
-            return [request.user.project_id]
-
-    return []
+    client = manuka.manukaclient(request)
+    return client.users.projects(request.user.id, 'TenantManager')
 
 
 class UserAllocationsListView(views.BaseAllocationsListView):

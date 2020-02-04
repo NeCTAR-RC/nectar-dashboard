@@ -1,3 +1,4 @@
 git+https://github.com/NeCTAR-RC/horizon.git@nectar/train#egg=horizon
 django-cors-headers
 python-memcached
+manukaclient>=0.7.0
