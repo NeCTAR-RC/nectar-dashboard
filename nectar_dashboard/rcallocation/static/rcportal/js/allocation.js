@@ -401,6 +401,9 @@ $(function(){
 
 }(jQuery));
 (function($) {
+    var this_year = new Date().getFullYear().toString();
+    var next_year = (new Date().getFullYear() + 1).toString();
+
     function create_form_row(formset, opts) {
         var total_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr').length;
         var form_new_row = create_row(opts.prefix, total_rows, opts);
@@ -441,7 +444,7 @@ $(function(){
         new_row += create_input_field_label(opts, 'first_year_funded', 'First year funded', row_index, true, 'Specify the first year funded');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
-        new_row += create_year_input_field(opts, 'first_year_funded', row_index);
+        new_row += create_year_input_field(opts, 'first_year_funded', this_year, row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
@@ -450,7 +453,7 @@ $(function(){
         new_row += create_input_field_label(opts, 'last_year_funded', 'Last year funded', row_index, true, 'Specify the last year funded');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
-        new_row += create_year_input_field(opts, 'last_year_funded', row_index);
+        new_row += create_year_input_field(opts, 'last_year_funded', next_year, row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
@@ -522,15 +525,15 @@ $(function(){
         return "<input type='text' name='" + opts.prefix + "-" + row_index + "-" + field_name + "' maxlength='200' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' class='form-control'>";
     };
 
-    function create_number_input_field(opts, field_name, defalut_value, row_index){
+    function create_number_input_field(opts, field_name, default_value, row_index){
         return "<input type='number' name='" + opts.prefix + "-" + row_index + "-" + field_name
             + "' maxlength='200' id='id_" + opts.prefix + "-" + row_index + "-" + field_name
-            + "' class='form-control' " + "value='" + defalut_value + "' min='0'>";
+            + "' class='form-control' " + "value='" + default_value + "' min='0'>";
     };
 
-    function create_year_input_field(opts, field_name, row_index){
+    function create_year_input_field(opts, field_name, default_value, row_index){
        return "<input type='number' name='" + opts.prefix + "-" + row_index
-           + "-" + field_name + "' value='' id='id_" + opts.prefix + "-"
+           + "-" + field_name + "' value='" + default_value + "' id='id_" + opts.prefix + "-"
            + row_index + "-" + field_name + "' min='1970' max='3000' class='form-control'>"
     };
 
@@ -597,6 +600,20 @@ $(function(){
         });
     };
 
+    function set_default_dates(opts) {
+        // Set default funding dates in the form for grants with no dates
+        $('input[name$="first_year_funded"]').each(function(){
+            if (!$(this).val()) {
+                $(this).val(this_year);
+            };
+        });
+        $('input[name$="last_year_funded"]').each(function(){
+            if (!$(this).val()) {
+                $(this).val(next_year);
+            };
+        });
+    };
+
     $.fn.gformset = function(options) {
         var opts = $.extend( {}, $.fn.gformset.defaults, options );
          return this.each(function() {
@@ -613,6 +630,7 @@ $(function(){
                  var clicked_span = $(this);
                  delete_form_row(formset, opts, clicked_span);
              });
+             set_default_dates(opts);
          });
     };
 
