@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6c2c40bc_d554f47d",
+        "filename": "nectar_dashboard/rcallocation/user_allocations/views.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-02-12T04:25:16Z",
+      "side": 1,
+      "message": "This won\u0027t work as a user doesn\u0027t have permissions to see things in other projects.\n\nYou can try this yourself eg.\n\nopenstack role assignment list  --user 25 (my user ID)\nYou are not authorized to perform the requested action: identity:list_role_assignments. (HTTP 403) (Request-ID: req-c3c14d21-c7ba-451b-b76e-5ba6cb143d31)\n\n\nWe could look as changing policy to allow this, eg. they are allowed to see role assignments in the same project but not sure what implications this will have.",
+      "range": {
+        "startLine": 54,
+        "startChar": 55,
+        "endLine": 54,
+        "endChar": 58
+      },
+      "revId": "56cc3ecd765112b208b3275251de6d85c07b07d1",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
