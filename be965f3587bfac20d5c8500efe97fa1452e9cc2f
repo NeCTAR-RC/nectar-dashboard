@@ -22,6 +22,30 @@
       "revId": "be965f3587bfac20d5c8500efe97fa1452e9cc2f",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "499eb339_c03b1277",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-02-12T06:25:36Z",
+      "side": 1,
+      "message": "The problem is that we only want to set an initial value in the case where there is no Grant instance.  I don\u0027t believe that is possible if we do this in the model formset factory.  Or is it?",
+      "parentUuid": "b4ef2218_65a23b00",
+      "range": {
+        "startLine": 355,
+        "startChar": 8,
+        "endLine": 355,
+        "endChar": 48
+      },
+      "revId": "be965f3587bfac20d5c8500efe97fa1452e9cc2f",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
