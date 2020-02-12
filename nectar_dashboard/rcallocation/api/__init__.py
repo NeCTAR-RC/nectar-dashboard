@@ -393,11 +393,21 @@ class AllocationFilter(filters.FilterSet):
 
     class Meta:
         model = models.AllocationRequest
-        fields = ('status', 'parent_request_id', 'project_id',
-                  'project_name', 'provisioned', 'parent_request',
-                  'associated_site', 'national',
-                  'contact_email', 'approver_email',
-                  'start_date', 'end_date', 'modified_time', 'created_by')
+        fields = {'status': ['exact', 'in'],
+                  'parent_request_id': ['exact'],
+                  'project_id': ['exact'],
+                  'project_name': ['exact', 'contains', 'icontains', 'startswith', 'istartswith', 'endswith', 'iendswith', 'regex'],
+                  'provisioned': ['exact'],
+                  'parent_request': ['exact'],
+                  'associated_site': ['exact'],
+                  'national': ['exact'],
+                  'contact_email': ['exact', 'contains', 'icontains', 'startswith', 'istartswith', 'endswith', 'iendswith', 'regex'],
+                  'approver_email': ['exact', 'contains', 'icontains', 'startswith', 'istartswith', 'endswith', 'iendswith', 'regex'],
+                  'start_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'year'],
+                  'end_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'year'],
+                  'modified_time': ['exact', 'lt', 'gt', 'gte', 'lte', 'date', 'year'],
+                  'submit_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'date', 'year'],
+                  'created_by': ['exact']}
 
 
 class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
