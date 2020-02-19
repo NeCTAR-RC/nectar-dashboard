@@ -55,6 +55,7 @@ class Permission(permissions.BasePermission):
     message = 'Permission denied or allocation in wrong state.'
     roles = []
     states = []
+    invalid_states = []
 
     def has_role(self, user, required):
         if user.is_authenticated:
@@ -70,13 +71,14 @@ class Permission(permissions.BasePermission):
         return self.has_role(request.user, self.roles)
 
     def has_object_permission(self, request, view, obj):
-        if not self.states:
+        if self.states:
+            allocation = self.get_allocation(obj)
+            return allocation and allocation.status in self.states
+        elif self.invalid_states:
+            allocation = self.get_allocation(obj)
+            return allocation and allocation.status not in self.invalid_states
+        else:
             return True
-
-        allocation = self.get_allocation(obj)
-        if allocation and allocation.status in self.states:
-            return True
-        return False
 
     def is_admin(self, request):
         return self.has_role(request.user,
@@ -138,10 +140,10 @@ class ReadOrAdmin(Permission):
 class ModifyPermission(Permission):
 
     def has_object_permission(self, request, view, obj):
-        if self.is_admin(request):
-            return True
         if request.method in permissions.SAFE_METHODS:
             return True
+        if getattr(obj, 'parent_request', None):
+            return False
 
         return super(ModifyPermission, self).has_object_permission(request,
                                                                    view, obj)
@@ -155,6 +157,7 @@ class CanApprove(ModifyPermission):
 
 class CanDelete(ModifyPermission):
     roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+    invalid_states = [models.AllocationRequest.DELETED]
 
 
 class CanUpdate(ModifyPermission):

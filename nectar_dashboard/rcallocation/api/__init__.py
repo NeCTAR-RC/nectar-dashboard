@@ -503,12 +503,9 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     @decorators.detail_route(methods=['post'])
     def delete(self, request, pk=None):
         allocation = self.get_object()
+        utils.copy_allocation(allocation)
         allocation.status = models.AllocationRequest.DELETED
         allocation.save()
-        parent_request = allocation.parent_request
-        if parent_request:
-            parent_request.status = models.AllocationRequest.DELETED
-            parent_request.save()
         return response.Response(self.get_serializer_class()(allocation).data)
 
     def destroy(self, request, *args, **kwargs):

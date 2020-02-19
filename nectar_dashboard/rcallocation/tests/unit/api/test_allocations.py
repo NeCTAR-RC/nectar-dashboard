@@ -659,6 +659,23 @@ class AllocationTests(base.AllocationAPITest):
         self.assertEqual(models.AllocationRequest.DELETED,
                          response.data['status'])
 
+    def test_delete_deleted(self):
+        self.client.force_authenticate(user=self.admin_user)
+        self.allocation.status = models.AllocationRequest.DELETED
+        self.allocation.save()
+        response = self.client.post('/rest_api/allocations/%s/delete/' %
+                                    self.allocation.id)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_historic(self):
+        self.client.force_authenticate(user=self.admin_user)
+        # Kludge ... a history record is one with a parent
+        self.allocation.parent_request = self.allocation
+        self.allocation.save()
+        response = self.client.post('/rest_api/allocations/%s/delete/' %
+                                    self.allocation.id)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_delete_invalid_role(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post('/rest_api/allocations/1/delete/')
