@@ -653,11 +653,40 @@ class AllocationTests(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete(self):
+        # Check my assumptions
+        self.assertEqual(models.AllocationRequest.objects.filter(
+            parent_request__id=self.allocation.id).count(),
+                         0)
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post('/rest_api/allocations/1/delete/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(models.AllocationRequest.DELETED,
                          response.data['status'])
+        # Check that a history record has been created
+        self.assertEqual(models.AllocationRequest.objects.filter(
+            parent_request__id=self.allocation.id).count(),
+                         1)
+
+    def test_delete_deleted(self):
+        self.client.force_authenticate(user=self.admin_user)
+        self.allocation.status = models.AllocationRequest.DELETED
+        self.allocation.save()
+        response = self.client.post('/rest_api/allocations/%s/delete/' %
+                                    self.allocation.id)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check that no history record was created
+        self.assertEqual(models.AllocationRequest.objects.filter(
+            parent_request__id=self.allocation.id).count(),
+                         0)
+
+    def test_delete_historic(self):
+        self.client.force_authenticate(user=self.admin_user)
+        # Kludge ... a history record is one with a parent
+        self.allocation.parent_request = self.allocation
+        self.allocation.save()
+        response = self.client.post('/rest_api/allocations/%s/delete/' %
+                                    self.allocation.id)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_invalid_role(self):
         self.client.force_authenticate(user=self.user)
