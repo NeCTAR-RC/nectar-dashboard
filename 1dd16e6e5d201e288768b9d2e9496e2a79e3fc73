@@ -22,6 +22,30 @@
       "revId": "1dd16e6e5d201e288768b9d2e9496e2a79e3fc73",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d551e5a_1b450c5f",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-02-20T01:32:33Z",
+      "side": 1,
+      "message": "OK.  Makes sense.  But wouldn\u0027t that be unexpected?  (Sure, the old behavior was even more unexpected: marking 2 records as \"deleted\".)",
+      "parentUuid": "48044d4a_891794a9",
+      "range": {
+        "startLine": 507,
+        "startChar": 0,
+        "endLine": 510,
+        "endChar": 41
+      },
+      "revId": "1dd16e6e5d201e288768b9d2e9496e2a79e3fc73",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
