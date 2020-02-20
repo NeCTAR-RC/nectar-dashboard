@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "48044d4a_891794a9",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-02-20T00:15:08Z",
+      "side": 1,
+      "message": "would it be better to instead of returning an error could it just get the parent and keep going?",
+      "range": {
+        "startLine": 507,
+        "startChar": 0,
+        "endLine": 510,
+        "endChar": 41
+      },
+      "revId": "1dd16e6e5d201e288768b9d2e9496e2a79e3fc73",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
