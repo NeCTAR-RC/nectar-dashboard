@@ -22,6 +22,30 @@
       "revId": "33743ae755c06a2a593cb149e35c1c37f070bdc6",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abaa8734_7d902613",
+        "filename": "nectar_dashboard/rest_auth.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-02-21T03:52:20Z",
+      "side": 0,
+      "message": "In the case of \u0027delete\u0027, the other thing we could do is to make deleting a deleted allocation a no-op.",
+      "parentUuid": "2beee0e3_c2b69e75",
+      "range": {
+        "startLine": 141,
+        "startChar": 1,
+        "endLine": 142,
+        "endChar": 23
+      },
+      "revId": "33743ae755c06a2a593cb149e35c1c37f070bdc6",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
