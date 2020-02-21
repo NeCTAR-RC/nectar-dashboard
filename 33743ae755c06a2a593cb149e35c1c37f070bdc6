@@ -46,6 +46,30 @@
       "revId": "33743ae755c06a2a593cb149e35c1c37f070bdc6",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc375e2b_dfe9bef1",
+        "filename": "nectar_dashboard/rest_auth.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-02-21T03:54:11Z",
+      "side": 0,
+      "message": "yeah not a bad idea, maybe that would be easier if it\u0027s easy for you?",
+      "parentUuid": "abaa8734_7d902613",
+      "range": {
+        "startLine": 141,
+        "startChar": 1,
+        "endLine": 142,
+        "endChar": 23
+      },
+      "revId": "33743ae755c06a2a593cb149e35c1c37f070bdc6",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
