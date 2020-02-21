@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2beee0e3_c2b69e75",
+        "filename": "nectar_dashboard/rest_auth.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-02-21T03:42:44Z",
+      "side": 0,
+      "message": "I need to think about the implications of this. The provisioner or expirer may be doing something here that requires this",
+      "range": {
+        "startLine": 141,
+        "startChar": 1,
+        "endLine": 142,
+        "endChar": 23
+      },
+      "revId": "33743ae755c06a2a593cb149e35c1c37f070bdc6",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
