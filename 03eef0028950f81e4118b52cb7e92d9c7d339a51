@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9d4214fc_58a70b6e",
+        "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
+        "patchSetId": 3
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2020-02-24T21:33:55Z",
+      "side": 1,
+      "message": "I think you can simplify this by just doing:\n\n$(\u0027input[name$\u003d\"first_year_funded\"]\u0027).each",
+      "range": {
+        "startLine": 605,
+        "startChar": 8,
+        "endLine": 605,
+        "endChar": 55
+      },
+      "revId": "03eef0028950f81e4118b52cb7e92d9c7d339a51",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "21062364_f6936406",
+        "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
+        "patchSetId": 3
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2020-02-24T21:33:55Z",
+      "side": 1,
+      "message": "if(!$(this).val()) {\n  $(this).val(this_year);\n}",
+      "range": {
+        "startLine": 606,
+        "startChar": 16,
+        "endLine": 606,
+        "endChar": 43
+      },
+      "revId": "03eef0028950f81e4118b52cb7e92d9c7d339a51",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
