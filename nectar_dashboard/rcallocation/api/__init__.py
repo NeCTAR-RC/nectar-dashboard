@@ -389,7 +389,8 @@ class AllocationFilter(filters.FilterSet):
             return queryset.filter(national=False) \
                            .filter(associated_site__isnull=True)
         else:
-            return queryset.filter(associated_site__name=value)
+            return queryset.filter(associated_site__name=value) \
+                           .filter(national=False)
 
     class Meta:
         model = models.AllocationRequest
