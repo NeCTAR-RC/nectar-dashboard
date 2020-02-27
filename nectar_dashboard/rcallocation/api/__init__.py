@@ -396,7 +396,7 @@ class AllocationFilter(filters.FilterSet):
         model = models.AllocationRequest
         fields = ('status', 'parent_request_id', 'project_id',
                   'project_name', 'provisioned', 'parent_request',
-                  'associated_site', 'national',
+                  'associated_site', 'national', 'notifications',
                   'contact_email', 'approver_email',
                   'start_date', 'end_date', 'modified_time', 'created_by')
 
