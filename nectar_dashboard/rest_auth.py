@@ -144,6 +144,8 @@ class ModifyPermission(Permission):
             return True
         if getattr(obj, 'parent_request', None):
             return False
+        if self.is_admin(request):
+            return True
 
         return super(ModifyPermission, self).has_object_permission(request,
                                                                    view, obj)
