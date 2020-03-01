@@ -245,18 +245,23 @@ class AllocationRequest(models.Model):
         choices=PERCENTAGE_CHOICES, default=0)
 
     nectar_support = models.CharField(
-        """List any ANDS, Nectar, or RDS funded projects supporting this
-        request.""",
+        """List any ARDC (or ANDS, Nectar, or RDS) funded projects
+        supporting this request.""",
         blank=True,
         max_length=255,
-        help_text="""Specify any ANDS, Nectar, RDS or ARDC capabilities
-                    supporting this request.""")
+        help_text="""List any projects that are (or were) funded by the
+        ARDC or its precursor organisations (ANDS, Nectar, or RDS) that
+        are supporting this allocation request and will benefit from
+        this resource allocation.""")
 
     ncris_support = models.CharField(
         'List NCRIS capabilities supporting this request',
         blank=True,
         max_length=255,
-        help_text="""Specify NCRIS capabilities supporting this request.""")
+        help_text="""List any NCRIS capabilities that are supporting
+        this allocation request and will benefit from this resource
+        allocation. This includes benefit to projects or infrastructure
+        that are funded by an NCRIS capability.""")
 
     associated_site = models.ForeignKey(
         'Site',
