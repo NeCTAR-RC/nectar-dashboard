@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fb436509_14a8351a",
+        "filename": "nectar_dashboard/rcallocation/allocation/forms.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-03T04:04:39Z",
+      "side": 1,
+      "message": "shouldn\u0027t the queryset be overridden here much like these other attributes are?",
+      "range": {
+        "startLine": 48,
+        "startChar": 21,
+        "endLine": 48,
+        "endChar": 37
+      },
+      "revId": "a26d61ae3be6cdfd00bd4ee681b364bb12af6f1f",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
