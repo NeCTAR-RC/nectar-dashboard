@@ -22,6 +22,30 @@
       "revId": "a26d61ae3be6cdfd00bd4ee681b364bb12af6f1f",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99c8ab72_9732aabf",
+        "filename": "nectar_dashboard/rcallocation/allocation/forms.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-03T04:15:34Z",
+      "side": 1,
+      "message": "Possibly.  It might work.  It depends on what form field class that ModelForm is going to pick.  But all of that poking around in \u0027self.fields\u0027 is not exactly pleasant.",
+      "parentUuid": "fb436509_14a8351a",
+      "range": {
+        "startLine": 48,
+        "startChar": 21,
+        "endLine": 48,
+        "endChar": 37
+      },
+      "revId": "a26d61ae3be6cdfd00bd4ee681b364bb12af6f1f",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
