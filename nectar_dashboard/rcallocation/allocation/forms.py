@@ -8,6 +8,9 @@ class AllocationApproveForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
                                          required=False)
+    associated_site = forms.ModelChoiceField(
+        queryset=models.Site.objects.filter(enabled=True),
+        widget=forms.Select(attrs={'class': 'col-md-6'}))
 
     class Meta:
         model = models.AllocationRequest
@@ -26,7 +29,6 @@ class AllocationApproveForm(forms.ModelForm):
             'status_explanation': forms.Textarea(
                 attrs={'class': 'col-md-6 form-control',
                        'style': 'height:120px; width:420px'}),
-            'associated_site': forms.Select(attrs={'class': 'col-md-6'}),
             'national': forms.CheckboxInput(),
         }
 
