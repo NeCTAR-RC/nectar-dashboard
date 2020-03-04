@@ -249,19 +249,21 @@ class AllocationRequest(models.Model):
         supporting this request.""",
         blank=True,
         max_length=255,
-        help_text="""List any projects that are (or were) funded by the
-        ARDC or its precursor organisations (ANDS, Nectar, or RDS) that
-        are supporting this allocation request and will benefit from
-        this resource allocation.""")
+        help_text="""List any ongoing projects that 1) are or were
+        funded by ARDC or its predecessors (ANDS, Nectar, or RDS),
+        and 2) where the project's management supports this request
+        in furtherance of its goals, and 3) where this allocation
+        will provide resources that benefit the project.""")
 
     ncris_support = models.CharField(
         'List NCRIS capabilities supporting this request',
         blank=True,
         max_length=255,
-        help_text="""List any NCRIS capabilities that are supporting
-        this allocation request and will benefit from this resource
-        allocation. This includes benefit to projects or infrastructure
-        that are funded by an NCRIS capability.""")
+        help_text="""List any NCRIS facilities where the facility
+        management supports this request in furtherance of its goals.
+        For example, the requested resources may enable a project
+        that the NCRIS facility is funding, or they may enable the
+        provision of infrastructure for the facility.""")
 
     associated_site = models.ForeignKey(
         'Site',
