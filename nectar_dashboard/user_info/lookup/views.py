@@ -39,7 +39,7 @@ class UserLookupView(edit.FormView):
 
     def get_success_url(self):
         email = self.form.cleaned_data['email']
-        return reverse('horizon:user-info:lookup:list',
+        return reverse('horizon:identity:lookup:list',
                        kwargs={'email': email})
 
 

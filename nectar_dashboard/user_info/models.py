@@ -136,7 +136,7 @@ class User(models.Model):
         db_table = 'user'
 
     def get_absolute_url(self):
-        return reverse('horizon:user-info:update:view',
+        return reverse('horizon:identity:lookup:view',
                        args=[self.id])
 
     @property
