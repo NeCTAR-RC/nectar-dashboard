@@ -21,17 +21,19 @@ from django.views.generic import edit
 from horizon import tables as horizon_tables
 
 from nectar_dashboard.user_info import models
+from nectar_dashboard.user_info import views
 
 from . import forms
 from . import tables
 
 
-class UserLookupView(edit.FormView):
+class UserLookupView(views.PageTitleMixin, edit.FormView):
     """A simple form view for user lookup
     """
 
     form_class = forms.UserLookupForm
     template_name = "user_info/lookup.html"
+    page_title = "User Info Lookup"
 
     def form_valid(self, form):
         self.form = form
@@ -39,16 +41,17 @@ class UserLookupView(edit.FormView):
 
     def get_success_url(self):
         email = self.form.cleaned_data['email']
-        return reverse('horizon:user-info:lookup:list',
+        return reverse('horizon:identity:lookup:list',
                        kwargs={'email': email})
 
 
-class UserListView(horizon_tables.DataTableView):
+class UserListView(views.PageTitleMixin, horizon_tables.DataTableView):
     """A simple listing of users matching a lookup
     """
 
     table_class = tables.UsersTable
     template_name = "user_info/list.html"
+    page_title = "Matching Users"
 
     def get_data(self):
         email = self.kwargs['email']
@@ -56,12 +59,14 @@ class UserListView(horizon_tables.DataTableView):
                                           | Q(email__iexact=email))
 
 
-class UserDetailView(detail.DetailView, edit.ModelFormMixin):
+class UserDetailView(views.PageTitleMixin, detail.DetailView,
+                     edit.ModelFormMixin):
     """A simple form for listing the user's details
     """
     model = models.User
     form_class = forms.UserViewForm
     template_name = "user_info/view.html"
+    page_title = "User Info"
 
     def get(self, *args, **kwargs):
         res = super(detail.DetailView, self).get(*args, **kwargs)

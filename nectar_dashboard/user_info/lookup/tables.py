@@ -25,7 +25,7 @@ LOG = logging.getLogger(__name__)
 
 
 def linked_user(user,
-                link='horizon:user-info:lookup:view'):
+                link='horizon:identity:lookup:view'):
     url = urlresolvers.reverse(link, args=(user.id,))
     data = mark_safe('<a href="%s">%s</a>' %
                      (escape(url), escape(user.id)))

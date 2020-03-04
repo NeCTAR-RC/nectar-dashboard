@@ -12,13 +12,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from horizon import tables as horizon_tables
 
-from . import tables
+class PageTitleMixin(object):
 
-
-class UserListView(horizon_tables.DataTableView):
-    "A simple paginated view of user detail information."
-
-    table_class = tables.UsersTable
-    template_name = "user_info/list.html"
+    def get_context_data(self, **kwargs):
+        context = super(PageTitleMixin, self).get_context_data(**kwargs)
+        context["page_title"] = self.page_title
+        return context

@@ -1,14 +1,22 @@
 # The name of the dashboard to be added to HORIZON['dashboards']. Required.
-DASHBOARD = 'user-info'
+PANEL_DASHBOARD = 'identity'
+
+PANEL_GROUP = 'default'
+
+PANEL = 'lookup'
 
 # If set to True, this dashboard will not be added to the settings.
 DISABLED = False
+
+
+# Python panel class of the PANEL to be added.
+ADD_PANEL = \
+    'nectar_dashboard.user_info.lookup.panel.UserLookupPanel'
 
 # A list of applications to be added to INSTALLED_APPS.
 ADD_INSTALLED_APPS = [
     'nectar_dashboard.user_info',
     'nectar_dashboard.user_info.lookup',
-    'nectar_dashboard.user_info.update',
 ]
 
 AUTO_DISCOVER_STATIC_FILES = False

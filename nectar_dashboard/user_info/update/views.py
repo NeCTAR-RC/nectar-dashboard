@@ -15,16 +15,18 @@
 from django.views.generic import edit
 
 from nectar_dashboard.user_info import models
+from nectar_dashboard.user_info import views
 
 from . import forms
 
 
-class UserEditView(edit.UpdateView):
+class UserEditView(views.PageTitleMixin, edit.UpdateView):
     """A simple form view for editing the user's details
     """
     model = models.User
     form_class = forms.UserEditForm
     template_name = "user_info/edit.html"
+    page_title = "User Info Update"
 
 
 class UserEditSelfView(UserEditView):
