@@ -48,6 +48,8 @@ class AllocationApproveForm(forms.ModelForm):
             '''The Approver will normally set the Associated Site to their
             own node.'''
         self.fields['associated_site'].widget.attrs['class'] = 'form-control'
+        self.fields['associated_site'].queryset = \
+            models.Site.objects.filter(enabled=True)
         self.fields['national'].required = False
         self.fields['national'].help_text = \
             '''The Approver should check 'National funding' for all allocations
