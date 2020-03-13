@@ -8,6 +8,7 @@ from django.contrib.auth import mixins
 from django.db.models import Q
 from django.db import transaction
 from django.forms.models import inlineformset_factory
+from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
 from django.template import loader
 from django.utils import timezone
@@ -125,6 +126,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
     SHOW_EMPTY_SERVICE_TYPES = True
     ONLY_REQUESTABLE_RESOURCES = True
     IGNORE_WARNINGS = False
+    IS_APPROVAL = False
 
     model = models.AllocationRequest
     form_class = forms.AllocationRequestForm
@@ -460,6 +462,19 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
+
+        # Check for certain actions that will cause major problems
+        # if they ever happen
+        if self.object:
+            current = models.AllocationRequest.objects.get(id=self.object.id)
+            # Any changes to a history record
+            if current.parent_request_id:
+                return HttpResponseBadRequest('Allocation record is historic')
+            # Approval of a record that is already approved.  (Seen this!)
+            if self.IS_APPROVAL and \
+               current.status == models.AllocationRequest.APPROVED:
+                return HttpResponseBadRequest('Allocation already approved')
+
         kwargs = {'form': form}
         ignore_warnings = self.IGNORE_WARNINGS or \
                           request.POST.get('ignore_warnings', False)

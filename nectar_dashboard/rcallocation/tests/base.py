@@ -40,6 +40,8 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
 
     def setUp(self):
         super(BaseApproverTestCase, self).setUp()
+        common.sites_setup()
+        common.approvers_setup()
         common.factory_setup()
 
     def setActiveUser(self, *args, **kwargs):
