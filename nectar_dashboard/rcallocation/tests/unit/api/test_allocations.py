@@ -116,8 +116,7 @@ class AllocationTests(base.AllocationAPITest):
         site = response.data['associated_site']
         self.assertEqual(response.data['national'], False)
         self.assertEqual(response.data['allocation_home'], site)
-        self.assertEqual(response.data['allocation_home_display'],
-                         site + " display")
+        self.assertEqual(response.data['allocation_home_display'], site)
 
     def test_get_allocation_unauthenticated(self):
         response = self.client.get('/rest_api/allocations/1/')

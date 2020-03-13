@@ -125,6 +125,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
     SHOW_EMPTY_SERVICE_TYPES = True
     ONLY_REQUESTABLE_RESOURCES = True
     IGNORE_WARNINGS = False
+    IS_APPROVAL = False
 
     model = models.AllocationRequest
     form_class = forms.AllocationRequestForm
@@ -460,6 +461,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
+
         kwargs = {'form': form}
         ignore_warnings = self.IGNORE_WARNINGS or \
                           request.POST.get('ignore_warnings', False)
