@@ -35,6 +35,7 @@ class AllocationNotesEdit(mixins.UserPassesTestMixin, UpdateView):
 class AllocationApproveView(views.BaseAllocationView):
     SHOW_EMPTY_SERVICE_TYPES = False
     ONLY_REQUESTABLE_RESOURCES = False
+    IS_APPROVAL = True
 
     page_title = 'Approve'
     template_name = "rcallocation/allocationrequest_approve.html"

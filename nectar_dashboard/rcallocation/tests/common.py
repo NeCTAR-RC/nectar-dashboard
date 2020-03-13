@@ -79,8 +79,7 @@ def factory_setup():
 
 def sites_setup():
     for s in factories.ALL_SITES:
-        display = s + " display"
-        models.Site.objects.get_or_create(name=s, display_name=display)
+        models.Site.objects.get_or_create(name=s, display_name=s)
 
 
 def get_site(name):
