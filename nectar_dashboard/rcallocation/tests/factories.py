@@ -36,8 +36,8 @@ duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys())
 percent = fuzzy.FuzzyInteger(1, 100)
 alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
 grant_types = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
-site = fuzzy.FuzzyChoice((models.Site.objects.create(name=s,
-                                                     display_name=s)
+site = fuzzy.FuzzyChoice((models.Site.objects.get_or_create(name=s,
+                                                            display_name=s)[0]
                           for s in ALL_SITES))
 
 
