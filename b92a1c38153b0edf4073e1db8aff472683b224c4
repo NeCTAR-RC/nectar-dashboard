@@ -1,0 +1,400 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a4147b1e_85933335",
+        "filename": "nectar_dashboard/user_info/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "I feel like there would be some fields where we would want to disable changing?",
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a93adf49_1b6f8384",
+        "filename": "nectar_dashboard/user_info/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "this looks weird, shouldn\u0027t it do this automatically? Or in fact shouldn\u0027t the fact that a field is disabled then change the widget, not the other way around?",
+      "range": {
+        "startLine": 33,
+        "startChar": 11,
+        "endLine": 34,
+        "endChar": 37
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6629494_de3eba4c",
+        "filename": "nectar_dashboard/user_info/lookup/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "should this be done in the a `clean_email` method?",
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47e0c77e_0401e7c4",
+        "filename": "nectar_dashboard/user_info/lookup/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "what\u0027s the point of a form if all the fields are read only?",
+      "range": {
+        "startLine": 44,
+        "startChar": 6,
+        "endLine": 44,
+        "endChar": 18
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5f33ee12_fa81cbba",
+        "filename": "nectar_dashboard/user_info/lookup/panel.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "Could just be \"User Details\" or \"User Info\"",
+      "range": {
+        "startLine": 19,
+        "startChar": 12,
+        "endLine": 19,
+        "endChar": 28
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d43e60fd_247952ad",
+        "filename": "nectar_dashboard/user_info/lookup/tables.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "should use get_absolute_url for this stuff https://docs.djangoproject.com/en/1.11/ref/models/instances/#get-absolute-url",
+      "range": {
+        "startLine": 29,
+        "startChar": 4,
+        "endLine": 31,
+        "endChar": 52
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c51fb80_e3757de5",
+        "filename": "nectar_dashboard/user_info/lookup/tables.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "This is private and should not be displayed",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 64
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cfe4ecc4_e194e74a",
+        "filename": "nectar_dashboard/user_info/lookup/tables.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "this is private and should not be displayed",
+      "range": {
+        "startLine": 39,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 70
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a20bd90d_6c000867",
+        "filename": "nectar_dashboard/user_info/lookup/urls.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "trailing slashes on all urls",
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ff4b92f_f6fe51d1",
+        "filename": "nectar_dashboard/user_info/lookup/views.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "This can be done as part of the panel registration, eg see https://github.com/NeCTAR-RC/nectar-dashboard/blob/nectar/stein/nectar_dashboard/rcallocation/allocation/panel.py#L11",
+      "range": {
+        "startLine": 34,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 72
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37fc2591_87f0f9e3",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "set this to editable\u003dFalse along with other fields that shouldn\u0027t change",
+      "range": {
+        "startLine": 88,
+        "startChar": 4,
+        "endLine": 88,
+        "endChar": 19
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "207e5d7f_07cd7935",
+        "filename": "nectar_dashboard/user_info/update/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "looks like this isn\u0027t needed if id doesn\u0027t do anything",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 41
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f6a0536_0ab7f8af",
+        "filename": "nectar_dashboard/user_info/update/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "We should investigate this more, I can have a look too",
+      "range": {
+        "startLine": 51,
+        "startChar": 8,
+        "endLine": 52,
+        "endChar": 44
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1aea518_2acfde04",
+        "filename": "nectar_dashboard/user_info/update/panel.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "\"My Details\" or \"User Details\" to align with \"User Settings\"?\n\nI like \"My Details\"",
+      "range": {
+        "startLine": 19,
+        "startChar": 12,
+        "endLine": 19,
+        "endChar": 28
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d65679da_816a94a3",
+        "filename": "nectar_dashboard/user_info/update/urls.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "should there be a trailing slash?",
+      "range": {
+        "startLine": 21,
+        "startChar": 14,
+        "endLine": 21,
+        "endChar": 15
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a15b4a0_bbe5604f",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "Maybe something like \"My Details\" would be a better wording",
+      "range": {
+        "startLine": 29,
+        "startChar": 18,
+        "endLine": 29,
+        "endChar": 34
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "276fff52_12f4cb57",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "this can be replaced with:\n\nreturn request.user\nNo need to get the current user again when you already have it unless I\u0027m missing something?",
+      "range": {
+        "startLine": 33,
+        "startChar": 8,
+        "endLine": 34,
+        "endChar": 55
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c88ac21_ff7a9dd1",
+        "filename": "nectar_dashboard/user_info/utils.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-13T05:06:33Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 35,
+        "startChar": 11,
+        "endLine": 35,
+        "endChar": 12
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
