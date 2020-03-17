@@ -1,0 +1,521 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4bdae852_765e578d",
+        "filename": "nectar_dashboard/user_info/lookup/views.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "is this needed? looks weird",
+      "range": {
+        "startLine": 38,
+        "startChar": 3,
+        "endLine": 40,
+        "endChar": 39
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b95b448d_88355d03",
+        "filename": "nectar_dashboard/user_info/lookup/views.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "detail page shouldn\u0027t be a form too unless this is a form that an operator can change?",
+      "range": {
+        "startLine": 63,
+        "startChar": 21,
+        "endLine": 63,
+        "endChar": 42
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38664986_beb9a322",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "this is slightly confusing and I don\u0027t think should be here. editable\u003dFalse means something isn\u0027t editable. visibility is a different matter. Remember a model isn\u0027t a form",
+      "range": {
+        "startLine": 91,
+        "startChar": 1,
+        "endLine": 94,
+        "endChar": 52
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b59c2d84_828f13de",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "prob don\u0027t need help_text here, just a verbose name attribute for some of these things\n\nhttps://docs.djangoproject.com/en/1.11/topics/db/models/#verbose-field-names",
+      "range": {
+        "startLine": 99,
+        "startChar": 47,
+        "endLine": 100,
+        "endChar": 59
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "24a4441d_7cbbdf0c",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "could add a verbose name to some of these fields, eg. Put \"Openstack User ID\" in this one",
+      "range": {
+        "startLine": 101,
+        "startChar": 30,
+        "endLine": 101,
+        "endChar": 31
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1ccba6a_8a599e48",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "editable\u003dFalse",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 11
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2a80aa8_920d0e62",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "this is the openstack user id",
+      "range": {
+        "startLine": 102,
+        "startChar": 44,
+        "endLine": 103,
+        "endChar": 62
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec2bac4f_57e7eb12",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "could have \"Full name\"",
+      "range": {
+        "startLine": 104,
+        "startChar": 34,
+        "endLine": 104,
+        "endChar": 35
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d540269_fcd979f2",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "editable\u003dFalse",
+      "range": {
+        "startLine": 104,
+        "startChar": 4,
+        "endLine": 104,
+        "endChar": 15
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95d76eec_e1ff9d13",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "editable\u003dFalse",
+      "range": {
+        "startLine": 107,
+        "startChar": 4,
+        "endLine": 107,
+        "endChar": 9
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fccf9d50_c24cda9f",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "editable\u003dFalse",
+      "range": {
+        "startLine": 127,
+        "startChar": 4,
+        "endLine": 127,
+        "endChar": 14
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b7f22b7_07ceb5c1",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "editable\u003dFalse",
+      "range": {
+        "startLine": 130,
+        "startChar": 4,
+        "endLine": 130,
+        "endChar": 11
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6254d819_ce0a6de8",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "editable\u003dFalse",
+      "range": {
+        "startLine": 140,
+        "startChar": 4,
+        "endLine": 140,
+        "endChar": 21
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8d90bfc_d453793d",
+        "filename": "nectar_dashboard/user_info/templates/user_info/field.html",
+        "patchSetId": 15
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "should we use the same template as what rcallocation uses? Maybe put common stuff into a different template dir?",
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1910679b_addc4561",
+        "filename": "nectar_dashboard/user_info/templates/user_info/view.html",
+        "patchSetId": 15
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "TODO: make this an actual view template as opposed to a form",
+      "range": {
+        "startLine": 11,
+        "startChar": 1,
+        "endLine": 20,
+        "endChar": 69
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76dc9c17_eaddf707",
+        "filename": "nectar_dashboard/user_info/tests/test_lookup_request_views.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "delete",
+      "range": {
+        "startLine": 54,
+        "startChar": 2,
+        "endLine": 55,
+        "endChar": 27
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ed936cfd_c7228157",
+        "filename": "nectar_dashboard/user_info/tests/test_lookup_request_views.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "how about a test that actually tests it working?",
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "324f45f6_4be64eda",
+        "filename": "nectar_dashboard/user_info/tests/test_lookup_request_views.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "lowercase",
+      "range": {
+        "startLine": 65,
+        "startChar": 13,
+        "endLine": 65,
+        "endChar": 17
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa0cecd3_58c13562",
+        "filename": "nectar_dashboard/user_info/update/forms.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "for fields that are editable\u003dFalse you don\u0027t need to add them to exlude",
+      "range": {
+        "startLine": 28,
+        "startChar": 19,
+        "endLine": 30,
+        "endChar": 47
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e23af0f_8e94b096",
+        "filename": "nectar_dashboard/user_info/update/forms.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "these wouldn\u0027t be part of the form as they aren\u0027t editable. Just display them in the template if you want the user to know what we have on record for them. We should make it clear that these are gotten from IdP and if they need them changed to ask their institution.\n\nPersistent ID shouldn\u0027t be shown at all",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 48
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c78301f9_0a576760",
+        "filename": "nectar_dashboard/user_info/update/forms.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "aren\u0027t these the default for these field types?",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 42
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b6bb6c6_c0151b5f",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "the way you had this before was correct, just use reverse_lazy\n\nhttps://docs.djangoproject.com/en/3.0/ref/urlresolvers/#reverse-lazy",
+      "range": {
+        "startLine": 33,
+        "startChar": 8,
+        "endLine": 33,
+        "endChar": 71
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98295204_d51143cf",
+        "filename": "nectar_dashboard/user_info/views.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:43:53Z",
+      "side": 1,
+      "message": "Not sure why this is needed, we already have this functionality with horizon (and we use it for rcaccounts)\n\nAm I missing something?",
+      "range": {
+        "startLine": 16,
+        "startChar": 6,
+        "endLine": 16,
+        "endChar": 20
+      },
+      "revId": "0711ba3c2977837e985aad7465171a3c20178472",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
