@@ -22,6 +22,30 @@
       "revId": "63af8420b3901a54205e0131be591f68a2d875c9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "532937ee_2ac1d164",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T23:31:08Z",
+      "side": 1,
+      "message": "1) If you didn\u0027t want me to make this fix, you should have mentioned it in our previous discussions.   Either we forbid the \u0027A\u0027 -\u003e \u0027A\u0027 transition, or we don\u0027t.  Please make up your mind.  2) Who is writing this?  You or me?  This approach has been used for other things.  It works.  The alternative is worse.",
+      "parentUuid": "4d72bd2a_70bfc429",
+      "range": {
+        "startLine": 474,
+        "startChar": 12,
+        "endLine": 474,
+        "endChar": 35
+      },
+      "revId": "63af8420b3901a54205e0131be591f68a2d875c9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
