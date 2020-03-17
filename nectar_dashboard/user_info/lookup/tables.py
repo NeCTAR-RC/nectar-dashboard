@@ -14,32 +14,21 @@
 
 import logging
 
-from django.core import urlresolvers
-from django.utils.html import escape
-from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
-
 from horizon import tables
 
 LOG = logging.getLogger(__name__)
 
 
-def linked_user(user,
-                link='horizon:identity:lookup:view'):
-    url = urlresolvers.reverse(link, args=(user.id,))
-    data = mark_safe('<a href="%s">%s</a>' %
-                     (escape(url), escape(user.id)))
-    return data
+def user_link(user):
+    return user.get_absolute_url()
 
 
 class UsersTable(tables.DataTable):
-    id = tables.Column(linked_user, verbose_name=_('RCshib id'))
     user_id = tables.Column('user_id',
-                            verbose_name=_('Openstack user id'))
-    persistent_id = tables.Column('persistent_id',
-                                  verbose_name=_('AAF persistent id'))
-    email = tables.Column('email', verbose_name=_('AAF email'))
+                            link=user_link,
+                            verbose_name='Openstack user id')
+    email = tables.Column('email', verbose_name='AAF email')
 
     class Meta:
         name = "registered_users"
-        verbose_name = _("Registered Nectar Users")
+        verbose_name = "Registered Nectar Users"

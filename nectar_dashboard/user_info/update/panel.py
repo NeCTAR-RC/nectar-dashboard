@@ -16,6 +16,6 @@ import horizon
 
 
 class UserUpdatePanel(horizon.Panel):
-    name = "User Info Update"
+    name = "My Details"
     slug = 'update'
     index_url_name = 'edit-self'

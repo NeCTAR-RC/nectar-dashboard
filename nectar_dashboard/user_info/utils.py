@@ -32,7 +32,7 @@ class RCShibbolethRouter(object):
             return False
         return None
 
-    def all0w_migration(self, db, app_label, model_name=None, **hints):
+    def allow_migration(self, db, app_label, model_name=None, **hints):
         if db == 'rcshib':
             # The schema for the 'rcshib' database is managed by
             # the rcshibboleth project.  Migrations should be done

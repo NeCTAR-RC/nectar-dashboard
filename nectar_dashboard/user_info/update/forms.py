@@ -43,9 +43,6 @@ class UserEditForm(base_forms.UserBaseForm):
             'affiliation': forms.Select(),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def clean(self):
         super().clean()
         # In the functional tests, something seems to be turning

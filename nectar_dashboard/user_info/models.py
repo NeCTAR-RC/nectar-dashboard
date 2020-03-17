@@ -17,7 +17,7 @@ import re
 
 from django.core.exceptions import ValidationError
 from django.db import models
-
+from django.urls import reverse
 
 # The known values of the 'affiliation' attribute as defined
 # by the AAF
@@ -83,36 +83,56 @@ class User(models.Model):
     is in the "rcshib" database.  Changes to >>this<< class should track
     changes made in the RCShibboleth project.  Migrations should be
     perfomed on that side too.
+
+    This model does have migrations, but they should be written to only
+    take effect when running tests.
     """
 
+    # Fields that should never be visible are marked as editable=False.
+    # Fields that are visible but that should not change should be
+    # marked as read-only in the respective widget attributes.  Our base
+    # form class propagates this to the form fields.
+
+    # Definitive AAF attributes
     persistent_id = models.CharField(unique=True, max_length=250,
-                                     blank=True, null=True,
+                                     blank=True, null=True, editable=False,
                                      help_text="""The user's
                                      eduPersonTargetedId""")
     user_id = models.CharField(max_length=64, blank=True, null=True,
-                                  help_text="""The user's AAF user id
-                                  supplied by their organization""")
+                               help_text="""The user's AAF user id
+                               supplied by their organization""")
     displayname = models.CharField(max_length=250, blank=True, null=True,
-                                  help_text="""The user's full name as
-                                  supplied by their organization""")
+                                   help_text="""The user's full name as
+                                   supplied by their organization""")
     email = models.CharField(max_length=250, blank=True, null=True,
                              help_text="""The user's authentic email
                              address as supplied by their organization""")
-    state = models.CharField(max_length=10, blank=True, null=True,
-                             choices=STATE_CHOICES,
-                             default=STATE_NEW)
-    terms_accepted_at = models.DateTimeField(blank=True, null=True)
-    shibboleth_attributes = models.BinaryField(blank=True, null=True)
-    registered_at = models.DateTimeField(blank=True, null=True)
-    terms_version = models.CharField(max_length=64, blank=True, null=True)
-    ignore_username_not_email = models.IntegerField(blank=True, null=True)
 
+    # Internal to RCShibboleth
+    state = models.CharField(max_length=10, blank=True, null=True,
+                             editable=False, choices=STATE_CHOICES,
+                             default=STATE_NEW)
+    terms_accepted_at = models.DateTimeField(blank=True, null=True,
+                                             editable=False)
+    shibboleth_attributes = models.BinaryField(blank=True, null=True,
+                                               editable=False)
+    registered_at = models.DateTimeField(blank=True, null=True,
+                                         editable=False)
+    terms_version = models.CharField(max_length=64, blank=True, null=True,
+                                     editable=False)
+    ignore_username_not_email = models.IntegerField(blank=True, null=True,
+                                                    editable=False)
+
+    # Definitive AAF attributes
     first_name = models.CharField(max_length=250, blank=True, null=True,
                                   help_text="""The user's given name as
                                   supplied by their organization""")
     surname = models.CharField(max_length=250, blank=True, null=True,
                                help_text="""The user's family name as
                                supplied by their organization""")
+
+    # AAF attributes that may be optional and that we allow the
+    # user to change
     phone_number = PhoneField(max_length=64, blank=True, null=True,
                               help_text="""The user's phone number""")
     mobile_number = PhoneField(max_length=64, blank=True, null=True,
@@ -142,3 +162,6 @@ class User(models.Model):
         shib_value = self.shibboleth_dict.get(SHIB_ATTR_MAPPING[attribute])
         my_value = getattr(self.__dict__, attribute, None)
         return shib_value != my_value
+
+    def get_absolute_url(self):
+        return reverse('horizon:identity:lookup:view', args=(self.id,))
