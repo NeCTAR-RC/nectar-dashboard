@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4d72bd2a_70bfc429",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-17T07:48:59Z",
+      "side": 1,
+      "message": "are there certain situations where we do want to edit an approved allocation? Just wondering why the IS_APPROVAL variable is needed?",
+      "range": {
+        "startLine": 474,
+        "startChar": 12,
+        "endLine": 474,
+        "endChar": 35
+      },
+      "revId": "63af8420b3901a54205e0131be591f68a2d875c9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
