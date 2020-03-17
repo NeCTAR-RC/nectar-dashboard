@@ -24,7 +24,7 @@ LOG = logging.getLogger(__name__)
 class UserBaseForm(forms.ModelForm):
 
     class Meta:
-        model = models.User
+        model = models.RCUser
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):

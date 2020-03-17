@@ -24,7 +24,7 @@ class BaseTestCase(helpers.BaseAdminViewTests):
     def setUp(self):
         super().setUp()
         common.factory_setup()
-        self.rcs_user = common.UserFactory(email="joe.smith@gmail.com")
+        self.rcs_user = common.RCUserFactory(email="joe.smith@gmail.com")
 
     def assertEqualUsers(self, user1, user2, ignore=[]):
         """Assert two RCS users are the same.  The users can be represented

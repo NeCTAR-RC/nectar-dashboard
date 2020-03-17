@@ -31,9 +31,9 @@ def factory_setup():
     pass
 
 
-class UserFactory(factory.django.DjangoModelFactory):
+class RCUserFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = 'user_info.User'
+        model = 'user_info.RCUser'
 
     persistent_id = fuzzy.FuzzyText(length=32, chars="0123456789abcdef")
     user_id = fuzzy.FuzzyText(length=32)

@@ -18,7 +18,7 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^edit$',
+    url(r'^edit/$',
         views.UserEditSelfView.as_view(),
         name='edit-self'),
 ]

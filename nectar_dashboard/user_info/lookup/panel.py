@@ -16,6 +16,7 @@ import horizon
 
 
 class UserLookupPanel(horizon.Panel):
-    name = "User Info Lookup"
+    name = "User Details"
     slug = 'lookup'
     index_url_name = 'lookup'
+    permissions = ('openstack.roles.allocationadmin',)

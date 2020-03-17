@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.urls import reverse
 from django.views.generic import edit
 
 from nectar_dashboard.user_info import models
@@ -23,12 +24,15 @@ from . import forms
 class UserEditSelfView(views.PageTitleMixin, edit.UpdateView):
     """A simple form view for editing the user's own details
     """
-    model = models.User
+    model = models.RCUser
     form_class = forms.UserEditForm
     template_name = "user_info/edit.html"
-    page_title = "User Info Update"
-    success_url = "/settings/update/edit"
+    page_title = "My Details"
+
+    def __init__(self, *args, **kwargs):
+        self.success_url = reverse('horizon:settings:update:edit-self')
+        super().__init__(*args, **kwargs)
 
     def get_object(self):
         user_id = self.request.user.keystone_user_id
-        return models.User.objects.get(user_id=user_id)
+        return models.RCUser.objects.get(user_id=user_id)

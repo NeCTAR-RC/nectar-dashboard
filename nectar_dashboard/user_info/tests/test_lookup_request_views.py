@@ -60,12 +60,8 @@ class UserLookupViewTestCase(base.UserViewTestCase):
 
     def test_get(self):
         response = self.client.get(self.url)
-        self.assertStatusCode(response, 302)
-        self.assertEqual(response.get('location'),
-                         "/auth/login/?next=" + self.url)
+        self.assertStatusCode(response, 403)
 
     def test_POST(self):
         response = self.client.post(self.url)
-        self.assertStatusCode(response, 302)
-        self.assertEqual(response.get('location'),
-                         "/auth/login/?next=" + self.url)
+        self.assertStatusCode(response, 403)

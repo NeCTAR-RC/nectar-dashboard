@@ -33,7 +33,7 @@ class EditSelfViewTestCase(base.UserViewTestCase):
         response = self.client.post(self.url, form)
         self.assertStatusCode(response, 302)
         self.assertEqual(response.get('location'), self.url)
-        user = models.User.objects.get(user_id=self.rcs_user.user_id)
+        user = models.RCUser.objects.get(user_id=self.rcs_user.user_id)
         self.assertEqualUsers(self.rcs_user, user)
 
     def test_post_name_change(self):
@@ -45,7 +45,7 @@ class EditSelfViewTestCase(base.UserViewTestCase):
         self.assertStatusCode(response, 302)
         self.assertEqual(response.get('location'), self.url)
         # Change should be ignored
-        user = models.User.objects.get(user_id=self.rcs_user.user_id)
+        user = models.RCUser.objects.get(user_id=self.rcs_user.user_id)
         self.assertEqualUsers(user, self.rcs_user)
 
     def test_post_orcid_change(self):
@@ -56,5 +56,5 @@ class EditSelfViewTestCase(base.UserViewTestCase):
         self.assertEqual(response.get('location'), self.url)
 
         # Change should be made
-        user = models.User.objects.get(user_id=self.rcs_user.user_id)
+        user = models.RCUser.objects.get(user_id=self.rcs_user.user_id)
         self.assertEqualUsers(user, form)

@@ -28,17 +28,13 @@ class UserLookupForm(forms.Form):
     email = forms.EmailField(label=mark_safe("Account or email address"),
                              required=True)
 
-    def is_valid(self):
-        if not super().is_valid():
-            return False
+    def clean_email(self):
         form_email = self.cleaned_data['email']
-        users = models.User.objects.filter(Q(user_id__iexact=form_email)
-                                           | Q(email__iexact=form_email))
-        if len(users) > 0:
-            return True
-        else:
-            self.add_error('email', 'No users match this account / email.')
-            return False
+        users = models.RCUser.objects.filter(Q(user_id__iexact=form_email)
+                                             | Q(email__iexact=form_email))
+        if len(users) == 0:
+            raise forms.ValidationError('No users match this account / email.')
+        return form_email
 
 
 class UserViewForm(base_forms.UserBaseForm):
