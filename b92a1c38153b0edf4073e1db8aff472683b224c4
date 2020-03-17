@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ec41ea86_931f3a46",
+        "filename": "nectar_dashboard/user_info/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "This is a base class.  The child form classes either mark widgets as read-only or exclude fields.",
+      "parentUuid": "a4147b1e_85933335",
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a93adf49_1b6f8384",
         "filename": "nectar_dashboard/user_info/forms.py",
         "patchSetId": 14
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "80636429_4041c657",
+        "filename": "nectar_dashboard/user_info/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "This is the way that a lot of the allocations forms do it.  Go figure.",
+      "parentUuid": "a93adf49_1b6f8384",
+      "range": {
+        "startLine": 33,
+        "startChar": 11,
+        "endLine": 34,
+        "endChar": 37
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b6629494_de3eba4c",
         "filename": "nectar_dashboard/user_info/lookup/forms.py",
         "patchSetId": 14
@@ -56,6 +98,24 @@
       "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c5b14be_cdc83d25",
+        "filename": "nectar_dashboard/user_info/lookup/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b6629494_de3eba4c",
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -105,6 +165,30 @@
     },
     {
       "key": {
+        "uuid": "4cca98c5_5c7e7f80",
+        "filename": "nectar_dashboard/user_info/lookup/panel.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5f33ee12_fa81cbba",
+      "range": {
+        "startLine": 19,
+        "startChar": 12,
+        "endLine": 19,
+        "endChar": 28
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d43e60fd_247952ad",
         "filename": "nectar_dashboard/user_info/lookup/tables.py",
         "patchSetId": 14
@@ -125,6 +209,30 @@
       "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f176f80d_74a0e255",
+        "filename": "nectar_dashboard/user_info/lookup/tables.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d43e60fd_247952ad",
+      "range": {
+        "startLine": 29,
+        "startChar": 4,
+        "endLine": 31,
+        "endChar": 52
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -151,6 +259,30 @@
     },
     {
       "key": {
+        "uuid": "6d94dc14_aee7aada",
+        "filename": "nectar_dashboard/user_info/lookup/tables.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9c51fb80_e3757de5",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 64
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfe4ecc4_e194e74a",
         "filename": "nectar_dashboard/user_info/lookup/tables.py",
         "patchSetId": 14
@@ -174,6 +306,30 @@
     },
     {
       "key": {
+        "uuid": "d78e0e2a_803eef44",
+        "filename": "nectar_dashboard/user_info/lookup/tables.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cfe4ecc4_e194e74a",
+      "range": {
+        "startLine": 39,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 70
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a20bd90d_6c000867",
         "filename": "nectar_dashboard/user_info/lookup/urls.py",
         "patchSetId": 14
@@ -188,6 +344,24 @@
       "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93eb4102_f44c4314",
+        "filename": "nectar_dashboard/user_info/lookup/urls.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a20bd90d_6c000867",
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -214,6 +388,30 @@
     },
     {
       "key": {
+        "uuid": "a711d454_c299ae53",
+        "filename": "nectar_dashboard/user_info/lookup/views.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ff4b92f_f6fe51d1",
+      "range": {
+        "startLine": 34,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 72
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "37fc2591_87f0f9e3",
         "filename": "nectar_dashboard/user_info/models.py",
         "patchSetId": 14
@@ -237,6 +435,30 @@
     },
     {
       "key": {
+        "uuid": "394ea80c_a0025a49",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "37fc2591_87f0f9e3",
+      "range": {
+        "startLine": 88,
+        "startChar": 4,
+        "endLine": 88,
+        "endChar": 19
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "207e5d7f_07cd7935",
         "filename": "nectar_dashboard/user_info/update/forms.py",
         "patchSetId": 14
@@ -257,6 +479,30 @@
       "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da4ab1dd_088d17b2",
+        "filename": "nectar_dashboard/user_info/update/forms.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "207e5d7f_07cd7935",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 41
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -306,6 +552,30 @@
     },
     {
       "key": {
+        "uuid": "8343b4cd_64db7cb0",
+        "filename": "nectar_dashboard/user_info/update/panel.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d1aea518_2acfde04",
+      "range": {
+        "startLine": 19,
+        "startChar": 12,
+        "endLine": 19,
+        "endChar": 28
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d65679da_816a94a3",
         "filename": "nectar_dashboard/user_info/update/urls.py",
         "patchSetId": 14
@@ -329,6 +599,30 @@
     },
     {
       "key": {
+        "uuid": "220498bc_c5c73a6b",
+        "filename": "nectar_dashboard/user_info/update/urls.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d65679da_816a94a3",
+      "range": {
+        "startLine": 21,
+        "startChar": 14,
+        "endLine": 21,
+        "endChar": 15
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a15b4a0_bbe5604f",
         "filename": "nectar_dashboard/user_info/update/views.py",
         "patchSetId": 14
@@ -349,6 +643,30 @@
       "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca8fe798_b5208cff",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a15b4a0_bbe5604f",
+      "range": {
+        "startLine": 29,
+        "startChar": 18,
+        "endLine": 29,
+        "endChar": 34
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -395,6 +713,30 @@
       "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5fb572c_0db4ce52",
+        "filename": "nectar_dashboard/user_info/utils.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-17T02:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c88ac21_ff7a9dd1",
+      "range": {
+        "startLine": 35,
+        "startChar": 11,
+        "endLine": 35,
+        "endChar": 12
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
