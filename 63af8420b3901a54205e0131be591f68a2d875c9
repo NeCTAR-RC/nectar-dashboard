@@ -70,6 +70,30 @@
       "revId": "63af8420b3901a54205e0131be591f68a2d875c9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a29a38ef_ab220d47",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-19T04:58:35Z",
+      "side": 1,
+      "message": "Current refers to the version of the rcallocation record in the database.  If the user is submitting an amendment request for an approved record, then current.status will be approved.  We want to allow that.  So we need to know if this is actually being submitted from the approval page.   This is one way to do it.  \n\nWithout this test ... or something else ... a user can\u0027t submit amendments.",
+      "parentUuid": "90196030_05f70ef0",
+      "range": {
+        "startLine": 474,
+        "startChar": 12,
+        "endLine": 474,
+        "endChar": 35
+      },
+      "revId": "63af8420b3901a54205e0131be591f68a2d875c9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
