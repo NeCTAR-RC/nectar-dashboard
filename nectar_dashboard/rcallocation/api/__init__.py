@@ -381,6 +381,7 @@ class AllocationFilter(filters.FilterSet):
                                                    lookup_expr='isnull')
     chief_investigator = filters.CharFilter('investigators__email')
     allocation_home = filters.CharFilter(method='filter_allocation_home')
+    associated_site = filters.CharFilter('associated_site__name')
 
     def filter_allocation_home(self, queryset, name, value):
         if value == 'national':
@@ -396,7 +397,7 @@ class AllocationFilter(filters.FilterSet):
         model = models.AllocationRequest
         fields = ('status', 'parent_request_id', 'project_id',
                   'project_name', 'provisioned', 'parent_request',
-                  'associated_site', 'national', 'notifications',
+                  'national', 'notifications',
                   'contact_email', 'approver_email',
                   'start_date', 'end_date', 'modified_time', 'created_by')
 
