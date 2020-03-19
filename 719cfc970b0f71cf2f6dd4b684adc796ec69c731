@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0555e4f_9ab9d8e0",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 396,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-19T02:22:46Z",
+      "side": 1,
+      "message": "Another way to do this would be to use the approach that the chief_investigator attribute uses.\n\nThat way the API would be cleaner and can do /allocations/?associated_site\u003duom\n\nWhat do you think?",
+      "range": {
+        "startLine": 394,
+        "startChar": 0,
+        "endLine": 396,
+        "endChar": 59
+      },
+      "revId": "719cfc970b0f71cf2f6dd4b684adc796ec69c731",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
