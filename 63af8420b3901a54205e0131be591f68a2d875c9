@@ -46,6 +46,30 @@
       "revId": "63af8420b3901a54205e0131be591f68a2d875c9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "90196030_05f70ef0",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-19T00:49:00Z",
+      "side": 1,
+      "message": "Sorry if my first comment was misleading, I was referring to the use of the variable, maybe it\u0027s not needed and we don\u0027t allow this for every post of this view? Or are there certain situations where we do want to edit an approved allocation?",
+      "parentUuid": "532937ee_2ac1d164",
+      "range": {
+        "startLine": 474,
+        "startChar": 12,
+        "endLine": 474,
+        "endChar": 35
+      },
+      "revId": "63af8420b3901a54205e0131be591f68a2d875c9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
