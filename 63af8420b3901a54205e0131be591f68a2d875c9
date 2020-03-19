@@ -94,6 +94,30 @@
       "revId": "63af8420b3901a54205e0131be591f68a2d875c9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "abaea430_ea3b54ba",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-19T05:33:05Z",
+      "side": 1,
+      "message": "Yeah ok understand, all this allocation status transitions is a bit of a mess looking into it more. \nIdeally we have defined what states a state can transition to.\n\nEg. Pending can go to approved or declined or deleted\n    approved can go to deleted, update-pending\netc. etc.\n\nWould be good to do this but don\u0027t want to stall this bug fix.\nThis one could be done without the IS_APPROVAL variable and do:\n\nif self.object.state \u003d\u003d current.state \u003d\u003d models.AllocationRequest.APPROVED:\n   ERROR - can\u0027t transition from approved -\u003e approved.\n\n\nDoing it this way it would be easier to transition to a helper method called something like\n\nensure_transition_valid(current_allocation.state, new_allocation.state)\n\n\nAnd in there we could define all the rules about transition state. \nI\u0027m copying the way nova handles state changes and they do a similar thing",
+      "parentUuid": "a29a38ef_ab220d47",
+      "range": {
+        "startLine": 474,
+        "startChar": 12,
+        "endLine": 474,
+        "endChar": 35
+      },
+      "revId": "63af8420b3901a54205e0131be591f68a2d875c9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
