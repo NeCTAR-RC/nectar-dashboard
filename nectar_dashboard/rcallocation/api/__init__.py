@@ -392,11 +392,15 @@ class AllocationFilter(filters.FilterSet):
             return queryset.filter(associated_site__name=value) \
                            .filter(national=False)
 
+    def filter_associated_site__name(self, queryset, name, value):
+        return queryset.filter(associated_site__name=value)
+
     class Meta:
         model = models.AllocationRequest
         fields = ('status', 'parent_request_id', 'project_id',
                   'project_name', 'provisioned', 'parent_request',
-                  'associated_site', 'national', 'notifications',
+                  'associated_site', 'associated_site__name',
+                  'national', 'notifications',
                   'contact_email', 'approver_email',
                   'start_date', 'end_date', 'modified_time', 'created_by')
 

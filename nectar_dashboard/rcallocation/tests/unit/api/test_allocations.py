@@ -106,6 +106,26 @@ class AllocationTests(base.AllocationAPITest):
         self.assertEqual(response.data['results'][0]['associated_site'],
                          current_site)
 
+    def test_filter_aassociated_site_name(self):
+        self.client.force_authenticate(user=self.admin_user)
+        current_site = self.allocation.associated_site.name
+        factories.AllocationFactory.create(national=False,
+                                           associated_site=None)
+        response = self.client.get(
+            '/rest_api/allocations/?associated_site__name=%s' % current_site)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(1, len(response.data['results']))
+        self.assertEqual(response.data['results'][0]['allocation_home'],
+                         current_site)
+        self.assertEqual(response.data['results'][0]['national'], False)
+        self.assertEqual(response.data['results'][0]['associated_site'],
+                         current_site)
+
+        response = self.client.get(
+            '/rest_api/allocations/?associated_site__name=kanmantoo')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(0, len(response.data['results']))
+
     def test_get_allocation(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/rest_api/allocations/1/')
