@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e31e90c5_cdf55129",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-31T05:21:21Z",
+      "side": 1,
+      "message": "Be good to have a verbose name on this like \"eduPersonTargetedID\"",
+      "revId": "c9b3f701d88354adff6d4ab201c3a4a649ebe057",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68e33f0f_0bb854ff",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-31T05:21:21Z",
+      "side": 1,
+      "message": "Be good to have a verbose name on this like \"Openstack User ID\"",
+      "revId": "c9b3f701d88354adff6d4ab201c3a4a649ebe057",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6b348cf_82c25e91",
+        "filename": "nectar_dashboard/user_info/models.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-31T05:21:21Z",
+      "side": 1,
+      "message": "Be good to have a verbose name on this like \"Display Name\"",
+      "revId": "c9b3f701d88354adff6d4ab201c3a4a649ebe057",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2d77204_54d46e27",
+        "filename": "nectar_dashboard/user_info/tests/test_lookup_request_views.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-31T05:21:21Z",
+      "side": 1,
+      "message": "How about testing a success here too?",
+      "revId": "c9b3f701d88354adff6d4ab201c3a4a649ebe057",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0cee9c8_b30101e9",
+        "filename": "nectar_dashboard/user_info/views.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-03-31T05:21:21Z",
+      "side": 1,
+      "message": "as discussed, not needed",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 22
+      },
+      "revId": "c9b3f701d88354adff6d4ab201c3a4a649ebe057",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
