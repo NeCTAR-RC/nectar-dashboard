@@ -576,6 +576,30 @@
     },
     {
       "key": {
+        "uuid": "fea328ec_1ef32992",
+        "filename": "nectar_dashboard/user_info/update/panel.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-03-31T04:00:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8343b4cd_64db7cb0",
+      "range": {
+        "startLine": 19,
+        "startChar": 12,
+        "endLine": 19,
+        "endChar": 28
+      },
+      "revId": "b92a1c38153b0edf4073e1db8aff472683b224c4",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d65679da_816a94a3",
         "filename": "nectar_dashboard/user_info/update/urls.py",
         "patchSetId": 14
