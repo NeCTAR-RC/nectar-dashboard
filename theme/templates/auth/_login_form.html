@@ -17,15 +17,6 @@
 
     <div class="panel-body">
     {% block login_body %}
-      {% comment %}
-        These fake fields are required to prevent Chrome v34+ from autofilling form.
-      {% endcomment %}
-      {% if HORIZON_CONFIG.password_autocomplete != "on" %}
-        <div class="fake_credentials" style="display: none">
-          <input type="text" name="fake_email" value="" />
-          <input type="password" name="fake_password" value="" />
-        </div>
-      {%endif%}
       {% include "auth/_description.html" %}
       <fieldset hz-login-finder>
         {% if request.user.is_authenticated and 'next' in request.GET %}

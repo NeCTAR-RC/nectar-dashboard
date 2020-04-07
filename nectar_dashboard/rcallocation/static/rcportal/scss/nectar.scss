@@ -31,11 +31,6 @@ div#services_region_switcher {
   display: none;
 }
 
-#footer a {
-    background: none;
-    color: #bbb;
-}
-
 #splash .shibboleth {
   background: #fff url(../img/logo-splash.svg) no-repeat center 35px;
 }
@@ -52,36 +47,6 @@ body {
 }
 
 body {
-}
-
-#container {
-   min-height: 100%;
-   position: relative;
-<!--[if IE 6]>
-   height: 100%;
-<![endif]-->
-   margin-bottom: 60px;   /* Height of the footer */
-}
-
-body#splash #footer {
-    bottom: 0;
-}
-
-#footer {
-    width: 100%;
-    height: 60px;   /* Height of the footer */
-}
-
-#footer .wrapper {
-    margin-top: 10px;
-    padding: 14px;
-    align: middle;
-    text-align: center;
-}
-
-#footer a {
-    background: none;
-    color: #bbb;
 }
 
 .dl-horizontal dt {
