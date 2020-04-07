@@ -1,4 +1,89 @@
+@import "_variables";
+
 // combat angular-material from Heat dashboard
 html {
-  background-color: #ffffff;
+  background-color: #fff;
 }
+
+/* Use flex box to push footer to bottom */
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+/* container login used in splash page */
+,#main_content, 
+.container.login {
+  flex: 1;
+}
+
+/*
+ * Nav bar
+ */
+.navbar {
+  font-size: 1.1em;
+}
+
+/*
+ * Footer
+ */
+.footer {
+  font-size: 1.1em;
+  margin-top: 20px;
+  background: #000;
+  color: #fff;
+  padding: 20px;
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 10px;
+  }
+
+  h3::after, h4::after {
+    content: "";
+    background: #fff;
+    height: 2px;
+    display: block;
+    margin-top: 10px;
+    max-width: 50px;
+  }
+
+  .footer-text {
+    a {
+      color: $ardc-orange;
+      text-decoration: underline;
+
+      &:hover, &:focus {
+        color: $ardc-pink;
+      }
+    }
+  }
+
+  .footer-links {
+    a {
+      color: #ccc;
+      text-decoration: none;
+
+      &:hover, &:focus {
+        color: $ardc-blue;
+      }
+    }
+  }
+}
+
+/* Alignment of logos in footer */
+.vertical-align {
+  display: flex;
+  flex-direction: row;
+}
+
+.vertical-align > [class^="col-"],
+.vertical-align > [class*=" col-"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
