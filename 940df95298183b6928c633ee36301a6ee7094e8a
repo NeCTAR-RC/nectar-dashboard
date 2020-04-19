@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "14cbc01c_8f591474",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 21
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-04-19T22:39:11Z",
+      "side": 1,
+      "message": "This won\u0027t work as it can return more than 1 RCUser object. \n\nIt is possible that multiple rc users link to the same openstack user",
+      "range": {
+        "startLine": 36,
+        "startChar": 15,
+        "endLine": 36,
+        "endChar": 57
+      },
+      "revId": "940df95298183b6928c633ee36301a6ee7094e8a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
