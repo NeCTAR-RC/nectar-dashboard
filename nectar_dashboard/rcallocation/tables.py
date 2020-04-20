@@ -96,12 +96,13 @@ def get_quota(wanted, actual=None):
     return quota
 
 
-def get_quota_by_resource(resource):
+def get_quota_by_resource(service, resource):
     def quota(allocation):
         want = 0
         have = 0
         for quota in \
             models.Quota.objects.filter(group__allocation=allocation,
+                                        resource__service_type=service,
                                         resource__quota_name=resource):
             want += quota.requested_quota
             have += quota.quota
@@ -114,16 +115,16 @@ class AllocationHistoryTable(tables.DataTable):
                             link="horizon:allocation:requests:allocation_view")
     approver = tables.Column("approver_email", verbose_name="Approver")
     cores = tables.Column(
-        get_quota_by_resource("cores"),
+        get_quota_by_resource("compute", "cores"),
         verbose_name="Cores")
     ram = tables.Column(
-        get_quota_by_resource("ram"),
+        get_quota_by_resource("compute", "ram"),
         verbose_name="RAM")
     object_store = tables.Column(
-        get_quota_by_resource("object"),
+        get_quota_by_resource("object", "object"),
         verbose_name="Object Storage")
     volume_storage = tables.Column(
-        get_quota_by_resource("volume"),
+        get_quota_by_resource("volume", "gigabytes"),
         verbose_name="Volume Storage")
     status = tables.Column("get_status_display", verbose_name="Status")
     modified_time = tables.Column(
