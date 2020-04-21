@@ -9,5 +9,6 @@ recursive-include nectar_dashboard/rcallocation/templates *
 recursive-include nectar_dashboard/rcallocation/static *
 recursive-include nectar_dashboard/reset_password/templates *
 recursive-include nectar_dashboard/project_members/templates *
+recursive-include nectar_dashboard/user_info/templates *
 
 recursive-include docs *.rst conf.py Makefile make.bat
