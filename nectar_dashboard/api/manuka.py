@@ -1,5 +1,3 @@
-# Copyright 2019 Australian Research Data Commons
-#
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
@@ -12,23 +10,22 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
 
-from django import forms
+from horizon.utils import memoized
+from openstack_dashboard.api.keystone import keystoneclient
+from manukaclient import client
+from keystoneauth1 import session
+from keystoneauth1.identity import v3
 
-from nectar_dashboard.user_info import models
 
-LOG = logging.getLogger(__name__)
+MANUKA_API_VERSION = '1'
 
 
-class UserBaseForm(forms.ModelForm):
+@memoized.memoized
+def manukaclient(request):
+    auth = v3.Token(token=request.user.token.id,
+                    auth_url=request.user.endpoint)
 
-    class Meta:
-        model = models.RCUser
-        fields = '__all__'
+    keystone_session = session.Session(auth=auth)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for name, field in self.fields.items():
-            field.widget.attrs['class'] = (
-                'form-control ' + field.widget.attrs.get('class', ''))
+    return client.Client(MANUKA_API_VERSION, session=keystone_session)

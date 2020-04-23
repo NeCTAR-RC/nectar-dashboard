@@ -12,40 +12,49 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.db.models import Q
-
-from django.views.generic import detail
-
-from horizon import tables as horizon_tables
+from horizon import exceptions
+from horizon import tables
 from horizon import views
 
-from nectar_dashboard.user_info import models
+from nectar_dashboard.api import manuka
 
-from . import tables
+from . import tables as user_tables
 
 
-class UserListView(horizon_tables.DataTableView):
-    """User search / lookup form + listing of users that match
-    """
-
-    table_class = tables.UsersTable
+class UserListView(tables.PagedTableMixin, tables.DataTableView):
+    table_class = user_tables.UsersTable
+    page_title = "User Search"
     template_name = "user_info/list.html"
-    page_title = "User lookup"
 
     def get_data(self):
         q = self.request.GET.get('q')
-
         if not q or len(q) < 3:
             return []
+        try:
+            client = manuka.manukaclient(self.request)
+            return client.users.search(q)
+        except Exception:
+            exceptions.handle(self.request,
+                              'Unable to search users.')
+            return []
 
-        return models.RCUser.objects.filter(
-            Q(user_id__iexact=q) | Q(email__iexact=q)
-            | Q(email__icontains=q) | Q(displayname__icontains=q))
 
-
-class UserDetailView(views.PageTitleMixin, detail.DetailView):
-    """A simple form for listing the user's details
-    """
-    model = models.RCUser
+class UserDetailView(views.HorizonTemplateView):
     template_name = "user_info/view.html"
     page_title = "User Details"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_data()
+        context["object"] = user
+        return context
+
+    def get_data(self):
+        try:
+            user_id = self.kwargs['user_id']
+            client = manuka.manukaclient(self.request)
+            user = client.users.get(user_id)
+        except Exception:
+            exceptions.handle(self.request,
+                              'Unable to retrieve user details.')
+        return user
