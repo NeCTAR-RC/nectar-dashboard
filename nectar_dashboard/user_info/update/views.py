@@ -12,26 +12,47 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.urls import reverse
 from django.urls import reverse_lazy
 from django.views.generic import edit
 
 from horizon import views
-
-from nectar_dashboard.user_info import models
-
-from . import forms
+from horizon import forms
+from horizon import exceptions
 
 
-class UserEditSelfView(views.PageTitleMixin, edit.UpdateView):
-    """A simple form view for editing the user's own details
-    """
-    model = models.RCUser
-    form_class = forms.UserEditForm
-    template_name = "user_info/edit.html"
+from nectar_dashboard.api import manuka
+
+from . import forms as user_forms
+
+
+class UserEditSelfView(forms.ModalFormView):
+    form_class = user_forms.UpdateForm
+    modal_id = "update_user_modal"
+    template_name = 'user_info/edit.html'
+    submit_url = "horizon:settings:my-details:edit-self"
+    success_url = reverse_lazy("horizon:settings:my-details:edit-self")
     page_title = "My Details"
-    success_url = reverse_lazy('horizon:settings:my-details:edit-self')
 
     def get_object(self):
-        user_id = self.request.user.keystone_user_id
-        return models.RCUser.objects.filter(user_id=user_id) \
-            .order_by('-last_login').first()
+        if not hasattr(self, "_object"):
+            try:
+                keystone_user_id = self.request.user.keystone_user_id
+                client = manuka.manukaclient(self.request)
+                self._object = client.users.get_by_os(keystone_user_id)
+            except Exception:
+                msg = 'Unable to retrieve user.'
+                url = reverse('horizon:settings')
+                exceptions.handle(self.request, msg, redirect=url)
+        return self._object
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.get_object()
+        context['submit_url'] = reverse(self.submit_url)
+        context['object'] = self.get_object()
+        return context
+
+    def get_initial(self):
+        user = self.get_object()
+        return user.to_dict()
