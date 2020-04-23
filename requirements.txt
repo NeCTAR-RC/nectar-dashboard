@@ -12,3 +12,4 @@ django==1.11.11
 django-cors-headers
 python-memcached
 XStatic-jQuery<2
+manukaclient
