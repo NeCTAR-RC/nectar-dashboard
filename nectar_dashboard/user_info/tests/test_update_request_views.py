@@ -12,52 +12,52 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from unittest import mock
+
 from django.urls import reverse
 
-from nectar_dashboard.user_info import models
-
 from . import base
-from . import common
 
 
+@mock.patch('nectar_dashboard.api.manuka.manukaclient')
 class EditSelfViewTestCase(base.UserViewTestCase):
+
     url = reverse('horizon:settings:my-details:edit-self')
 
-    def _fetch_user(self, user):
-        return models.RCUser.objects.get(persistent_id=user.persistent_id)
-
-    def test_get(self):
+    def test_get(self, mock_get_manuka):
+        client = mock_get_manuka.return_value
+        manuka_user = client.users.get_by_os.return_value
         response = self.client.get(self.url)
         self.assertStatusCode(response, 200)
-        self.assertEqualUsers(self.rcs_user, response.context_data['object'])
+        self.assertEqual(manuka_user, response.context_data['object'])
+        client.users.get_by_os.assert_called_once_with(
+            self.request.user.keystone_user_id)
 
-    def test_post_no_change(self):
-        form = common.user_to_dict(self.rcs_user)
-        response = self.client.post(self.url, form)
-        self.assertStatusCode(response, 302)
-        self.assertEqual(response.get('location'), self.url)
-        self.assertEqualUsers(self.rcs_user, self._fetch_user(self.rcs_user))
+    def test_post_bad_form(self, mock_get_manuka):
+        client = mock_get_manuka.return_value
+        manuka_user = client.users.get_by_os.return_value
 
-    def test_post_name_change(self):
-        form = common.user_to_dict(self.rcs_user)
+        form = {'affiliation': 'member', 'phone_number': '123',
+                'mobile_number': '456', 'orcid': 'rose'}
+
+        # Can't change displayname
         form['displayname'] = "Jim Spriggs"
-        form['first_name'] = "Jim"
-        form['surname'] = "Spriggs"
+        response = self.client.post(self.url, form)
+        # Invalid values should be ignored
+        form.pop('displayname')
+        self.assertStatusCode(response, 302)
+        self.assertEqual(response.get('location'), self.url)
+        client.users.update.assert_called_once_with(
+            manuka_user.to_dict()['id'], **form)
+
+    def test_post_change(self, mock_get_manuka):
+        client = mock_get_manuka.return_value
+        manuka_user = client.users.get_by_os.return_value
+
+        form = {'affiliation': 'member', 'phone_number': '123',
+                'mobile_number': '456', 'orcid': 'rose'}
         response = self.client.post(self.url, form)
         self.assertStatusCode(response, 302)
         self.assertEqual(response.get('location'), self.url)
-
-        # Change should be ignored
-        self.assertEqualUsers(self.rcs_user, self._fetch_user(self.rcs_user))
-
-    def test_post_orcid_change(self):
-        form = common.user_to_dict(self.rcs_user)
-        form['orcid'] = "rose"
-        response = self.client.post(self.url, form)
-        self.assertStatusCode(response, 302)
-        self.assertEqual(response.get('location'), self.url)
-
-        # Change should be made (in one record only)
-        self.assertEqualUsers(form, self._fetch_user(self.rcs_user))
-        self.assertEqualUsers(self.rcs_user_other,
-                              self._fetch_user(self.rcs_user_other))
+        client.users.update.assert_called_once_with(
+            manuka_user.to_dict()['id'], **form)
