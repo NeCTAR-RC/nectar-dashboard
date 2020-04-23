@@ -14,17 +14,17 @@
 
 import logging
 
+from django.core.urlresolvers import reverse
 from horizon import tables
 
 LOG = logging.getLogger(__name__)
 
-
 def user_link(user):
-    return user.get_absolute_url()
+    return reverse("horizon:identity:lookup:view", args=(user.id,))
 
 
 class UsersTable(tables.DataTable):
-    email = tables.Column('email', link=user_link,)
+    email = tables.Column('email', link=user_link)
     displayname = tables.Column('displayname', verbose_name='Name')
 
     user_id = tables.Column('user_id',
