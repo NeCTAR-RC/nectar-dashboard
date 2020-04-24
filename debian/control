@@ -17,7 +17,7 @@ Homepage: https://github.com/NeCTAR-RC/nectar-dashboard
 
 Package: python3-nectar-dashboard
 Architecture: any
-Depends: openstack-dashboard (>= 15.0.0),
+Depends: openstack-dashboard (>= 16.0.0),
          ${misc:Depends},
          ${python3:Depends},
          python3-dateutil,
