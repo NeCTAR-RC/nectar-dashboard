@@ -504,11 +504,11 @@ botocore===1.12.225
 xmltodict===0.12.0
 pyasn1===0.4.7
 oslo.rootwrap===5.16.1
-Django===1.11.24;python_version=='2.7'
-Django===2.0.13;python_version=='3.4'
-Django===2.0.13;python_version=='3.5'
-Django===2.0.13;python_version=='3.6'
-Django===2.0.13;python_version=='3.7'
+Django===1.11.11;python_version=='2.7'
+Django===1.11.11;python_version=='3.4'
+Django===1.11.11;python_version=='3.5'
+Django===1.11.11;python_version=='3.6'
+Django===1.11.11;python_version=='3.7'
 pexpect===4.7.0
 cmd2===0.8.9
 redis===3.3.8
@@ -692,7 +692,6 @@ scikit-learn===0.21.3;python_version=='3.4'
 scikit-learn===0.21.3;python_version=='3.5'
 scikit-learn===0.21.3;python_version=='3.6'
 scikit-learn===0.21.3;python_version=='3.7'
-horizon===16.1.0
 Pygments===2.5.2;python_version=='2.7'
 Pygments===2.3.1;python_version=='3.4'
 Pygments===2.6.1;python_version=='3.5'
