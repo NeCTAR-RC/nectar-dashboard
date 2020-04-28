@@ -8,12 +8,12 @@
 
 {% block main %}
 <table>
-  {% include "user_info/field2.html" with value=object.user_id label="User ID" %}
+  {% include "user_info/field2.html" with value=object.id label="User ID" %}
   {% include "user_info/field2.html" with value=object.displayname label="Full name" %}
   {% include "user_info/field2.html" with value=object.email label="Email" %}
   {% include "user_info/field2.html" with value=object.first_name label="First name" %}
   {% include "user_info/field2.html" with value=object.surname label="Family name" %}
-  {% include "user_info/field2.html" with value=object.home_organization label="Home Organization" %}
+  {% include "user_info/field2.html" with value=object.organisation label="Organisation" %}
   {% include "user_info/field2.html" with value=object.affiliation label="Affiliation" %}
   {% include "user_info/field2.html" with value=object.orcid label="ORCID" %}
   {% include "user_info/field2.html" with value=object.phone_number label="Phone Number" %}
