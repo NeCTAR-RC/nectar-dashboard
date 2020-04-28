@@ -137,7 +137,10 @@ class RCUser(models.Model):
 
     @property
     def shibboleth_dict(self):
-        return pickle.loads(self.shibboleth_attributes)
+        if self.shibboleth_attributes:
+            return pickle.loads(self.shibboleth_attributes)
+        else:
+            return {}
 
     def is_overridden(self, attribute):
         shib_value = self.shibboleth_dict.get(SHIB_ATTR_MAPPING[attribute])
