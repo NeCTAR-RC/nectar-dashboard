@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c04c0ae1_db22a3a2",
+        "filename": "constraints.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 511,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-04-28T22:26:26Z",
+      "side": 1,
+      "message": "I don\u0027t think this is needed since we fix it in requirements.txt?",
+      "range": {
+        "startLine": 507,
+        "startChar": 0,
+        "endLine": 511,
+        "endChar": 38
+      },
+      "revId": "fb736d1a16a43621dddc5689011a3d0f87025d81",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
