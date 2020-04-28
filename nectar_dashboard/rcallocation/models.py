@@ -361,7 +361,7 @@ class AllocationRequest(models.Model):
         return not self.is_active() and not self.is_archived()
 
     def can_admin_edit(self):
-        return self.status.lower() not in ('p', 'a') and not self.is_archived()
+        return self.status.lower() not in ('p',) and not self.is_archived()
 
     def can_user_edit(self):
         return self.status.lower() in (

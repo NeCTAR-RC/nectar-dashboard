@@ -38,7 +38,7 @@ class AllocationApproveForm(forms.ModelForm):
         self.fields['project_description'].required = False
         self.fields['estimated_project_duration'].widget.attrs[
             'class'] = 'form-control'
-        self.fields['estimated_project_duration'].required = False
+        self.fields['estimated_project_duration'].label = "Project Duration"
         self.fields['status_explanation'].required = False
         self.fields['status_explanation'].help_text = 'Reviewer Comment'
         self.fields['status_explanation'].label = 'Comment'

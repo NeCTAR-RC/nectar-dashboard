@@ -14,6 +14,6 @@ urlpatterns = [
         base_views.AllocationHistoryView.as_view(),
         name='allocation_history'),
     url(r'^edit_request/(?P<pk>\d+)/$',
-        allocation_views.AllocationUpdateView.as_view(),
+        views.AllocationUpdateView.as_view(),
         name='edit_request'),
 ]
