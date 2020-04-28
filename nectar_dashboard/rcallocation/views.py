@@ -4,6 +4,7 @@ import logging
 from operator import methodcaller
 import re
 
+from django.core import exceptions
 from django.contrib.auth import mixins
 from django.db.models import Q
 from django.db import transaction
@@ -126,6 +127,9 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
     SHOW_EMPTY_SERVICE_TYPES = True
     ONLY_REQUESTABLE_RESOURCES = True
     IGNORE_WARNINGS = False
+
+    # What allocation stats are allowed to use this view, None means all
+    allowed_states = None
 
     model = models.AllocationRequest
     form_class = forms.AllocationRequestForm
@@ -401,12 +405,31 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                                   **kwargs))
 
     def test_func(self):
-        # Uses of this view needs alloc admin access ... unless overridden
+        # Users of this view needs alloc admin access ... unless overridden
         return utils.user_is_allocation_admin(self.request.user)
 
+    def check_state(self):
+        if self.allowed_states is not None and self.object.status not in self.allowed_states:
+            raise exceptions.PermissionDenied
+
+        # Check for certain actions that will cause major problems
+        # if they ever happen
+        if self.object:
+            current = models.AllocationRequest.objects.get(id=self.object.id)
+            # Any changes to a history record
+            if current.parent_request_id:
+                return HttpResponseBadRequest('Allocation record is historic')
+            # Approval of a record that is already approved.
+            if self.allowed_states and models.AllocationRequest.APPROVED not in self.allowed_states:
+                if self.object.status == current.status == \
+                   models.AllocationRequest.APPROVED:
+                    return HttpResponseBadRequest('Allocation already approved')
+
+
+    
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-
+        self.check_state()
         if self.object:
 
             # Ensure old projects have to set an investigator and
@@ -459,20 +482,9 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        self.check_state()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-
-        # Check for certain actions that will cause major problems
-        # if they ever happen
-        if self.object:
-            current = models.AllocationRequest.objects.get(id=self.object.id)
-            # Any changes to a history record
-            if current.parent_request_id:
-                return HttpResponseBadRequest('Allocation record is historic')
-            # Approval of a record that is already approved.  (Seen this!)
-            if self.object.status == current.status == \
-               models.AllocationRequest.APPROVED:
-                return HttpResponseBadRequest('Allocation already approved')
 
         kwargs = {'form': form}
         ignore_warnings = self.IGNORE_WARNINGS or \
