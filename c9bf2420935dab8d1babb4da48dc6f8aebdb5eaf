@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7c6bdc0_24b80276",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-28T07:29:40Z",
+      "side": 0,
+      "message": "There is no state \u0027p\u0027 ...",
+      "revId": "c9bf2420935dab8d1babb4da48dc6f8aebdb5eaf",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
