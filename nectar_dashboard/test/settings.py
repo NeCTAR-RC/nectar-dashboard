@@ -15,6 +15,10 @@ import tempfile
 
 from django.utils.translation import pgettext_lazy
 
+from horizon.defaults import *  # noqa: F403,H303
+from openstack_dashboard.defaults import *  # noqa: F403,H303
+from openstack_auth.defaults import *  # noqa: F403,H303
+
 from horizon.test.settings import *  # noqa: F403,H303
 from horizon.utils.escape import monkeypatch_escape
 from horizon.utils import secret_key
