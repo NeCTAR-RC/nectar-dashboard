@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "036be42b_c634f399",
+        "filename": "nectar_dashboard/user_info/lookup/urls.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-04-29T02:16:02Z",
+      "side": 1,
+      "message": "manuka user id and keystone user id will be the same thing once manuka is refactored",
+      "parentUuid": "bf471efb_e6874378",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e47156c4_022697fe",
         "filename": "nectar_dashboard/user_info/lookup/views.py",
         "patchSetId": 4
@@ -47,6 +65,24 @@
       "writtenOn": "2020-04-29T02:10:13Z",
       "side": 1,
       "message": "Add a comment to point out that there is an edge case: if the user has the dashboard open in different browsers, logged in with different AAF identities, then this may show / edit the details for the wrong identity.\n\nThe correct way to do this would be to have the Manuka id for the identity that the user logged in with as a field of self.request.user.",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c6a3df3_d10d28c7",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-04-29T02:16:02Z",
+      "side": 1,
+      "message": "This is how the current user_info stuff works and this patch is not intending to change that or make it better, it is simply moving it to use the API so I think this is out of scope.\n\nIn the future when manuka has been refactored then this won\u0027t be needed at all as manuka user id \u003d\u003d keystone user id",
+      "parentUuid": "71d37cb8_99539b31",
       "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
