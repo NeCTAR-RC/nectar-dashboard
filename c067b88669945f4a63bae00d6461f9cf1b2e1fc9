@@ -91,6 +91,24 @@
     },
     {
       "key": {
+        "uuid": "d85bafca_1063f2c7",
+        "filename": "nectar_dashboard/user_info/lookup/urls.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-04-29T03:14:10Z",
+      "side": 1,
+      "message": "yes that is fine but it\u0027s unrelated to all of this and something I\u0027m going to tackle next, the issue is I can\u0027t start this without this in place first",
+      "parentUuid": "0147e254_729af432",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e47156c4_022697fe",
         "filename": "nectar_dashboard/user_info/lookup/views.py",
         "patchSetId": 4
@@ -191,6 +209,24 @@
       "side": 1,
       "message": "I think I spotted a page title change, for example.  Do you want me to enumerate them all?   Anyway, the point is that adding a comment is not out of scope.",
       "parentUuid": "c4bbd6ea_81ca24fd",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4cffd30_da922e0d",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-04-29T03:14:10Z",
+      "side": 1,
+      "message": "Yes could you please as I wanted this patch to not change a thing except it to use the API. If it changes something that is not what I intended",
+      "parentUuid": "7b77bea4_a01c59c4",
       "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
