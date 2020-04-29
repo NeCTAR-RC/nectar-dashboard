@@ -22,6 +22,30 @@
       "revId": "fb736d1a16a43621dddc5689011a3d0f87025d81",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d669fcf_0b1f1c33",
+        "filename": "constraints.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 511,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-04-29T06:04:35Z",
+      "side": 1,
+      "message": "If I remove it we get Django 2 because Horizon doesn\u0027t pin it and it\u0027s higher up in the requirements.txt. I could move our Django install up but I think this is cleaner tbh.",
+      "parentUuid": "c04c0ae1_db22a3a2",
+      "range": {
+        "startLine": 507,
+        "startChar": 0,
+        "endLine": 511,
+        "endChar": 38
+      },
+      "revId": "fb736d1a16a43621dddc5689011a3d0f87025d81",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
