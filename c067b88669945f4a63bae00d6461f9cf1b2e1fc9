@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "2e06af12_d90ea970",
+        "filename": "nectar_dashboard/user_info/lookup/urls.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-04-29T02:37:22Z",
+      "side": 1,
+      "message": "No that\u0027s incorrect, AAF is not involved here. Dashboard doesn\u0027t know anything about AAF. That is manuka",
+      "parentUuid": "4ceb29ab_8f99f6b1",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e47156c4_022697fe",
         "filename": "nectar_dashboard/user_info/lookup/views.py",
         "patchSetId": 4
@@ -119,6 +137,24 @@
       "side": 1,
       "message": "Adding a comment is not out of scope.   Any more than some of the other \"unrelated\" changes I spotted in this commit are out of scope.",
       "parentUuid": "9c6a3df3_d10d28c7",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c4bbd6ea_81ca24fd",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-04-29T02:37:22Z",
+      "side": 1,
+      "message": "What unrelated changes?",
+      "parentUuid": "b671678e_357006d9",
       "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
