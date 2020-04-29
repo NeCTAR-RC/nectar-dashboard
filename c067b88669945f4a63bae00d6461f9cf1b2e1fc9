@@ -109,6 +109,24 @@
     },
     {
       "key": {
+        "uuid": "8f8ebdbe_1ca57188",
+        "filename": "nectar_dashboard/user_info/lookup/urls.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-29T03:24:54Z",
+      "side": 1,
+      "message": "So just use a different variable name and move on.  As of \u003e\u003eright now\u003c\u003c the variable name is incorrect, and I suspect that will remain incorrect once the Manuka model changes are decided on.",
+      "parentUuid": "d85bafca_1063f2c7",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e47156c4_022697fe",
         "filename": "nectar_dashboard/user_info/lookup/views.py",
         "patchSetId": 4
@@ -227,6 +245,24 @@
       "side": 1,
       "message": "Yes could you please as I wanted this patch to not change a thing except it to use the API. If it changes something that is not what I intended",
       "parentUuid": "7b77bea4_a01c59c4",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "795e4c81_101e2198",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-29T03:24:54Z",
+      "side": 1,
+      "message": "There is no point.  There is nothing objectionable in the unrelated change.  Just add the comment and move on.",
+      "parentUuid": "d4cffd30_da922e0d",
       "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
