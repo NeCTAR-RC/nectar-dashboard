@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "0147e254_729af432",
+        "filename": "nectar_dashboard/user_info/lookup/urls.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-29T03:04:05Z",
+      "side": 1,
+      "message": "If that is the case then I think I have a fundamental misunderstanding of your proposed refactoring.  A user has different organization, phone number, affiliation associated with different AAF identities linked to one keystone account.  Are we intending to ignore that, and only record / show details for one AAF identity?\n\nEither way, this stuff needs to be \u003e\u003ewritten down\u003c\u003c; i.e. here https://drive.google.com/open?id\u003d1UXbT4UVHzSyR_i_rSBV-hlshfAg1XwFdb7ltVYCyEUk",
+      "parentUuid": "2e06af12_d90ea970",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e47156c4_022697fe",
         "filename": "nectar_dashboard/user_info/lookup/views.py",
         "patchSetId": 4
@@ -155,6 +173,24 @@
       "side": 1,
       "message": "What unrelated changes?",
       "parentUuid": "b671678e_357006d9",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b77bea4_a01c59c4",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-29T03:04:05Z",
+      "side": 1,
+      "message": "I think I spotted a page title change, for example.  Do you want me to enumerate them all?   Anyway, the point is that adding a comment is not out of scope.",
+      "parentUuid": "c4bbd6ea_81ca24fd",
       "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
