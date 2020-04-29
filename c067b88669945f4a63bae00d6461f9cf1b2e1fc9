@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "4ceb29ab_8f99f6b1",
+        "filename": "nectar_dashboard/user_info/lookup/urls.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-29T02:25:06Z",
+      "side": 1,
+      "message": "When the refactor is completed (I assume you mean the Manuka model change) the id you will need to use here will be the ID that represents the AAF identity that the user used to login.  That\u0027s not the Manuka id / Keystone id.",
+      "parentUuid": "036be42b_c634f399",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e47156c4_022697fe",
         "filename": "nectar_dashboard/user_info/lookup/views.py",
         "patchSetId": 4
@@ -83,6 +101,24 @@
       "side": 1,
       "message": "This is how the current user_info stuff works and this patch is not intending to change that or make it better, it is simply moving it to use the API so I think this is out of scope.\n\nIn the future when manuka has been refactored then this won\u0027t be needed at all as manuka user id \u003d\u003d keystone user id",
       "parentUuid": "71d37cb8_99539b31",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b671678e_357006d9",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-29T02:25:06Z",
+      "side": 1,
+      "message": "Adding a comment is not out of scope.   Any more than some of the other \"unrelated\" changes I spotted in this commit are out of scope.",
+      "parentUuid": "9c6a3df3_d10d28c7",
       "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
