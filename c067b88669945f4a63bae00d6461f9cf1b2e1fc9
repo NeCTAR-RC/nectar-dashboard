@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bf471efb_e6874378",
+        "filename": "nectar_dashboard/user_info/lookup/urls.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-29T02:10:13Z",
+      "side": 1,
+      "message": "This is confusing and wrong.  You are using \"user_id\" to mean the manuka user id.  But in the Openstack Dashboard AND the Manuka schema, \"user_id\" means the Keystone user id.   Fix this ... and all other places where this commit is misusing \"user_id\".",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e47156c4_022697fe",
+        "filename": "nectar_dashboard/user_info/lookup/views.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-29T02:10:13Z",
+      "side": 1,
+      "message": "Misleading variable name and misleading request parameter name",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71d37cb8_99539b31",
+        "filename": "nectar_dashboard/user_info/update/views.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-04-29T02:10:13Z",
+      "side": 1,
+      "message": "Add a comment to point out that there is an edge case: if the user has the dashboard open in different browsers, logged in with different AAF identities, then this may show / edit the details for the wrong identity.\n\nThe correct way to do this would be to have the Manuka id for the identity that the user logged in with as a field of self.request.user.",
+      "revId": "c067b88669945f4a63bae00d6461f9cf1b2e1fc9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
