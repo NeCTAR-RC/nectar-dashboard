@@ -12,6 +12,7 @@ Build-Depends: debhelper (>= 10~), dh-python,
          python3-django-horizon,
          python3-django-filters,
          python3-factory-boy,
+         python3-manukaclient,
 Standards-Version: 4.1.4
 Homepage: https://github.com/NeCTAR-RC/nectar-dashboard
 
