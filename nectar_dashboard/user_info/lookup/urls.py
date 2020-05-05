@@ -18,7 +18,7 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^view/(?P<user_id>\d+)/$',
+    url(r'^view/(?P<user_id>\w+)/$',
         views.UserDetailView.as_view(),
         name='view'),
     url(r'^$',

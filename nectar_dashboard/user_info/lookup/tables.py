@@ -25,11 +25,9 @@ def user_link(user):
 
 
 class UsersTable(tables.DataTable):
-    email = tables.Column('email', link=user_link)
+    id = tables.Column('id', verbose_name='User ID', link=user_link)
     displayname = tables.Column('displayname', verbose_name='Name')
-
-    user_id = tables.Column('user_id',
-                            verbose_name='User ID')
+    email = tables.Column('email')
 
     class Meta:
         name = "registered_users"
