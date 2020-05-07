@@ -37,7 +37,7 @@ class UserEditSelfView(forms.ModalFormView):
             try:
                 keystone_user_id = self.request.user.keystone_user_id
                 client = manuka.manukaclient(self.request)
-                self._object = client.users.get_by_os(keystone_user_id)
+                self._object = client.users.get(keystone_user_id)
             except Exception:
                 msg = 'Unable to retrieve user.'
                 url = reverse('horizon:settings')
