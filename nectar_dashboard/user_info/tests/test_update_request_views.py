@@ -26,16 +26,16 @@ class EditSelfViewTestCase(base.UserViewTestCase):
 
     def test_get(self, mock_get_manuka):
         client = mock_get_manuka.return_value
-        manuka_user = client.users.get_by_os.return_value
+        manuka_user = client.users.get.return_value
         response = self.client.get(self.url)
         self.assertStatusCode(response, 200)
         self.assertEqual(manuka_user, response.context_data['object'])
-        client.users.get_by_os.assert_called_once_with(
+        client.users.get.assert_called_once_with(
             self.request.user.keystone_user_id)
 
     def test_post_bad_form(self, mock_get_manuka):
         client = mock_get_manuka.return_value
-        manuka_user = client.users.get_by_os.return_value
+        manuka_user = client.users.get.return_value
 
         form = {'affiliation': 'member', 'phone_number': '123',
                 'mobile_number': '456', 'orcid': 'rose'}
@@ -52,7 +52,7 @@ class EditSelfViewTestCase(base.UserViewTestCase):
 
     def test_post_change(self, mock_get_manuka):
         client = mock_get_manuka.return_value
-        manuka_user = client.users.get_by_os.return_value
+        manuka_user = client.users.get.return_value
 
         form = {'affiliation': 'member', 'phone_number': '123',
                 'mobile_number': '456', 'orcid': 'rose'}
