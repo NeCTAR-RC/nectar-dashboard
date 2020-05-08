@@ -51,7 +51,7 @@ class UpdateForm(forms.SelfHandlingForm):
     affiliation = forms.ChoiceField(
         required=True,
         choices=AFFILIATION_CHOICES,
-        help_text="Your affiliation to your home organization.")
+        help_text="Your affiliation to your organisation.")
 
     orcid = forms.CharField(max_length=64,
                            label="ORCID",
