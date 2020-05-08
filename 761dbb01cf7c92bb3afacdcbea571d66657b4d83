@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7cb192f8_bbf14e67",
+        "filename": "nectar_dashboard/user_info/templates/user_info/edit.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-05-08T01:05:16Z",
+      "side": 1,
+      "message": "Just noticed the label typo here",
+      "revId": "761dbb01cf7c92bb3afacdcbea571d66657b4d83",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2dd68d9b_fdf4ebfb",
+        "filename": "nectar_dashboard/user_info/update/forms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-05-08T01:05:16Z",
+      "side": 1,
+      "message": "z \u003d\u003e s",
+      "revId": "761dbb01cf7c92bb3afacdcbea571d66657b4d83",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
