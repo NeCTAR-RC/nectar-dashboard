@@ -93,6 +93,7 @@ class AdminViewUserTestCase(ViewMixin, base.AdminViewTestCase):
     def test_get(self, mock_get_manuka):
         client = mock_get_manuka.return_value
         mock_user = mock.Mock()
+        mock_user.external_ids = [mock.Mock(idp='idp', last_login='sometime')]
         client.users.get.return_value = mock_user
         response = self.client.get(self.get_url())
         self.assertStatusCode(response, 200)
