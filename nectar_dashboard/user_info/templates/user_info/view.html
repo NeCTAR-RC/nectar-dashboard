@@ -18,6 +18,14 @@
   {% include "user_info/field2.html" with value=object.orcid label="ORCID" %}
   {% include "user_info/field2.html" with value=object.phone_number label="Phone Number" %}
   {% include "user_info/field2.html" with value=object.mobile_number label="Mobile number"%}
+  <h3>External IDs</h3>
+  {% for eid in object.external_ids %}
+  <div class="form-group">
+    <label class="control-label required"><span class="field-label">IdP: {{eid.idp }}</span></label>
+  <div>
+    Last Login: {{eid.last_login|default:"Unknown" }}
+  </div>
+  </div>
+  {% endfor %}
 </table>
 {% endblock %}
-
