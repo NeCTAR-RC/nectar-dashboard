@@ -11,6 +11,8 @@
 #   under the License.
 #
 
+from functools import partial
+
 from django.conf import settings
 from django_filters import rest_framework as filters
 from rest_framework import decorators
@@ -24,6 +26,14 @@ from rest_framework import viewsets
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import utils
 from nectar_dashboard import rest_auth
+
+
+try:
+    list_route_decorator = partial(decorators.action, detail=False)
+    detail_route_decorator = partial(decorators.action, detail=True)
+except AttributeError:
+    list_route_decorator = decorators.list_route
+    detail_route_decorator = decorators.detail_route
 
 
 class PermissionMixin(object):
@@ -73,7 +83,7 @@ class ZoneViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Zone.objects.all()
     serializer_class = ZoneSerializer
 
-    @decorators.list_route()
+    @list_route_decorator()
     def compute_homes(self, request):
         zone_map = settings.ALLOCATION_HOME_ZONE_MAPPINGS
         return response.Response(zone_map)
@@ -472,7 +482,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
             permission_classes = []
         return [permission() for permission in permission_classes]
 
-    @decorators.detail_route(methods=['post'])
+    @detail_route_decorator(methods=['post'])
     def approve(self, request, pk=None):
         allocation = self.get_object()
         # There are two ways to deal with this.  'approve' could infer the
@@ -492,7 +502,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.save()
         return response.Response(self.get_serializer_class()(allocation).data)
 
-    @decorators.detail_route(methods=['post'])
+    @detail_route_decorator(methods=['post'])
     def amend(self, request, pk=None):
         allocation = self.get_object()
         utils.copy_allocation(allocation)
@@ -502,7 +512,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.send_notifications()
         return response.Response(self.get_serializer_class()(allocation).data)
 
-    @decorators.detail_route(methods=['post'])
+    @detail_route_decorator(methods=['post'])
     def delete(self, request, pk=None):
         allocation = self.get_object()
         # (Deleting an allocation is idempotent)
