@@ -7,7 +7,7 @@ readme = open('README.rst').read()
 
 setuptools.setup(
     name='nectar-dashboard',
-    version='4.0',
+    version='5.0',
     description='nectar-dashboard',
     long_description=readme,
     author='Sam Morrison',
