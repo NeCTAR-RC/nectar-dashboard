@@ -1,15 +1,3 @@
-
 git+https://github.com/NeCTAR-RC/horizon.git@nectar/train#egg=horizon
-git+https://github.com/NeCTAR-RC/horizon.git@nectar/train#egg=openstack_dashboard
-
-python-dateutil
-pymysql
-djangorestframework==3.7.7
-django-filter==1.1.0
-trove-dashboard==13.0.0
-manila-ui==2.19.1
-django==1.11.11
 django-cors-headers
 python-memcached
-XStatic-jQuery<2
-manukaclient
