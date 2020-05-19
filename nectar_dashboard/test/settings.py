@@ -344,6 +344,11 @@ TEST_GLOBAL_MOCKS_ON_PANELS = {
 # NeCTAR Stuff
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = 'Member'
 
+USER_INFO_LOOKUP_ROLES = [('openstack.roles.allocationadmin',
+                           'openstack.roles.operator',
+                           'openstack.roles.helpdesk',
+                           'openstack.roles.admin')]
+
 # following is the comma separated list of people who are to receive
 # e-mail when an allocation request is submitted
 ALLOCATION_EMAIL_RECIPIENTS = ("sorrison@gmail.com",)
