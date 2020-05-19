@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "63bf1713_4fe569eb",
+        "filename": "nectar_dashboard/user_info/lookup/panel.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-05-19T04:41:11Z",
+      "side": 1,
+      "message": "Ahh, was thinking it must\u0027ve been for a good reason!",
+      "parentUuid": "9e470a2f_2a902d59",
+      "revId": "23ea1585da8f8dcd4688536e323b26a2a7ebcd9d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "27e31ad1_66f982c6",
         "filename": "nectar_dashboard/user_info/lookup/views.py",
         "patchSetId": 1
