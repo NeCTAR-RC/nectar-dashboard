@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9e470a2f_2a902d59",
+        "filename": "nectar_dashboard/user_info/lookup/panel.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-05-19T04:39:34Z",
+      "side": 1,
+      "message": "It is correct.  The extra () is to OR the roles.",
+      "parentUuid": "c22520b9_dfd63427",
+      "revId": "23ea1585da8f8dcd4688536e323b26a2a7ebcd9d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "27e31ad1_66f982c6",
         "filename": "nectar_dashboard/user_info/lookup/views.py",
         "patchSetId": 1
@@ -30,6 +48,30 @@
       "writtenOn": "2020-05-19T04:34:12Z",
       "side": 1,
       "message": "format looks wrong here too, we could also just refer to the other one as opposed to putting it in 2 places. Means more ways to make a mistake when updating it.",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 52
+      },
+      "revId": "23ea1585da8f8dcd4688536e323b26a2a7ebcd9d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dcc976d_0c10ac4e",
+        "filename": "nectar_dashboard/user_info/lookup/views.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-05-19T04:39:34Z",
+      "side": 1,
+      "message": "The extra () is correct / necessary.  I could have these perms alias the ones in panel.  But not the other way around.  (It breaks during panel discovery.) \n\nThe best thing would be to put the perms into local_settings.py as we do with the perms for \u0027rcallocation\u0027.",
+      "parentUuid": "27e31ad1_66f982c6",
       "range": {
         "startLine": 27,
         "startChar": 0,
