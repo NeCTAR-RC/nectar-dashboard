@@ -12,7 +12,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.contrib.auth import mixins
 from django.urls import reverse
+
 from horizon import exceptions
 from horizon import tables
 from horizon import views
@@ -23,10 +25,19 @@ from nectar_dashboard.api import manuka
 from . import tables as user_tables
 
 
-class UserListView(tables.PagedTableMixin, tables.DataTableView):
+PERMISSIONS_REQUIRED = (('openstack.roles.allocationadmin',
+                        'openstack.roles.operator',
+                        'openstack.roles.helpdesk',
+                         'openstack.roles.admin'), )
+
+
+class UserListView(tables.PagedTableMixin,
+                   mixins.PermissionRequiredMixin,
+                   tables.DataTableView):
     table_class = user_tables.UsersTable
     page_title = "User Search"
     template_name = "user_info/list.html"
+    permission_required = PERMISSIONS_REQUIRED
 
     def get_data(self):
         q = self.request.GET.get('q')
@@ -41,9 +52,11 @@ class UserListView(tables.PagedTableMixin, tables.DataTableView):
             return []
 
 
-class UserDetailView(views.HorizonTemplateView):
+class UserDetailView(mixins.PermissionRequiredMixin,
+                     views.HorizonTemplateView):
     template_name = "user_info/view.html"
     page_title = "User Details"
+    permission_required = PERMISSIONS_REQUIRED
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -14,9 +14,14 @@
 
 import horizon
 
+PERMISSIONS_REQUIRED = (('openstack.roles.allocationadmin',
+                         'openstack.roles.operator',
+                         'openstack.roles.helpdesk',
+                         'openstack.roles.admin'),)
+
 
 class UserLookupPanel(horizon.Panel):
     name = "User Details"
     slug = 'lookup'
     index_url_name = 'list'
-    permissions = ('openstack.roles.allocationadmin',)
+    permissions = PERMISSIONS_REQUIRED
