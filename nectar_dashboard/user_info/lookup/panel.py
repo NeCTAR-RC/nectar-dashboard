@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 import horizon
 
 
@@ -19,4 +20,4 @@ class UserLookupPanel(horizon.Panel):
     name = "User Details"
     slug = 'lookup'
     index_url_name = 'list'
-    permissions = ('openstack.roles.allocationadmin',)
+    permissions = settings.USER_INFO_LOOKUP_ROLES
