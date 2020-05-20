@@ -8,7 +8,7 @@ djangorestframework==3.7.7
 django-filter==1.1.0
 trove-dashboard==12.0.0
 manila-ui==2.18.0
-django==1.11.11
+django==1.11.28
 django-cors-headers
 python-memcached
 XStatic-jQuery<2
