@@ -12,18 +12,21 @@
 
 
 from horizon.utils import memoized
-from keystoneauth1.identity import v3
 from keystoneauth1 import session
 from manukaclient import client
-
+from openstack_auth import utils
 
 MANUKA_API_VERSION = '1'
 
 
 @memoized.memoized
 def manukaclient(request):
-    auth = v3.Token(token=request.user.token.id,
-                    auth_url=request.user.endpoint)
+    unscoped_token = request.user.unscoped_token
+    endpoint = request.user.endpoint
+    tenant_id = request.user.tenant_id
+    auth = utils.get_token_auth_plugin(auth_url=endpoint,
+                                       token=unscoped_token,
+                                       project_id=tenant_id)
 
     keystone_session = session.Session(auth=auth)
 

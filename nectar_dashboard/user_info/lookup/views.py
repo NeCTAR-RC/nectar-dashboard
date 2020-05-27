@@ -12,6 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import logging
+
 from django.conf import settings
 from django.contrib.auth import mixins
 from django.urls import reverse
@@ -24,6 +26,9 @@ from horizon import views
 from nectar_dashboard.api import manuka
 
 from . import tables as user_tables
+
+
+LOG = logging.getLogger('nectar_dashboard.user_info')
 
 
 class UserListView(tables.PagedTableMixin,
