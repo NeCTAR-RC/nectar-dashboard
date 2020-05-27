@@ -23,6 +23,7 @@ MANUKA_API_VERSION = '1'
 @memoized.memoized
 def manukaclient(request):
     auth = v3.Token(token=request.user.token.id,
+                    project_id=request.user.tenant_id,
                     auth_url=request.user.endpoint)
 
     keystone_session = session.Session(auth=auth)
