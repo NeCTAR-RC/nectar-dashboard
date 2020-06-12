@@ -16,6 +16,7 @@ from django.contrib import auth
 
 from openstack_auth import exceptions as oa_exceptions
 from openstack_auth import user as auth_user
+from openstack_auth import utils as auth_utils
 
 from rest_framework import authentication
 from rest_framework import exceptions
@@ -28,14 +29,18 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         token = request.META.get('HTTP_X_AUTH_TOKEN')
-        project_id = request.META.get('HTTP_X_PROJECT_ID')
+        remote_addr = request.environ.get('REMOTE_ADDR', '')
+
         if not token:
             return None
+
         try:
+            auth_ref = auth_utils.validate_token(token, remote_addr)
             request.user = auth.authenticate(request=request,
                                              auth_url=None,
-                                             token=token,
-                                             project_id=project_id)
+                                             auth_ref=auth_ref,
+                                             token=auth_ref.auth_token,
+                                             project_id=auth_ref.project_id)
         except oa_exceptions.KeystoneAuthException:
             raise exceptions.AuthenticationFailed()
 
