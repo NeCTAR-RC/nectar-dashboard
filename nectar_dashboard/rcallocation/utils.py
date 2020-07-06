@@ -25,12 +25,16 @@ def copy_allocation(allocation):
     publications = old_object.publications.all()
     grants = old_object.grants.all()
     modified_time = old_object.modified_time
+    submit_date = old_object.submit_date
 
     old_object.id = None
     old_object.save()
-    # Preserve the original modification timestamp on the old object.
+
+    # Preserve the original modification timestamp and submit_date
+    # on the old object.
     # (This reverses the "damage" of the 'auto_now' attribute.)
     manager.filter(id=old_object.id).update(modified_time=modified_time)
+    manager.filter(id=old_object.id).update(submit_date=submit_date)
 
     for quota_group in quota_groups:
         old_quota_group_id = quota_group.id
