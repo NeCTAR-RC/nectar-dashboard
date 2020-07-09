@@ -15,14 +15,13 @@ from django.forms.models import model_to_dict
 from factory import fuzzy
 
 from nectar_dashboard.rcallocation import allocation_home_choices
-from nectar_dashboard.rcallocation import for_choices
+from nectar_dashboard.rcallocation.forcodes import FOR_CODES
 from nectar_dashboard.rcallocation import grant_type
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import project_duration_choices
 from nectar_dashboard.rcallocation.tests import factories
 
 
-FOR_CHOICES = dict(for_choices.FOR_CHOICES)
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
@@ -238,7 +237,7 @@ def request_allocation(user, model=None, quota_specs=None,
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
     forp_2 = fuzzy.FuzzyInteger(1, 9 - forp_1).fuzz()
     forp_3 = 10 - (forp_1 + forp_2)
-    for_code = fuzzy.FuzzyChoice(FOR_CHOICES.keys())
+    for_code = fuzzy.FuzzyChoice(FOR_CODES.keys())
     quota = fuzzy.FuzzyInteger(1, 100000)
     grant_type = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
     site = model.associated_site if model else None
