@@ -18,7 +18,7 @@ from django.views.decorators.cache import cache_page
 from rest_framework import response
 from rest_framework import viewsets
 
-from nectar_dashboard.rcallocation.api import forcodes
+from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import models
 
 
@@ -26,8 +26,7 @@ class FORViewSet(viewsets.GenericViewSet):
 
     @method_decorator(cache_page(86400))
     def list(self, request, *args, **kwargs):
-        for_codes = forcodes.FOR_DICT
-        return response.Response(for_codes)
+        return response.Response(forcodes.FOR_CODES)
 
 
 class AllocationTreeViewSet(viewsets.GenericViewSet):

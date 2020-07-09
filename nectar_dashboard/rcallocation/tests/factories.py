@@ -17,19 +17,18 @@ import factory
 from factory import fuzzy
 
 from nectar_dashboard.rcallocation import allocation_home_choices
-from nectar_dashboard.rcallocation import for_choices
+from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import grant_type
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import project_duration_choices
 
 
-FOR_CHOICES = dict(for_choices.FOR_CHOICES)
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
 ALL_SITES = ['uom', 'qcif', 'monash']
 
-for_code = fuzzy.FuzzyChoice(FOR_CHOICES.keys())
+for_code = fuzzy.FuzzyChoice(forcodes.FOR_CODES.keys())
 _1_year = datetime.date.today() + datetime.timedelta(days=365)
 _3_years = datetime.date.today() + datetime.timedelta(days=365 * 3)
 duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys())

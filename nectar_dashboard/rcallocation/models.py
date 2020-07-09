@@ -12,7 +12,7 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from nectar_dashboard.rcallocation import for_choices
+from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import grant_type
 from nectar_dashboard.rcallocation import project_duration_choices
 
@@ -194,7 +194,8 @@ class AllocationRequest(models.Model):
         help_text="""Estimated number of users, researchers and collaborators
         to be supported by the allocation.""")
 
-    FOR_CHOICES = for_choices.FOR_CHOICES
+    FOR_CHOICES = tuple((k, "%s %s" % (k, v))
+                        for k, v in forcodes.FOR_CODES.items())
     PERCENTAGE_CHOICES = (
         (0, '0%'),
         (10, '10%'),
