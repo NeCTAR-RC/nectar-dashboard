@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aa119772_5dc2fc8b",
+        "filename": "nectar_dashboard/rcallocation/api/for.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-07-10T04:49:56Z",
+      "side": 1,
+      "message": "should ideally import modules not classes/constants etc.",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 60
+      },
+      "revId": "a5205f3c02515b1acac2a9004270321f1cbc22c6",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
