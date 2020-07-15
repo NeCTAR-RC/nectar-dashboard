@@ -474,7 +474,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                models.AllocationRequest.APPROVED:
                 return HttpResponseBadRequest('Allocation already approved')
 
-        kwargs = {'form': form}
+        kwargs.update({'form': form})
         ignore_warnings = self.IGNORE_WARNINGS or \
                           request.POST.get('ignore_warnings', False)
 
