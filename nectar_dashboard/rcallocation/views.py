@@ -159,45 +159,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
     # either be approver_email or contact_email
     editor_attr = 'approver_email'
 
-    def __init__(self, **kwargs):
-        super(BaseAllocationView, self).__init__(**kwargs)
-
-        # investigator
-        FormSet_Investigator_Class = self.get_formset_investigator_class()
-        if FormSet_Investigator_Class:
-            self.formset_investigator_tmpl = loader.render_to_string(
-                'rcallocation/investigator_form.html',
-                {'investigator_form': FormSet_Investigator_Class().empty_form})
-        else:
-            self.formset_investigator_tmpl = ""
-
-        # institution
-        FormSet_Institution_Class = self.get_formset_institution_class()
-        if FormSet_Institution_Class:
-            self.formset_institution_tmpl = loader.render_to_string(
-                'rcallocation/institution_form.html',
-                {"institution_form": FormSet_Institution_Class().empty_form})
-        else:
-            self.formset_institution_tmpl = ""
-
-        # publication
-        FormSet_Publication_Class = self.get_formset_publication_class()
-        if FormSet_Publication_Class:
-            self.formset_publication_tmpl = loader.render_to_string(
-                'rcallocation/publication_form.html',
-                {"publication_form": FormSet_Publication_Class().empty_form})
-        else:
-            self.formset_publication_tmpl = ""
-
-        # grant
-        FormSet_Grant_Class = self.get_formset_grant_class()
-        if FormSet_Grant_Class:
-            self.formset_grant_tmpl = loader.render_to_string(
-                'rcallocation/grant_form.html',
-                {"grant_form": FormSet_Grant_Class().empty_form})
-        else:
-            self.formset_grant_tmpl = ""
-
     def get_formset_investigator_class(self):
         return self.formset_investigator_class
 
@@ -342,21 +303,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         return quota_formsets.items()
 
     def get_context_data(self, **kwargs):
-        # investigator
-        if self.formset_investigator_tmpl:
-            kwargs['investigatorFormTmpl'] = self.formset_investigator_tmpl
-
-        # institution
-        if self.formset_institution_tmpl:
-            kwargs['institutionFormTmpl'] = self.formset_institution_tmpl
-
-        # publication
-        if self.formset_publication_tmpl:
-            kwargs['publicationFormTmpl'] = self.formset_publication_tmpl
-
-        # grant
-        if self.formset_grant_tmpl:
-            kwargs['grantFormTmpl'] = self.formset_grant_tmpl
 
         zones = {}
         for zone in models.Zone.objects.filter(enabled=True):
