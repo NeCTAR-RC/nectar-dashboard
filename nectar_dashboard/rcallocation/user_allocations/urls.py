@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^edit_change_request/(?P<pk>\d+)/$',
         RestrictedAllocationsEditView.as_view(
             form_class=UserAllocationRequestAmendForm,
+            page_title='Request Allocation Extension',
             template_name='rcallocation/allocationrequest_extend.html'),
         name='edit_change_request'),
 ]

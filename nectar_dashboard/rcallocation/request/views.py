@@ -18,7 +18,7 @@ class AllocationCreateView(views.BaseAllocationView):
     template_name = "rcallocation/allocationrequest_edit.html"
     form_class = request_forms.UserAllocationRequestForm
     editor_attr = 'contact_email'
-    page_title = 'New Request'
+    page_title = 'Allocation Request'
 
     formset_investigator_class = inlineformset_factory(
         models.AllocationRequest, models.ChiefInvestigator,

@@ -29,17 +29,12 @@
 {% endif %}
 {% endblock %}
 
-{% block page_header %}
-{{ block.super }}
-{% include "horizon/common/_page_header.html" with title="Allocation Request" %}
-{% endblock page_header %}
-
 {% block js %}
 {{ block.super }}
 <script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
 <script>
   function isNewAllocationRequest() {
-    return {% if object.pk %} false; {% else %} true; {% endif %}
+    return {% if object %} false; {% else %} true; {% endif %}
   }
 </script>
 {% endblock %}
@@ -205,12 +200,15 @@
     <div class="row">
       <div class="col-md-4">
         {% for group in form.grouped_fields %}
-        <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <div class="form-group">
           {% for field in group %}
             {% if forloop.first %}
               <label>{{ field.label }}</label>
             {% endif %}
             {{ field }}
+            {% for error in field.errors %}
+              <span class="help-block">{{ error }}</span>
+            {% endfor %}
           {% endfor %}
         </div>
         {% endfor %}

@@ -15,6 +15,7 @@ from django.views.generic import DetailView
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.edit import UpdateView
 from horizon import tables as horizon_tables
+from horizon import views as horizon_views
 from novaclient import exceptions as n_exc
 from openstack_dashboard import api
 
@@ -28,8 +29,9 @@ from nectar_dashboard.rcallocation import utils
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
-class AllocationDetailView(mixins.UserPassesTestMixin, DetailView,
-                           ModelFormMixin):
+class AllocationDetailView(mixins.UserPassesTestMixin,
+                           horizon_views.PageTitleMixin,
+                           DetailView, ModelFormMixin):
     """A class that handles rendering the details view, and then the
     posting of the associated accept/reject action
     """
@@ -38,6 +40,7 @@ class AllocationDetailView(mixins.UserPassesTestMixin, DetailView,
     model = models.AllocationRequest
     success_url = "../../"
     fields = '__all__'
+    page_title = 'View Allocation Request'
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
@@ -81,7 +84,7 @@ class BaseAllocationsListView(mixins.UserPassesTestMixin,
     """
     context_object_name = "allocation_list"
     template_name = 'rcallocation/allocationrequest_list.html'
-    page_title = 'Requests'
+    page_title = 'Allocation Requests'
 
     def get_data(self):
         return [ar for ar in
@@ -121,7 +124,9 @@ class AllocationHistoryView(mixins.UserPassesTestMixin,
         return utils.user_is_allocation_admin(self.request.user)
 
 
-class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
+class BaseAllocationView(mixins.UserPassesTestMixin,
+                         horizon_views.PageTitleMixin,
+                         UpdateView):
     SHOW_EMPTY_SERVICE_TYPES = True
     ONLY_REQUESTABLE_RESOURCES = True
     IGNORE_WARNINGS = False
@@ -369,10 +374,14 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                     models.AllocationRequest, models.Institution,
                     form=forms.InstitutionForm,
                     extra=1)
+        else:
+            kwargs['object'] = None
 
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
+        if 'actions' not in kwargs:
+            kwargs['actions'] = []  # reduce template debug noise ...
         kwargs['form'] = form
         # quota
         kwargs['quota_formsets'] = self.get_quota_formsets()
@@ -400,6 +409,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         if formset_grant_class:
             kwargs['grant_formset'] = self.get_formset(formset_grant_class)
 
+        kwargs['warnings'] = []
         return self.render_to_response(self.get_context_data(**kwargs))
 
     def post(self, request, *args, **kwargs):

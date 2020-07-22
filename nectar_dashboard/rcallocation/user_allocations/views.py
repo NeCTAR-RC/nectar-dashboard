@@ -22,7 +22,7 @@ class BaseAllocationUpdateView(views.BaseAllocationView):
 
 
 class RestrictedAllocationsEditView(BaseAllocationUpdateView):
-    page_title = 'Update'
+    page_title = 'Edit Allocation Request'
     template_name = "rcallocation/allocationrequest_user_update.html"
     model = models.AllocationRequest
     form_class = forms.UserAllocationRequestForm
@@ -31,7 +31,7 @@ class RestrictedAllocationsEditView(BaseAllocationUpdateView):
 
 class RestrictedAllocationsDetailsView(views.AllocationDetailView):
     template_name = "rcallocation/allocationrequest_user_detail.html"
-    page_title = 'Details'
+    page_title = 'View Allocation Request'
 
     def test_func(self):
         return check_tm_or_alloc_admin(self.request, self.get_object())

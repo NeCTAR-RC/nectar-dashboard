@@ -26,7 +26,7 @@ class AllocationNotesEdit(mixins.UserPassesTestMixin, UpdateView):
     template_name = "rcallocation/allocationrequest_edit_notes.html"
     model = models.AllocationRequest
     form_class = allocation_forms.EditNotesForm
-    page_title = 'Update Notes'
+    page_title = 'Edit Allocation Admin Notes'
 
     def test_func(self):
         return utils.user_is_allocation_admin(self.request.user)
@@ -36,7 +36,7 @@ class AllocationApproveView(views.BaseAllocationView):
     SHOW_EMPTY_SERVICE_TYPES = False
     ONLY_REQUESTABLE_RESOURCES = False
 
-    page_title = 'Approve'
+    page_title = 'Approve Request'
     template_name = "rcallocation/allocationrequest_approve.html"
     model = models.AllocationRequest
     form_class = allocation_forms.AllocationApproveForm
@@ -53,7 +53,7 @@ class AllocationApproveView(views.BaseAllocationView):
 class AllocationRejectView(views.BaseAllocationView):
     IGNORE_WARNINGS = True
 
-    page_title = "Decline"
+    page_title = "Decline or Request Changes from User"
     template_name = "rcallocation/allocationrequest_reject.html"
     model = models.AllocationRequest
     form_class = allocation_forms.AllocationRejectForm

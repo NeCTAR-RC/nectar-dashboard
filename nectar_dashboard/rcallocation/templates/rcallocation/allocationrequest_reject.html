@@ -8,11 +8,6 @@
     {% endwith %}
 {% endblock %}
 
-{% block page_header %}
-    {{ block.super }}
-    {% include "horizon/common/_page_header.html" with title="Decline or request amendment from user" %}
-{% endblock page_header %}
-
 {% block description %}
 Reject a request, or specify changes a user needs to make to an allocation request before it can be accepted.
 {% endblock description %}
