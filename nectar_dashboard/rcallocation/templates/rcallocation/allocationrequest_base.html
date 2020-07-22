@@ -15,11 +15,6 @@
 </style>
 {% endblock %}
 
-{% block page_header %}
-{{ block.super }}
-{% include "horizon/common/_page_header.html" with title="Allocation Request" %}
-{% endblock page_header %}
-
 {% block js %}
 {{ block.super }}
   <script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
