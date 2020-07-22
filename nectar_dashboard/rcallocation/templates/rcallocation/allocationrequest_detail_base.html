@@ -8,11 +8,6 @@
   {% endwith %}
 {% endblock %}
 
-{% block page_header %}
-  {{ block.super }}
-  {% include "horizon/common/_page_header.html" with title="View allocation request" %}
-{% endblock page_header %}
-
 {% block main %}
   <div class="dash_block">
     <div class="allocation content_body">
