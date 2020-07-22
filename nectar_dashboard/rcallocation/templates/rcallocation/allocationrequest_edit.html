@@ -39,7 +39,7 @@
 <script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
 <script>
   function isNewAllocationRequest() {
-    return {% if object.pk %} false; {% else %} true; {% endif %}
+    return {% if object %} false; {% else %} true; {% endif %}
   }
 </script>
 {% endblock %}
