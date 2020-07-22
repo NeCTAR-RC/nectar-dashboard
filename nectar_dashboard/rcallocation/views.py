@@ -369,6 +369,8 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
                     models.AllocationRequest, models.Institution,
                     form=forms.InstitutionForm,
                     extra=1)
+        else:
+           kwargs['object'] = None
 
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -400,6 +402,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
         if formset_grant_class:
             kwargs['grant_formset'] = self.get_formset(formset_grant_class)
 
+        kwargs['warnings'] = []
         return self.render_to_response(self.get_context_data(**kwargs))
 
     def post(self, request, *args, **kwargs):
@@ -479,10 +482,10 @@ class BaseAllocationView(mixins.UserPassesTestMixin, UpdateView):
             if ignore_warnings:
                 return self.form_valid(**kwargs)
             warnings = sc_context.do_checks()
+            kwargs['warnings'] = warnings
             if len(warnings) == 0:
                 return self.form_valid(**kwargs)
             else:
-                kwargs['warnings'] = warnings
                 return self.form_invalid(**kwargs)
         else:
             return self.form_invalid(**kwargs)
