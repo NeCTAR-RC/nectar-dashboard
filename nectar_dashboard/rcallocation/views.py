@@ -187,6 +187,27 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         return formset_class(queryset=queryset, prefix=prefix,
                              initial=initial, **kwargs)
 
+    def get_nonquota_formsets(self):
+        formsets = {}
+        formset_investigator_class = self.get_formset_investigator_class()
+        if formset_investigator_class:
+            formsets['investigator_formset'] = self.get_formset(
+                formset_investigator_class)
+
+        formset_institution_class = self.get_formset_institution_class()
+        if formset_institution_class:
+            formsets['institution_formset'] = self.get_formset(
+                formset_institution_class)
+        formset_publication_class = self.get_formset_publication_class()
+        if formset_publication_class:
+            formsets['publication_formset'] = self.get_formset(
+                formset_publication_class)
+
+        formset_grant_class = self.get_formset_grant_class()
+        if formset_grant_class:
+            formsets['grant_formset'] = self.get_formset(formset_grant_class)
+        return formsets
+
     def get_quota_formsets(self):
         if not self.quotagroup_form_class:
             return []
@@ -378,39 +399,13 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         if 'actions' not in kwargs:
             kwargs['actions'] = []  # reduce template debug noise ...
         kwargs['form'] = form
-        # quota
         kwargs['quota_formsets'] = self.get_quota_formsets()
-
-        # investigator
-        formset_investigator_class = self.get_formset_investigator_class()
-        if formset_investigator_class:
-            kwargs['investigator_formset'] = self.get_formset(
-                formset_investigator_class)
-
-        # institution
-        formset_institution_class = self.get_formset_institution_class()
-        if formset_institution_class:
-            kwargs['institution_formset'] = self.get_formset(
-                formset_institution_class)
-
-        # publication
-        formset_publication_class = self.get_formset_publication_class()
-        if formset_publication_class:
-            kwargs['publication_formset'] = self.get_formset(
-                formset_publication_class)
-
-        # grant
-        formset_grant_class = self.get_formset_grant_class()
-        if formset_grant_class:
-            kwargs['grant_formset'] = self.get_formset(formset_grant_class)
-
+        kwargs.update(self.get_nonquota_formsets())
         kwargs['warnings'] = []
         return self.render_to_response(self.get_context_data(**kwargs))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
 
         # Check for certain actions that will cause major problems
         # if they ever happen
@@ -424,27 +419,14 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                models.AllocationRequest.APPROVED:
                 return HttpResponseBadRequest('Allocation already approved')
 
-        form_dict = {'form': form}
+        # Create / assemble the form and non-quota formsets
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        form_dict = self.get_nonquota_formsets()
+        form_dict['form'] = form
+
         ignore_warnings = self.IGNORE_WARNINGS or \
                           request.POST.get('ignore_warnings', False)
-
-        formset_investigator_class = self.get_formset_investigator_class()
-        if formset_investigator_class:
-            form_dict['investigator_formset'] = self.get_formset(
-                formset_investigator_class)
-
-        formset_institution_class = self.get_formset_institution_class()
-        if formset_institution_class:
-            form_dict['institution_formset'] = self.get_formset(
-                formset_institution_class)
-        formset_publication_class = self.get_formset_publication_class()
-        if formset_publication_class:
-            form_dict['publication_formset'] = self.get_formset(
-                formset_publication_class)
-
-        formset_grant_class = self.get_formset_grant_class()
-        if formset_grant_class:
-            form_dict['grant_formset'] = self.get_formset(formset_grant_class)
 
         # Primary validation of quotas + gathering of the values
         # into a format that can be used for quota sanity checks.
@@ -478,12 +460,17 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
 
         valid = quota_valid and \
             all(map(methodcaller('is_valid'), form_dict.values()))
+
+        # Put the form and the formsets into kwargs for either data
+        # extraction or rerendering
         kwargs.update(form_dict)
         kwargs['quota_formsets'] = quota_formsets
 
         if valid:
             if ignore_warnings:
                 return self.form_valid(**kwargs)
+            # Only do quota sanity checks if everything else about
+            # the form is valid.
             warnings = sc_context.do_checks()
             if len(warnings) == 0:
                 return self.form_valid(**kwargs)
