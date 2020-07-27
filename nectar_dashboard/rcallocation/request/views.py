@@ -8,12 +8,6 @@ from nectar_dashboard.rcallocation import views
 from nectar_dashboard.rcallocation.request import forms as request_forms
 
 
-class UserAllocationRequestForm(forms.AllocationRequestForm):
-    class Meta(forms.AllocationRequestForm.Meta):
-        exclude = ('project_id', 'status_explanation',
-                   ) + forms.AllocationRequestForm.Meta.exclude
-
-
 class AllocationCreateView(views.BaseAllocationView):
     template_name = "rcallocation/allocationrequest_edit.html"
     form_class = request_forms.UserAllocationRequestForm
