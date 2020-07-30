@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7a68aa4_fd26328b",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 527,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-07-30T03:23:19Z",
+      "side": 1,
+      "message": "just wondering why we accept kwargs here but never use it in this method?",
+      "range": {
+        "startLine": 527,
+        "startChar": 60,
+        "endLine": 527,
+        "endChar": 66
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
