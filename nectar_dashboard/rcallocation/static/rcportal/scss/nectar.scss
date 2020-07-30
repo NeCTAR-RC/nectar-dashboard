@@ -46,23 +46,6 @@ body {
    height: 100%;
 }
 
-body {
-}
-
-.dl-horizontal dt {
-/*    clear: left; */
-    float: left;
-    overflow: hidden;
-    text-align: right;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 120px;
-}
-
-.dl-horizontal dd {
-    margin-left: 130px;
-}
-
 #password_reset_form .modal-body .well {
     text-align: center;
 }
