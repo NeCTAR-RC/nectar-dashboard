@@ -22,6 +22,30 @@
       "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "efc51696_e3b05673",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 527,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-07-30T04:06:50Z",
+      "side": 1,
+      "message": "We have to do this because of the Martin Paolo suggestion.  If you think about it, before the MP suggested change we knew what all of the keyword args would be.  Now we don\u0027t.  So the **kwargs is actually saying \"ignore all of the extra stuff that we don\u0027t understand\".",
+      "parentUuid": "e7a68aa4_fd26328b",
+      "range": {
+        "startLine": 527,
+        "startChar": 60,
+        "endLine": 527,
+        "endChar": 66
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
