@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3e26463_d44b6d44",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 4
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-07-30T04:26:55Z",
+      "side": 1,
+      "message": "Would be nice to actually set has-error here but I can\u0027t see a nice way to do that",
+      "revId": "68af1c45f42aea4a98da3b5d3feed6c5bca62d93",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e00affba_7eff4497",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 4
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-07-30T04:26:55Z",
+      "side": 1,
+      "message": "span?",
+      "revId": "68af1c45f42aea4a98da3b5d3feed6c5bca62d93",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
