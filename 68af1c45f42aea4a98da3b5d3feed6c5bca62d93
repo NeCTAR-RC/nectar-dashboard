@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9401e68f_2e804e0c",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 4
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-13T07:07:57Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f3e26463_d44b6d44",
+      "revId": "68af1c45f42aea4a98da3b5d3feed6c5bca62d93",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e00affba_7eff4497",
         "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
         "patchSetId": 4
@@ -33,6 +51,24 @@
       "revId": "68af1c45f42aea4a98da3b5d3feed6c5bca62d93",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7eb1bd5_f33e7559",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 4
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-13T07:07:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e00affba_7eff4497",
+      "revId": "68af1c45f42aea4a98da3b5d3feed6c5bca62d93",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
