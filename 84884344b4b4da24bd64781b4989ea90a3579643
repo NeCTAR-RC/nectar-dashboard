@@ -63,6 +63,24 @@
       "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0364a5d7_97779429",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 608,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-18T07:22:42Z",
+      "side": 1,
+      "message": "I don\u0027t understand what you are saying / asking.  Basically, we are passing everything in **kwargs through to get_context_data, and then rendering.  This is the normal pattern for calling get_context_data; see https://docs.djangoproject.com/en/3.1/ref/class-based-views/mixins-simple/",
+      "parentUuid": "fbc305f8_84ce67f5",
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }

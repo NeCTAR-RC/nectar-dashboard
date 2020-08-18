@@ -16,6 +16,24 @@
       "revId": "68af1c45f42aea4a98da3b5d3feed6c5bca62d93",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4bdd59f1_3bfe61e5",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-18T07:22:42Z",
+      "side": 0,
+      "message": "You are commenting on crufty code that is being replaced ... but noted :-)",
+      "parentUuid": "b2ef7718_407fe33d",
+      "revId": "68af1c45f42aea4a98da3b5d3feed6c5bca62d93",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
