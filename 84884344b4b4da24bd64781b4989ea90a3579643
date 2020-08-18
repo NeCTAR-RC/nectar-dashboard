@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "3529248b_1ae55cc9",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-18T22:45:09Z",
+      "side": 1,
+      "message": "wouldn\u0027t the proper fix here be to just remove this, we don\u0027t use *args and **kwargs so let\u0027s not accept them in the first place",
+      "range": {
+        "startLine": 410,
+        "startChar": 28,
+        "endLine": 410,
+        "endChar": 43
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e7a68aa4_fd26328b",
         "filename": "nectar_dashboard/rcallocation/views.py",
         "patchSetId": 5
@@ -78,6 +101,24 @@
       "side": 1,
       "message": "I don\u0027t understand what you are saying / asking.  Basically, we are passing everything in **kwargs through to get_context_data, and then rendering.  This is the normal pattern for calling get_context_data; see https://docs.djangoproject.com/en/3.1/ref/class-based-views/mixins-simple/",
       "parentUuid": "fbc305f8_84ce67f5",
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "77b74b2e_22aed7fc",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 608,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-18T22:45:09Z",
+      "side": 1,
+      "message": "What he means is keep the form argument explicit as it is required.\n\nSo \n\ndef form_invalid(self, form, **kwargs):",
+      "parentUuid": "0364a5d7_97779429",
       "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
