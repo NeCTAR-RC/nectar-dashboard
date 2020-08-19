@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e0d98368_f20b0c4a",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 613,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-19T06:25:36Z",
+      "side": 1,
+      "message": "That doesn\u0027t work.  See tox failures.",
+      "revId": "40e1a2c3eefb803370890ae9221990bcb0aa720e",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
