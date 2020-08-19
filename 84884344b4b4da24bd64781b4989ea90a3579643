@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3066defc_f59eeb5a",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-19T03:04:29Z",
+      "side": 1,
+      "message": "Tried it.  It doesn\u0027t work.  In some contexts we get keyword args; e.g. \"pk\".  Don\u0027t know why, but we do.\n\nIf you want this tidied up, put up a Trello ticket.",
+      "parentUuid": "3529248b_1ae55cc9",
+      "range": {
+        "startLine": 410,
+        "startChar": 28,
+        "endLine": 410,
+        "endChar": 43
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e7a68aa4_fd26328b",
         "filename": "nectar_dashboard/rcallocation/views.py",
         "patchSetId": 5
@@ -119,6 +143,24 @@
       "side": 1,
       "message": "What he means is keep the form argument explicit as it is required.\n\nSo \n\ndef form_invalid(self, form, **kwargs):",
       "parentUuid": "0364a5d7_97779429",
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "56145f2d_4fbc06d2",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 608,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-19T03:04:29Z",
+      "side": 1,
+      "message": "I don\u0027t get it.  It is no more \"required\" than any of the other keyword arguments are.  As you can see they are all just passed straight through to get_context_data.  And even get_context_data is declared with only a **kwargs.",
+      "parentUuid": "77b74b2e_22aed7fc",
       "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
