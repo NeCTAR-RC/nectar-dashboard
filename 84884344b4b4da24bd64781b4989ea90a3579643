@@ -49,6 +49,145 @@
     },
     {
       "key": {
+        "uuid": "540d58f7_b16786af",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-19T06:02:55Z",
+      "side": 1,
+      "message": "Ah yes of course, it should be kept like this",
+      "parentUuid": "3066defc_f59eeb5a",
+      "range": {
+        "startLine": 410,
+        "startChar": 28,
+        "endLine": 410,
+        "endChar": 43
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27bc8389_2dfe3e72",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 481,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-19T06:02:55Z",
+      "side": 1,
+      "message": "we don\u0027t need to do this, we don\u0027t really want to be messing with kwargs here",
+      "range": {
+        "startLine": 481,
+        "startChar": 8,
+        "endLine": 481,
+        "endChar": 32
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f24ab1a6_e4a26606",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-19T06:02:55Z",
+      "side": 1,
+      "message": "should be changed to **form_dict, we don\u0027t want to pass in random **kwargs from above though to form_valid/form_invalid I think",
+      "range": {
+        "startLine": 486,
+        "startChar": 42,
+        "endLine": 486,
+        "endChar": 47
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a622ae5f_8fc352f0",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-19T06:02:55Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 489,
+        "startChar": 41,
+        "endLine": 489,
+        "endChar": 47
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a19b0450_793380cc",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-19T06:02:55Z",
+      "side": 1,
+      "message": "and here",
+      "range": {
+        "startLine": 492,
+        "startChar": 43,
+        "endLine": 492,
+        "endChar": 49
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b32a0b0_71763d48",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-19T06:02:55Z",
+      "side": 1,
+      "message": "and here",
+      "range": {
+        "startLine": 494,
+        "startChar": 39,
+        "endLine": 494,
+        "endChar": 45
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e7a68aa4_fd26328b",
         "filename": "nectar_dashboard/rcallocation/views.py",
         "patchSetId": 5
@@ -84,6 +223,30 @@
       "side": 1,
       "message": "We have to do this because of the Martin Paolo suggestion.  If you think about it, before the MP suggested change we knew what all of the keyword args would be.  Now we don\u0027t.  So the **kwargs is actually saying \"ignore all of the extra stuff that we don\u0027t understand\".",
       "parentUuid": "e7a68aa4_fd26328b",
+      "range": {
+        "startLine": 527,
+        "startChar": 60,
+        "endLine": 527,
+        "endChar": 66
+      },
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fb6a6439_22b8b0bd",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 527,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-19T06:02:55Z",
+      "side": 1,
+      "message": "I don\u0027t think that quite makes sense. We should just not pass anything extra to this form_valid method as we don\u0027t accept it, above comments should clarify this",
+      "parentUuid": "efc51696_e3b05673",
       "range": {
         "startLine": 527,
         "startChar": 60,
@@ -161,6 +324,24 @@
       "side": 1,
       "message": "I don\u0027t get it.  It is no more \"required\" than any of the other keyword arguments are.  As you can see they are all just passed straight through to get_context_data.  And even get_context_data is declared with only a **kwargs.",
       "parentUuid": "77b74b2e_22aed7fc",
+      "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eb26a44a_1ba21c28",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 608,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-19T06:02:55Z",
+      "side": 1,
+      "message": "The other ones are required and some views don\u0027t use them, like the approve view. However this method should never be called without a form so we should make it required like it currently is. Just means less chance for a mistake and more readable.\n\nmaybe it could be:\n\ndef form_invalid(self, form, warnings\u003d[], **formsets):\n\n\nThe only thing I don\u0027t like about this though is it means the method signature between form_valid and form_invalid are now different when ideally they should be the same maybe? Prob doesn\u0027t matter too much",
+      "parentUuid": "56145f2d_4fbc06d2",
       "revId": "84884344b4b4da24bd64781b4989ea90a3579643",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
