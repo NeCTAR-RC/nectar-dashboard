@@ -4,6 +4,7 @@
 
 {% block css %}
 {{ block.super }}
+{{ form.media.css }}
 <style>
   .panel-default > .panel-heading {
     background-color: #f5f5f5;
@@ -359,4 +360,9 @@
     </script>
   </form>
 </div>
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+{{ form.media.js }}
 {% endblock %}
