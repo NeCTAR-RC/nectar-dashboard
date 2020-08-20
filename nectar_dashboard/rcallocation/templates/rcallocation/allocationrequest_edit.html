@@ -4,6 +4,7 @@
 
 {% block css %}
 {{ block.super }}
+{{ form.media.css }}
 <style>
   .panel-default > .panel-heading {
     background-color: #f5f5f5;
@@ -183,9 +184,9 @@
         <hr/>
         <span class="label label-info">Note:</span>
         {% autoescape off %}
-        Please select up to 3 Fields of Research (FOR)
-        codes describing your work, adding up to a total
-        of 100%. For more information on FOR codes please
+        Please enter at least 1 and up to 3 ANZSRC Field of Research (FoR)
+        codes describing your work, and set percentages adding up to a total
+        of 100%. For more information on FoR codes please
         refer to the following <a href="http://www.abs.gov.au/Ausstats/abs@.nsf/Latestproducts/6BB427AB9696C225CA2574180004463E?opendocument">website</a>
         {% endautoescape %}
         <br/>
@@ -205,10 +206,15 @@
             {% if forloop.first %}
               <label>{{ field.label }}</label>
             {% endif %}
-            {{ field }}
-            {% for error in field.errors %}
-              <span class="help-block">{{ error }}</span>
-            {% endfor %}
+            {% if field.errors %}
+            <div class="form-group has-error">  
+              {{ field }}
+              {% for error in field.errors %}
+                <span class="help-block">{{ error }}</span>
+              {% endfor %}
+            {% else %}
+              {{ field }}
+            {% endif %}
           {% endfor %}
         </div>
         {% endfor %}
@@ -359,4 +365,9 @@
     </script>
   </form>
 </div>
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+{{ form.media.js }}
 {% endblock %}
