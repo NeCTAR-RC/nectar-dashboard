@@ -5,8 +5,15 @@ from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from select2 import forms as select2_forms
 
+from nectar_dashboard.rcallocation.forcodes import FOR_CODES
 from nectar_dashboard.rcallocation import models
+
+
+LOG = logging.getLogger(__name__)
+
+FOR_CHOICES = list([(k, "%s %s" % (k, v)) for k, v in FOR_CODES.items()])
 
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
@@ -20,6 +27,24 @@ class BaseAllocationForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
                                          required=False)
+    field_of_research_1 = select2_forms.ChoiceField(
+        choices=FOR_CHOICES,
+        widget_kwargs={'choices': FOR_CHOICES},
+        overlay="Enter a 2, 4 or 6 digit FoR code",
+        sortable=True
+    )
+    field_of_research_2 = select2_forms.ChoiceField(
+        choices=FOR_CHOICES,
+        widget_kwargs={'choices': FOR_CHOICES},
+        overlay="Enter a 2, 4 or 6 digit FoR code",
+        sortable=True
+    )
+    field_of_research_3 = select2_forms.ChoiceField(
+        choices=FOR_CHOICES,
+        widget_kwargs={'choices': FOR_CHOICES},
+        overlay="Enter a 2, 4 or 6 digit FoR code",
+        sortable=True
+    )
 
     class Meta:
         model = models.AllocationRequest
@@ -54,9 +79,6 @@ class BaseAllocationForm(forms.ModelForm):
             'geographic_requirements': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
-            'field_of_research_1': forms.Select(attrs={'class': 'col-md-6'}),
-            'field_of_research_2': forms.Select(attrs={'class': 'col-md-6'}),
-            'field_of_research_3': forms.Select(attrs={'class': 'col-md-6'}),
             'for_percentage_1': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_2': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_3': forms.Select(attrs={'class': 'col-md-2'}),
