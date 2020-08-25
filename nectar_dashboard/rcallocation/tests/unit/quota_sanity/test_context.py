@@ -163,6 +163,48 @@ class QuotaSanityChecksTest(helpers.TestCase):
         context = build_context(quotas, form=form)
         self.assertIsNone(quota_sanity.cinder_local_check(context))
 
+    def test_trove_checks(self):
+        quotas = [build_quota('database', 'instances', 0),
+                  build_quota('database', 'volumes', 0)]
+        context = build_context(quotas)
+        self.assertIsNone(quota_sanity.trove_server_check(context))
+
+        quotas = [build_quota('database', 'instances', 0),
+                  build_quota('database', 'volumes', 1)]
+        context = build_context(quotas)
+        self.assertEqual(quota_sanity.TROVE_WITHOUT_SERVERS,
+                         quota_sanity.trove_server_check(context)[0])
+
+        quotas = [build_quota('database', 'instances', 0),
+                  build_quota('database', 'volumes', 0)]
+        context = build_context(quotas)
+        self.assertIsNone(quota_sanity.trove_storage_check(context))
+
+        quotas = [build_quota('database', 'instances', 1),
+                  build_quota('database', 'volumes', 0)]
+        context = build_context(quotas)
+        self.assertEqual(quota_sanity.TROVE_WITHOUT_STORAGE,
+                         quota_sanity.trove_storage_check(context)[0])
+
+        quotas = [build_quota('database', 'instances', 0),
+                  build_quota('database', 'volumes', 0),
+                  build_quota('object', 'object', 0)]
+        context = build_context(quotas)
+        self.assertIsNone(quota_sanity.trove_backup_check(context))
+
+        quotas = [build_quota('database', 'instances', 0),
+                  build_quota('database', 'volumes', 1),
+                  build_quota('object', 'object', 1)]
+        context = build_context(quotas)
+        self.assertIsNone(quota_sanity.trove_backup_check(context))
+
+        quotas = [build_quota('database', 'instances', 0),
+                  build_quota('database', 'volumes', 1),
+                  build_quota('object', 'object', 0)]
+        context = build_context(quotas)
+        self.assertEqual(quota_sanity.TROVE_WITHOUT_SWIFT,
+                         quota_sanity.trove_backup_check(context)[0])
+
     def test_manila_checks(self):
         common.sites_setup()
         quotas = [build_quota('compute', 'instances', 0),
