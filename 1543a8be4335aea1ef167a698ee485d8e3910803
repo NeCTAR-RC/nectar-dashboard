@@ -22,6 +22,30 @@
       "revId": "1543a8be4335aea1ef167a698ee485d8e3910803",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9fe12db5_b1435d4c",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-25T01:08:56Z",
+      "side": 1,
+      "message": "It is \"line ball\".  I could create a local subclass of the ChoiceField class, but we are likely to do other (singleton!) autocomplete fields in the future.  They will require different parameters.  So while this looks a bit repetitious, I\u0027m not convinced that the alternative \u003e\u003ewill be\u003c\u003c better in the long run.",
+      "parentUuid": "fdf3c203_71411fdd",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 5
+      },
+      "revId": "1543a8be4335aea1ef167a698ee485d8e3910803",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
