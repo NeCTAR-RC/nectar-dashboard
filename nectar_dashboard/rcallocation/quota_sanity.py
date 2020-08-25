@@ -17,6 +17,9 @@ LARGE_MEM = 'LARGE_MEM'
 SMALL_MEM = 'SMALL_MEM'
 CINDER_WITHOUT_INSTANCES = 'CINDER_WITHOUT_INSTANCES'
 CINDER_NOT_LOCAL = 'CINDER_NOT_LOCAL'
+TROVE_WITHOUT_STORAGE = 'TROVE_WITHOUT_STORAGE'
+TROVE_WITHOUT_SERVERS = 'TROVE_WITHOUT_SERVERS'
+TROVE_WITHOUT_SWIFT = 'TROVE_WITHOUT_SWIFT'
 MANILA_NOT_LOCAL = 'MANILA_NOT_LOCAL'
 NO_ROUTER = 'NO_ROUTER'
 NO_NETWORK = 'NO_NETWORK'
@@ -94,6 +97,32 @@ def cinder_local_check(context):
     return None
 
 
+def trove_storage_check(context):
+    if context.get('database.instances') > 0 \
+       and context.get('database.volumes') == 0:
+        return (TROVE_WITHOUT_STORAGE,
+                'database servers requested without any database storage')
+    return None
+
+
+def trove_server_check(context):
+    if context.get('database.instances') == 0 \
+       and context.get('database.volumes') > 0:
+        return (TROVE_WITHOUT_SERVERS,
+                'database storage requested without any database servers')
+    return None
+
+
+def trove_backup_check(context):
+    if (context.get('database.instances') > 0
+        or context.get('database.volumes') > 0) \
+       and context.get('object.object') == 0:
+        return (TROVE_WITHOUT_SWIFT,
+                "no object storage quota requested.  This is required if you"
+                " want to use the database service backup functionality")
+    return None
+
+
 def manila_local_check(context):
     associated_site = context.get_field('associated_site')
     if associated_site:
@@ -165,6 +194,9 @@ STD_CHECKS = [instance_vcpu_check,
               nondefault_ram_check,
               cinder_instance_check,
               cinder_local_check,
+              trove_storage_check,
+              trove_server_check,
+              trove_backup_check,
               manila_local_check,
               neutron_checks,
               approver_checks]
