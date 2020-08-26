@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "efdec5d4_65cb83e4",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-26T23:25:32Z",
+      "side": 1,
+      "message": "What is to \"look into\"?  We either do it or we don\u0027t.  My vote is that we don\u0027t.  (The trade-offs between the two approaches are clear, to the extent that it is possible to predict the future.)",
+      "parentUuid": "a7b6baa9_395c0899",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 42
+      },
+      "revId": "10e404879663cda67a8dd31488483c31198ab154",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e569e860_23308503",
         "filename": "nectar_dashboard/rcallocation/forms.py",
         "patchSetId": 6
