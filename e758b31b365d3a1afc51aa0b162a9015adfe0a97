@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a1349ba_5a28ded1",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/quota_sanity/test_context.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-26T22:49:32Z",
+      "side": 1,
+      "message": "you could also have a test to ensure no warnings when they ask for trove and object store quota",
+      "revId": "e758b31b365d3a1afc51aa0b162a9015adfe0a97",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
