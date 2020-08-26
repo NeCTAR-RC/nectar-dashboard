@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e569e860_23308503",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-26T22:59:24Z",
+      "side": 1,
+      "message": "in py3 you can now just do \n\nsuper().__init__(",
+      "range": {
+        "startLine": 25,
+        "startChar": 8,
+        "endLine": 25,
+        "endChar": 45
+      },
+      "revId": "10e404879663cda67a8dd31488483c31198ab154",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9dabcd67_20665742",
+        "filename": "nectar_dashboard/rcallocation/static/rcportal/scss/bootstrap-select2.scss",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-26T22:59:24Z",
+      "side": 1,
+      "message": "whitespace",
+      "range": {
+        "startLine": 13,
+        "startChar": 30,
+        "endLine": 13,
+        "endChar": 34
+      },
+      "revId": "10e404879663cda67a8dd31488483c31198ab154",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
