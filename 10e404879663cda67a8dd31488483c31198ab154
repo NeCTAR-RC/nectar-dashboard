@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "a7b6baa9_395c0899",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2020-08-26T23:05:49Z",
+      "side": 1,
+      "message": "So we talked about moving this into the nectar-dashboard package. Have you had a look into that yet?",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 42
+      },
+      "revId": "10e404879663cda67a8dd31488483c31198ab154",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e569e860_23308503",
         "filename": "nectar_dashboard/rcallocation/forms.py",
         "patchSetId": 6
