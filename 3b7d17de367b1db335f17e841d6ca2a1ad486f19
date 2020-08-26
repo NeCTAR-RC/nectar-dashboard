@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f404915f_ffcca1a4",
+        "filename": "nectar_dashboard/rcallocation/quota_sanity.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-08-26T02:38:39Z",
+      "side": 1,
+      "message": "I think this is the warning the user gets?\n\nIf so maybe it could be changed to something like:\n\n\"You haven\u0027t requested any object storage quota, this is required if you want to use the database service backup functionality\"",
+      "range": {
+        "startLine": 120,
+        "startChar": 17,
+        "endLine": 120,
+        "endChar": 77
+      },
+      "revId": "3b7d17de367b1db335f17e841d6ca2a1ad486f19",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
