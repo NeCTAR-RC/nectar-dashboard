@@ -31,7 +31,7 @@ class AllocationApproveForm(forms.ModelForm):
         }
 
     def __init__(self, **kwargs):
-        super(AllocationApproveForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.fields['project_name'].widget.attrs['class'] = 'form-control'
         self.fields['project_description'].widget.attrs[
             'class'] = 'form-control'
@@ -81,7 +81,7 @@ class AllocationRejectForm(forms.ModelForm):
         }
 
     def __init__(self, **kwargs):
-        super(AllocationRejectForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         if self.instance.status == 'X':
             self.instance.status = 'J'
         else:
@@ -94,7 +94,7 @@ class QuotaForm(base_forms.BaseQuotaForm):
         fields = '__all__'
 
     def __init__(self, **kwargs):
-        super(QuotaForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
@@ -112,7 +112,7 @@ class QuotaForm(base_forms.BaseQuotaForm):
         """Overriding this, as the initial data passed to the form does not get
         noticed, and so does not get saved, unless it actually changes
         """
-        changed_data = super(base_forms.BaseQuotaForm, self).has_changed()
+        changed_data = super().has_changed()
         return bool(self.initial or changed_data)
 
 

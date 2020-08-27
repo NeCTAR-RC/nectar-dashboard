@@ -24,9 +24,6 @@ from nectar_dashboard.rcallocation.tests import factories
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class InstitutionTests(base.AllocationAPITest):
 
-    def setUp(self, *args, **kwargs):
-        super(InstitutionTests, self).setUp(*args, **kwargs)
-
     def test_list_institutions(self):
         self.client.force_authenticate(user=self.user)
         factories.InstitutionFactory(allocation=self.allocation)

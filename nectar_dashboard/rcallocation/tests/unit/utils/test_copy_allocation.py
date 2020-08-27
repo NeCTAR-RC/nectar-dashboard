@@ -9,7 +9,7 @@ from nectar_dashboard.rcallocation import utils
 class CopyAllocationTest(helpers.TestCase):
 
     def setUp(self):
-        super(CopyAllocationTest, self).setUp()
+        super().setUp()
         common.factory_setup()
 
     def test_build_test_allocation(self):

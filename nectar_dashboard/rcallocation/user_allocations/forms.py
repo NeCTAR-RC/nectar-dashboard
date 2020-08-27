@@ -11,7 +11,7 @@ class UserAllocationRequestForm(base_forms.AllocationRequestForm):
                   + base_forms.AllocationRequestForm.Meta.exclude
 
     def __init__(self, **kwargs):
-        super(UserAllocationRequestForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.instance.status = self.next_status
 
 
@@ -33,7 +33,7 @@ class UserAllocationRequestAmendForm(base_forms.AllocationAmendRequestForm):
         }
 
     def __init__(self, **kwargs):
-        super(UserAllocationRequestAmendForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.instance.status = self.next_status
         self.fields['estimated_project_duration'].label = \
             'Estimated extension duration'

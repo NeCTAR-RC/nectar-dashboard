@@ -26,7 +26,7 @@ from nectar_dashboard.rcallocation.tests import utils
 class BaseTestCase(helpers.TestCase):
 
     def setUp(self):
-        super(BaseTestCase, self).setUp()
+        super().setUp()
         common.sites_setup()
         common.approvers_setup()
         common.factory_setup()
@@ -39,7 +39,7 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
     """
 
     def setUp(self):
-        super(BaseApproverTestCase, self).setUp()
+        super().setUp()
         common.sites_setup()
         common.approvers_setup()
         common.factory_setup()
@@ -54,7 +54,7 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
             self.roles.add(allocation_admin_role)
             self.roles.allocation_admin = allocation_admin_role
             kwargs['roles'] = [self.roles.allocation_admin._info]
-            super(BaseApproverTestCase, self).setActiveUser(*args, **kwargs)
+            super().setActiveUser(*args, **kwargs)
 
 
 class AllocationAPITest(test.APITestCase):
