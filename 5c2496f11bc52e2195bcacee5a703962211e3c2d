@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15fd4897_871e8dab",
+        "filename": "README.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-08-27T03:17:47Z",
+      "side": 1,
+      "message": "You got some of the letters of my name right :) I don\u0027t think we need to name me or ARDC here anyway",
+      "range": {
+        "startLine": 18,
+        "startChar": 43,
+        "endLine": 18,
+        "endChar": 65
+      },
+      "revId": "5c2496f11bc52e2195bcacee5a703962211e3c2d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
