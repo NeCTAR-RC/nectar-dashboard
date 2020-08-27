@@ -25,7 +25,7 @@ from nectar_dashboard.rcallocation import models
 class ApproverTest(base.AllocationAPITest):
 
     def setUp(self, *args, **kwargs):
-        super(ApproverTest, self).setUp(*args, **kwargs)
+        super().setUp(*args, **kwargs)
         common.sites_setup()
         self.qcif = models.Site.objects.get(name='qcif')
         self.uom = models.Site.objects.get(name='uom')

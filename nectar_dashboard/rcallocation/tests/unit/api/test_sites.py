@@ -25,7 +25,7 @@ from nectar_dashboard.rcallocation import models
 class SiteTest(base.AllocationAPITest):
 
     def setUp(self, *args, **kwargs):
-        super(SiteTest, self).setUp(*args, **kwargs)
+        super().setUp(*args, **kwargs)
         common.sites_setup()
         self.uom = models.Site.objects.get(name='uom')
 

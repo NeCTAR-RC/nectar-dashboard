@@ -69,7 +69,7 @@ class AllocationDetailView(mixins.UserPassesTestMixin,
 
         kwargs['approved_allocation'] = approved
         kwargs['approved_is_current'] = approved_is_current
-        return (super(AllocationDetailView, self).get_context_data(**kwargs))
+        return super().get_context_data(**kwargs)
 
     def test_func(self):
         # Direct uses of this view needs alloc admin access
@@ -360,12 +360,12 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                 # required os_compute_api:os-used-limits policy
                 pass
 
-        return (super(BaseAllocationView, self)
-                .get_context_data(service_types=json.dumps(service_types),
-                                  resources=json.dumps(resources),
-                                  zones=json.dumps(zones),
-                                  quota_limits=json.dumps(quota_limits),
-                                  **kwargs))
+        return super().get_context_data(
+            service_types=json.dumps(service_types),
+            resources=json.dumps(resources),
+            zones=json.dumps(zones),
+            quota_limits=json.dumps(quota_limits),
+            **kwargs)
 
     def test_func(self):
         # Uses of this view needs alloc admin access ... unless overridden

@@ -25,7 +25,7 @@ from nectar_dashboard.rcallocation.tests import factories
 class QuotaTests(base.AllocationAPITest):
 
     def setUp(self, *args, **kwargs):
-        super(QuotaTests, self).setUp(*args, **kwargs)
+        super().setUp(*args, **kwargs)
 
         self.zone = factories.ZoneFactory(name='testzone')
         self.service_type = factories.ServiceTypeFactory(

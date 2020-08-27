@@ -41,7 +41,7 @@ class UserAllocationListTable(tables.BaseAllocationListTable):
                        UserEditChangeRequest)
 
     def __init__(self, *args, **kwargs):
-        super(UserAllocationListTable, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.columns['project'].transform = partial(
             self.columns['project'].transform,
             link=self.view_url)

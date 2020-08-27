@@ -317,7 +317,7 @@ QS_LOG = 'nectar_dashboard.rcallocation.quota_sanity.LOG'
 class QuotaSanityApproverChecksTest(helpers.TestCase):
 
     def setUp(self):
-        super(QuotaSanityApproverChecksTest, self).setUp()
+        super().setUp()
         common.sites_setup()
         common.approvers_setup()
 

@@ -139,7 +139,7 @@ class ReadOrAdmin(Permission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return super(ReadOrAdmin, self).has_permission(request, view)
+        return super().has_permission(request, view)
 
 
 class ModifyPermission(Permission):
@@ -152,8 +152,7 @@ class ModifyPermission(Permission):
         if self.is_admin(request):
             return True
 
-        return super(ModifyPermission, self).has_object_permission(request,
-                                                                   view, obj)
+        return super().has_object_permission(request, view, obj)
 
 
 class CanApprove(ModifyPermission):

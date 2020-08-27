@@ -69,7 +69,7 @@ class ManageMembersView(ProjectManageMixin, tables.DataTableView):
     template_name = PROJECTS_INDEX_VIEW_TEMPLATE
 
     def get_context_data(self, **kwargs):
-        context = super(ManageMembersView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['project'] = self._get_project()
         return context
 

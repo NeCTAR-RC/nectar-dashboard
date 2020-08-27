@@ -71,7 +71,7 @@ class BaseAllocationForm(forms.ModelForm):
     )
 
     def __init__(self, **kwargs):
-        super(BaseAllocationForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 'form-control ' + field.widget.attrs.get('class', ''))
@@ -113,7 +113,7 @@ class BaseAllocationForm(forms.ModelForm):
         return data
 
     def clean(self):
-        cleaned_data = super(BaseAllocationForm, self).clean()
+        cleaned_data = super().clean()
         fors = []
         for for_name, perc_name in self.groups:
             perc = cleaned_data.get(perc_name)
@@ -154,7 +154,7 @@ class AllocationRequestForm(BaseAllocationForm):
         widget=forms.TextInput(attrs={'autofocus': 'autofocus'}))
 
     def clean(self):
-        cleaned_data = super(AllocationRequestForm, self).clean()
+        cleaned_data = super().clean()
         if 'project_name' in self._errors:
             return cleaned_data
 
@@ -206,7 +206,7 @@ class BaseQuotaForm(forms.ModelForm):
         }
 
     def __init__(self, **kwargs):
-        super(BaseQuotaForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         inst = kwargs.get('instance', None)
         if inst:
             self.res = inst.resource
@@ -224,13 +224,11 @@ def int_bool_check(v):
 class IntegerCheckboxInput(forms.CheckboxInput):
 
     def __init__(self, attrs=None, check_test=None):
-        super(IntegerCheckboxInput, self).__init__(
+        super().__init__(
             attrs, check_test=int_bool_check)
 
     def value_from_datadict(self, data, files, name):
-        value = super(IntegerCheckboxInput, self).value_from_datadict(data,
-                                                                      files,
-                                                                      name)
+        value = super().value_from_datadict(data, files, name)
         return int(value)
 
 
@@ -246,7 +244,7 @@ class QuotaForm(BaseQuotaForm):
         exclude = ('quota',)
 
     def __init__(self, **kwargs):
-        super(QuotaForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
@@ -267,7 +265,7 @@ class BaseQuotaGroupForm(forms.ModelForm):
 
     def __init__(self, **kwargs):
         self.service_type = kwargs.pop('service_type')
-        super(BaseQuotaGroupForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     class Meta:
         model = models.QuotaGroup
@@ -277,7 +275,7 @@ class BaseQuotaGroupForm(forms.ModelForm):
 class QuotaGroupForm(BaseQuotaGroupForm):
 
     def __init__(self, **kwargs):
-        super(QuotaGroupForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.fields['service_type'].widget = forms.HiddenInput()
         self.fields['service_type'].initial = self.service_type
         self.fields['zone'].required = False
@@ -291,7 +289,7 @@ class QuotaGroupForm(BaseQuotaGroupForm):
                 field.widget.attrs.get('class', '') + ' form-control')
 
     def clean(self):
-        cleaned_data = super(QuotaGroupForm, self).clean()
+        cleaned_data = super().clean()
         enabled = cleaned_data.get('enabled')
         zone = cleaned_data.get('zone')
         if enabled and not zone:
@@ -316,7 +314,7 @@ class ChiefInvestigatorForm(NectarBaseModelForm):
         }
 
     def __init__(self, **kwargs):
-        super(ChiefInvestigatorForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         # make sure the empty is not permitted
         self.empty_permitted = False
         for field in self.fields.values():
@@ -329,7 +327,7 @@ class InstitutionForm(NectarBaseModelForm):
         model = models.Institution
 
     def __init__(self, **kwargs):
-        super(InstitutionForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         # make sure the empty is not permitted
         self.empty_permitted = False
         for field in self.fields.values():
@@ -342,7 +340,7 @@ class PublicationForm(NectarBaseModelForm):
         model = models.Publication
 
     def __init__(self, **kwargs):
-        super(PublicationForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         # make sure the empty is not permitted
         self.empty_permitted = False
         for field in self.fields.values():
@@ -355,7 +353,7 @@ class GrantForm(NectarBaseModelForm):
         model = models.Grant
 
     def __init__(self, **kwargs):
-        super(GrantForm, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         # make sure the empty is not permitted
         self.empty_permitted = False
         for field in self.fields.values():
