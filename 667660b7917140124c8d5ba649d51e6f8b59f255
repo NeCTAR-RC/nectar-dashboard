@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ba9d315_ff701a51",
+        "filename": "nectar_dashboard/rcallocation/urls.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-08-28T06:05:39Z",
+      "side": 1,
+      "message": "According to the docs you\u0027re not actually using Ajax, so this isn\u0027t needed.\n\nhttps://github.com/theatlantic/django-select2-forms#form-field-example",
+      "revId": "667660b7917140124c8d5ba649d51e6f8b59f255",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
