@@ -16,6 +16,24 @@
       "revId": "365e3bcee6dd72619a5761c3b0be33eda56cfd2d",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e71d0ed_32f4db24",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 9
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-08-28T00:44:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ac51d36_5d797430",
+      "revId": "365e3bcee6dd72619a5761c3b0be33eda56cfd2d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
