@@ -13,6 +13,7 @@ Build-Depends: debhelper (>= 10~), dh-python,
          python3-django-filters,
          python3-factory-boy,
          python3-manukaclient,
+         python3-django-select2-forms,
 Standards-Version: 4.1.4
 Homepage: https://github.com/NeCTAR-RC/nectar-dashboard
 
@@ -33,6 +34,5 @@ Depends: openstack-dashboard (>= 16.0.0),
          python3-magnum-ui,
          python3-designate-dashboard,
          python3-django-cors-headers,
-         python3-django-select2-forms,
 Description: NeCTAR openstack dashboard
  NeCTAR modifications and themes for the openstack dashboard
