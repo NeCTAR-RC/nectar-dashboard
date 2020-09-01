@@ -33,5 +33,6 @@ Depends: openstack-dashboard (>= 16.0.0),
          python3-magnum-ui,
          python3-designate-dashboard,
          python3-django-cors-headers,
+         python3-django-select2-forms,
 Description: NeCTAR openstack dashboard
  NeCTAR modifications and themes for the openstack dashboard
