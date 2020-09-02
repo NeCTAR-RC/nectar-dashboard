@@ -408,8 +408,16 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        # Check for certain actions that will cause major problems
-        # if they ever happen
+        # Create / assemble the form and non-quota formsets.  Note that
+        # form instantiation may modify the state of self.object; e.g.
+        # the value of self.object.status
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        form_dict = self.get_nonquota_formsets()
+        form_dict['form'] = form
+
+        # Check for certain actions / state transitions that will cause
+        # major problems if they ever happen.
         if self.object:
             current = models.AllocationRequest.objects.get(id=self.object.id)
             # Any changes to a history record
@@ -419,12 +427,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
             if self.object.status == current.status == \
                models.AllocationRequest.APPROVED:
                 return HttpResponseBadRequest('Allocation already approved')
-
-        # Create / assemble the form and non-quota formsets
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        form_dict = self.get_nonquota_formsets()
-        form_dict['form'] = form
 
         ignore_warnings = self.IGNORE_WARNINGS or \
                           request.POST.get('ignore_warnings', False)
