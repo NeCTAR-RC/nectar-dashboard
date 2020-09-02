@@ -69,42 +69,7 @@ class RequestTestCase(base.BaseTestCase):
             self.assertEqual(investigator_model.email,
                              investigators[i]['email'])
 
-    @mock.patch.object(api.nova, 'tenant_absolute_limits')
-    def test_edit_allocation_request(self, mock_nova_limits):
-
-        mock_nova_limits.return_value = {}
-
-        allocation = AllocationFactory.create(contact_email=self.user.name)
-        initial_state = common.allocation_to_dict(
-            models.AllocationRequest.objects.get(pk=allocation.pk))
-        initial_mod = allocation.modified_time
-
-        response = self.client.get(
-            reverse('horizon:allocation:user_requests:edit_request',
-                    args=(allocation.id,)))
-        self.assertStatusCode(response, 200)
-        expected_model, form = common.request_allocation(user=self.user,
-                                                         model=allocation)
-
-        # Tells the server to skip the sanity checks.  (The request
-        # has fuzz'd quota values which tyically won't pass muster.)
-        form['ignore_warnings'] = True
-
-        response = self.client.post(
-            reverse('horizon:allocation:user_requests:edit_request',
-                    args=(allocation.id,)),
-            form)
-
-        # Check to make sure we were redirected back to the index of
-        # our requests.
-        self.assertStatusCode(response, 302)
-        self.assertEqual('../../', response.get('location'))
-        model = (models.AllocationRequest.objects.get(
-            project_description=form['project_description'],
-            parent_request_id=None))
-
-        self.assert_allocation(model, **expected_model)
-
+    def assert_history(self, model, initial_state, initial_mod):
         # check historical allocation model
         old_model = (models.AllocationRequest.objects.get(
             parent_request_id=model.id))
@@ -126,3 +91,76 @@ class RequestTestCase(base.BaseTestCase):
 
         self.assertEqual(old_state, initial_state,
                          msg="allocation fields changed unexpectedly")
+
+    @mock.patch.object(api.nova, 'tenant_absolute_limits')
+    def test_edit_allocation_request(self, mock_nova_limits):
+
+        mock_nova_limits.return_value = {}
+
+        allocation = AllocationFactory.create(contact_email=self.user.name)
+        initial_state = common.allocation_to_dict(
+            models.AllocationRequest.objects.get(pk=allocation.pk))
+        initial_mod = allocation.modified_time
+
+        response = self.client.get(
+            reverse('horizon:allocation:user_requests:edit_request',
+                    args=(allocation.id,)))
+        self.assertStatusCode(response, 200)
+        expected_model, form = common.request_allocation(user=self.user,
+                                                         model=allocation)
+
+        form['ignore_warnings'] = True
+
+        response = self.client.post(
+            reverse('horizon:allocation:user_requests:edit_request',
+                    args=(allocation.id,)),
+            form)
+
+        # Check to make sure we were redirected back to the index of
+        # our requests.
+        self.assertStatusCode(response, 302)
+        self.assertEqual('../../', response.get('location'))
+
+        model = (models.AllocationRequest.objects.get(
+            project_description=form['project_description'],
+            parent_request_id=None))
+
+        self.assert_allocation(model, status='E', **expected_model)
+        self.assert_history(model, initial_state, initial_mod)
+
+    @mock.patch.object(api.nova, 'tenant_absolute_limits')
+    def test_amend_allocation_request(self, mock_nova_limits):
+
+        mock_nova_limits.return_value = {}
+
+        allocation = AllocationFactory.create(contact_email=self.user.name,
+                                              status='A')
+        initial_state = common.allocation_to_dict(
+            models.AllocationRequest.objects.get(pk=allocation.pk))
+        initial_mod = allocation.modified_time
+
+        response = self.client.get(
+            reverse('horizon:allocation:user_requests:edit_change_request',
+                    args=(allocation.id,)))
+        self.assertStatusCode(response, 200)
+        expected_model, form = common.request_allocation(user=self.user,
+                                                         model=allocation)
+
+        form['ignore_warnings'] = True
+
+        response = self.client.post(
+            reverse('horizon:allocation:user_requests:edit_change_request',
+                    args=(allocation.id,)),
+            form)
+
+        # Check to make sure we were redirected back to the index of
+        # our requests.
+        self.assertStatusCode(response, 302)
+        self.assertEqual('../../', response.get('location'))
+
+        model = (models.AllocationRequest.objects.get(
+            project_description=form['project_description'],
+            parent_request_id=None))
+
+        self.assert_allocation(model, status='X', **expected_model)
+        self.assert_history(model, initial_state, initial_mod)
