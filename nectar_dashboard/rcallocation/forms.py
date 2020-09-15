@@ -21,7 +21,7 @@ class FORValidationError(Exception):
 
 
 class FoRChoiceField(select2_forms.ChoiceField):
-    def __init__(self, label, required):
+    def __init__(self, label):
         super().__init__(
             label=label,
             choices=FOR_CHOICES,
@@ -29,16 +29,16 @@ class FoRChoiceField(select2_forms.ChoiceField):
                            'attrs': {'class': 'col-md-2'}},
             overlay="Enter a 2, 4 or 6 digit FoR code",
             sortable=True,
-            required=required)
+            required=False)
 
 
 class BaseAllocationForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
                                          required=False)
-    field_of_research_1 = FoRChoiceField("First Field Of Research", True)
-    field_of_research_2 = FoRChoiceField("Second Field Of Research", False)
-    field_of_research_3 = FoRChoiceField("Third Field Of Research", False)
+    field_of_research_1 = FoRChoiceField("First Field Of Research")
+    field_of_research_2 = FoRChoiceField("Second Field Of Research")
+    field_of_research_3 = FoRChoiceField("Third Field Of Research")
 
     class Meta:
         model = models.AllocationRequest
