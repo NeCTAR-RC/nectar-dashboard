@@ -16,6 +16,24 @@
       "revId": "a37c8360c4c36f9d1f148f8cb17421adb2001563",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ddeae54_998e8790",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-09-16T01:39:14Z",
+      "side": 1,
+      "message": "That\u0027s a separate issue and not related to this review",
+      "parentUuid": "17cfc30e_12860c3f",
+      "revId": "a37c8360c4c36f9d1f148f8cb17421adb2001563",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
