@@ -52,6 +52,23 @@
       "revId": "a37c8360c4c36f9d1f148f8cb17421adb2001563",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6b24d4b_a4ed7140",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-09-16T02:03:03Z",
+      "side": 1,
+      "message": "This should require self.managed too.",
+      "revId": "a37c8360c4c36f9d1f148f8cb17421adb2001563",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
