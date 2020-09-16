@@ -359,10 +359,6 @@ class AllocationRequest(models.Model):
     def can_be_amended(self):
         return self.is_active() and not self.is_archived() and self.managed
 
-    def can_be_extended(self):
-        return self.can_be_amended() and not self.is_archived() \
-            and self.managed
-
     def can_be_edited(self):
         return not self.is_active() and not self.is_archived() and self.managed
 
