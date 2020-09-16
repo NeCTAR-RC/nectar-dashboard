@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "17cfc30e_12860c3f",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-09-16T00:51:29Z",
+      "side": 1,
+      "message": "This method is not used.",
+      "revId": "a37c8360c4c36f9d1f148f8cb17421adb2001563",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
