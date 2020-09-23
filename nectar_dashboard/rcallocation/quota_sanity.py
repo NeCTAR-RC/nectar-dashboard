@@ -25,6 +25,11 @@ NO_ROUTER = 'NO_ROUTER'
 NO_NETWORK = 'NO_NETWORK'
 FLOATING_IP_DEP = 'FLOATING_IP_DEP'
 LOAD_BALANCER_DEP = 'LOAD_BALANCER_DEP'
+CLUSTER_WITHOUT_INSTANCES = 'CLUSTER_WITHOUT_INSTANCES'
+CLUSTER_WITHOUT_NETWORK = 'CLUSTER_WITHOUT_NETWORK'
+CLUSTER_WITHOUT_LBS = 'CLUSTER_WITHOUT_LBS'
+CLUSTER_WITHOUT_FIPS = 'CLUSTER_WITHOUT_FIPS'
+CLUSTER_WITHOUT_ROUTER = 'CLUSTER_WITHOUT_ROUTER'
 APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 
@@ -123,6 +128,34 @@ def trove_backup_check(context):
     return None
 
 
+def magnum_instance_check(context):
+    clusters = context.get('container-infra.clusters')
+    if clusters * 2 > context.get('compute.instances'):
+        return (CLUSTER_WITHOUT_INSTANCES,
+                'at least %s instances advised for %s clusters'
+                % (clusters * 2, clusters))
+
+
+def magnum_neutron_checks(context):
+    clusters = context.get('container-infra.clusters')
+    if clusters > context.get('network.network'):
+        return (CLUSTER_WITHOUT_NETWORK,
+                '%s networks advised for %s clusters'
+                % (clusters, clusters))
+    if clusters * 3 > context.get('network.loadbalancer'):
+        return (CLUSTER_WITHOUT_LBS,
+                '%s load balancers advised for %s clusters'
+                % (clusters * 3, clusters))
+    if clusters * 2 > context.get('network.floatingip'):
+        return (CLUSTER_WITHOUT_FIPS,
+                '%s floating ips advised for %s clusters'
+                % (clusters * 2, clusters))
+    if clusters > context.get('network.router'):
+        return (CLUSTER_WITHOUT_ROUTER,
+                '%s routers advised for %s clusters'
+                % (clusters * 2, clusters))
+
+
 def manila_local_check(context):
     associated_site = context.get_field('associated_site')
     if associated_site:
@@ -199,6 +232,8 @@ STD_CHECKS = [instance_vcpu_check,
               trove_backup_check,
               manila_local_check,
               neutron_checks,
+              magnum_instance_check,
+              magnum_neutron_checks,
               approver_checks]
 
 
