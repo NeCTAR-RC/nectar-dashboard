@@ -152,7 +152,8 @@
 
 
         $(this).find('div[id^="panel-quota-"]').each(function() {
-          var service_type = $(this).attr('id').match(/[\w]+$/);
+          var id = $(this).attr('id');
+          var service_type = id.match(/^panel-quota-([\w-]+)$/)[1];
           var zones = opts['service_types'][service_type]['zones']
 
           /* If this is a multi-zone resource, show the 'Add more' button */
