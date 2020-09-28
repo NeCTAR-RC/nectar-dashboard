@@ -295,6 +295,10 @@ class AllocationRequest(models.Model):
         default=True,
         help_text="Send notifications for this allocation")
 
+    managed = models.BooleanField(
+        default=True,
+        help_text="Whether the allocation is managed through the dashboard")
+
     class Meta:
         ordering = ['-modified_time']
 
@@ -353,29 +357,32 @@ class AllocationRequest(models.Model):
         return self.parent_request is not None
 
     def can_be_amended(self):
-        return self.is_active() and not self.is_archived()
+        return self.is_active() and not self.is_archived() and self.managed
 
     def can_be_extended(self):
-        return self.can_be_amended() and not self.is_archived()
+        return self.can_be_amended() and not self.is_archived() \
+            and self.managed
 
     def can_be_edited(self):
-        return not self.is_active() and not self.is_archived()
+        return not self.is_active() and not self.is_archived() and self.managed
 
     def can_admin_edit(self):
-        return self.status.lower() not in ('p', 'a') and not self.is_archived()
+        return self.status.lower() not in ('p', 'a') \
+            and not self.is_archived() and self.managed
 
     def can_user_edit(self):
-        return self.status.lower() in (
-            'e', 'r', 'n') and not self.is_archived()
+        return self.status.lower() in ('e', 'r', 'n') \
+            and not self.is_archived() and self.managed
 
     def can_user_edit_amendment(self):
-        return self.amendment_requested() and not self.is_archived()
+        return self.amendment_requested() and not self.is_archived() \
+            and self.managed
 
     def can_be_rejected(self):
-        return self.is_requested() and not self.is_archived()
+        return self.is_requested() and not self.is_archived() and self.managed
 
     def can_be_approved(self):
-        return self.is_requested() and not self.is_archived()
+        return self.is_requested() and not self.is_archived() and self.managed
 
     def can_reject_change(self):
         return self.can_approve_change()

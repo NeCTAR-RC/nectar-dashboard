@@ -341,7 +341,7 @@ class AllocationSerializer(serializers.ModelSerializer):
                             'contact_email', 'approver_email',
                             'project_id', 'provisioned', 'notifications',
                             'allocation_home',
-                            'allocation_home_display')
+                            'allocation_home_display', 'managed')
 
     @staticmethod
     def get_status_display(obj):
@@ -407,7 +407,7 @@ class AllocationFilter(filters.FilterSet):
         model = models.AllocationRequest
         fields = ('status', 'parent_request_id', 'project_id',
                   'project_name', 'provisioned', 'parent_request',
-                  'national', 'notifications',
+                  'national', 'notifications', 'managed',
                   'contact_email', 'approver_email',
                   'start_date', 'end_date', 'modified_time', 'created_by')
 
