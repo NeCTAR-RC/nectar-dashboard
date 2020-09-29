@@ -98,6 +98,8 @@ class RequestTestCase(base.BaseTestCase):
                  .get(project_description=form['project_description'],
                       parent_request_id=None))
         self.assert_allocation(model, **expected_model)
+        self.assertTrue(model.managed)
+        self.assertTrue(model.notifications)
 
     def _test_allocation(self, form_errors={},
                          **kwargs):
