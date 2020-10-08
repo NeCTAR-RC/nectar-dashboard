@@ -11,6 +11,8 @@
 #   under the License.
 #
 
+from django.core.exceptions import ValidationError
+
 from openstack_dashboard.test import helpers
 
 from nectar_dashboard.rcallocation import models
@@ -111,3 +113,10 @@ class ModelsTestCase(helpers.TestCase):
             managed=False)
 
         self.assertFalse(allocation.can_be_approved())
+
+    def test_validate_doi(self):
+        models.validate_doi("10.100000/HelloMum")
+        with self.assertRaises(ValidationError):
+            models.validate_doi("10.100000/Hello Mum")
+        with self.assertRaises(ValidationError):
+            models.validate_doi("10.100000/Hello\tMum")
