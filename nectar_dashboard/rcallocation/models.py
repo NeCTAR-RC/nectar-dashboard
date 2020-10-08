@@ -3,11 +3,13 @@
 # Modified by Martin Paulo
 import datetime
 import logging
+import re
 
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
+from django.core.validators import RegexValidator
 from django.db import models
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -697,14 +699,28 @@ class Institution(models.Model):
         return self.name
 
 
+DOI_PATTERN = re.compile("^10.\\d{4,9}/[^\x00-\x1f\x7f-\x9f\\s]+$")
+VALIDATE_DOI = RegexValidator(regex=DOI_PATTERN, message='Invalid DOI')
+
+
 class Publication(models.Model):
     publication = models.CharField(
         'Publication/Output',
         max_length=512,
         help_text="""Please provide any traditional and non-traditional
                 research outputs using a citation style text reference
-                for each. eg. include article/title, journal/outlet, year,
-                DOI/link if available.""")
+                for each. eg. include article/title, journal/outlet
+                and year.""")
+
+    doi = models.CharField(
+        "Digital Object Identifier (DOI)",
+        blank=True,
+        null=True,
+        validators=[VALIDATE_DOI],
+        max_length=256,
+        help_text="""Please provide the DOI for this research output
+               where available.  DOIs for traditional publications should
+               be considered as mandatory.""")
 
     allocation = models.ForeignKey(AllocationRequest,
                                    related_name='publications',
