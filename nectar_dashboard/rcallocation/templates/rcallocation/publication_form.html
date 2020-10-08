@@ -21,7 +21,17 @@
                 {{ publication_form.id }}
                 {{ publication_form.DELETE.as_hidden }}
             </td>
-            {% include "rcallocation/publication_field.html" with field=publication_form.publication %}
+            <td>
+              <div class="publication_div">
+                {% include "rcallocation/field.html" with field=publication_form.doi %}
+                {% include "rcallocation/field.html" with field=publication_form.publication %}
+              </div>
+            </td>
+            <td>
+              <button class="pull-right btn btn-default" id="delete-publication" type="button">
+                Delete
+              </button>
+            </td>
         </tr>
     {% endfor %}
     </tbody>

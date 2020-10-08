@@ -353,7 +353,14 @@ class InstitutionForm(NectarBaseModelForm):
 
 
 DOI_PROTOCOL_PATTERN = re.compile("(?i)^doi:(.+)$")
-DOI_PROTOCOL_PATTERN_2 = re.compile("(?i)^https?:[a-z0-9./_\\-]+?/(10\\..+)$")
+DOI_PROTOCOL_PATTERN_2 = re.compile("(?i)^https?:[a-z0-9.
+
+
+
+
+
+
+/_\\-]+?/(10\\..+)$")
 
 
 class PublicationForm(NectarBaseModelForm):
