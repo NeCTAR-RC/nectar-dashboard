@@ -3,8 +3,10 @@
 # Modified by Martin Paulo
 import datetime
 import logging
+import re
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
@@ -697,14 +699,33 @@ class Institution(models.Model):
         return self.name
 
 
+DOI_PATTERN = re.compile("^10.\\d{4,9}/[^\x00-\x1f\x7f-\x9f\s]+$")
+
+
+def validate_doi(value):
+    if not DOI_PATTERN.match(value):
+        raise ValidationError('%(value)s is not a valid DOI',
+                              params={'value': value})
+
+
 class Publication(models.Model):
     publication = models.CharField(
         'Publication/Output',
         max_length=512,
         help_text="""Please provide any traditional and non-traditional
                 research outputs using a citation style text reference
-                for each. eg. include article/title, journal/outlet, year,
-                DOI/link if available.""")
+                for each. eg. include article/title, journal/outlet
+                and year.""")
+
+    doi = models.CharField(
+        "Digital Object Identifier (DOI)",
+        blank=True,
+        null=True,
+        validators=[validate_doi],
+        max_length=256,
+        help_text="""Please provide the DOI for this research output
+               where available.  DOIs for traditional publications should
+               be considered as mandatory.""")
 
     allocation = models.ForeignKey(AllocationRequest,
                                    related_name='publications',

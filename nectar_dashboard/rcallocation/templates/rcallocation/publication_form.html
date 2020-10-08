@@ -22,6 +22,7 @@
                 {{ publication_form.DELETE.as_hidden }}
             </td>
             {% include "rcallocation/publication_field.html" with field=publication_form.publication %}
+            {% include "rcallocation/publication_field.html" with field=publication_form.doi %}
         </tr>
     {% endfor %}
     </tbody>
