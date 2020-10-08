@@ -267,7 +267,7 @@ $(function(){
   }
 });
 
-
+// Organizations formset
 (function($) {
 
     function create_form_row(formset, opts) {
@@ -402,6 +402,8 @@ $(function(){
     };
 
 }(jQuery));
+
+// Grants formset
 (function($) {
     var this_year = new Date().getFullYear().toString();
     var next_year = (new Date().getFullYear() + 1).toString();
@@ -637,6 +639,170 @@ $(function(){
     };
 
     $.fn.gformset.defaults = {
+        form_prefix: "",
+        formset_class_id: ""
+    };
+
+}(jQuery));
+
+// Publications formset
+(function($) {
+
+    function create_form_row(formset, opts) {
+        var total_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr').length;
+        var form_new_row = create_row(opts.prefix, total_rows, opts);
+        $('div.'+ opts.formset_class_id + ' table > tbody:last').append(form_new_row);
+        total_rows += 1;
+        var total_forms_input = $('#id_' + opts.prefix + '-TOTAL_FORMS');
+        total_forms_input.val(total_rows);
+    };
+
+    function create_row(prefix, row_index, opts){
+        var new_row = "<tr>";
+        new_row += "<td>";
+        new_row += "<input type='hidden' name='" + opts.prefix + "-" + row_index + "-id' id='id_" + opts.prefix + "-" + row_index + "-id'>";
+        new_row += "<input type='hidden' name='" + opts.prefix + "-" + row_index + "-DELETE' id='id_" + opts.prefix + "-" + row_index + "-DELETE'>";
+        new_row += "</td>";
+        new_row += "<td>";
+        new_row += "<div class='publication_div'>";
+        //doi
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'doi', 'Digital Object Identifier(DOI)', row_index, false, "Provide the research output&apos;s DOI.  For example: &quot;10.23456/more-stuff&quot;.  A DOI is mandatory for peer-reviewed publications.");
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_input_field(opts, 'doi', 'DOI', row_index);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
+        //publication
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'publication', 'Publication/Output', row_index, false, "Provide the details for the research output; e.g. a paper&apos;s title, authors, journal and year of publication");
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_input_field(opts, 'publication', 'Publication', row_index);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
+        // closed publication_div
+        new_row += "</div>"
+        new_row += "</td>";
+        new_row += "<td>";
+        new_row += "<button type='button' id='delete-publication' class='pull-right btn btn-default'>";
+        new_row += "Delete";
+        new_row += "</button>";
+        new_row += "</td>";
+        new_row += "</tr>";
+        return new_row;
+    };
+
+    function create_input_field_label(opts, field_name, field_label, row_index, required, help_text){
+        label_section = "<label for='id_"+ opts.prefix + "-" + row_index + "-" + field_name +"'>";
+        label_section += field_label;
+        if(required == true){
+            label_section += "<span class='glyphicon glyphicon-asterisk text-primary'></span>";
+        }
+        label_section += "<img class='help-popover' src='/static/rcportal/img/help.png' data-content='" + help_text + "' data-original-title='" + field_label + "' data-html='true'>";
+        label_section += "</label>";
+        return label_section;
+    };
+
+    function create_help_span(opts, field_name, row_index, help_txt){
+        var help_span = "<span class='help-block'>";
+        help_span += "<div class='help-text-div' id='id_" + opts.prefix + "-" + row_index +"-" + field_name + "'>";
+        help_span += help_txt;
+        help_span += "</div>";
+        help_span += "</span>";
+        return help_span;
+    };
+
+    function create_input_field(opts, field_name, field_label, row_index){
+        return "<input type='text' name='" + opts.prefix + "-" + row_index + "-" + field_name + "' maxlength='500' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' class='form-control'>";
+    };
+
+    function delete_form_row(formset, opts, span){
+        var span_id = span.attr('id');
+        var current_tr = span.closest('tr');
+        //check the input id field is empty or not
+        var id_input = current_tr.find('input[id$=-id]');
+
+        var id_value = id_input.attr('value');
+        if (id_value == null || id_value == ''){
+            //just remove the current row as it's a new row.
+            // and resort the whole table rows
+            current_tr.remove();
+            resort_form_rows(formset, opts);
+        } else{
+            //check the input delete field
+            var del_input_field = current_tr.find('input[id$=-DELETE]');
+            //set the delete flag to true
+            del_input_field.attr('value', 'True');
+            current_tr.toggleClass('hidden');
+        }
+        //reset the total_forms_input value
+        var total_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr').length;
+        var total_forms_input = $('#id_' + opts.prefix + '-TOTAL_FORMS');
+        total_forms_input.val(total_rows);
+    };
+
+    function resort_form_rows(formset, opts){
+        var match = new RegExp(opts.prefix + '-\\d+-', 'g');
+
+        $('div.'+ opts.formset_class_id + ' table > tbody > tr').each(function() {
+            var current_index = this.rowIndex;
+            //reindex the id input field
+            var id_input = $(this).find('input[id$=-id]');
+            id_input.attr('id', 'id_' + opts.prefix + '-' + current_index + '-id');
+            id_input.attr('name', opts.prefix + '-' + current_index + '-id');
+            //reindex the delete input field
+            var id_input = $(this).find('input[id$=-DELETE]');
+            id_input.attr('id', 'id_' + opts.prefix + '-' + current_index + '-DELETE');
+            id_input.attr('name', opts.prefix + '-' + current_index + '-DELETE');
+
+            //reindex the label for
+            $(this).find("label[for^='id_" + opts.prefix + "-']").each(function(){
+                var labelFor = $(this).attr('for').replace(match, opts.prefix +'-' + current_index + '-');
+                $(this).attr('for', labelFor);
+            });
+
+            //reindex select id and name
+            $(this).find("select.form-control").each(function(){
+                var selectId = $(this).attr('id').replace(match, opts.prefix + '-' + current_index + '-');
+                var selectName = $(this).attr('name').replace(match, opts.prefix + '-' + current_index + '-');
+                $(this).attr('id', selectId);
+                $(this).attr('name', selectName);
+            });
+
+            //reindex the input id and name
+            $(this).find("input.form-control").each(function(){
+                var inputId = $(this).attr('id').replace(match, opts.prefix + '-' + current_index + '-');
+                var inputName = $(this).attr('name').replace(match, opts.prefix + '-' + current_index + '-');
+                $(this).attr('id', inputId);
+                $(this).attr('name', inputName);
+            });
+        });
+    };
+
+
+    $.fn.pformset = function(options) {
+        var opts = $.extend( {}, $.fn.pformset.defaults, options );
+         return this.each(function() {
+             //set current formset
+             var formset = this;
+             $('div.' + options.formset_class_id).on('click', '#add_another', function (event) {
+                 event.preventDefault();
+                 create_form_row(formset, opts);
+                 apply_popover();
+             });
+
+             $('div.'+ options.formset_class_id).on('click', '#delete-publication', function (event){
+                 event.preventDefault();
+                 var clicked_span = $(this);
+                 delete_form_row(formset, opts, clicked_span);
+             });
+         });
+    };
+
+    $.fn.pformset.defaults = {
         form_prefix: "",
         formset_class_id: ""
     };
