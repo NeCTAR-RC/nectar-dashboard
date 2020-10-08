@@ -1,4 +1,5 @@
 import logging
+import re
 
 from django.core.validators import RegexValidator
 from django import forms
@@ -351,6 +352,9 @@ class InstitutionForm(NectarBaseModelForm):
                 field.widget.attrs.get('class', '') + 'form-control')
 
 
+DOI_PROTOCOL_PATTERN = re.compile("(?i)^doi:(.+)$")
+
+
 class PublicationForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Publication
@@ -362,6 +366,16 @@ class PublicationForm(NectarBaseModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
+
+    def clean_doi(self):
+        # Quietly strip off a "doi:" protocol if provided.
+        doi = self.cleaned_data['doi']
+        if doi:
+            match = DOI_PROTOCOL_PATTERN.match(doi)
+            if match:
+                return match.group(1)
+            else:
+                return doi
 
 
 class GrantForm(NectarBaseModelForm):
