@@ -69,6 +69,24 @@
       "revId": "b88d20ed82a1b9cc534517f85bb3cd668f1bb8e5",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d8abda54_d023c31f",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/publication_field.html",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-10-13T01:27:53Z",
+      "side": 1,
+      "message": "ahh, hard to see from here, I thought it was the other way around",
+      "parentUuid": "d00664cd_0ead7b94",
+      "revId": "b88d20ed82a1b9cc534517f85bb3cd668f1bb8e5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
