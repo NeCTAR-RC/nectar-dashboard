@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "80c91b5c_a71eb4eb",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 724,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-10-13T01:23:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b8a21ad6_3a4c2552",
+      "revId": "b88d20ed82a1b9cc534517f85bb3cd668f1bb8e5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "26fdda98_88a87b8a",
         "filename": "nectar_dashboard/rcallocation/templates/rcallocation/publication_field.html",
         "patchSetId": 5
@@ -33,6 +51,24 @@
       "revId": "b88d20ed82a1b9cc534517f85bb3cd668f1bb8e5",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d00664cd_0ead7b94",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/publication_field.html",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-10-13T01:23:49Z",
+      "side": 1,
+      "message": "What I thought I was doing was correcting a missing newline.",
+      "parentUuid": "26fdda98_88a87b8a",
+      "revId": "b88d20ed82a1b9cc534517f85bb3cd668f1bb8e5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
