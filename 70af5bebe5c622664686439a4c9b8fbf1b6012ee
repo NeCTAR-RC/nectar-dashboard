@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ef6b46ef_30927bfe",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 703,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-10-13T02:29:09Z",
+      "side": 1,
+      "message": "should we give an example of what is a valid DOI here?\n\nAlso prob don\u0027t need to define this as a global and could just be in the model itself as\n\nvalidators\u003dRegexValidator(regex\u003dDOI_PATTERN, message\u003d\u0027Invalid DOI\u0027)",
+      "revId": "70af5bebe5c622664686439a4c9b8fbf1b6012ee",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
