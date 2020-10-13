@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8a21ad6_3a4c2552",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 724,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-10-13T00:36:23Z",
+      "side": 1,
+      "message": "you ideally should use the inbuilt regex validator for this\n\nhttps://docs.djangoproject.com/en/1.11/ref/validators/#regexvalidator",
+      "revId": "b88d20ed82a1b9cc534517f85bb3cd668f1bb8e5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26fdda98_88a87b8a",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/publication_field.html",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-10-13T00:36:23Z",
+      "side": 1,
+      "message": "typo in removing the new line at end?",
+      "revId": "b88d20ed82a1b9cc534517f85bb3cd668f1bb8e5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
