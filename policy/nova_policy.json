@@ -168,7 +168,7 @@
     "os_compute_api:servers:migrations:delete": "rule:admin_api",
     "os_compute_api:servers:migrations:index": "rule:admin_api",
     "os_compute_api:os-services": "rule:admin_or_monitoring",
-    "os_compute_api:os-shelve:shelve": "rule:admin_api",
+    "os_compute_api:os-shelve:shelve": "rule:admin_or_owner",
     "os_compute_api:os-shelve:unshelve": "rule:admin_or_owner",
     "os_compute_api:os-shelve:shelve_offload": "rule:admin_api",
     "os_compute_api:os-simple-tenant-usage:show": "rule:monitoring_or_default",
