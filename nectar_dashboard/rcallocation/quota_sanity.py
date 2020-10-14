@@ -129,7 +129,7 @@ def trove_backup_check(context):
 
 
 def magnum_instance_check(context):
-    clusters = context.get('container-infra.clusters')
+    clusters = context.get('container-infra.cluster')
     if clusters * 2 > context.get('compute.instances'):
         return (CLUSTER_WITHOUT_INSTANCES,
                 'at least %s instances advised for %s clusters'
@@ -137,7 +137,7 @@ def magnum_instance_check(context):
 
 
 def magnum_neutron_checks(context):
-    clusters = context.get('container-infra.clusters')
+    clusters = context.get('container-infra.cluster')
     if clusters > context.get('network.network'):
         return (CLUSTER_WITHOUT_NETWORK,
                 '%s networks advised for %s clusters'

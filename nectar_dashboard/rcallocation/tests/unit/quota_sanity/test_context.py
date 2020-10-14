@@ -311,24 +311,24 @@ class QuotaSanityChecksTest(helpers.TestCase):
                          quota_sanity.neutron_checks(context)[0])
 
     def test_magnum_instance_check(self):
-        quotas = [build_quota('container-infra', 'clusters', 0),
+        quotas = [build_quota('container-infra', 'cluster', 0),
                   build_quota('compute', 'instances', 0)]
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.magnum_instance_check(context))
 
-        quotas = [build_quota('container-infra', 'clusters', 1),
+        quotas = [build_quota('container-infra', 'cluster', 1),
                   build_quota('compute', 'instances', 2)]
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.magnum_instance_check(context))
 
-        quotas = [build_quota('container-infra', 'clusters', 1),
+        quotas = [build_quota('container-infra', 'cluster', 1),
                   build_quota('compute', 'instances', 0),  # no instances
         ]
         context = build_context(quotas)
         self.assertEqual(quota_sanity.CLUSTER_WITHOUT_INSTANCES,
                          quota_sanity.magnum_instance_check(context)[0])
 
-        quotas = [build_quota('container-infra', 'clusters', 1),
+        quotas = [build_quota('container-infra', 'cluster', 1),
                   build_quota('compute', 'instances', 1),  # not enough
         ]
         context = build_context(quotas)
@@ -336,11 +336,11 @@ class QuotaSanityChecksTest(helpers.TestCase):
                          quota_sanity.magnum_instance_check(context)[0])
 
     def test_magnum_neutron_checks(self):
-        quotas = [build_quota('container-infra', 'clusters', 0)]
+        quotas = [build_quota('container-infra', 'cluster', 0)]
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.magnum_neutron_checks(context))
 
-        quotas = [build_quota('container-infra', 'clusters', 1),
+        quotas = [build_quota('container-infra', 'cluster', 1),
                   build_quota('network', 'network', 1),
                   build_quota('network', 'loadbalancer', 3),
                   build_quota('network', 'router', 1),
@@ -349,7 +349,7 @@ class QuotaSanityChecksTest(helpers.TestCase):
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.magnum_neutron_checks(context))
 
-        quotas = [build_quota('container-infra', 'clusters', 1),
+        quotas = [build_quota('container-infra', 'cluster', 1),
                   build_quota('network', 'network', 0),  # no network
                   build_quota('network', 'loadbalancer', 3),
                   build_quota('network', 'router', 1),
@@ -359,7 +359,7 @@ class QuotaSanityChecksTest(helpers.TestCase):
         self.assertEqual(quota_sanity.CLUSTER_WITHOUT_NETWORK,
                          quota_sanity.magnum_neutron_checks(context)[0])
 
-        quotas = [build_quota('container-infra', 'clusters', 1),
+        quotas = [build_quota('container-infra', 'cluster', 1),
                   build_quota('network', 'network', 1),
                   build_quota('network', 'loadbalancer', 2),  # not enough
                   build_quota('network', 'router', 1),
@@ -369,7 +369,7 @@ class QuotaSanityChecksTest(helpers.TestCase):
         self.assertEqual(quota_sanity.CLUSTER_WITHOUT_LBS,
                          quota_sanity.magnum_neutron_checks(context)[0])
 
-        quotas = [build_quota('container-infra', 'clusters', 1),
+        quotas = [build_quota('container-infra', 'cluster', 1),
                   build_quota('network', 'network', 1),
                   build_quota('network', 'loadbalancer', 3),
                   build_quota('network', 'router', 0),  # no router
@@ -379,7 +379,7 @@ class QuotaSanityChecksTest(helpers.TestCase):
         self.assertEqual(quota_sanity.CLUSTER_WITHOUT_ROUTER,
                          quota_sanity.magnum_neutron_checks(context)[0])
 
-        quotas = [build_quota('container-infra', 'clusters', 1),
+        quotas = [build_quota('container-infra', 'cluster', 1),
                   build_quota('network', 'network', 1),
                   build_quota('network', 'loadbalancer', 3),
                   build_quota('network', 'router', 1),
