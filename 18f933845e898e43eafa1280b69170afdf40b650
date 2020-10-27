@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "db5591e8_42839114",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_detail_base.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-10-27T23:48:18Z",
+      "side": 1,
+      "message": "Nice find wit the broken html however the th row should also be enclosed by a tr\n\nhttps://www.w3schools.com/html/html_tables.asp",
+      "revId": "18f933845e898e43eafa1280b69170afdf40b650",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
