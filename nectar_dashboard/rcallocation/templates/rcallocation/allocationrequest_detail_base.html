@@ -303,12 +303,18 @@
             {% if allocation.publications.all %}
                  <table class="table table-hover">
                     {% for pub in allocation.publications.all %}
-                        <tr>
                         {% if forloop.first %}
-                            <th width="200" rowspan="{{ allocation.publications.all|length}}">Publication/Output</th>
+                        <tr>
+                            <th>Publication/Output</th>
+                            <th>DOI</th>
+                        </tr>
                         {% endif %}
+                        <tr>
                             <td>
                                 {{ pub.publication }}
+                            </td>
+                            <td>
+                                {{ pub.doi }}
                             </td>
                         </tr>
                     {% endfor %}
