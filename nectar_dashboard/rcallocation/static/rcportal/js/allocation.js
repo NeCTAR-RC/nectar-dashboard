@@ -667,7 +667,7 @@ $(function(){
         new_row += "<div class='publication_div'>";
         //doi
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'doi', 'Digital Object Identifier(DOI)', row_index, false, "Provide the research output&apos;s DOI.  For example: &quot;10.23456/more-stuff&quot;.  A DOI is mandatory for peer-reviewed publications.");
+        new_row += create_input_field_label(opts, 'doi', 'Digital Object Identifier(DOI)', row_index, false, "Provide the research output&apos;s DOI.  For example: &apos;10.23456/more-stuff&apos;.  A DOI is mandatory for peer-reviewed publications.");
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_input_field(opts, 'doi', 'DOI', row_index);
@@ -676,7 +676,7 @@ $(function(){
         new_row += "</div>";
         //publication
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'publication', 'Publication/Output', row_index, false, "Provide the details for the research output; e.g. a paper&apos;s title, authors, journal and year of publication");
+        new_row += create_input_field_label(opts, 'publication', 'Publication/Output', row_index, false, "Provide a citation style text reference for this research output; e.g. include article/title, journal/outlet and year.");
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_input_field(opts, 'publication', 'Publication', row_index);

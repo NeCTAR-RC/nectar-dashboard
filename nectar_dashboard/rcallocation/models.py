@@ -712,10 +712,9 @@ class Publication(models.Model):
     publication = models.CharField(
         'Publication/Output',
         max_length=512,
-        help_text="""Please provide any traditional and non-traditional
-                research outputs using a citation style text reference
-                for each. eg. include article/title, journal/outlet
-                and year.""")
+        help_text="""Provide a citation style text reference
+                for this research output; e.g. include article/title,
+                journal/outlet and year.""")
 
     doi = models.CharField(
         "Digital Object Identifier (DOI)",
@@ -723,9 +722,9 @@ class Publication(models.Model):
         null=True,
         validators=[VALIDATE_DOI],
         max_length=256,
-        help_text="""Please provide the DOI for this research output
-               where available.  DOIs for traditional publications should
-               be considered as mandatory.""")
+        help_text="""Provide the research output's DOI.  For example:
+               '10.23456/more-stuff'.  A DOI is mandatory for peer-reviewed
+               publications.""")
 
     allocation = models.ForeignKey(AllocationRequest,
                                    related_name='publications',

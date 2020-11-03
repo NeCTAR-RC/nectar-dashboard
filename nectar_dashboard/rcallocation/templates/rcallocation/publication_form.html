@@ -1,15 +1,3 @@
-{% if publication_formset.forms %}
-    <div class="label_header">
-{% else %}
-    <div class="label_header hidden">
-{% endif %}
-    <label>
-        Publication/Output
-        <span class="glyphicon glyphicon-asterisk text-primary"></span>
-        <img class="help-popover" src="{{ STATIC_URL }}rcportal/img/help.png" data-content="Please provide any traditional and non-traditional research outputs using a citation style text reference for each. eg. include article/title, journal/outlet, year, DOI/link if available." data-original-title="Publication/Output" data-html="true">
-    </label>
-</div>
-
 <table class="more_fields_tab">
     <tbody>
     {% for publication_form in publication_formset.forms %}
