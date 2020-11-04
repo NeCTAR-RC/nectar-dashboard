@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a3b3f3f_bbc3fd9a",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2020-11-04T22:36:02Z",
+      "side": 1,
+      "message": "disjointed sentence?",
+      "range": {
+        "startLine": 188,
+        "startChar": 68,
+        "endLine": 190,
+        "endChar": 10
+      },
+      "revId": "4402607128745d93ff91e66e6dc99c2b79168aa6",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
