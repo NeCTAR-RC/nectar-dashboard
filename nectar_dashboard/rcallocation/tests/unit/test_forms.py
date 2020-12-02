@@ -56,7 +56,7 @@ class FormsTestCase(helpers.TestCase):
             'doi': 'ABCDEF',
             'allocation': self.allocation.id})
         form.is_valid()
-        self.assertTrue('doi' not in form.cleaned_data)
+        self.assertNotIn('doi', form.cleaned_data)
 
         # Malformed DOI (according to us)
         form = forms.PublicationForm(data={
@@ -64,7 +64,7 @@ class FormsTestCase(helpers.TestCase):
             'doi': 'doi:10.01000/ABC DEF',
             'allocation': self.allocation.id})
         form.is_valid()
-        self.assertTrue('doi' not in form.cleaned_data)
+        self.assertNotIn('doi', form.cleaned_data)
 
         # Trailing whitespace should be trimmed
         form = forms.PublicationForm(data={
