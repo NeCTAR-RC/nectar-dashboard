@@ -164,63 +164,83 @@ class QuotaSanityChecksTest(helpers.TestCase):
         self.assertIsNone(quota_sanity.cinder_local_check(context))
 
     def test_trove_checks(self):
-        quotas = [build_quota('database', 'instances', 0),
+        quotas = [build_quota('database', 'ram', 0),
                   build_quota('database', 'volumes', 0)]
         context = build_context(quotas)
-        self.assertIsNone(quota_sanity.trove_server_check(context))
+        self.assertIsNone(quota_sanity.trove_ram_check(context))
 
-        quotas = [build_quota('database', 'instances', 0),
+        quotas = [build_quota('database', 'ram', 0),
                   build_quota('database', 'volumes', 1)]
         context = build_context(quotas)
-        self.assertEqual(quota_sanity.TROVE_WITHOUT_SERVERS,
-                         quota_sanity.trove_server_check(context)[0])
+        self.assertEqual(quota_sanity.TROVE_WITHOUT_RAM,
+                         quota_sanity.trove_ram_check(context)[0])
 
-        quotas = [build_quota('database', 'instances', 0),
+        quotas = [build_quota('database', 'ram', 0),
                   build_quota('database', 'volumes', 0)]
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.trove_storage_check(context))
 
-        quotas = [build_quota('database', 'instances', 1),
+        quotas = [build_quota('database', 'ram', 4),
                   build_quota('database', 'volumes', 0)]
         context = build_context(quotas)
         self.assertEqual(quota_sanity.TROVE_WITHOUT_STORAGE,
                          quota_sanity.trove_storage_check(context)[0])
 
-        quotas = [build_quota('database', 'instances', 0),
+        # Not multiple of 4
+        quotas = [build_quota('database', 'ram', 6),
+                  build_quota('database', 'volumes', 0)]
+        context = build_context(quotas)
+        self.assertEqual('',
+                         quota_sanity.trove_storage_check(context)[0])
+        # RAM < 3
+        quotas = [build_quota('database', 'ram', 3),
+                  build_quota('database', 'volumes', 0)]
+        context = build_context(quotas)
+        self.assertEqual('',
+                         quota_sanity.trove_storage_check(context)[0])
+        # RAM > 100
+        quotas = [build_quota('database', 'ram', 101),
+                  build_quota('database', 'volumes', 0)]
+        context = build_context(quotas)
+        self.assertEqual('',
+                         quota_sanity.trove_storage_check(context)[0])
+        
+
+        quotas = [build_quota('database', 'ram', 0),
                   build_quota('database', 'volumes', 0),
                   build_quota('object', 'object', 0)]
         context = build_context(quotas)
 
         self.assertIsNone(quota_sanity.trove_backup_check(context))
-        quotas = [build_quota('database', 'instances', 1),
+        quotas = [build_quota('database', 'ram', 4),
                   build_quota('database', 'volumes', 1),
                   build_quota('object', 'object', 1)]
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.trove_backup_check(context))
-        quotas = [build_quota('database', 'instances', 0),
+        quotas = [build_quota('database', 'ream', 0),
                   build_quota('database', 'volumes', 1),
                   build_quota('object', 'object', 1)]
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.trove_backup_check(context))
-        quotas = [build_quota('database', 'instances', 1),
+        quotas = [build_quota('database', 'ram', 4),
                   build_quota('database', 'volumes', 0),
                   build_quota('object', 'object', 1)]
         context = build_context(quotas)
         self.assertIsNone(quota_sanity.trove_backup_check(context))
 
-        quotas = [build_quota('database', 'instances', 1),
+        quotas = [build_quota('database', 'ram', 4),
                   build_quota('database', 'volumes', 1),
                   build_quota('object', 'object', 0)]
         context = build_context(quotas)
         self.assertEqual(quota_sanity.TROVE_WITHOUT_SWIFT,
                          quota_sanity.trove_backup_check(context)[0])
-        quotas = [build_quota('database', 'instances', 0),
+        quotas = [build_quota('database', 'ram', 0),
                   build_quota('database', 'volumes', 1),
                   build_quota('object', 'object', 0)]
         context = build_context(quotas)
         self.assertEqual(quota_sanity.TROVE_WITHOUT_SWIFT,
                          quota_sanity.trove_backup_check(context)[0])
-        quotas = [build_quota('database', 'instances', 1),
+        quotas = [build_quota('database', 'ram', 4),
                   build_quota('database', 'volumes', 0),
                   build_quota('object', 'object', 0)]
         context = build_context(quotas)
