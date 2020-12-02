@@ -2,15 +2,15 @@
   <h4><span class="fa fa-warning"></span> Warnings</h4>
   <p>Please review the following warnings. Then either modify the form and "Submit" it again, or "Submit ignoring warnings".</p>
   <hr>
+  <div>
   {% for warning in warnings %}
-  <div class="row">
-    <div class="col-md-4">{{warning.1}}</div>
-    <div class="col-md-8">
-      <button
-        onclick='window.open("{{HORIZON_CONFIG.WARNING_INFO_URL}}#{{warning.0}}", "_blank")'>
-        Click for more information
-      </button>
-    </div>
-  </div>
+  <ul>
+    <li>{{warning.1}}
+      {% if warning.0 %}
+      <a href="{{HORIZON_CONFIG.WARNING_INFO_URL}}#{{warning.0}}">More information</a>
+      {% endif %}
+    </li>
+  </ul>
   {% endfor %}
+  </div>
 </div>

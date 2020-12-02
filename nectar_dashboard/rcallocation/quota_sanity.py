@@ -46,7 +46,7 @@ def instance_vcpu_check(context):
     instances = context.get('compute.instances')
     if cores < instances:
         return (INSTANCE_VCPU,
-                "requested instances (%d) > requested VCPUs (%d)" %
+                "Requested instances (%d) > requested VCPUs (%d)" %
                 (instances, cores))
     else:
         return None
@@ -54,14 +54,14 @@ def instance_vcpu_check(context):
 
 def no_vcpu_check(context):
     if context.get('compute.cores') == 0:
-        return (NO_VCPU, "no VCPUs requested")
+        return (NO_VCPU, "No VCPUs requested")
     else:
         return None
 
 
 def no_instance_check(context):
     if context.get('compute.instances') == 0:
-        return (NO_INSTANCE, "no instances requested")
+        return (NO_INSTANCE, "No instances requested")
     else:
         return None
 
@@ -72,10 +72,10 @@ def nondefault_ram_check(context):
     if vcpus > 0 and mem > 0:
         if vcpus * 4 < mem:
             return (LARGE_MEM,
-                    "non-default RAM (%d GB) > 4GB per core ratio" % mem)
+                    "Non-default RAM (%d GB) > 4GB per core ratio" % mem)
         elif vcpus * 4 > mem:
             return (SMALL_MEM,
-                    "non-default RAM (%d GB) < 4GB per core ratio" % mem)
+                    "Non-default RAM (%d GB) < 4GB per core ratio" % mem)
     return None
 
 
@@ -84,7 +84,7 @@ def cinder_instance_check(context):
         for q in context.get_all('volume.gigabytes'):
             if q['value'] > 0:
                 return (CINDER_WITHOUT_INSTANCES,
-                        'volume storage requested without any instances')
+                        'Volume storage requested without any instances')
     return None
 
 
@@ -123,7 +123,7 @@ def trove_backup_check(context):
         or context.get('database.volumes') > 0) \
        and context.get('object.object') == 0:
         return (TROVE_WITHOUT_SWIFT,
-                "no object storage quota requested.  This is required if you"
+                "No object storage quota requested. This is required if you"
                 " want to use the database service backup functionality")
     return None
 
@@ -132,7 +132,7 @@ def magnum_instance_check(context):
     clusters = context.get('container-infra.cluster')
     if clusters * 2 > context.get('compute.instances'):
         return (CLUSTER_WITHOUT_INSTANCES,
-                'at least %s instances advised for %s clusters'
+                'At least %s instances advised for %s clusters'
                 % (clusters * 2, clusters))
 
 
@@ -177,16 +177,16 @@ def neutron_checks(context):
     loadbalancers = context.get('network.loadbalancer')
     if ips > 0 and (networks == 0 or routers == 0):
         return (FLOATING_IP_DEP,
-                'floating ips require at least 1 network and 1 router')
+                'Floating ips require at least 1 network and 1 router')
     if loadbalancers > 0 and (networks == 0 or routers == 0):
         return (LOAD_BALANCER_DEP,
-                'load balancers require at least 1 network and 1 router')
+                'Load balancers require at least 1 network and 1 router')
     if networks > 0 and routers == 0:
         return (NO_ROUTER,
-                'use of advanced networks requires at least 1 router')
+                'Use of advanced networks requires at least 1 router')
     if networks == 0 and routers > 0:
         return (NO_NETWORK,
-                'use of advanced networks requires at least 1 network')
+                'Use of advanced networks requires at least 1 network')
 
 
 def approver_checks(context):
@@ -198,13 +198,13 @@ def approver_checks(context):
     except models.Approver.DoesNotExist:
         LOG.warning("No Approver object found for '%s'", username)
         return (APPROVER_PROBLEM,
-                'problem with approver registration: contact Core Services')
+                'Problem with approver registration: contact Core Services')
     sites = approver.sites.all()
     if len(sites) == 0:
         LOG.warning("Approver object for '%s' has no associated sites",
                     username)
         return (APPROVER_PROBLEM,
-                'problem with approver registration: contact Core Services')
+                'Problem with approver registration: contact Core Services')
 
     mappings = settings.ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS
     approver_zones = []
@@ -217,7 +217,7 @@ def approver_checks(context):
                 other_zones.add(q['zone'])
 
     return [(APPROVER_NOT_AUTHORIZED,
-             """quota should be authorized by the other site before
+             """Quota should be authorized by the other site before
              approving '%s' storage quota""" % z) for z in other_zones]
 
 
