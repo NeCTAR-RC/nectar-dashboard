@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c3bdbe5c_1782020f",
+        "filename": "nectar_dashboard/rcallocation/migrations/0046_minor_wording_changes.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-12-02T02:37:58Z",
+      "side": 1,
+      "message": "I don\u0027t understand this one.  The alter is just changing the help text from a \u0027b\u0027 string to a regular string.  But Django (on dashboard-t.dev) thought it was necessary.",
+      "revId": "07225f4771f42f5e43053e3fecd170b21f6e574f",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
