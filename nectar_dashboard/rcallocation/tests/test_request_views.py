@@ -109,7 +109,7 @@ class RequestTestCase(base.BaseTestCase):
         backup_values = {}
 
         for field, value in kwargs.items():
-            self.assertTrue(field in form, "field %s not in form" % field)
+            self.assertIn(field, form)
             backup_values[field] = form[field]
             form[field] = value
 
