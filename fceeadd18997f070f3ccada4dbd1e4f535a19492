@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0846dc8c_4e3d091d",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/warnings.html",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-12-03T23:30:53Z",
+      "side": 1,
+      "message": "You have changed this to no longer open a new window.  1) This should be done as a separate changeset.  2) You need to speak to Jo / PC and get their approval for this change.",
+      "revId": "fceeadd18997f070f3ccada4dbd1e4f535a19492",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
