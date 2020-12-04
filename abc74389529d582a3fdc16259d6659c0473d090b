@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "27b9143d_fb73e7b9",
+        "filename": "nectar_dashboard/rcallocation/migrations/0048_expunge_ncris_ardc_grants.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-12-04T04:44:13Z",
+      "side": 1,
+      "message": "this is the default so doesn\u0027t need to be here",
+      "range": {
+        "startLine": 51,
+        "startChar": 39,
+        "endLine": 51,
+        "endChar": 55
+      },
+      "revId": "abc74389529d582a3fdc16259d6659c0473d090b",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
