@@ -63,6 +63,8 @@ class BaseAllocationForm(forms.ModelForm):
                 ]),
             'project_name': forms.TextInput(attrs={'class': 'col-md-12'}),
             'contact_email': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'research_use_case': forms.Textarea(attrs={'class': 'col-md-6',
+                                        'style': 'height:120px; width:420px'}),
             'use_case': forms.Textarea(attrs={'class': 'col-md-6',
                                         'style': 'height:120px; width:420px'}),
             'usage_patterns': forms.Textarea(
@@ -92,6 +94,7 @@ class BaseAllocationForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 'form-control ' + field.widget.attrs.get('class', ''))
+        self.fields['research_use_case'].required = True
         self.warnings = []
 
     def _in_groups(self, field):

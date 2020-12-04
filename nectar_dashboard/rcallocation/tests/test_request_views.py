@@ -164,6 +164,12 @@ class RequestTestCase(base.BaseTestCase):
             geographic_requirements='',
         )
 
+    def test_blank_research_use_case(self):
+        self._test_allocation(
+            research_use_case='',
+            form_errors={'research_use_case': [u'This field is required.']}
+        )
+
     def test_blank_use_case(self):
         self._test_allocation(
             use_case='',
