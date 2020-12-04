@@ -127,6 +127,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
 
     created_by = fuzzy.FuzzyText()
     contact_email = 'test@example.com'
+    research_use_case = fuzzy.FuzzyText()
     use_case = fuzzy.FuzzyText()
     usage_patterns = fuzzy.FuzzyText()
     geographic_requirements = fuzzy.FuzzyText()

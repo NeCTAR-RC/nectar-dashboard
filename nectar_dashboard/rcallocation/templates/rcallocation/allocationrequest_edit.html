@@ -172,6 +172,7 @@
       <div class="col-md-12">
         <h2>Usage Information</h2>
         <hr/>
+        {% include "rcallocation/field.html" with field=form.research_use_case %}
         {% include "rcallocation/field.html" with field=form.use_case %}
         {% include "rcallocation/field.html" with field=form.usage_patterns %}
         {% include "rcallocation/field.html" with field=form.geographic_requirements %}

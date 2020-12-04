@@ -162,11 +162,16 @@ class AllocationRequest(models.Model):
 
     approver_email = models.EmailField('Approver email', blank=True)
 
+    research_use_case = models.TextField(
+        "Research use case",
+        max_length=4096, blank=True,
+        help_text="Provide a brief overview of your research project.")
+
     use_case = models.TextField(
-        "Research use case and justification",
+        "Justification for use of Research Cloud",
         max_length=4096,
-        help_text="""Provide a very brief overview of your research project,
-        and how you will use the cloud to support your project.""")
+        help_text="""Explain how you will use the Research Cloud to
+        support your project.""")
 
     usage_patterns = models.TextField(
         "Instance, Object Storage and Volumes Storage Usage Patterns",
