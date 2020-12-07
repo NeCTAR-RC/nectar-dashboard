@@ -76,7 +76,7 @@
              We add some radio buttons to ether use default value (= 0) and
              hide the input box or allow a custom value and show it.
           */
-          if (resource['quota_name'] == 'ram') {
+          if (resource['quota_name'] == 'ram' && resource['service_type'] == 'compute') {
 
             var ig = $(this).find('.quota').find('.input-group')
             ig.after('<div class="resource-custom-override">' +
