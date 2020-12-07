@@ -16,6 +16,24 @@
       "revId": "fceeadd18997f070f3ccada4dbd1e4f535a19492",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "191325b7_7f6d9ac0",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/warnings.html",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-12-07T04:19:43Z",
+      "side": 1,
+      "message": "It does open in a new window, see target above",
+      "parentUuid": "0846dc8c_4e3d091d",
+      "revId": "fceeadd18997f070f3ccada4dbd1e4f535a19492",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
