@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e1feb655_ef4ead98",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-12-09T04:47:27Z",
+      "side": 1,
+      "message": "maybe this could be named research_overview? Not sure if \"Research Use Case\" is the right term here?",
+      "range": {
+        "startLine": 165,
+        "startChar": 4,
+        "endLine": 165,
+        "endChar": 21
+      },
+      "revId": "b882bf8c246de4d3d3853961e07607db1c3e198d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98d3fa65_7f567ef9",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-12-09T04:47:27Z",
+      "side": 1,
+      "message": "how is this different to the field below \"usage_patterns\" ?",
+      "range": {
+        "startLine": 170,
+        "startChar": 4,
+        "endLine": 170,
+        "endChar": 12
+      },
+      "revId": "b882bf8c246de4d3d3853961e07607db1c3e198d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
