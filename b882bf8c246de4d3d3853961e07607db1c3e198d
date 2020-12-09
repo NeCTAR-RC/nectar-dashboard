@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "572f07c2_941c9cd8",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-12-09T04:57:16Z",
+      "side": 1,
+      "message": "I am simply using the terminology developed by PC and agreed by the allocation committee.",
+      "parentUuid": "e1feb655_ef4ead98",
+      "range": {
+        "startLine": 165,
+        "startChar": 4,
+        "endLine": 165,
+        "endChar": 21
+      },
+      "revId": "b882bf8c246de4d3d3853961e07607db1c3e198d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "98d3fa65_7f567ef9",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 3
@@ -45,6 +69,30 @@
       "revId": "b882bf8c246de4d3d3853961e07607db1c3e198d",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5bb3f10_6ca71bcc",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2020-12-09T04:57:16Z",
+      "side": 1,
+      "message": "I am simply using the terminology developed by PC and agreed by the allocation committee",
+      "parentUuid": "98d3fa65_7f567ef9",
+      "range": {
+        "startLine": 170,
+        "startChar": 4,
+        "endLine": 170,
+        "endChar": 12
+      },
+      "revId": "b882bf8c246de4d3d3853961e07607db1c3e198d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
