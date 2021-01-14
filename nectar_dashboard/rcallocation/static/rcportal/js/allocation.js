@@ -427,16 +427,25 @@ $(function(){
         new_row += "<div class='grant_div'>";
         //type
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'grant_type', 'Type', row_index, true, 'Choose the grant type from the dropdown options.');
+        new_row += create_input_field_label(opts, 'grant_type', 'Grant Type', row_index, true, 'Choose the grant type from the dropdown options.');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
-        new_row += create_type_options(opts, 'grant_type', row_index);
+        new_row += clone_select_field(opts, 'grant_type', row_index);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
+        //subtype
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'grant_subtype', 'Grant Subtype', row_index, true, 'Choose an applicable grant subtype from the dropdown options.  If no option is applicable, choose "unspecified" and then fill in the "Other funding source details" field below.');
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += clone_select_field(opts, 'grant_subtype', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
         //funding body_scheme
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'funding_body_scheme', 'Funding body and scheme', row_index, true, 'For example, ARC Discovery Project.');
+        new_row += create_input_field_label(opts, 'funding_body_scheme', 'Other funding source details', row_index, true, 'For example, details of a state government grant scheme, or an industry funding source.');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_input_field(opts, 'funding_body_scheme', 'Funding body and scheme', row_index);
@@ -502,16 +511,10 @@ $(function(){
         return label_section;
     };
 
-    function create_type_options(opts, field_name, row_index){
+    function clone_select_field(opts, field_name, row_index){
         var select = "<select name='"+ opts.prefix + "-" + row_index + "-" + field_name + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name +"' class='form-control'>";
-        select += "<option selected='selected' value='comp'>Australian competitive research grant</option>";
-        select += "<option value='ncris'>NCRIS funding</option>";
-        select += "<option value='ands_nectar_rds'>ANDS, Nectar, RDS funding</option>";
-        select += "<option value='nhmrc'>NHMRC</option>";
-        select += "<option value='govt'>Other Australian government grant</option>";
-        select += "<option value='industry'>Industry funding</option>";
-        select += "<option value='ext'>Other external funding</option>";
-        select += "<option value='inst'>Institutional research grant</option>";
+        var id_0 = "id_" + opts.prefix + "-0-" + field_name;
+        select += document.getElementById(id_0).innerHTML;
         select += "</select>";
         return select;
     };
