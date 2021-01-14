@@ -1,6 +1,7 @@
 import logging
 import re
 
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
@@ -393,3 +394,48 @@ class GrantForm(NectarBaseModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        grant_type = cleaned_data.get('grant_type', '')
+        grant_subtype = cleaned_data.get('grant_subtype', '')
+        grant_id = cleaned_data.get('grant_id')
+        if grant_type == 'arc':
+            if not grant_subtype.startswith('arc-'):
+                self.add_error(
+                    'grant_subtype',
+                    ValidationError(
+                        'Select an ARC grant subtype for this grant'))
+            if not grant_subtype == 'arc-other' and not grant_id:
+                self.add_error(
+                    'grant_id',
+                    ValidationError('Enter the ARC grant id for this grant'))
+        elif grant_type == 'nhmrc':
+            if not grant_subtype.startswith('nhmrc-'):
+                self.add_error(
+                    'grant_subtype',
+                    ValidationError(
+                        'Select an NHMRC grant subtype for this grant'))
+            if not grant_subtype == 'nhmrc-other' and not grant_id:
+                self.add_error(
+                    'grant_id',
+                    ValidationError('Enter the NHMRC grant id for this grant'))
+        elif grant_type == 'state':
+            if grant_subtype not in ['act', 'nsw', 'nt', 'qld',
+                                     'sa', 'tas', 'vic', 'wa']:
+                self.add_error(
+                    'grant_subtype',
+                    ValidationError('Select the State for this grant'))
+        elif grant_type:
+            if grant_subtype != 'unspecified':
+                self.add_error(
+                    'grant_subtype',
+                    ValidationError('Inappropriate subtype for this grant'))
+
+        if grant_type not in ['arc', 'nhmrc', ''] \
+           or (grant_type in ['arc', 'nhmrc']
+               and grant_subtype.endswith('-other')):
+            if not cleaned_data.get('funding_body_scheme'):
+                self.add_error(
+                    'funding_body_scheme',
+                    ValidationError('Provide details for this grant'))

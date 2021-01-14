@@ -12,6 +12,7 @@
             <td>
                 <div class="grant_div">
                     {% include "rcallocation/field.html" with field=grant_form.grant_type %}
+                    {% include "rcallocation/field.html" with field=grant_form.grant_subtype %}
                     {% include "rcallocation/field.html" with field=grant_form.funding_body_scheme %}
                     {% include "rcallocation/field.html" with field=grant_form.first_year_funded %}
                     {% include "rcallocation/field.html" with field=grant_form.last_year_funded %}
