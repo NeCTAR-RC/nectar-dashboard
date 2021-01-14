@@ -14,6 +14,7 @@
 from openstack_dashboard.test import helpers
 
 from nectar_dashboard.rcallocation import forms
+from nectar_dashboard.rcallocation.grant_type import GRANT_SUBTYPES
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 
@@ -25,6 +26,67 @@ class FormsTestCase(helpers.TestCase):
         common.factory_setup()
         self.allocation = factories.AllocationFactory.create(
             contact_email='other@example.com')
+
+    def test_validating_grant_types(self):
+        # Empty form is invalid.  Check there is an error for
+        # each required field.
+        form = forms.GrantForm(data={})
+        self.assertFalse(form.is_valid())
+        required_fields = ['allocation', 'grant_type', 'grant_subtype',
+                           'first_year_funded', 'last_year_funded',
+                           'total_funding']
+        self.assertEqual(len(required_fields), len(form.errors))
+        for field in required_fields:
+            self.assertEqual(['This field is required.'], form.errors[field])
+
+        # ARC grant conditionality
+        form = forms.GrantForm(data={'grant_type': 'arc',
+                                     'grant_subtype': 'unspecified'})
+        self.assertEqual(['Select an ARC grant subtype for this grant'],
+                         form.errors['grant_subtype'])
+
+        form = forms.GrantForm(data={'grant_type': 'arc',
+                                     'grant_subtype': 'arc-discovery'})
+        self.assertIsNone(form.errors.get('grant_subtype'))
+        self.assertEqual(['Enter the ARC grant id for this grant'],
+                         form.errors.get('grant_id'))
+
+        form = forms.GrantForm(data={'grant_type': 'arc',
+                                     'grant_subtype': 'arc-other'})
+        self.assertIsNone(form.errors.get('grant_subtype'))
+        self.assertIsNone(form.errors.get('grant_id'))
+        self.assertEqual(['Provide details for this grant'],
+                         form.errors.get('funding_body_scheme'))
+
+        # NHMRC grant conditionality
+        form = forms.GrantForm(data={'grant_type': 'nhmrc',
+                                     'grant_subtype': 'unspecified'})
+        self.assertEqual(['Select an NHMRC grant subtype for this grant'],
+                         form.errors['grant_subtype'])
+
+        form = forms.GrantForm(data={'grant_type': 'nhmrc',
+                                     'grant_subtype': 'nhmrc-investigator'})
+        self.assertIsNone(form.errors.get('grant_subtype'))
+        self.assertEqual(['Enter the NHMRC grant id for this grant'],
+                         form.errors.get('grant_id'))
+
+        form = forms.GrantForm(data={'grant_type': 'nhmrc',
+                                     'grant_subtype': 'nhmrc-other'})
+        self.assertIsNone(form.errors.get('grant_subtype'))
+        self.assertIsNone(form.errors.get('grant_id'))
+        self.assertEqual(['Provide details for this grant'],
+                         form.errors.get('funding_body_scheme'))
+
+        # State grant conditionality
+        for subtype in GRANT_SUBTYPES:
+            form = forms.GrantForm(data={'grant_type': 'state',
+                                         'grant_subtype': subtype[0]})
+            if subtype[0] in ['act', 'nsw', 'nt', 'qld', 'sa',
+                              'tas', 'vic', 'wa']:
+                self.assertIsNone(form.errors.get('grant_subtype'))
+            else:
+                self.assertEqual(['Select the State for this grant'],
+                                 form.errors.get('grant_subtype'))
 
     def test_validating_doi(self):
         # No DOI is OK
