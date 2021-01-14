@@ -249,11 +249,15 @@
                 {% for grant in allocation.grants.all %}
                     <table class="table table-hover">
                         <tr>
-                            <th width="200">Type</th>
+                            <th width="200">Grant Type</th>
                             <td>{{ grant.get_grant_type_display }}</td>
                         </tr>
+                        <tr>
+                            <th width="200">Grant Subtype</th>
+                            <td>{{ grant.get_grant_subtype_display }}</td>
+                        </tr>
                          <tr>
-                            <th>Funding body and scheme</th>
+                            <th>Other funding source details</th>
                             <td>{{ grant.funding_body_scheme }}</td>
                         </tr>
                         <tr>
