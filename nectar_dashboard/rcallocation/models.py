@@ -15,7 +15,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 
 from nectar_dashboard.rcallocation import forcodes
-from nectar_dashboard.rcallocation import grant_type
+from nectar_dashboard.rcallocation import grant_type as nectar_grant_type
 from nectar_dashboard.rcallocation import project_duration_choices
 
 
@@ -736,20 +736,33 @@ class Publication(models.Model):
 
 class Grant(models.Model):
     grant_type = models.CharField(
-        "Type",
-        choices=grant_type.GRANT_TYPES,
+        "Grant Type",
+        choices=nectar_grant_type.GRANT_TYPES,
         blank=False,
         null=False,
-        default='arc',
         max_length=128,
         help_text="""Choose the grant type from the dropdown options."""
     )
 
-    funding_body_scheme = models.CharField(
-        "Funding body and scheme",
+    grant_subtype = models.CharField(
+        "Grant Subtype",
+        choices=nectar_grant_type.GRANT_SUBTYPES,
         blank=False,
+        null=False,
+        default='unspecified',
+        max_length=128,
+        help_text="""Choose an applicable grant subtype from the
+                  dropdown options.  If no option is applicable,
+                  choose 'unspecified' and then fill in the 'Other
+                  funding source details' field below."""
+    )
+
+    funding_body_scheme = models.CharField(
+        "Other funding source details",
+        blank=True,
         max_length=255,
-        help_text="""For example, ARC Discovery Project."""
+        help_text="""For example, details of a state government
+                  grant scheme, or an industry funding source."""
     )
 
     grant_id = models.CharField(
@@ -789,7 +802,8 @@ class Grant(models.Model):
                                    on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ("allocation", "grant_type", "funding_body_scheme",
+        unique_together = ("allocation", "grant_type",
+                           "grant_subtype", "funding_body_scheme",
                            "grant_id", "first_year_funded", "total_funding")
 
     def __str__(self):
