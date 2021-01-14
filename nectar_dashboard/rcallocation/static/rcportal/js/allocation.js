@@ -412,6 +412,7 @@ $(function(){
         var total_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr').length;
         var form_new_row = create_row(opts.prefix, total_rows, opts);
         $('div.'+ opts.formset_class_id + ' table > tbody:last').append(form_new_row);
+        fix_grant_subtype_options($('#id_' + opts.prefix + '-' + total_rows + '-' + 'grant_subtype'), true);
         total_rows += 1;
         var total_forms_input = $('#id_' + opts.prefix + '-TOTAL_FORMS');
         total_forms_input.val(total_rows);
@@ -427,16 +428,75 @@ $(function(){
         new_row += "<div class='grant_div'>";
         //type
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'grant_type', 'Type', row_index, true, 'Choose the grant type from the dropdown options.');
+        new_row += create_input_field_label(opts, 'grant_type', 'Grant Type', row_index, true, 'Choose the grant type from the dropdown options.');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
-        new_row += create_type_options(opts, 'grant_type', row_index);
+        new_row += create_select_field(opts, 'grant_type', row_index,
+            [["", "---------"],
+             ["arc", "Australian Research Council"],
+             ["nhmrc", "NHMRC"],
+             ["comp", "Other Australian Federal Govt competitive grant"],
+             ["govt", "Australian Federal Govt non-competitive funding"],
+             ["state", "Australian State / Territory Govt funding"],
+             ["industry", "Industry funding"],
+             ["ext", "Other external funding"],
+             ["inst", "Institutional research funding"],
+             ["nz", "New Zealand research funding"]]);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
+        //subtype
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'grant_subtype', 'Grant Subtype', row_index, true, 'Choose an applicable grant subtype from the dropdown options.  If no option is applicable, choose "unspecified" and then fill in the "Other funding source details" field below.');
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_select_field(opts, 'grant_subtype', row_index,
+            [["", "---------"],
+             ["arc-discovery", "ARC Discovery project"],
+             ["arc-indigenous", "ARC Discovery Indigenous"],
+             ["arc-decra", "ARC Discovery Early Career Researcher Award"],
+             ["arc-future", "ARC Future Fellowship"],
+             ["arc-laureate", "ARC Laureate Fellowship"],
+             ["arc-itrp", "ARC Industry Transformation Research Program"],
+             ["arc-linkage", "ARC Linkage Project"],
+             ["arc-coe", "ARC Centre of Excellence"],
+             ["arc-lief", "ARC Linkage Infrastructure Equipment and Facilities"],
+             ["arc-sri", "ARC Special Research Initiative"],
+             ["arc-llasp", "ARC Linkage Learned Academies Special Project"],
+             ["arc-other", "Other ARC grant"],
+             ["nhmrc-investigator", "NHMRC Investigator grant"],
+             ["nhmrc-synergy", "NHMRC Synergy grant"],
+             ["nhmrc-ideas", "NHMRC Ideas grant"],
+             ["nhmrc-strategic", "NHMRC Strategic or Leverage grant"],
+             ["nhmrc-program", "NHMRC Program grant"],
+             ["nhmrc-project", "NHMRC Project grant"],
+             ["nhmrc-fas", "NHMRC Fellowship or Scholarship (various)"],
+             ["nhmrc-core", "NHMRC Center of Research Excellence"],
+             ["nhmrc-development", "NHMRC Development grant"],
+             ["nhmrc-equipment", "NHMRC Equipment grant"],
+             ["nhmrc-ctcs", "NHMRC Clinical Trial and Cohort Studies grant"],
+             ["nhmrc-ics", "NHMRC International Collaborations (various)"],
+             ["nhmrc-pc", "NHMRC Partnership Centre"],
+             ["nhmrc-pp", "NHMRC Partnership project"],
+             ["nhmrc-tcr", "NHMRC Targeted Calls for Research"],
+             ["nhmrc-iriiss", "NHMRC Independent Research Institute Infrastructure Support Scheme"],
+             ["nhmrc-bdri", "NHMRC Boosting Dementia Research Initiatives (various)"],
+             ["nhmrc-other", "Other NHMRC scheme"],
+             ["act", "Australian Capital Territory Govt funding"],
+             ["nsw", "New South Wales Govt funding"],
+             ["nt", "Northern Territory Govt funding"],
+             ["qld", "Queensland Govt funding"],
+             ["sa", "South Australia Govt funding"],
+             ["tas", "Tasmania Govt funding"],
+             ["vic", "Victoria Govt funding"],
+             ["wa", "Western Australia Govt funding"],
+             ["unspecified", "unspecified"]]);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
         //funding body_scheme
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'funding_body_scheme', 'Funding body and scheme', row_index, true, 'For example, ARC Discovery Project.');
+        new_row += create_input_field_label(opts, 'funding_body_scheme', 'Other funding source details', row_index, false, 'For example, details of a state government grant scheme, or an industry funding source.');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
         new_row += create_input_field(opts, 'funding_body_scheme', 'Funding body and scheme', row_index);
@@ -502,16 +562,11 @@ $(function(){
         return label_section;
     };
 
-    function create_type_options(opts, field_name, row_index){
+    function create_select_field(opts, field_name, row_index, options){
         var select = "<select name='"+ opts.prefix + "-" + row_index + "-" + field_name + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name +"' class='form-control'>";
-        select += "<option selected='selected' value='comp'>Australian competitive research grant</option>";
-        select += "<option value='ncris'>NCRIS funding</option>";
-        select += "<option value='ands_nectar_rds'>ANDS, Nectar, RDS funding</option>";
-        select += "<option value='nhmrc'>NHMRC</option>";
-        select += "<option value='govt'>Other Australian government grant</option>";
-        select += "<option value='industry'>Industry funding</option>";
-        select += "<option value='ext'>Other external funding</option>";
-        select += "<option value='inst'>Institutional research grant</option>";
+        for (var i = 0; i < options.length; i++) {
+            select += "<option value='" + options[i][0] + "'>" + options[i][1] + "</option>";
+        }
         select += "</select>";
         return select;
     };
@@ -549,9 +604,9 @@ $(function(){
 
         var id_value = id_input.attr('value');
         if (id_value == null || id_value == ''){
-            //just remove the current row as it's a new row.
-            // and resort the whole table rows
+            //remove the current row as it's a new row.
             current_tr.remove();
+            //renumber the remaining row's ids.
             resort_form_rows(formset, opts);
         } else{
             //check the input delete field
@@ -618,24 +673,74 @@ $(function(){
         });
     };
 
+    function fix_grant_subtype_options(type_selector, reselect) {
+        // Show / hide grant subtype options according to the selected
+        // grant type.  If reselect it true, also reselect the subtype
+        // if the current selection is invalid.
+        var type = type_selector.val();
+        var type_id = type_selector.attr('id');
+        var subtype_id = type_id.replace(/grant_type/, 'grant_subtype');
+        var pattern;
+        var unspecified_only = false;
+        if (type == 'arc') {
+            pattern = /^arc-.*$/;
+        } else if (type == 'nhmrc') {
+            pattern = /^nhmrc-.*$/;
+        } else if (type == 'state') {
+            pattern = /^(act|nsw|nt|qld|sa|tas|vic|wa)$/;
+        } else if (type == '') {
+            pattern = /^$/;   // no selection allowed ...
+        } else {
+            pattern = /^unspecified$/;
+            unspecified_only = true;
+        }
+        $('#' + subtype_id + ' option').each(function() {
+            if ($(this).val().match(pattern)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+        current = $('#' + subtype_id + ' option:selected');
+        if (!current.val().match(pattern)) {
+            if (unspecified_only) {
+                current.prop("selected", false);
+                $('#' + subtype_id + ' option[value="unspecified"]').prop("selected", true);
+            }
+            else if (reselect) {
+                current.prop("selected", false);
+            }
+        }
+    };
+
     $.fn.gformset = function(options) {
         var opts = $.extend( {}, $.fn.gformset.defaults, options );
-         return this.each(function() {
-             //set current formset
-             var formset = this;
-             $('div.' + options.formset_class_id).on('click', '#add_another', function (event) {
-                 event.preventDefault();
-                 create_form_row(formset, opts);
-                 apply_popover();
-             });
-
-             $('div.'+ options.formset_class_id).on('click', '#delete-grant', function (event){
-                 event.preventDefault();
-                 var clicked_span = $(this);
-                 delete_form_row(formset, opts, clicked_span);
-             });
-             set_default_dates(opts);
-         });
+        return this.each(function() {
+            //set current formset
+            var formset = this;
+            var context = 'div.' + options.formset_class_id;
+            $(context).on('click', '#add_another', function (event) {
+                event.preventDefault();
+                create_form_row(formset, opts);
+                apply_popover();
+            });
+            $(context).on('click', '#delete-grant', function (event) {
+                event.preventDefault();
+                var clicked_span = $(this);
+                delete_form_row(formset, opts, clicked_span);
+            });
+            $(context).on('change', 'select[name$=-grant_type]',
+                          function(event) {
+                event.preventDefault();
+                fix_grant_subtype_options($(this), true);
+            });
+            $(context + ' select[name$=-grant_type]').each(function() {
+                // In this case, we want the user to see what they previously
+                // had as the grant subtype
+                fix_grant_subtype_options($(this), false);
+            });
+            set_default_dates(opts);
+        });
     };
 
     $.fn.gformset.defaults = {
