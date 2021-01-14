@@ -25,6 +25,7 @@ from nectar_dashboard.rcallocation.tests import factories
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
+GRANT_SUBTYPES = dict(grant_type.GRANT_SUBTYPES)
 GROUP_NAMES = ['compute', 'object', 'volume', 'network']   # ... and more
 
 
@@ -240,6 +241,7 @@ def request_allocation(user, model=None, quota_specs=None,
     for_code = fuzzy.FuzzyChoice(forcodes.FOR_CODES.keys())
     quota = fuzzy.FuzzyInteger(1, 100000)
     grant_type = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
+    grant_subtype = fuzzy.FuzzyChoice(GRANT_SUBTYPES.keys())
     site = model.associated_site if model else None
 
     model_dict = {'project_name': fuzzy.FuzzyText().fuzz(),
@@ -275,6 +277,7 @@ def request_allocation(user, model=None, quota_specs=None,
 
         grants = [{'id': grant.id,
                    'grant_type': grant_type.fuzz(),
+                   'grant_subtype': grant_subtype.fuzz(),
                    'funding_body_scheme': grant.funding_body_scheme,
                    'grant_id': grant.grant_id,
                    'first_year_funded': 2015,
@@ -315,6 +318,7 @@ def request_allocation(user, model=None, quota_specs=None,
             grants = [{
                 'id': '',
                 'grant_type': grant_type.fuzz(),
+                'grant_subtype': grant_subtype.fuzz(),
                 'funding_body_scheme': 'ARC funding scheme',
                 'grant_id': 'arc-grant-0001',
                 'first_year_funded': 2015,
