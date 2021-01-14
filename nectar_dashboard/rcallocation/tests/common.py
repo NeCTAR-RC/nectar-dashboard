@@ -16,7 +16,6 @@ from factory import fuzzy
 
 from nectar_dashboard.rcallocation import allocation_home_choices
 from nectar_dashboard.rcallocation import forcodes
-from nectar_dashboard.rcallocation import grant_type
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import project_duration_choices
 from nectar_dashboard.rcallocation.tests import factories
@@ -24,7 +23,6 @@ from nectar_dashboard.rcallocation.tests import factories
 
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
-GRANT_TYPES = dict(grant_type.GRANT_TYPES)
 GROUP_NAMES = ['compute', 'object', 'volume', 'network']   # ... and more
 
 
@@ -239,7 +237,6 @@ def request_allocation(user, model=None, quota_specs=None,
     forp_3 = 10 - (forp_1 + forp_2)
     for_code = fuzzy.FuzzyChoice(forcodes.FOR_CODES.keys())
     quota = fuzzy.FuzzyInteger(1, 100000)
-    grant_type = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
     site = model.associated_site if model else None
 
     model_dict = {'project_name': fuzzy.FuzzyText().fuzz(),
@@ -274,7 +271,8 @@ def request_allocation(user, model=None, quota_specs=None,
                         for pub in model.publications.all()]
 
         grants = [{'id': grant.id,
-                   'grant_type': grant_type.fuzz(),
+                   'grant_type': 'arc',
+                   'grant_subtype': 'arc-discovery',
                    'funding_body_scheme': grant.funding_body_scheme,
                    'grant_id': grant.grant_id,
                    'first_year_funded': 2015,
@@ -314,7 +312,8 @@ def request_allocation(user, model=None, quota_specs=None,
         if not grants:
             grants = [{
                 'id': '',
-                'grant_type': grant_type.fuzz(),
+                'grant_type': 'arc',
+                'grant_subtype': 'arc-discovery',
                 'funding_body_scheme': 'ARC funding scheme',
                 'grant_id': 'arc-grant-0001',
                 'first_year_funded': 2015,
