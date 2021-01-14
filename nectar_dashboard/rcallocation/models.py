@@ -15,7 +15,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 
 from nectar_dashboard.rcallocation import forcodes
-from nectar_dashboard.rcallocation import grant_type
+from nectar_dashboard.rcallocation.grant_type import GRANT_SUBTYPES
+from nectar_dashboard.rcallocation.grant_type import GRANT_TYPES
 from nectar_dashboard.rcallocation import project_duration_choices
 
 
@@ -736,20 +737,33 @@ class Publication(models.Model):
 
 class Grant(models.Model):
     grant_type = models.CharField(
-        "Type",
-        choices=grant_type.GRANT_TYPES,
+        "Grant Type",
+        choices=GRANT_TYPES,
         blank=False,
         null=False,
-        default='arc',
         max_length=128,
         help_text="""Choose the grant type from the dropdown options."""
     )
 
-    funding_body_scheme = models.CharField(
-        "Funding body and scheme",
+    grant_subtype = models.CharField(
+        "Grant Subtype",
+        choices=GRANT_SUBTYPES,
         blank=False,
+        null=False,
+        default='unspecified',
+        max_length=128,
+        help_text="""Choose an applicable grant subtype from the
+                  dropdown options.  If no option is applicable,
+                  choose 'unspecified' and then fill in the 'Other
+                  funding source details' field below."""
+    )
+
+    funding_body_scheme = models.CharField(
+        "Other funding source details",
+        blank=True,
         max_length=255,
-        help_text="""For example, ARC Discovery Project."""
+        help_text="""For example, details of a state government
+                  grant scheme, or an industry funding source."""
     )
 
     grant_id = models.CharField(

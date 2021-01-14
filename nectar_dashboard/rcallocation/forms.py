@@ -1,6 +1,7 @@
 import logging
 import re
 
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
@@ -393,3 +394,20 @@ class GrantForm(NectarBaseModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = (
                 field.widget.attrs.get('class', '') + 'form-control')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        grant_type = cleaned_data.get('grant_type')
+        grant_subtype = cleaned_data.get('grant_subtype', '')
+        if grant_type == 'arc':
+            if not grant_subtype.startswith('arc-'):
+                self.add_error(
+                    'grant_subtype',
+                    ValidationError(
+                        'Select an ARC grant subtype for this grant'))
+        elif grant_type == 'nhmrc':
+            if not grant_subtype.startswith('nhmrc-'):
+                self.add_error(
+                    'grant_subtype',
+                    ValidationError(
+                        'Select an NHMRC grant subtype for this grant'))
