@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f8309e50_8599945e",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-01-19T07:21:48Z",
+      "side": 1,
+      "message": "Done.  There was a reason for doing this, but I\u0027ve solved the problem another way.",
+      "parentUuid": "2e7094fd_43466eba",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 64
+      },
+      "revId": "aff433af7c9c0a242fcac40a656605afee462fbb",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "44202c61_6e2de8e4",
         "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
         "patchSetId": 9
@@ -39,6 +63,24 @@
       "revId": "aff433af7c9c0a242fcac40a656605afee462fbb",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b03d7d47_437bdf21",
+        "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-01-19T07:21:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "44202c61_6e2de8e4",
+      "revId": "aff433af7c9c0a242fcac40a656605afee462fbb",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
