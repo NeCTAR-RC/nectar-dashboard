@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e7094fd_43466eba",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-01-19T04:19:54Z",
+      "side": 1,
+      "message": "best to keep this the same. Import modules as opposed to classes/variables etc.",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 64
+      },
+      "revId": "aff433af7c9c0a242fcac40a656605afee462fbb",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44202c61_6e2de8e4",
+        "filename": "nectar_dashboard/rcallocation/static/rcportal/js/allocation.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-01-19T04:19:54Z",
+      "side": 1,
+      "message": "Be good to make the selections dynamic",
+      "revId": "aff433af7c9c0a242fcac40a656605afee462fbb",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
