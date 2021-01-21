@@ -31,7 +31,12 @@ class RequestTestCase(base.BaseTestCase):
                           institutions=[], publications=[],
                           grants=[], investigators=[], **attributes):
         for field, value in attributes.items():
-            self.assertEqual(getattr(model, field), value)
+            if field not in ['quotas', 'institutions', 'publications',
+                             'grants', 'investigators', 'usage_types']:
+                self.assertEqual(getattr(model, field), value,
+                                 "field that didn't match: %s" % field)
+        self.assertEqual(list(attributes['usage_types']),
+                         list(model.usage_types.all()))
         self.assertEqual(model.contact_email, self.user.name)
         # Sort by requested quota so we can easily compare by iterating
         # (Note that this is a bit dodgy since the requested quotas are

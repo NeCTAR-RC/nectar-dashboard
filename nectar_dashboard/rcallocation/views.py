@@ -535,6 +535,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
             object.submit_date = timezone.now()
 
         object.save()
+        form.save_m2m()
         self.object = object
 
         # quota formsets handled slightly differently as we want to
