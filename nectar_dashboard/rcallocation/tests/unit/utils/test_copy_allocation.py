@@ -48,3 +48,8 @@ class CopyAllocationTest(helpers.TestCase):
         self.maxDiff = None
         self.assertDictEqual(copy_dict, current_dict)
         self.assertDictEqual(copy_dict, original_dict)
+
+        self.assertEqual(len(list(allocation.usage_types.all())),
+                         len(factories.get_active_usage_types()))
+        self.assertEqual(len(list(copy.usage_types.all())),
+                         len(factories.get_active_usage_types()))

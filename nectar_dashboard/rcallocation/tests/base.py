@@ -62,6 +62,7 @@ class AllocationAPITest(test.APITestCase):
     def setUp(self, *args, **kwargs):
         common.sites_setup()
         common.factory_setup()
+        common.usage_types_setup()
         self.user = utils.get_user(id='user1',
                                    username='bob',
                                    project_name='proj1')
