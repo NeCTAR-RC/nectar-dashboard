@@ -314,15 +314,21 @@ class QuotaGroupForm(BaseQuotaGroupForm):
             raise forms.ValidationError("Please specify a zone")
 
 
-# Base ModelForm
 class NectarBaseModelForm(forms.ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
         exclude = ('allocation_request',)
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # make sure that empty is not permitted
+        self.empty_permitted = False
+        for field in self.fields.values():
+            field.widget.attrs['class'] = (
+                field.widget.attrs.get('class', '') + 'form-control')
 
-# ChiefInvestigatorForm
+
 class ChiefInvestigatorForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.ChiefInvestigator
@@ -331,26 +337,15 @@ class ChiefInvestigatorForm(NectarBaseModelForm):
                 attrs={'style': 'height:120px; width:420px'}),
         }
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # make sure the empty is not permitted
-        self.empty_permitted = False
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
-
 
 class InstitutionForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Institution
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # make sure the empty is not permitted
-        self.empty_permitted = False
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
+
+class UsageSurveyForm(NectarBaseModelForm):
+    class Meta(NectarBaseModelForm.Meta):
+        model = models.UsageSurveyResponse
 
 
 DOI_PROTOCOL_PATTERN = re.compile("(?i)^doi:(.+)$")
@@ -360,14 +355,6 @@ DOI_PROTOCOL_PATTERN_2 = re.compile("(?i)^https?:[a-z0-9./_\\-]+?/(10\\..+)$")
 class PublicationForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Publication
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # make sure the empty is not permitted
-        self.empty_permitted = False
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
 
     def clean_doi(self):
         # Quietly strip off a "doi:" prefix or resolver URL if provided.
@@ -386,14 +373,6 @@ class PublicationForm(NectarBaseModelForm):
 class GrantForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Grant
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # make sure the empty is not permitted
-        self.empty_permitted = False
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
 
     def clean(self):
         cleaned_data = super().clean()
