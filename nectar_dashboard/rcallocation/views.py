@@ -1,3 +1,5 @@
+import pdb
+
 from collections import OrderedDict
 import json
 import logging
@@ -159,6 +161,12 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         models.AllocationRequest, models.Grant, form=forms.GrantForm,
         min_num=1, extra=0)
 
+    # survey
+    formset_survey_class = inlineformset_factory(
+        models.AllocationRequest, models.UsageSurveyResponse,
+        form=forms.UsageSurveyForm,
+        min_num=1, extra=0, can_delete=False)
+
     # The attribute used to record who did the edit.  this should
     # either be approver_email or contact_email
     editor_attr = 'approver_email'
@@ -174,6 +182,9 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
 
     def get_formset_grant_class(self):
         return self.formset_grant_class
+
+    def get_formset_survey_class(self):
+        return self.formset_survey_class
 
     def get_formset(self, formset_class, queryset=None, prefix=None,
                     initial=None, **kwargs):
@@ -194,7 +205,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         if formset_investigator_class:
             formsets['investigator_formset'] = self.get_formset(
                 formset_investigator_class)
-
         formset_institution_class = self.get_formset_institution_class()
         if formset_institution_class:
             formsets['institution_formset'] = self.get_formset(
@@ -203,10 +213,18 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         if formset_publication_class:
             formsets['publication_formset'] = self.get_formset(
                 formset_publication_class)
-
         formset_grant_class = self.get_formset_grant_class()
         if formset_grant_class:
             formsets['grant_formset'] = self.get_formset(formset_grant_class)
+        formset_survey_class = self.get_formset_survey_class()
+        if formset_survey_class:
+            initial = None
+            if (self.object is None
+                or self.object.usage_survey_version < SURVEY_VERSION):
+                initial = [{'usage_type': t[0], 'usage': False}
+                           for t in USAGE_SURVEY_CONFIGS[SURVEY_VERSION]]
+            formsets['survey_formset'] = self.get_formset(
+                formset_survey_class, initial=initial)
         return formsets
 
     def get_quota_formsets(self):
@@ -375,7 +393,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         self.object = self.get_object()
 
         if self.object:
-
             # Ensure old projects have to set an investigator and
             # an institution
             investigators = self.object.investigators.all()
@@ -512,7 +529,8 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
     @transaction.atomic
     def form_valid(self, form, investigator_formset=None,
                    institution_formset=None, publication_formset=None,
-                   grant_formset=None, quota_formsets=[]):
+                   grant_formset=None, survey_formset=None,
+                   quota_formsets=[]):
         # Create a new historical object based on the original.
         if self.object:
             utils.copy_allocation(self.object)
@@ -577,7 +595,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                 group.delete()
 
         formsets = [investigator_formset, institution_formset,
-                    publication_formset, grant_formset]
+                    publication_formset, grant_formset, survey_formset]
 
         for formset in formsets:
             if formset:

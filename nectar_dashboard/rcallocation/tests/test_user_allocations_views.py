@@ -29,9 +29,14 @@ class RequestTestCase(base.BaseTestCase):
 
     def assert_allocation(self, model, quotas=[], requestable=True,
                           institutions=[], publications=[],
-                          grants=[], investigators=[], **attributes):
+                          grants=[], investigators=[], surveys=[],
+                          **attributes):
         for field, value in attributes.items():
-            self.assertEqual(getattr(model, field), value)
+            if field not in ['quotas', 'institutions', 'publications',
+                             'grants', 'investigators', 'surveys']:
+                self.assertEqual(getattr(model, field), value,
+                                 "field that didn't match: %s" % field)
+
         self.assertEqual(model.contact_email, self.user.name)
         # Sort by requested quota so we can easily compare by iterating
         # (Note that this is a bit dodgy since the requested quotas are
@@ -68,6 +73,11 @@ class RequestTestCase(base.BaseTestCase):
         for i, investigator_model in enumerate(investigators_l):
             self.assertEqual(investigator_model.email,
                              investigators[i]['email'])
+
+        surveys_l = model.surveys.all()
+        for i, survey_model in enumerate(surveys_l):
+            self.assertEqual(survey_model.usage_type,
+                             surveys[i]['usage_type'])
 
     def assert_history(self, model, initial_state, initial_mod):
         # check historical allocation model

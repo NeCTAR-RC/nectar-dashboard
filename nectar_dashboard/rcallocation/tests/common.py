@@ -40,6 +40,9 @@ def allocation_to_dict(model):
     allocation['grant'] = [model_to_dict(grant)
                            for grant in model.grants.all()]
 
+    allocation['survey'] = [model_to_dict(survey)
+                           for survey in model.surveys.all()]
+
     allocation['investigator'] = [model_to_dict(inv)
                                   for inv in model.investigators.all()]
     return allocation
@@ -229,7 +232,7 @@ def next_char(c):
 
 def request_allocation(user, model=None, quota_specs=None,
                        institutions=None, publications=None, grants=None,
-                       investigators=None):
+                       surveys=None, investigators=None):
 
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
@@ -255,6 +258,7 @@ def request_allocation(user, model=None, quota_specs=None,
                   'nectar_support': 'nectar supporting',
                   'ncris_support': 'ncris supporting',
                   'associated_site': site,
+                  'usage_survey_version': 1,
                   }
 
     if model:
@@ -277,8 +281,8 @@ def request_allocation(user, model=None, quota_specs=None,
                    'grant_id': grant.grant_id,
                    'first_year_funded': 2015,
                    'last_year_funded': 2017,
-                   'total_funding': quota.fuzz()
-                   }
+                   'total_funding': quota.fuzz(),
+                  }
                   for grant in model.grants.all()]
 
         investigators = [{'id': inv.id,
@@ -288,8 +292,14 @@ def request_allocation(user, model=None, quota_specs=None,
                           'email': inv.email,
                           'institution': inv.institution,
                           'additional_researchers': inv.additional_researchers
-                          }
+                         }
                          for inv in model.investigators.all()]
+
+        surveys = [{'id': sur.id,
+                    'usage_type': sur.usage_type,
+                    'usage': sur.usage,
+                   }
+                   for sur in model.surveys.all()]
 
     else:
         if quota_specs is None:
@@ -332,6 +342,13 @@ def request_allocation(user, model=None, quota_specs=None,
                 'additional_researchers': 'None'
             }]
 
+        if not surveys:
+            surveys = [{
+                'id': '',
+                'usage_type': 'usage_1',
+                'usage': True,
+            }]
+
     form = model_dict.copy()
     all_quotas = []
 
@@ -357,6 +374,11 @@ def request_allocation(user, model=None, quota_specs=None,
     form['investigators-TOTAL_FORMS'] = len(investigators)
     form['investigators-MAX_NUM_FORMS'] = 1000
 
+    form['surveys-INITIAL_FORMS'] = model.surveys.count() \
+        if model else 0
+    form['surveys-TOTAL_FORMS'] = len(surveys)
+    form['surveys-MAX_NUM_FORMS'] = len(surveys)
+
     for i, ins in enumerate(institutions):
         for k, v in ins.items():
             form['institutions-%s-%s' % (i, k)] = v
@@ -373,9 +395,14 @@ def request_allocation(user, model=None, quota_specs=None,
         for k, v in inv.items():
             form['investigators-%s-%s' % (i, k)] = v
 
+    for i, inv in enumerate(surveys):
+        for k, v in inv.items():
+            form['surveys-%s-%s' % (i, k)] = v
+
     model_dict['quotas'] = all_quotas
     model_dict['institutions'] = institutions
     model_dict['publications'] = publications
     model_dict['grants'] = grants
     model_dict['investigators'] = investigators
+    model_dict['surveys'] = surveys
     return model_dict, form

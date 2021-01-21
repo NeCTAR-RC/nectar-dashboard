@@ -24,6 +24,7 @@ def copy_allocation(allocation):
     institutions = old_object.institutions.all()
     publications = old_object.publications.all()
     grants = old_object.grants.all()
+    surveys = old_object.surveys.all()
     modified_time = old_object.modified_time
     submit_date = old_object.submit_date
 
@@ -66,5 +67,10 @@ def copy_allocation(allocation):
         grant.id = None
         grant.allocation = old_object
         grant.save()
+
+    for survey in surveys:
+        survey.id = None
+        survey.allocation = old_object
+        survey.save()
 
     return old_object
