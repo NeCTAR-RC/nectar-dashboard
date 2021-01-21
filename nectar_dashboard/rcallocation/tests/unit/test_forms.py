@@ -29,9 +29,24 @@ class FormsTestCase(helpers.TestCase):
         self.allocation = factories.AllocationFactory.create(
             contact_email='other@example.com')
 
-    def test_validating_grant_types(self):
-        # Empty form is invalid.  Check there is an error for
-        # each required field.
+    def test_validating_base_allocation_form(self):
+        form = forms.BaseAllocationForm(data={})
+        self.assertFalse(form.is_valid())
+        required_fields = ['project_description',
+                           'estimated_project_duration',
+                           'use_case', 'estimated_number_users',
+                           'for_percentage_1', 'for_percentage_2',
+                           'for_percentage_3', 'usage_types']
+        self.assertEqual(len(required_fields), len(form.errors))
+        for field in required_fields:
+            if field == 'usage_types':
+                self.assertEqual(['Please check one or more of the above'],
+                                 form.errors[field])
+            else:
+                self.assertEqual(['This field is required.'],
+                                 form.errors[field])
+
+    def test_validating_grant_form(self):
         form = forms.GrantForm(data={})
         self.assertFalse(form.is_valid())
         required_fields = ['allocation', 'grant_type', 'grant_subtype',
@@ -41,6 +56,7 @@ class FormsTestCase(helpers.TestCase):
         for field in required_fields:
             self.assertEqual(['This field is required.'], form.errors[field])
 
+    def test_validating_grant_types(self):
         # ARC grant conditionality
         form = forms.GrantForm(data={'grant_type': 'arc',
                                      'grant_subtype': 'unspecified'})
