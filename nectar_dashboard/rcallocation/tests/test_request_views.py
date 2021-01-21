@@ -10,6 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
+import pdb
 
 from django.urls import reverse
 
@@ -22,10 +23,14 @@ class RequestTestCase(base.BaseTestCase):
 
     def assert_allocation(self, model, quotas=[],
                           institutions=[], publications=[],
-                          grants=[], investigators=[], **attributes):
+                          grants=[], investigators=[],
+                          surveys=[], **attributes):
 
         for field, value in attributes.items():
-            self.assertEqual(getattr(model, field), value)
+            if field not in ['quotas', 'institutions', 'publications',
+                             'grants', 'investigators', 'surveys']:
+                self.assertEqual(getattr(model, field), value,
+                                 "field that didn't match: %s" % field)
         self.assertEqual(model.contact_email, self.user.name)
         quotas_l = models.Quota.objects.filter(group__allocation=model)
         # (For ... reasons ... there may be zero-valued quotas in the list)
@@ -73,6 +78,11 @@ class RequestTestCase(base.BaseTestCase):
                              investigators[i]['institution'])
             self.assertEqual(inv_m.additional_researchers, investigators[i][
                 'additional_researchers'])
+
+        surveys_l = model.surveys.all()
+        for i, sur_m in enumerate(surveys_l):
+            self.assertEqual(sur_m.usage_type, surveys[i]['usage_type'])
+            self.assertEqual(sur_m.usage, surveys[i]['usage'])
 
     def test_request_allocation(self):
         response = self.client.get(

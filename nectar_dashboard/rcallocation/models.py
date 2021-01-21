@@ -809,3 +809,73 @@ class Grant(models.Model):
     def __str__(self):
         return "Funding : {0} , total funding: {1}".format(
             self.funding_body_scheme, self.total_funding)
+
+
+class UsageSurveyQuestion(models.Model):
+    # This is a tag for internal use, and use in the API.  It is not intended
+    # to be displayed to end users
+    tag = models.CharField(
+        'Usage tag',
+        blank=False,
+        null=False,
+        unique=True,
+        max_length=128
+    )
+    usage_type = models.CharField(
+        'Usage Type',
+        blank=False,
+        null=False,
+        max_length=128,
+        help_text="The usage type to displayed to the user"
+    )
+    usage_explanation = models.CharField(
+        'Usage Type Explanation',
+        blank=True,
+        null=False,
+        max_length=512,
+        help_text="""Extra information explaining the usage that may be
+        displayed to the user"""
+    )
+    # If False, the question should not (currently) be asked of the user.
+    enabled = models.BooleanField(
+        null=False,
+        default=True
+    )
+    # If True, the question allows for (optional) other details.  This is
+    # primarily for the "none of the above" usage, but it could be used
+    # for other questions
+    allow_details = models.BooleanField(
+        null=False,
+        default=False
+    )
+
+
+# This represents the answer to a "question" in the usage survey for an
+# allocation request record.
+class UsageSurveyResponse(models.Model):
+    question = models.ForeignKey(
+        UsageSurveyQuestion,
+        blank=False,
+        null=False,
+        on_delete=models.PROTECT # Questions should be disabled not deleted
+    )
+
+    answer = models.BooleanField(
+        blank=False,
+        null=False
+    )
+
+    other_details = models.CharField(
+        blank=True,
+        null=False,
+        max_length=256
+    )
+
+    allocation = models.ForeignKey(AllocationRequest, related_name='surveys',
+                                   on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("allocation", "question")
+
+    def __str__(self):
+        return "Usage : {0} -> {1}".format(self.usage_type, self.usage)
