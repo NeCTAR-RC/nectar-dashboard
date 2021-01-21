@@ -167,7 +167,6 @@
         </div> <!-- quota_formset -->
       </div> <!-- col-md-12 -->
     </div> <!-- row -->
-    <div class="row">&nbsp;</div>
     <div class="row">
       <div class="col-md-12">
         <h2>Usage Information</h2>
@@ -176,6 +175,7 @@
         {% include "rcallocation/field.html" with field=form.usage_patterns %}
         {% include "rcallocation/field.html" with field=form.geographic_requirements %}
         {% include "rcallocation/field.html" with field=form.estimated_number_users %}
+        {% include "rcallocation/field.html" with field=form.usage_types %}
       </div>
     </div>
     <div class="row">

@@ -40,6 +40,10 @@ site = fuzzy.FuzzyChoice((models.Site.objects.get_or_create(name=s,
                           for s in ALL_SITES))
 
 
+def get_active_usage_types():
+    return list(models.UsageType.objects.filter(enabled=True))
+
+
 class ZoneFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Zone'
@@ -146,6 +150,9 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     def create(cls, create_quotas=True, **kwargs):
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
+
+        for usage_type in get_active_usage_types():
+            allocation.usage_types.add(usage_type)
 
         if create_quotas:
             monash = models.Zone.objects.get(name='monash')
