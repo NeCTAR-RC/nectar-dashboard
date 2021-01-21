@@ -1,0 +1,15 @@
+<table class="more_fields_tab">
+    <tbody>
+    {% for survey_form in survey_formset.forms %}
+        <tr>
+            {% if survey_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">{{ survey_form.non_field_errors }}</div>
+            {% endif %}
+            <td>
+                {{ survey_form.id }}
+            </td>
+            {% include "rcallocation/non_removable_field.html" with field=survey_form.name %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

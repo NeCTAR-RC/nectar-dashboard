@@ -34,6 +34,11 @@ def _six_months_from_now():
         days=30 * 6)
 
 
+class UsageType(models.Model):
+    name = models.CharField('Usage Type', max_length=32)
+    enabled = models.BooleanField(default=True)
+
+
 class AllocationRequest(models.Model):
     """An AllocationRequest represents a point in time in the history of
     a Nectar allocation.  The history is represented by the parent request
@@ -300,6 +305,8 @@ class AllocationRequest(models.Model):
     managed = models.BooleanField(
         default=True,
         help_text="Whether the allocation is managed through the dashboard")
+
+    usage_types = models.ManyToManyField(UsageType)
 
     class Meta:
         ordering = ['-modified_time']
