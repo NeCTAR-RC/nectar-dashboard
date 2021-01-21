@@ -179,6 +179,21 @@
       </div>
     </div>
     <div class="row">
+      <div class="institution_formset">
+        <div class="col-md-12">
+          <h2>Usage Characterisation</h2>
+          <hr/>
+          <span class="label label-info">Note:</span>
+          Select one or more of the following.
+          <br/>
+          {{ survey_formset.management_form }}
+          {% if survey_formset.forms %}
+          {% include "rcallocation/survey_form.html" with field=survey_formset.forms.0.name %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-12">
         <h2>Fields of Research (FOR)</h2>
         <hr/>
