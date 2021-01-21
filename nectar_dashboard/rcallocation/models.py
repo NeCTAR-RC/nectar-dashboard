@@ -809,3 +809,34 @@ class Grant(models.Model):
     def __str__(self):
         return "Funding : {0} , total funding: {1}".format(
             self.funding_body_scheme, self.total_funding)
+
+
+class UsageSurveyQuestion(models.Model):
+    usage_type = models.CharField(
+        'Usage Type',
+        max_length=128,
+        help_text="The usage type to displayed to the user"
+    )
+    # If False, the question should not (currently) be asked of the user.
+    enabled = models.BooleanField(default=True)
+
+
+
+# This represents the answer to a "question" in the usage survey for an
+# allocation request record.
+class UsageSurveyResponse(models.Model):
+    question = models.ForeignKey(
+        UsageSurveyQuestion,
+        on_delete=models.PROTECT # Questions should be disabled not deleted
+    )
+
+    answer = models.BooleanField()
+
+    allocation = models.ForeignKey(AllocationRequest, related_name='surveys',
+                                   on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("allocation", "question")
+
+    def __str__(self):
+        return "Usage : {0} -> {1}".format(self.usage_type, self.usage)
