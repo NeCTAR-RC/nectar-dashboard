@@ -40,6 +40,9 @@ def allocation_to_dict(model):
     allocation['grant'] = [model_to_dict(grant)
                            for grant in model.grants.all()]
 
+    allocation['usage'] = [usage.name
+                           for usage in model.usage_types.all()]
+
     allocation['investigator'] = [model_to_dict(inv)
                                   for inv in model.investigators.all()]
     return allocation
@@ -229,7 +232,7 @@ def next_char(c):
 
 def request_allocation(user, model=None, quota_specs=None,
                        institutions=None, publications=None, grants=None,
-                       investigators=None):
+                       usage_types=None, investigators=None):
 
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
@@ -277,8 +280,8 @@ def request_allocation(user, model=None, quota_specs=None,
                    'grant_id': grant.grant_id,
                    'first_year_funded': 2015,
                    'last_year_funded': 2017,
-                   'total_funding': quota.fuzz()
-                   }
+                   'total_funding': quota.fuzz(),
+                  }
                   for grant in model.grants.all()]
 
         investigators = [{'id': inv.id,
@@ -288,8 +291,15 @@ def request_allocation(user, model=None, quota_specs=None,
                           'email': inv.email,
                           'institution': inv.institution,
                           'additional_researchers': inv.additional_researchers
-                          }
+                         }
                          for inv in model.investigators.all()]
+
+        current_usages = model.usage_types.filter(enabled=True) \
+                                          .values_list('id', flat=True)
+        usage_types = [{'id': usage.id,
+                        'usage': usage.id in current_usages
+                       }
+                       for usage in factories.get_active_usage_types()]
 
     else:
         if quota_specs is None:
@@ -332,6 +342,12 @@ def request_allocation(user, model=None, quota_specs=None,
                 'additional_researchers': 'None'
             }]
 
+        if not usage_types:
+            usage_types = [{'id': usage.id,
+                            'usage': True
+                           }
+                           for usage in factories.get_active_usage_types()]
+
     form = model_dict.copy()
     all_quotas = []
 
@@ -373,9 +389,13 @@ def request_allocation(user, model=None, quota_specs=None,
         for k, v in inv.items():
             form['investigators-%s-%s' % (i, k)] = v
 
+    for usage_type in usage_types:
+        form['usage_type-%s' % usage_type['id']] = usage_type['usage']
+            
     model_dict['quotas'] = all_quotas
     model_dict['institutions'] = institutions
     model_dict['publications'] = publications
     model_dict['grants'] = grants
     model_dict['investigators'] = investigators
+    model_dict['usage_types'] = usage_types
     return model_dict, form
