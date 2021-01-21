@@ -22,10 +22,16 @@ class RequestTestCase(base.BaseTestCase):
 
     def assert_allocation(self, model, quotas=[],
                           institutions=[], publications=[],
-                          grants=[], investigators=[], **attributes):
+                          grants=[], investigators=[],
+                          surveys=[], **attributes):
 
         for field, value in attributes.items():
-            self.assertEqual(getattr(model, field), value)
+            if field not in ['quotas', 'institutions', 'publications',
+                             'grants', 'investigators', 'usage_types']:
+                self.assertEqual(getattr(model, field), value,
+                                 "field that didn't match: %s" % field)
+        self.assertEqual(list(attributes['usage_types']),
+                         list(model.usage_types.all()))
         self.assertEqual(model.contact_email, self.user.name)
         quotas_l = models.Quota.objects.filter(group__allocation=model)
         # (For ... reasons ... there may be zero-valued quotas in the list)

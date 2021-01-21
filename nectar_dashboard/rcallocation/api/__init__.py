@@ -322,6 +322,21 @@ class AssociatedSiteField(serializers.Field):
         return site
 
 
+class UsageTypesField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.name
+
+    def to_internal_value(self, data):
+        usage_type = models.UsageType.objects.get(name=data)
+        if not usage_type:
+            raise serializers.ValidationError(
+                "'%s' is not a known UsageType" % data)
+        if not usage_type.enabled:
+            raise serializers.ValidationError(
+                "UsageType '%s' is disabled" % data)
+        return usage_type
+
+
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
@@ -331,6 +346,8 @@ class AllocationSerializer(serializers.ModelSerializer):
     allocation_home_display = serializers.SerializerMethodField()
     associated_site = AssociatedSiteField(allow_null=True,
                                           required=False)
+    usage_types = UsageTypesField(many=True,
+                                  queryset=models.UsageType.objects.all())
 
     class Meta:
         model = models.AllocationRequest

@@ -34,6 +34,10 @@ class FoRChoiceField(select2_forms.ChoiceField):
             required=False)
 
 
+class UsageFieldWidget(forms.CheckboxSelectMultiple):
+    option_template_name = 'rcallocation/usage_type.html'
+
+
 class BaseAllocationForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
@@ -41,6 +45,10 @@ class BaseAllocationForm(forms.ModelForm):
     field_of_research_1 = FoRChoiceField("First Field Of Research")
     field_of_research_2 = FoRChoiceField("Second Field Of Research")
     field_of_research_3 = FoRChoiceField("Third Field Of Research")
+    usage_types = forms.ModelMultipleChoiceField(
+        queryset=models.UsageType.objects.filter(enabled=True),
+        widget=UsageFieldWidget(attrs={'class': 'form-inline'}),
+        to_field_name='name')
 
     class Meta:
         model = models.AllocationRequest
@@ -64,8 +72,9 @@ class BaseAllocationForm(forms.ModelForm):
                 ]),
             'project_name': forms.TextInput(attrs={'class': 'col-md-12'}),
             'contact_email': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'use_case': forms.Textarea(attrs={'class': 'col-md-6',
-                                        'style': 'height:120px; width:420px'}),
+            'use_case': forms.Textarea(
+                attrs={'class': 'col-md-6',
+                       'style': 'height:120px; width:420px'}),
             'usage_patterns': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
@@ -91,8 +100,9 @@ class BaseAllocationForm(forms.ModelForm):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                'form-control ' + field.widget.attrs.get('class', ''))
+            if field != self.fields['usage_types']:
+                field.widget.attrs['class'] = (
+                   'form-control ' + field.widget.attrs.get('class', ''))
         self.warnings = []
 
     def _in_groups(self, field):
@@ -314,15 +324,21 @@ class QuotaGroupForm(BaseQuotaGroupForm):
             raise forms.ValidationError("Please specify a zone")
 
 
-# Base ModelForm
 class NectarBaseModelForm(forms.ModelForm):
     error_css_class = 'has-error'
 
     class Meta:
         exclude = ('allocation_request',)
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # make sure that empty is not permitted
+        self.empty_permitted = False
+        for field in self.fields.values():
+            field.widget.attrs['class'] = (
+                field.widget.attrs.get('class', '') + 'form-control')
 
-# ChiefInvestigatorForm
+
 class ChiefInvestigatorForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.ChiefInvestigator
@@ -331,26 +347,10 @@ class ChiefInvestigatorForm(NectarBaseModelForm):
                 attrs={'style': 'height:120px; width:420px'}),
         }
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # make sure the empty is not permitted
-        self.empty_permitted = False
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
-
 
 class InstitutionForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Institution
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # make sure the empty is not permitted
-        self.empty_permitted = False
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
 
 
 DOI_PROTOCOL_PATTERN = re.compile("(?i)^doi:(.+)$")
@@ -360,14 +360,6 @@ DOI_PROTOCOL_PATTERN_2 = re.compile("(?i)^https?:[a-z0-9./_\\-]+?/(10\\..+)$")
 class PublicationForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Publication
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # make sure the empty is not permitted
-        self.empty_permitted = False
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
 
     def clean_doi(self):
         # Quietly strip off a "doi:" prefix or resolver URL if provided.
@@ -386,14 +378,6 @@ class PublicationForm(NectarBaseModelForm):
 class GrantForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Grant
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # make sure the empty is not permitted
-        self.empty_permitted = False
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -439,3 +423,8 @@ class GrantForm(NectarBaseModelForm):
                 self.add_error(
                     'funding_body_scheme',
                     ValidationError('Provide details for this grant'))
+
+
+class UsageForm(NectarBaseModelForm):
+    class Meta(NectarBaseModelForm.Meta):
+        model = models.UsageType
