@@ -24,6 +24,7 @@ def copy_allocation(allocation):
     institutions = old_object.institutions.all()
     publications = old_object.publications.all()
     grants = old_object.grants.all()
+    usage_types = old_object.usage_types.all()
     modified_time = old_object.modified_time
     submit_date = old_object.submit_date
 
@@ -66,5 +67,8 @@ def copy_allocation(allocation):
         grant.id = None
         grant.allocation = old_object
         grant.save()
+
+    for usage_type in usage_types:
+        old_object.usage_types.add(usage_type)
 
     return old_object

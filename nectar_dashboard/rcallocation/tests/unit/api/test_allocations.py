@@ -336,12 +336,24 @@ class AllocationTests(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual('test-notes', response.data['notes'])
 
+    def _make_data(self,
+                   project_name='test-project',
+                   project_description='project for testing',
+                   start_date='2000-01-01',
+                   use_case='for testing',
+                   usage_types=['Other'], **kwargs):
+        data = {'project_name': project_name,
+                'project_description': project_description,
+                'start_date': start_date,
+                'use_case': use_case,
+                'usage_types': usage_types
+        }
+        data.update(kwargs)
+        return data
+
     def test_create(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing'}
+        data = self._make_data()
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -359,10 +371,7 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_create_as_user(self):
         self.client.force_authenticate(user=self.user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing'}
+        data = self._make_data()
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -378,12 +387,7 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_create_as_with_no_site(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'national': False,
-                'associated_site': ''}
+        data = self._make_data(national=False, associated_site='')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -400,47 +404,25 @@ class AllocationTests(base.AllocationAPITest):
                          response.data['status'])
 
     def test_create_as_user_with_no_site(self):
-        # This is apparently indistinguishable from the case where the
-        # 'national' and 'associated_site' fields are omitted.  Check
-        # that 'national' and `associate_site` are indeed set to their
-        # default values.
         self.client.force_authenticate(user=self.user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'national': False,
-                'associated_site': ''}
+        data = self._make_data(national=False, associated_site='')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertFalse(response.data['national'])
         self.assertIsNone(response.data['associated_site'])
 
     def test_create_as_user_with_national(self):
-        # This is apparently indistinguishable from the case where the
-        # 'national' and 'associated_site' fields are omitted.  Check
-        # that 'national' and `associate_site` are indeed set to their
-        # default values.
         self.client.force_authenticate(user=self.user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'national': True,
-                'associated_site': ''}
+        data = self._make_data(national=True, associated_site='')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # Yes ... 'national' should be false if there is no associate site
         self.assertFalse(response.data['national'])
         self.assertIsNone(response.data['associated_site'])
 
     def test_create_with_associated_site(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'national': False,
-                'associated_site': 'qcif'}
+        data = self._make_data(national=False, associated_site='qcif')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -458,22 +440,13 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_create_with_associated_site_as_user(self):
         self.client.force_authenticate(user=self.user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'national': False,
-                'associated_site': 'qcif'}
+        data = self._make_data(national=False, associated_site='qcif')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_override_contact_email(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'contact_email': 'test_override@example.com'}
+        data = self._make_data(contact_email='test_override@example.com')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -488,12 +461,7 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_create_bad_site(self):
         self.client.force_authenticate(user=self.user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'national': False,
-                'associated_site': 'Bogus'}
+        data = self._make_data(national=False, associated_site='Bogus')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['associated_site'][0]),
@@ -501,11 +469,7 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_create_alloc_home(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'allocation_home': 'qcif'}
+        data = self._make_data(national=False, allocation_home='qcif')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['allocation_home'], 'qcif')
@@ -516,11 +480,7 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_create_alloc_home_national(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'allocation_home': 'national'}
+        data = self._make_data(allocation_home='national')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['allocation_home'], 'national')
@@ -531,11 +491,7 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_create_alloc_home_unassigned(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'allocation_home': 'unassigned'}
+        data = self._make_data(allocation_home='unassigned')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['allocation_home'], 'unassigned')
@@ -546,46 +502,29 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_create_alloc_home_as_user(self):
         self.client.force_authenticate(user=self.user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'allocation_home': 'qcif'}
+        data = self._make_data(allocation_home='qcif')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_create_bogus_alloc_home(self):
+    def test_create_bogus_alloc_home_as_user(self):
         self.client.force_authenticate(user=self.user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'allocation_home': 'Bogus'}
+        data = self._make_data(allocation_home='Bogus')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['allocation_home'][0]),
                          "Site 'Bogus' does not exist")
 
-    def test_create_bogus_alloc_home2(self):
+    def test_create_bogus_alloc_home2_as_user(self):
         self.client.force_authenticate(user=self.user)
         for bogus in ['national', 'unassigned']:
-            data = {'project_name': 'test-project',
-                    'project_description': 'project for testing',
-                    'start_date': '2000-01-01',
-                    'use_case': 'for testing',
-                    'allocation_home': bogus}
+            data = self._make_data(allocation_home=bogus)
             response = self.client.post('/rest_api/allocations/', data)
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_alloc_home_conflict(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing',
-                'national': False,
-                'associated_site': 'qcif',
-                'allocation_home': 'qcif'}
+        data = self._make_data(national=False, associated_site='qcif',
+                               allocation_home='qcif')
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data[0]),
@@ -595,20 +534,53 @@ class AllocationTests(base.AllocationAPITest):
     def test_create_duplicate_project_name(self):
         self.client.force_authenticate(user=self.user)
         factories.AllocationFactory.create(project_name='test-project')
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing'}
+        data = self._make_data()
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['project_name'][0]),
                          "Project name already exists")
 
+    def test_create_multiple_usage_types(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = self._make_data(usage_types=[
+            'Other',
+            'Hosting services to support research'])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        allocation = models.AllocationRequest.objects.get(
+            project_name='test-project')
+        self.assertEqual(2, allocation.usage_types.count())
+
+    def test_create_unknown_usage_type(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = self._make_data(usage_types=['Unknown'])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['usage_types'][0]),
+                         "'Unknown' is not a known UsageType")
+
+    def test_create_disabled_usage_type(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = self._make_data(usage_types=['Disabled'])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['usage_types'][0]),
+                         "UsageType 'Disabled' is disabled")
+
+    def test_create_no_usage_types(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = self._make_data(usage_types=[])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['usage_types'][0]),
+                         "At least 1 UsageType required")
+
     def test_create_unauthenticated(self):
-        data = {'project_name': 'test-project',
-                'project_description': 'project for testing',
-                'start_date': '2000-01-01',
-                'use_case': 'for testing'}
+        data = self._make_data()
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
