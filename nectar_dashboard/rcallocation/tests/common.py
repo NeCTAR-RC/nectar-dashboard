@@ -1,3 +1,4 @@
+
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -39,6 +40,9 @@ def allocation_to_dict(model):
 
     allocation['grant'] = [model_to_dict(grant)
                            for grant in model.grants.all()]
+
+    allocation['usage'] = [usage.name
+                           for usage in model.usage_types.all()]
 
     allocation['investigator'] = [model_to_dict(inv)
                                   for inv in model.investigators.all()]
@@ -97,6 +101,12 @@ def approvers_setup():
                                    display_name="Three")
     test_user.sites.add(qcif)
     test_user2.sites.add(melbourne)
+
+
+def usage_types_setup():
+    # Most of them are set up in migration 0052.  This one is to test
+    # handling of disabled UsageTypes
+    models.UsageType.objects.get_or_create(name="Disabled", enabled=False)
 
 
 def get_groups(service_type, allocation=None):
@@ -229,8 +239,7 @@ def next_char(c):
 
 def request_allocation(user, model=None, quota_specs=None,
                        institutions=None, publications=None, grants=None,
-                       investigators=None):
-
+                       usage_types=None, investigators=None):
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
     forp_2 = fuzzy.FuzzyInteger(1, 9 - forp_1).fuzz()
@@ -291,6 +300,8 @@ def request_allocation(user, model=None, quota_specs=None,
                           }
                          for inv in model.investigators.all()]
 
+        usage_types = model.usage_types.all()
+
     else:
         if quota_specs is None:
             groups = {}
@@ -331,6 +342,9 @@ def request_allocation(user, model=None, quota_specs=None,
                 'institution': 'Monash University',
                 'additional_researchers': 'None'
             }]
+
+        if not usage_types:
+            usage_types = factories.get_active_usage_types()
 
     form = model_dict.copy()
     all_quotas = []
@@ -373,9 +387,12 @@ def request_allocation(user, model=None, quota_specs=None,
         for k, v in inv.items():
             form['investigators-%s-%s' % (i, k)] = v
 
+    form['usage_types'] = [usage.name for usage in usage_types]
+
     model_dict['quotas'] = all_quotas
     model_dict['institutions'] = institutions
     model_dict['publications'] = publications
     model_dict['grants'] = grants
     model_dict['investigators'] = investigators
+    model_dict['usage_types'] = usage_types
     return model_dict, form

@@ -21,6 +21,17 @@ from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 
 
+DUMMY_ALLOC_DATA = {'project_description': 'dummy',
+                    'estimated_project_duration': 1,
+                    'use_case': 'dummy',
+                    'estimated_number_users': 1,
+                    'for_percentage_1': 0,
+                    'for_percentage_2': 0,
+                    'for_percentage_3': 0,
+                    'usage_types': ['Other']
+}
+
+
 class FormsTestCase(helpers.TestCase):
 
     def setUp(self):
@@ -29,9 +40,45 @@ class FormsTestCase(helpers.TestCase):
         self.allocation = factories.AllocationFactory.create(
             contact_email='other@example.com')
 
-    def test_validating_grant_types(self):
-        # Empty form is invalid.  Check there is an error for
-        # each required field.
+    def test_validating_base_allocation_form(self):
+        form = forms.BaseAllocationForm(data={})
+        self.assertFalse(form.is_valid())
+        required_fields = ['project_description',
+                           'estimated_project_duration',
+                           'use_case', 'estimated_number_users',
+                           'for_percentage_1', 'for_percentage_2',
+                           'for_percentage_3', 'usage_types']
+        self.assertEqual(len(required_fields), len(form.errors))
+        for field in required_fields:
+            if field == 'usage_types':
+                self.assertEqual(['Please check one or more of the above'],
+                                 form.errors[field])
+            else:
+                self.assertEqual(['This field is required.'],
+                                 form.errors[field])
+        form = forms.BaseAllocationForm(data=DUMMY_ALLOC_DATA)
+        self.assertTrue(form.is_valid())
+
+    def test_validating_survey_types(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['usage_types'] = ['Rubbish']
+
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Select a valid choice. Rubbish is '
+                          'not one of the available choices.'],
+                         form.errors['usage_types'])
+
+        data = DUMMY_ALLOC_DATA.copy()
+        data['usage_types'] = ['Disabled', 'Other']
+
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Select a valid choice. Disabled is '
+                          'not one of the available choices.'],
+                         form.errors['usage_types'])
+
+    def test_validating_grant_form(self):
         form = forms.GrantForm(data={})
         self.assertFalse(form.is_valid())
         required_fields = ['allocation', 'grant_type', 'grant_subtype',
@@ -41,6 +88,7 @@ class FormsTestCase(helpers.TestCase):
         for field in required_fields:
             self.assertEqual(['This field is required.'], form.errors[field])
 
+    def test_validating_grant_types(self):
         # ARC grant conditionality
         form = forms.GrantForm(data={'grant_type': 'arc',
                                      'grant_subtype': 'unspecified'})
