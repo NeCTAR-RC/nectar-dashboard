@@ -341,7 +341,8 @@ class AllocationTests(base.AllocationAPITest):
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
-                'use_case': 'for testing'}
+                'use_case': 'for testing',
+                'usage_types': 'Other'}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
