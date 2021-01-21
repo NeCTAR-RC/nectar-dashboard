@@ -381,6 +381,24 @@ ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS = {
     'uom': ['melbourne'],
 }
 
+USAGE_SURVEY_CONFIGS = [
+    # version 0 - empty
+    [],
+    # version 1
+    [ ('service', 'Hosting services to support research'),
+      ('collab_platform', 'Collaboration platform'),
+      ('website', 'Hosting a website'),
+      ('database', 'Hosting a database'),
+      ('data_sharing', 'Hosting and sharing data'),
+      ('collab_cross_institution', 'Collaborating with other institutions'),
+      ('collab_international', 'Collaborating internationally'),
+      ('machine_learning', 'Machine learning'),
+      ('data_anaysis', 'Data analysis'),
+      ('modelling', 'Modelling and simulation'),
+    ],
+    # version 2, etcetera.
+]
+
 HORIZON_CONFIG['WARNING_INFO_URL'] = \
     "https://support.ehelp.edu.au/support/home"
 

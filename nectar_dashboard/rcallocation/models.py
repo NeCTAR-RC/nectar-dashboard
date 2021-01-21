@@ -176,6 +176,14 @@ class AllocationRequest(models.Model):
         Will your instances be long running or created and deleted as needed
         Your answers here will help us.""")
 
+    # This is the version no for the questions used in the "usage survey"
+    # for this request.  Versions start from 1.  Zero means that no survey
+    # is associated with this allocation record.
+    usage_survey_version = models.IntegerField(
+        blank=False,
+        null=False,
+        default=0)
+    
     geographic_requirements = models.TextField(
         max_length=1024,
         blank=True,
@@ -809,3 +817,32 @@ class Grant(models.Model):
     def __str__(self):
         return "Funding : {0} , total funding: {1}".format(
             self.funding_body_scheme, self.total_funding)
+
+
+# This represents the answer to a "question" in the usage survey for an
+# allocation request record.  The questions are denoted by usage_type values
+# which come from the USAGE_SURVEY_CONFIGS setting.  These depend on the
+# usage_survey_version, and can change over time.  So we don't constrain
+# the values in the model / database schema.
+class UsageSurvey(models.Model):
+    usage_type = models.CharField(
+        "Usage Type",
+        blank=False,
+        null=False,
+        max_length=128,
+    )
+
+    usage = models.BooleanField(
+        "Usage",
+        blank=False,
+        null=False,
+    )
+
+    allocation = models.ForeignKey(AllocationRequest, related_name='surveys',
+                                   on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("allocation", "usage_type")
+
+    def __str__(self):
+        return "Usage : {0} -> {1}".format(self.usage_type, self.usage)
