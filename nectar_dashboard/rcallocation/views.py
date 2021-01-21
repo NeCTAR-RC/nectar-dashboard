@@ -194,7 +194,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         if formset_investigator_class:
             formsets['investigator_formset'] = self.get_formset(
                 formset_investigator_class)
-
         formset_institution_class = self.get_formset_institution_class()
         if formset_institution_class:
             formsets['institution_formset'] = self.get_formset(
@@ -203,7 +202,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         if formset_publication_class:
             formsets['publication_formset'] = self.get_formset(
                 formset_publication_class)
-
         formset_grant_class = self.get_formset_grant_class()
         if formset_grant_class:
             formsets['grant_formset'] = self.get_formset(formset_grant_class)
@@ -375,7 +373,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         self.object = self.get_object()
 
         if self.object:
-
             # Ensure old projects have to set an investigator and
             # an institution
             investigators = self.object.investigators.all()
@@ -535,6 +532,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
             object.submit_date = timezone.now()
 
         object.save()
+        form.save_m2m()
         self.object = object
 
         # quota formsets handled slightly differently as we want to

@@ -341,7 +341,8 @@ class AllocationTests(base.AllocationAPITest):
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
-                'use_case': 'for testing'}
+                'use_case': 'for testing',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -362,7 +363,8 @@ class AllocationTests(base.AllocationAPITest):
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
-                'use_case': 'for testing'}
+                'use_case': 'for testing',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -383,7 +385,8 @@ class AllocationTests(base.AllocationAPITest):
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
                 'national': False,
-                'associated_site': ''}
+                'associated_site': '',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -410,7 +413,8 @@ class AllocationTests(base.AllocationAPITest):
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
                 'national': False,
-                'associated_site': ''}
+                'associated_site': '',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertFalse(response.data['national'])
@@ -427,7 +431,8 @@ class AllocationTests(base.AllocationAPITest):
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
                 'national': True,
-                'associated_site': ''}
+                'associated_site': '',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertFalse(response.data['national'])
@@ -440,7 +445,8 @@ class AllocationTests(base.AllocationAPITest):
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
                 'national': False,
-                'associated_site': 'qcif'}
+                'associated_site': 'qcif',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -463,7 +469,8 @@ class AllocationTests(base.AllocationAPITest):
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
                 'national': False,
-                'associated_site': 'qcif'}
+                'associated_site': 'qcif',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -473,7 +480,8 @@ class AllocationTests(base.AllocationAPITest):
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
-                'contact_email': 'test_override@example.com'}
+                'contact_email': 'test_override@example.com',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         allocation = models.AllocationRequest.objects.get(
@@ -493,7 +501,8 @@ class AllocationTests(base.AllocationAPITest):
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
                 'national': False,
-                'associated_site': 'Bogus'}
+                'associated_site': 'Bogus',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['associated_site'][0]),
@@ -505,7 +514,8 @@ class AllocationTests(base.AllocationAPITest):
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
-                'allocation_home': 'qcif'}
+                'allocation_home': 'qcif',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['allocation_home'], 'qcif')
@@ -520,7 +530,8 @@ class AllocationTests(base.AllocationAPITest):
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
-                'allocation_home': 'national'}
+                'allocation_home': 'national',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['allocation_home'], 'national')
@@ -535,7 +546,8 @@ class AllocationTests(base.AllocationAPITest):
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
-                'allocation_home': 'unassigned'}
+                'allocation_home': 'unassigned',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['allocation_home'], 'unassigned')
@@ -550,7 +562,8 @@ class AllocationTests(base.AllocationAPITest):
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
-                'allocation_home': 'qcif'}
+                'allocation_home': 'qcif',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -560,7 +573,8 @@ class AllocationTests(base.AllocationAPITest):
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
                 'use_case': 'for testing',
-                'allocation_home': 'Bogus'}
+                'allocation_home': 'Bogus',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['allocation_home'][0]),
@@ -573,7 +587,8 @@ class AllocationTests(base.AllocationAPITest):
                     'project_description': 'project for testing',
                     'start_date': '2000-01-01',
                     'use_case': 'for testing',
-                    'allocation_home': bogus}
+                    'allocation_home': bogus,
+                    'usage_types': ['Other']}
             response = self.client.post('/rest_api/allocations/', data)
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -585,7 +600,8 @@ class AllocationTests(base.AllocationAPITest):
                 'use_case': 'for testing',
                 'national': False,
                 'associated_site': 'qcif',
-                'allocation_home': 'qcif'}
+                'allocation_home': 'qcif',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data[0]),
@@ -598,17 +614,57 @@ class AllocationTests(base.AllocationAPITest):
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
-                'use_case': 'for testing'}
+                'use_case': 'for testing',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['project_name'][0]),
                          "Project name already exists")
 
-    def test_create_unauthenticated(self):
+    def test_create_no_usage_types(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
         data = {'project_name': 'test-project',
                 'project_description': 'project for testing',
                 'start_date': '2000-01-01',
                 'use_case': 'for testing'}
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['usage_types'][0]),
+                         "At least 1 usage type required")
+
+    def test_create_unknown_usage_type(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = {'project_name': 'test-project',
+                'project_description': 'project for testing',
+                'start_date': '2000-01-01',
+                'use_case': 'for testing',
+                'usage_types': ['Unknown']}
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['usage_types'][0]),
+                         "'Unknown' is not a known UsageType")
+
+    def test_create_disabled_usage_type(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = {'project_name': 'test-project',
+                'project_description': 'project for testing',
+                'start_date': '2000-01-01',
+                'use_case': 'for testing',
+                'usage_types': ['Disabled']}
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['usage_types'][0]),
+                         "UsageType 'Disabled' is disabled")
+
+    def test_create_unauthenticated(self):
+        data = {'project_name': 'test-project',
+                'project_description': 'project for testing',
+                'start_date': '2000-01-01',
+                'use_case': 'for testing',
+                'usage_types': ['Other']}
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
