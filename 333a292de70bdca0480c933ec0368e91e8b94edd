@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0405562b_3dd042cc",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 818,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-02-04T01:11:44Z",
+      "side": 1,
+      "message": "I don\u0027t think this help text is going to be displayed anywhere so can prob go?\nIf it should be here then sentence needs fixing \"to display\"",
+      "range": {
+        "startLine": 818,
+        "startChar": 8,
+        "endLine": 818,
+        "endChar": 59
+      },
+      "revId": "333a292de70bdca0480c933ec0368e91e8b94edd",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a98786b5_328d39f6",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 840,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-02-04T01:11:44Z",
+      "side": 1,
+      "message": "this should be removed as we don\u0027t want to allow blank values or am I wrong here?",
+      "range": {
+        "startLine": 840,
+        "startChar": 8,
+        "endLine": 840,
+        "endChar": 19
+      },
+      "revId": "333a292de70bdca0480c933ec0368e91e8b94edd",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
