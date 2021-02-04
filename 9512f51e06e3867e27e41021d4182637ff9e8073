@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "dd63d852_4446bc77",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 823,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:03:19Z",
+      "side": 1,
+      "message": "OK.  If you think it is unnecessary.",
+      "parentUuid": "44f6430e_ffd4d748",
+      "range": {
+        "startLine": 817,
+        "startChar": 1,
+        "endLine": 823,
+        "endChar": 5
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ca550e9_e02ba5f6",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 3
@@ -69,6 +93,30 @@
       "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59a93909_734c68d3",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 827,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:03:19Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "5ca550e9_e02ba5f6",
+      "range": {
+        "startLine": 826,
+        "startChar": 0,
+        "endLine": 827,
+        "endChar": 19
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -118,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "5cdfd3e9_19ea69b6",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 841,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:03:19Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b1aef81a_8d0e6e18",
+      "range": {
+        "startLine": 841,
+        "startChar": 8,
+        "endLine": 841,
+        "endChar": 19
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "17c88f57_b6c1d6ce",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 3
@@ -138,6 +210,30 @@
       "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "806616e6_66f9ff30",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 848,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:03:19Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "17c88f57_b6c1d6ce",
+      "range": {
+        "startLine": 848,
+        "startChar": 8,
+        "endLine": 848,
+        "endChar": 19
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -164,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "b3e9a461_f0368e99",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 859,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:03:19Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ba31f957_95f6d25a",
+      "range": {
+        "startLine": 858,
+        "startChar": 0,
+        "endLine": 859,
+        "endChar": 19
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "32eb64cf_2b8ddcce",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 3
@@ -184,6 +304,30 @@
       "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4779f68_4090b81a",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 865,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:03:19Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "32eb64cf_2b8ddcce",
+      "range": {
+        "startLine": 864,
+        "startChar": 0,
+        "endLine": 865,
+        "endChar": 18
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -210,6 +354,30 @@
     },
     {
       "key": {
+        "uuid": "f80a614a_099f134e",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 870,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:03:19Z",
+      "side": 1,
+      "message": "Why?  What purpose does NULL / None serve that isn\u0027t served by an empty string?\n\n\"NULL - means that we do NOT know what the value is, it may exist, but it may not exist, we just don\u0027t know. Empty-String - means we know what the value is and that it is nothing.\"",
+      "parentUuid": "2f0c6a31_ce8897fb",
+      "range": {
+        "startLine": 870,
+        "startChar": 13,
+        "endLine": 870,
+        "endChar": 18
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0e369bd7_168d761b",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 3
@@ -221,6 +389,30 @@
       "writtenOn": "2021-02-03T23:32:57Z",
       "side": 1,
       "message": "I think this should also be 128 to match the usage_type field",
+      "range": {
+        "startLine": 871,
+        "startChar": 19,
+        "endLine": 871,
+        "endChar": 22
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5709418e_bf5605df",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 871,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:03:19Z",
+      "side": 1,
+      "message": "This field is for the user to enter details of a specific usage.  In a text type-in box. There is no particular reason that we should require users to limit themselves to 128 characters.  By contrast, the \u0027usage_type\u0027 is going to be written by us ... and if we can\u0027t describe a particular usage type in 128 characters, there is something wrong with the survey design.",
+      "parentUuid": "0e369bd7_168d761b",
       "range": {
         "startLine": 871,
         "startChar": 19,
