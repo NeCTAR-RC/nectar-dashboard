@@ -378,6 +378,30 @@
     },
     {
       "key": {
+        "uuid": "9608b00d_041ecc3b",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 870,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-02-04T00:45:16Z",
+      "side": 1,
+      "message": "I think null\u003dTrue, blank\u003dFalse would be more acceptable here. Eg. if they select other we do want them to give an answer. For all the other questions I would expect this to be NULL as it\u0027s not applicable. Please rethink this.",
+      "parentUuid": "f80a614a_099f134e",
+      "range": {
+        "startLine": 870,
+        "startChar": 13,
+        "endLine": 870,
+        "endChar": 18
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0e369bd7_168d761b",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 3
@@ -413,6 +437,30 @@
       "side": 1,
       "message": "This field is for the user to enter details of a specific usage.  In a text type-in box. There is no particular reason that we should require users to limit themselves to 128 characters.  By contrast, the \u0027usage_type\u0027 is going to be written by us ... and if we can\u0027t describe a particular usage type in 128 characters, there is something wrong with the survey design.",
       "parentUuid": "0e369bd7_168d761b",
+      "range": {
+        "startLine": 871,
+        "startChar": 19,
+        "endLine": 871,
+        "endChar": 22
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "457b6117_fbdf4b00",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 871,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-02-04T00:45:16Z",
+      "side": 1,
+      "message": "That\u0027s true, just thought it would be good to limit how much users put into this field so we get a more precise answer that would be easier to translate as opposed to a lot of text. Not a -1 for this",
+      "parentUuid": "5709418e_bf5605df",
       "range": {
         "startLine": 871,
         "startChar": 19,
