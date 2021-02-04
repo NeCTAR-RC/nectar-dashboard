@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c7a7219_5962c53c",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 818,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-02-04T02:53:27Z",
+      "side": 1,
+      "message": "see comment in previous review",
+      "range": {
+        "startLine": 818,
+        "startChar": 8,
+        "endLine": 818,
+        "endChar": 59
+      },
+      "revId": "de770a09e1bb647b2f446fcb9e019029f501bfaf",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
