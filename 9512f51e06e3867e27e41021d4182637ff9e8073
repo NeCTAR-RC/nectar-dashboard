@@ -402,6 +402,30 @@
     },
     {
       "key": {
+        "uuid": "c28f1986_b67135cb",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 870,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:49:11Z",
+      "side": 1,
+      "message": "Too bad.  I changed it to what you said.",
+      "parentUuid": "9608b00d_041ecc3b",
+      "range": {
+        "startLine": 870,
+        "startChar": 13,
+        "endLine": 870,
+        "endChar": 18
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0e369bd7_168d761b",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 3
@@ -470,6 +494,30 @@
       "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17fb81f1_f7983423",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 871,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-04T00:49:11Z",
+      "side": 1,
+      "message": "Too bad.  I changed it anyway.",
+      "parentUuid": "457b6117_fbdf4b00",
+      "range": {
+        "startLine": 871,
+        "startChar": 19,
+        "endLine": 871,
+        "endChar": 22
+      },
+      "revId": "9512f51e06e3867e27e41021d4182637ff9e8073",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
