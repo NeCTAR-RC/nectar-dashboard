@@ -408,7 +408,7 @@ class AllocationFilter(filters.FilterSet):
 
         fields = {'status': ['exact', 'in'],
                   'parent_request_id': ['exact'],
-                  'project_id': ['exact'],
+                  'project_id': ['exact', 'in'],
                   'project_name': ['exact', 'contains', 'icontains',
                                    'startswith', 'istartswith', 'endswith',
                                    'iendswith', 'regex'],
