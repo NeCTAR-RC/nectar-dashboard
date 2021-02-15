@@ -407,7 +407,7 @@ class AllocationFilter(filters.FilterSet):
         model = models.AllocationRequest
 
         fields = {'status': ['exact', 'in'],
-                  'parent_request_id': ['exact'],
+                  'parent_request_id': ['exact', 'in'],
                   'project_id': ['exact'],
                   'project_name': ['exact', 'contains', 'icontains',
                                    'startswith', 'istartswith', 'endswith',
