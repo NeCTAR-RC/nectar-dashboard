@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df92416a_16799e74",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 17
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-02-22T00:56:31Z",
+      "side": 1,
+      "message": "might need to do some object level validation to only require usage types if allocation is national.\n\nhttps://www.django-rest-framework.org/api-guide/serializers/#object-level-validation",
+      "revId": "6cf8508c43a8cbc93c5d1d67cc920a424cec8684",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
