@@ -16,6 +16,24 @@
       "revId": "6cf8508c43a8cbc93c5d1d67cc920a424cec8684",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8cead699_26674f8b",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 17
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-24T04:58:23Z",
+      "side": 1,
+      "message": "Decided to allow zero usage types for allocations created / updated via the API.  Figuring out validation criteria with an exception that would work for MRC local allocations is too hard.",
+      "parentUuid": "df92416a_16799e74",
+      "revId": "6cf8508c43a8cbc93c5d1d67cc920a424cec8684",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
