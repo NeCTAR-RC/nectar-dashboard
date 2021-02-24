@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "11601c53_bd241631",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_detail_base.html",
+        "patchSetId": 18
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-02-24T05:13:53Z",
+      "side": 1,
+      "message": "typo turned into another typo 😊",
+      "revId": "4f3794d699774bd6c46b94cb6f1167fe41ee9be7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5b782c7_1b726d71",
+        "filename": "nectar_dashboard/rcallocation/tests/common.py",
+        "patchSetId": 18
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-02-24T05:13:53Z",
+      "side": 1,
+      "message": "typo?",
+      "revId": "4f3794d699774bd6c46b94cb6f1167fe41ee9be7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "afd71264_40c56a65",
+        "filename": "nectar_dashboard/rcallocation/tests/factories.py",
+        "patchSetId": 18
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-02-24T05:13:53Z",
+      "side": 1,
+      "message": "interested in why this needs to be cast to a list?",
+      "range": {
+        "startLine": 44,
+        "startChar": 11,
+        "endLine": 44,
+        "endChar": 16
+      },
+      "revId": "4f3794d699774bd6c46b94cb6f1167fe41ee9be7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
