@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "2642c5e3_11a24d69",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_detail_base.html",
+        "patchSetId": 18
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-24T05:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "11601c53_bd241631",
+      "revId": "4f3794d699774bd6c46b94cb6f1167fe41ee9be7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a5b782c7_1b726d71",
         "filename": "nectar_dashboard/rcallocation/tests/common.py",
         "patchSetId": 18
@@ -33,6 +51,24 @@
       "revId": "4f3794d699774bd6c46b94cb6f1167fe41ee9be7",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3dd371ef_480070e0",
+        "filename": "nectar_dashboard/rcallocation/tests/common.py",
+        "patchSetId": 18
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-24T05:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a5b782c7_1b726d71",
+      "revId": "4f3794d699774bd6c46b94cb6f1167fe41ee9be7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -56,6 +92,30 @@
       "revId": "4f3794d699774bd6c46b94cb6f1167fe41ee9be7",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "46755fb7_7cc1bd79",
+        "filename": "nectar_dashboard/rcallocation/tests/factories.py",
+        "patchSetId": 18
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-02-24T05:22:48Z",
+      "side": 1,
+      "message": "Turns out that it doesn\u0027t (now)",
+      "parentUuid": "afd71264_40c56a65",
+      "range": {
+        "startLine": 44,
+        "startChar": 11,
+        "endLine": 44,
+        "endChar": 16
+      },
+      "revId": "4f3794d699774bd6c46b94cb6f1167fe41ee9be7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
