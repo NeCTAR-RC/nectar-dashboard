@@ -29,7 +29,8 @@ class RequestTestCase(base.BaseTestCase):
 
     def assert_allocation(self, model, quotas=[], requestable=True,
                           institutions=[], publications=[],
-                          grants=[], investigators=[], **attributes):
+                          grants=[], investigators=[],
+                          **attributes):
         for field, value in attributes.items():
             if field not in ['quotas', 'institutions', 'publications',
                              'grants', 'investigators', 'usage_types']:

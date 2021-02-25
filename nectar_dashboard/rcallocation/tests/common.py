@@ -285,8 +285,8 @@ def request_allocation(user, model=None, quota_specs=None,
                    'grant_id': grant.grant_id,
                    'first_year_funded': 2015,
                    'last_year_funded': 2017,
-                   'total_funding': quota.fuzz()
-                   }
+                   'total_funding': quota.fuzz(),
+                  }
                   for grant in model.grants.all()]
 
         investigators = [{'id': inv.id,
@@ -296,7 +296,7 @@ def request_allocation(user, model=None, quota_specs=None,
                           'email': inv.email,
                           'institution': inv.institution,
                           'additional_researchers': inv.additional_researchers
-                          }
+                         }
                          for inv in model.investigators.all()]
 
         usage_types = model.usage_types.all()

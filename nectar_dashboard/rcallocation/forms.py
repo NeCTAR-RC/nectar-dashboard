@@ -78,8 +78,9 @@ class BaseAllocationForm(forms.ModelForm):
                 ]),
             'project_name': forms.TextInput(attrs={'class': 'col-md-12'}),
             'contact_email': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'use_case': forms.Textarea(attrs={'class': 'col-md-6',
-                                        'style': 'height:120px; width:420px'}),
+            'use_case': forms.Textarea(
+                attrs={'class': 'col-md-6',
+                       'style': 'height:120px; width:420px'}),
             'usage_patterns': forms.Textarea(
                 attrs={'class': 'col-md-6',
                        'style': 'height:120px; width:420px'}),
@@ -142,7 +143,6 @@ class BaseAllocationForm(forms.ModelForm):
         data = self.cleaned_data['project_name']
         if data and data.startswith('pt-'):
             raise forms.ValidationError("Projects can not start with pt-")
-
         return data
 
     def clean(self):
@@ -329,7 +329,6 @@ class QuotaGroupForm(BaseQuotaGroupForm):
             raise forms.ValidationError("Please specify a zone")
 
 
-# Base ModelForm
 class NectarBaseModelForm(forms.ModelForm):
     error_css_class = 'has-error'
 
@@ -345,7 +344,6 @@ class NectarBaseModelForm(forms.ModelForm):
                 field.widget.attrs.get('class', '') + 'form-control')
 
 
-# ChiefInvestigatorForm
 class ChiefInvestigatorForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.ChiefInvestigator
