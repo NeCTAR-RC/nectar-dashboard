@@ -172,18 +172,26 @@ class AllocationRequest(models.Model):
     approver_email = models.EmailField('Approver email', blank=True)
 
     use_case = models.TextField(
-        "Research use case and justification",
+        "Research project description",
         max_length=4096,
-        help_text="""Provide a very brief overview of your research project,
-        and how you will use the cloud to support your project.""")
+        help_text='This section should provide a brief overview of the '
+                  'Research Project or Projects that the requested '
+                  'allocation would directly support. We will use this '
+                  'information to help prioritize the allocation of '
+                  'resources to different projects.')
 
     usage_patterns = models.TextField(
-        "Instance, Object Storage and Volumes Storage Usage Patterns",
+        "Justification and details of your Proposed Cloud Usage",
         max_length=1024, blank=True,
-        help_text="""Will your project have many users and small data
-        sets? Or will it have large data sets with a small number of users?
-        Will your instances be long running or created and deleted as needed
-        Your answers here will help us.""")
+        help_text='Explain why you need Nectar Research Cloud resources, '
+                  'and how they will be used to support your research. '
+                  'Include relevant technical information on your proposed '
+                  'use of the resources; e.g. software applications, '
+                  'characteristics of computational tasks, data quantities '
+                  'and access patterns, frequency and intensity of '
+                  'utilization, and so on.  We will use this information '
+                  'to help us decide if the resources that you are '
+                  'requesting are appropriate to the tasks to be performed.')
 
     geographic_requirements = models.TextField(
         max_length=1024,

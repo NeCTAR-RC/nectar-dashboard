@@ -49,7 +49,7 @@ class BaseAllocationForm(forms.ModelForm):
         help_text="""Select one or more items that best describe what
                      you are using the Nectar Research Cloud for.  If
                      you select 'Other', include relevant details in the
-                     'Usage Patterns' textbox.
+                     'Proposed Cloud Usage' textbox.
         """,
         error_messages={'required': 'Please check one or more of the above'},
         queryset=models.UsageType.objects.filter(enabled=True),
