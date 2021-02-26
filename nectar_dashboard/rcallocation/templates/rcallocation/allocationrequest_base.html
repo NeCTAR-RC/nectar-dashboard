@@ -41,7 +41,7 @@
   {% endif %}
   <form id="new-allocation"
         action="{% block form_action %}{% endblock %}"
-        method="post">
+        method="post" novalidate="novalidate">
     <fieldset>
       {% csrf_token %}
       {% for hidden in form.hidden_fields %}
