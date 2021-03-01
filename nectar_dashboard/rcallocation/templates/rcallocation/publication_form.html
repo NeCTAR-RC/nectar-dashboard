@@ -11,11 +11,39 @@
             </td>
             <td>
               <div class="publication_div">
-                {% include "rcallocation/field.html" with field=publication_form.doi %}
+                {% include "rcallocation/field.html" with field=publication_form.output_type %}
+                <div class="form-group {% if publication_form.doi.errors %}has-error{% endif %}">
+                  <label for="id_{{ publication_form.doi.html_name }}">
+                    {{ publication_form.doi.label }}
+                    <img class="help-popover"
+                         src="{{ STATIC_URL }}rcportal/img/help.png"
+                         data-content="{{ publication_form.doi.help_text }}"
+                         data-original-title="{{ publication_form.doi.label }}"
+                         data-html="true">
+                  </label>
+                  <div class="controls">
+                    <div class="form-inline">
+                      <div class="input-group">
+                        {{ publication_form.doi }}
+                      </div>
+                      <div class="input-group">
+                        {{ publication_form.doi_validated }}
+                      </div>
+                    </div>
+                    {% for error in publication_form.doi.errors %}
+                    <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
                 {% include "rcallocation/field.html" with field=publication_form.publication %}
+                {% include "rcallocation/field.html" with field=publication_form.title %}
+                {% include "rcallocation/field.html" with field=publication_form.year %}
               </div>
             </td>
             <td>
+              <button class="pull-right btn btn-default" id="check-doi" type="button">
+                Check DOI
+              </button>
               <button class="pull-right btn btn-default" id="delete-publication" type="button">
                 Delete
               </button>
