@@ -777,21 +777,64 @@ $(function(){
         new_row += "</td>";
         new_row += "<td>";
         new_row += "<div class='publication_div'>";
+        //output_type
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'output_type', 'Research Output type', row_index, false, "Select a publication type that best describes the publication.  The &apos;Media publication&apos; type is intended to encompass traditional media and &apos;new&apos; media such as websites, blogs and social media.");
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_select_field(opts, 'output_type', row_index,
+            [["AJ", "Peer reviewed journal article"],
+             ["AP", "Other peer reviewed paper"],
+             ["AN", "Non-peer reviewed paper"],
+             ["B", "Book or book chapter"],
+             ["M", "Media publication"],
+             ["D", "Dataset"],
+             ["S", "Software"],
+             ["P", "Patent"],
+             ["O", "Other"],
+             ["U", "Unspecified", "selected"]]);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
         //doi
         new_row += "<div class='form-group '>";
         new_row += create_input_field_label(opts, 'doi', 'Digital Object Identifier(DOI)', row_index, false, "Provide the research output&apos;s DOI.  For example: &apos;10.23456/more-stuff&apos;.  A DOI is mandatory for peer-reviewed publications.");
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
-        new_row += create_input_field(opts, 'doi', 'DOI', row_index);
+        new_row += create_input_field(opts, 'doi', 'DOI',
+                                      'style="width:420px" maxlength="256"',
+                                      row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
         //publication
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'publication', 'Publication/Output', row_index, false, "Provide a citation style text reference for this research output; e.g. include article/title, journal/outlet and year.");
+        new_row += create_input_field_label(opts, 'publication', 'Citation reference', row_index, false, "A full citation style text reference for this research output; e.g. include article/title, journal, journal/outlet and year.");
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
-        new_row += create_input_field(opts, 'publication', 'Publication', row_index);
+        new_row += create_textarea_field(opts, 'publication', 'Citation',
+                                         'cols="40" rows="10" style="height:120px; width:420px" maxlength="512"',
+                                         row_index);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
+        //title
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'title', 'Title of publication', row_index, false, "");
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_input_field(opts, 'title', 'Title',
+                                      'style="width:420px" maxlength="256"',
+                                      row_index);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
+        //year
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'year', 'Year published', row_index, false, "");
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_input_field(opts, 'year', 'Year', '', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
@@ -805,6 +848,19 @@ $(function(){
         new_row += "</td>";
         new_row += "</tr>";
         return new_row;
+    };
+
+    function create_select_field(opts, field_name, row_index, options){
+        var select = "<select name='"+ opts.prefix + "-" + row_index + "-" + field_name + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name +"' class='form-control'>";
+        for (var i = 0; i < options.length; i++) {
+            select += "<option value='" + options[i][0] + "'";
+            if (options[i].length > 2) {
+                select += " " + options[i][2];
+            }
+            select += ">" + options[i][1] + "</option>";
+        }
+        select += "</select>";
+        return select;
     };
 
     function create_input_field_label(opts, field_name, field_label, row_index, required, help_text){
@@ -827,8 +883,12 @@ $(function(){
         return help_span;
     };
 
-    function create_input_field(opts, field_name, field_label, row_index){
-        return "<input type='text' name='" + opts.prefix + "-" + row_index + "-" + field_name + "' maxlength='500' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' class='form-control'>";
+    function create_input_field(opts, field_name, field_label, extra, row_index){
+        return "<input type='text' name='" + opts.prefix + "-" + row_index + "-" + field_name + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' " + extra + " class='form-control'>";
+    };
+
+    function create_textarea_field(opts, field_name, field_label, extra, row_index){
+        return "<textarea name='" + opts.prefix + "-" + row_index + "-" + field_name + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' " + extra + " class='form-control'></textarea>";
     };
 
     function delete_form_row(formset, opts, span){

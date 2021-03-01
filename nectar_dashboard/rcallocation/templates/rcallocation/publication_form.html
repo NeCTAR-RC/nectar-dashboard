@@ -11,8 +11,11 @@
             </td>
             <td>
               <div class="publication_div">
+                {% include "rcallocation/field.html" with field=publication_form.output_type %}
                 {% include "rcallocation/field.html" with field=publication_form.doi %}
                 {% include "rcallocation/field.html" with field=publication_form.publication %}
+                {% include "rcallocation/field.html" with field=publication_form.title %}
+                {% include "rcallocation/field.html" with field=publication_form.year %}
               </div>
             </td>
             <td>
