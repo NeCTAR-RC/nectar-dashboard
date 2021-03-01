@@ -16,6 +16,7 @@ from django.urls import reverse
 
 from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import grant_type as nectar_grant_type
+from nectar_dashboard.rcallocation import output_type_choices
 from nectar_dashboard.rcallocation import project_duration_choices
 
 
@@ -728,22 +729,54 @@ VALIDATE_DOI = RegexValidator(regex=DOI_PATTERN,
 
 
 class Publication(models.Model):
+    # Only 'Peer reviewed journal article' (AJ) pubs need to be reported
+    # to NCRIS.  Unspecified (U) should not be used in new publications
+    output_type = models.CharField(
+        'Research Output type',
+        choices=output_type_choices.OUTPUT_TYPE_CHOICE,
+        max_length=2,
+        default='U',  # 'Unspecified'
+        help_text="""Select a publication type that best describes
+                the publication.  The 'Media publication' type is 
+                intended to encompass traditional media and 'new'
+                media such as websites, blogs and social media.""") 
+    
     publication = models.CharField(
-        'Publication/Output',
+        'Citation reference',
         max_length=512,
-        help_text="""Provide a citation style text reference
+        help_text="""A full citation style text reference
                 for this research output; e.g. include article/title,
-                journal/outlet and year.""")
+                authors, journal/outlet and year.""",
+        blank=True)
 
+    # Required for 'AJ' publications for NCRIS.  Also will be used for
+    # validating that the publication is an outcome of the allocation
+    # rather that supporting evidence for the allocation request.
+    year = models.IntegerField(
+        'Year published',
+        null=True)
+
+    # Required for 'AJ' publications for NCRIS
+    title = models.CharField(
+        'Title of publication',
+        max_length=256,
+        blank=True)
+
+    # Required for 'AJ' publications for NCRIS
     doi = models.CharField(
         "Digital Object Identifier (DOI)",
-        blank=True,
-        null=True,
         validators=[VALIDATE_DOI],
         max_length=256,
         help_text="""Provide the research output's DOI.  For example:
                '10.23456/more-stuff'.  A DOI is mandatory for peer-reviewed
-               publications.""")
+               publications.""",
+        blank=True,
+        default='')
+
+    # Validated == True means that the DOI has been looked up in CrossRef.
+    # When this is done, the 'title' and 'year' should be repopoulated
+    # from metadata retirned by CrossRef
+    doi_validated = models.BooleanField(blank=True, default=False)
 
     allocation = models.ForeignKey(AllocationRequest,
                                    related_name='publications',
