@@ -1,5 +1,6 @@
 {% if field %}
-  <div class="form-group {% if field.errors %}has-error{% endif %}">
+<div class="form-group {% if field.errors %}has-error{% endif %}"
+     id="id_{{ field.html_name }}-group" {% if hide %}hidden{% endif %}>
     <label for="id_{{ field.html_name }}">
       {{ field.label }}
       {% if field.field.required %}
@@ -14,6 +15,13 @@
         {% block field %}
           {{ field }}
         {% endblock %}
+        {% if button %}
+        &nbsp;
+        <button type='button' id='{{ button }}'
+                class='pull-right btn btn-default'>
+          {{ button_text }}
+        </button>
+        {% endif %}
       </div>
       {% for error in field.errors %}
         <span class="help-block">{{ error }}</span>
