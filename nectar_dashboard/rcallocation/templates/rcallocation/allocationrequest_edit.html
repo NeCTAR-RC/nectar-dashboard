@@ -324,6 +324,49 @@
       </div>
     </div>
 
+    <!-- DOI checker modal dialog -->
+    <div id="modal-doi-checker" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">DOI Checker</h4>
+          </div>
+          <div class="modal-body">
+            <div id="doi-checking" hidden>
+              Checking DOI ...
+            </div>
+            <div id="doi-checked">
+              <table>
+                <tr>
+                  <td>DOI</td>
+                  <td><input id="doi-doi" value=""></td>
+                </tr>
+                <tr>
+                  <td>Title</td>
+                  <td><input id="doi-title" value=""></td>
+                </tr>
+                <tr>
+                  <td>Authors</td>
+                  <td><input id="doi-authors" value=""></td>
+                </tr>
+                <tr>
+                  <td>Publication</td>
+                  <td><input id="doi-publication" value=""></td>
+                </tr>
+                <tr>
+                  <td>Year</td>
+                  <td><input id="doi-year" value=""></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       /* For browsers that don't recognize the autofocus attribute... */
       if (!("autofocus" in document.createElement("input"))) {
