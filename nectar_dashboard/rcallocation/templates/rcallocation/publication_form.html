@@ -11,8 +11,12 @@
             </td>
             <td>
               <div class="publication_div">
+                {% include "rcallocation/field.html" with field=publication_form.output_type %}
                 {% include "rcallocation/field.html" with field=publication_form.doi %}
                 {% include "rcallocation/field.html" with field=publication_form.publication %}
+                {% if publication_form.crossref_metadata.value|length > 0 %}
+                   Here be draggones
+                {% endif %}
               </div>
             </td>
             <td>
