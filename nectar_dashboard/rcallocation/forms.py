@@ -378,6 +378,8 @@ class PublicationForm(NectarBaseModelForm):
                 return match.group(1)
             else:
                 return doi
+        else:
+            return ''
 
 
 class GrantForm(NectarBaseModelForm):
