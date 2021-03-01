@@ -16,6 +16,7 @@ from django.urls import reverse
 
 from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import grant_type as nectar_grant_type
+from nectar_dashboard.rcallocation import output_type_choices
 from nectar_dashboard.rcallocation import project_duration_choices
 
 
@@ -725,25 +726,49 @@ VALIDATE_DOI = RegexValidator(regex=DOI_PATTERN,
                                       the restriction that there are no
                                       whitespace or control chars in
                                       <characters>""")
+OUTPUT_TYPE_CHOICES = ((None, "Select an output type"),) \
+                      + output_type_choices.OUTPUT_TYPE_CHOICE
 
 
 class Publication(models.Model):
-    publication = models.CharField(
-        'Publication/Output',
-        max_length=512,
-        help_text="""Provide a citation style text reference
-                for this research output; e.g. include article/title,
-                journal/outlet and year.""")
+    # Only 'Peer reviewed journal article' (AJ) pubs need to be reported
+    # to NCRIS.  Unspecified (U) should not be used in new publications
+    output_type = models.CharField(
+        'Research Output type',
+        choices=OUTPUT_TYPE_CHOICES,
+        max_length=2,
+        default=output_type_choices.UNSPECIFIED,
+        help_text="""Select a publication type that best describes
+                the publication.  The 'Media publication' type is
+                intended to encompass traditional media and 'new'
+                media such as websites, blogs and social media.""")
 
+    publication = models.CharField(
+        'Details of Research Output',
+        max_length=512,
+        help_text="""Provide details of the Research Output according to its
+                type.  For example a Paper or Book's citation, a Dataset's
+                title and URI, Software product's name and website URL,
+                a Patent's title and number.  This field should not be
+                used for Research Outputs with DOIs known to CrossRef.""",
+        blank=True)
+
+    # Required for 'AJ' publications for NCRIS
     doi = models.CharField(
         "Digital Object Identifier (DOI)",
-        blank=True,
-        null=True,
         validators=[VALIDATE_DOI],
         max_length=256,
-        help_text="""Provide the research output's DOI.  For example:
-               '10.23456/more-stuff'.  A DOI is mandatory for peer-reviewed
-               publications.""")
+        help_text="""Provide the Research Output's DOI.  A DOI should be
+               provided for all books and peer-reviewed papers.  A valid
+               DOI starts with '10.&lt;number&gt;/'.  This is followed by
+               letters, numbers and other characters.  For example:
+               '10.23456/abc-123'.""",
+        blank=True,
+        default='')
+
+    # Cached results of a CrossRef lookup for the DOI.  JSON.  This will
+    # be the source for the rendering the publication details.
+    crossref_metadata = models.TextField(blank=True)
 
     allocation = models.ForeignKey(AllocationRequest,
                                    related_name='publications',
