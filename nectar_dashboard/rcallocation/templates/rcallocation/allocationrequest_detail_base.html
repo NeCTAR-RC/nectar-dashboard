@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load publication_extras %}
 
 {% block title %}View allocation request{% endblock title %}
 
@@ -323,16 +324,28 @@
                     {% for pub in allocation.publications.all %}
                         {% if forloop.first %}
                         <tr>
-                            <th>Publication/Output</th>
+                            <th>Type</th>
                             <th>DOI</th>
+                            <th>Details</th>
                         </tr>
                         {% endif %}
                         <tr>
                             <td>
-                                {{ pub.publication }}
+                              {{ pub.output_type|output_type_descr }}
                             </td>
                             <td>
-                                {{ pub.doi }}
+                              {% autoescape on %}
+                              {{ pub.doi }}
+                              {% endautoescape %}
+                            </td>
+                            <td>
+                              {% autoescape on %}
+                              {% if pub.crossref_metadata|length > 0 %}
+                              {{ pub.crossref_metadata|crossref_summary }}
+                              {% else %}
+                              {{ pub.publication }}
+                              {% endif %}
+                              {% endautoescape %}
                             </td>
                         </tr>
                     {% endfor %}
