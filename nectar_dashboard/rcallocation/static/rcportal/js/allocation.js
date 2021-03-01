@@ -777,21 +777,73 @@ $(function(){
         new_row += "</td>";
         new_row += "<td>";
         new_row += "<div class='publication_div'>";
+        //output_type
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'output_type', 'Research Output type', row_index, false, "Select a publication type that best describes the publication.  The &apos;Media publication&apos; type is intended to encompass traditional media and &apos;new&apos; media such as websites, blogs and social media.");
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_select_field(opts, 'output_type', row_index,
+            [["AJ", "Peer reviewed journal article"],
+             ["AP", "Other peer reviewed paper"],
+             ["AN", "Non-peer reviewed paper"],
+             ["B", "Book or book chapter"],
+             ["M", "Media publication"],
+             ["D", "Dataset"],
+             ["S", "Software"],
+             ["P", "Patent"],
+             ["O", "Other"],
+             ["U", "Unspecified", "selected"]]);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
         //doi
         new_row += "<div class='form-group '>";
         new_row += create_input_field_label(opts, 'doi', 'Digital Object Identifier(DOI)', row_index, false, "Provide the research output&apos;s DOI.  For example: &apos;10.23456/more-stuff&apos;.  A DOI is mandatory for peer-reviewed publications.");
         new_row += "<div class='controls'>";
+        new_row += "<div class='form-inline'>";
         new_row += "<div class='input-group'>";
-        new_row += create_input_field(opts, 'doi', 'DOI', row_index);
+        new_row += create_input_field(opts, 'doi', 'text',
+                                      'style="width:420px" maxlength="256"',
+                                      row_index);
+        new_row += "</div>";
+        new_row += " "; // whitespace between ...
+        new_row += "<div class='input-group'>";
+        new_row += create_input_field(opts, 'doi_validated_fake', 'checkbox',
+                                      'disabled', row_index);
+        new_row += create_input_field(opts, 'doi_validated', 'hidden',
+                                      '', row_index);
+        new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
         //publication
         new_row += "<div class='form-group '>";
-        new_row += create_input_field_label(opts, 'publication', 'Publication/Output', row_index, false, "Provide a citation style text reference for this research output; e.g. include article/title, journal/outlet and year.");
+        new_row += create_input_field_label(opts, 'publication', 'Citation reference', row_index, false, "A full citation style text reference for this research output; e.g. include article/title, journal, journal/outlet and year.");
         new_row += "<div class='controls'>";
         new_row += "<div class='input-group'>";
-        new_row += create_input_field(opts, 'publication', 'Publication', row_index);
+        new_row += create_textarea_field(opts, 'publication',
+                                         'cols="40" rows="10" style="height:120px; width:420px" maxlength="512"',
+                                         row_index);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
+        //title
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'title', 'Title of publication', row_index, false, "");
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_input_field(opts, 'title', 'text',
+                                      'style="width:420px" maxlength="256"',
+                                      row_index);
+        new_row += "</div>";
+        new_row += "</div>";
+        new_row += "</div>";
+        //year
+        new_row += "<div class='form-group '>";
+        new_row += create_input_field_label(opts, 'year', 'Year published', row_index, false, "");
+        new_row += "<div class='controls'>";
+        new_row += "<div class='input-group'>";
+        new_row += create_input_field(opts, 'year', 'text', '', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
@@ -799,12 +851,28 @@ $(function(){
         new_row += "</div>"
         new_row += "</td>";
         new_row += "<td>";
+        new_row += "<button type='button' id='check-doi' class='pull-right btn btn-default'>";
+        new_row += "Check DOI";
+        new_row += "</button>";
         new_row += "<button type='button' id='delete-publication' class='pull-right btn btn-default'>";
         new_row += "Delete";
         new_row += "</button>";
         new_row += "</td>";
         new_row += "</tr>";
         return new_row;
+    };
+
+    function create_select_field(opts, field_name, row_index, options){
+        var select = "<select name='"+ opts.prefix + "-" + row_index + "-" + field_name + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name +"' class='form-control'>";
+        for (var i = 0; i < options.length; i++) {
+            select += "<option value='" + options[i][0] + "'";
+            if (options[i].length > 2) {
+                select += " " + options[i][2];
+            }
+            select += ">" + options[i][1] + "</option>";
+        }
+        select += "</select>";
+        return select;
     };
 
     function create_input_field_label(opts, field_name, field_label, row_index, required, help_text){
@@ -827,12 +895,15 @@ $(function(){
         return help_span;
     };
 
-    function create_input_field(opts, field_name, field_label, row_index){
-        return "<input type='text' name='" + opts.prefix + "-" + row_index + "-" + field_name + "' maxlength='500' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' class='form-control'>";
+    function create_input_field(opts, field_name, type, extra, row_index){
+        return "<input type='" + type + "' name='" + opts.prefix + "-" + row_index + "-" + field_name + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' " + extra + " class='form-control'>";
+    };
+
+    function create_textarea_field(opts, field_name, extra, row_index){
+        return "<textarea name='" + opts.prefix + "-" + row_index + "-" + field_name + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' " + extra + " class='form-control'></textarea>";
     };
 
     function delete_form_row(formset, opts, span){
-        var span_id = span.attr('id');
         var current_tr = span.closest('tr');
         //check the input id field is empty or not
         var id_input = current_tr.find('input[id$=-id]');
@@ -854,6 +925,47 @@ $(function(){
         var total_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr').length;
         var total_forms_input = $('#id_' + opts.prefix + '-TOTAL_FORMS');
         total_forms_input.val(total_rows);
+    };
+
+
+    function format_authors(authors) {
+        return authors.map(author => author.given ?
+                           (author.family + "," + author.given) :
+                           author.family).join(";");
+    };
+
+    function check_doi(span){
+        var current_tr = span.closest('tr');
+        var doi_input = current_tr.find('input[id$=-doi]');
+        var doi = doi_input.attr('value');
+        $('#doi-id').val(doi_input.attr('id'));
+        $('#doi-doi').val(doi);
+        $('#doi-checker-state').val('checking');
+        $('#doi-title').val('');
+        $('#doi-publication').val('');
+        $('#doi-authors').val('');
+        $('#doi-year').val('')
+        $('#modal-doi-checker').modal('show');
+        $.ajax({
+            url: "https://api.crossref.org/works/" + doi,
+            dataType: "json"
+        }).done(function(data, text, jqxhr) {
+            $('#modal-doi-checker').modal('toggle');
+            $('#doi-checker-state').val('found');
+            $('#doi-title').val(data.message['title']);
+            $('#doi-publication').val(data.message['container-title']);
+            $('#doi-authors').val(format_authors(data.message['author']));
+            $('#doi-year').val(data.message['published-print']['date-parts'][0][0]);
+            $('#modal-doi-checker').modal('toggle');
+        }).fail(function(jqxhr, text, errorThrown) {
+            $('#modal-doi-checker').modal('toggle');
+            if (jqxhr.status == 404) {
+                $('#doi-checker-state').val('not-found');
+            } else {
+                $('#doi-checker-state').val('failed');
+            }
+            $('#modal-doi-checker').modal('toggle');
+        });
     };
 
     function resort_form_rows(formset, opts){
@@ -894,7 +1006,6 @@ $(function(){
         });
     };
 
-
     $.fn.pformset = function(options) {
         var opts = $.extend( {}, $.fn.pformset.defaults, options );
          return this.each(function() {
@@ -905,11 +1016,14 @@ $(function(){
                  create_form_row(formset, opts);
                  apply_popover();
              });
-
              $('div.'+ options.formset_class_id).on('click', '#delete-publication', function (event){
                  event.preventDefault();
                  var clicked_span = $(this);
                  delete_form_row(formset, opts, clicked_span);
+             });
+             $('div.'+ options.formset_class_id).on('click', '#check-doi', function (event){
+                 event.preventDefault();
+                 check_doi($(this))
              });
          });
     };
@@ -920,6 +1034,70 @@ $(function(){
     };
 
 }(jQuery));
+
+$(document).on('ready', function (event){
+    $('input[id$=-doi]').each(function() {
+        var tr = $(this).closest('tr');
+        var validated = tr.find('input[id$=-doi_validated]');
+        var validated_fake = tr.find('input[id$=-doi_validated_fake]');
+        var valid = validated.attr('value');
+        if (valid == '0' || valid == 'false') {
+            validated_fake.prop('checked', false);
+        } else {
+            validated_fake.prop('checked', true);
+        }
+    });
+});
+
+$('#modal-doi-checker').on('shown.bs.modal', function (e) {
+    var state = $('#doi-checker-state').attr('value');
+    if (state == 'checking') {
+        $('#doi-checking').show();
+    } else {
+        $('#doi-checking').hide();
+    }
+    if (state == 'found') {
+        $('#doi-found').show();
+        $('#doi-accept').show();
+        $('#doi-reject').show();
+        $('#doi-close').hide();
+    } else {
+        $('#doi-found').hide();
+        $('#doi-accept').hide();
+        $('#doi-reject').hide();
+        $('#doi-close').show();
+    }
+    if (state == 'not-found') {
+        $('#doi-not-found').show();
+    } else {
+        $('#doi-not-found').hide();
+    }
+    if (state == 'failed') {
+        $('#doi-failed').show();
+    } else {
+        $('#doi-failed').hide();
+    }
+});
+
+function reject_doi(e) {
+    var doi_id = $('#doi-id').attr('value');
+    $('#' + doi_id + '_validated').val('0');
+    $('#' + doi_id + '_validated_fake').prop('checked', false);
+};
+
+function accept_doi(e) {
+    var doi_id = $('#doi-id').attr('value');
+    $('#' + doi_id + '_validated').val('1');
+    $('#' + doi_id + '_validated_fake').prop('checked', true)
+    var title_id = doi_id.replace(/-doi$/, '-title');
+    $('#' + title_id).val($('#doi-title').attr('value'))
+    var year_id = doi_id.replace(/-doi$/, '-year');
+    $('#' + year_id).val($('#doi-year').attr('value'))
+};
+
+$('#doi-close').click(reject_doi);
+$('#doi-reject').click(reject_doi);
+$('#doi-accept').click(accept_doi);
 
 $(function() {
     //date picker

@@ -275,7 +275,13 @@ def request_allocation(user, model=None, quota_specs=None,
                         for ins in model.institutions.all()]
 
         publications = [{'id': pub.id,
-                         'publication': pub.publication}
+                         'publication': pub.publication,
+                         'output_type': pub.output_type,
+                         'year': pub.year,
+                         'title': pub.title,
+                         'doi': pub.doi,
+                         'doi_validated': pub.doi_validated
+                        }
                         for pub in model.publications.all()]
 
         grants = [{'id': grant.id,
@@ -317,7 +323,12 @@ def request_allocation(user, model=None, quota_specs=None,
         if not publications:
             publications = [
                 {'id': '',
-                 'publication': 'publication testing'}]
+                 'publication': 'publication testing',
+                 'output_type': 'AN',
+                 'year': 2020,
+                 'title': 'Meta-meta is better better',
+                 'doi': '',
+                 'doi_validated': False}]
 
         if not grants:
             grants = [{

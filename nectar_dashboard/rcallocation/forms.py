@@ -341,7 +341,7 @@ class NectarBaseModelForm(forms.ModelForm):
         self.empty_permitted = False
         for field in self.fields.values():
             field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
+                field.widget.attrs.get('class', '') + ' form-control')
 
 
 class ChiefInvestigatorForm(NectarBaseModelForm):
@@ -365,6 +365,15 @@ DOI_PROTOCOL_PATTERN_2 = re.compile("(?i)^https?:[a-z0-9./_\\-]+?/(10\\..+)$")
 class PublicationForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Publication
+        widgets = {
+            'publication': forms.Textarea(
+                attrs={'style': 'height:120px; width:420px'}),
+            'doi': forms.TextInput(
+                attrs={'style': 'width:420px'}),
+            'doi_validated': forms.HiddenInput(),
+            'title': forms.TextInput(
+                attrs={'style': 'width:420px'}),
+        }
 
     def clean_doi(self):
         # Quietly strip off a "doi:" prefix or resolver URL if provided.
@@ -378,6 +387,31 @@ class PublicationForm(NectarBaseModelForm):
                 return match.group(1)
             else:
                 return doi
+        else:
+            return ''
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # publication_type = cleaned_data.get('publication_type', '')
+        doi = cleaned_data.get('doi', '')
+        publication = cleaned_data.get('publication', '')
+        title = cleaned_data.get('title', '')
+        # year = cleaned_data.get('year', None)
+        doi_validated = cleaned_data.get('doi_validated', False)
+        if not (publication or title):
+            self.add_error(
+                'publication',
+                ValidationError(
+                    'A publication title or citation is required'))
+            self.add_error(
+                'title',
+                ValidationError(
+                    'A publication title or citation is required'))
+        if doi_validated:
+            if not doi:
+                cleaned_data['doi_validated'] = False
+            # TODO(SCC): repeat the CrossRef DOI lookup and check that the
+            # 'year' and 'title' match the retrieved metadata.
 
 
 class GrantForm(NectarBaseModelForm):
