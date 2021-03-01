@@ -174,7 +174,7 @@ class FormsTestCase(helpers.TestCase):
             'publication': 'Mary had a little lamb',
             'allocation': self.allocation.id})
         form.is_valid()
-        self.assertIsNone(form.cleaned_data['doi'])
+        self.assertEqual(form.cleaned_data['doi'], '')
 
         # DOI is OK
         form = forms.PublicationForm(data={
