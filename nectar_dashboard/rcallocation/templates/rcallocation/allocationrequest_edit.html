@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load publication_extras %}
 
 {% block title %}Allocation Request{% endblock title %}
 
@@ -319,6 +320,89 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOI checker modal dialog -->
+    <div id="modal-doi-checker" class="modal" tabindex="-1"
+         role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">DOI Checker</h4>
+          </div>
+          <div class="modal-body">
+            <div id="doi-checking" class="alert alert-primary" hidden>
+              Looking up the DOI ...
+            </div>
+            <div id="doi-failed" class="alert alert-danger" hidden>
+              DOI lookup failure.  There is a problem with the CrossRef
+              DOI service.  Either try again, or skip validation for this
+              DOI.
+            </div>
+            <div id="doi-not-found" class="alert alert-warning" hidden>
+              DOI not found.  Either you have mis-entered the DOI,
+              or this is a valid DOI that the CrossRef DOI service does
+              not know about.  Please check the place that you got the
+              DOI from.  (You could also try visiting the CrossRef site
+              and searching for the correct DOI there.)
+            </div> 
+           <div id="doi-found" class="alert alert-success" hidden>
+              DOI found.  Please the details below and confirm that
+              this is the correct DOI for the Research Output that
+              you are adding to the Allocation Request Form.
+            </div>
+            <input id="doi-checker-state" value="" hidden>
+            <input id="doi-row" value="" hidden>
+            <input id="doi-crossref" value="" hidden>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-3">DOI</div>
+                <div class="col-md-9">
+                  <input id="doi-doi" style="width: 100%" value="" readonly>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">Title</div>
+                <div class="col-md-9">
+                  <input id="doi-title" style="width: 100%" value=""  readonly>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">Authors</div>
+                <div class="col-md-9">
+                  <input id="doi-authors" style="width: 100%" value="" readonly>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">Publication</div>
+                <div class="col-md-9">
+                  <input id="doi-publication" style="width: 100%" value=""  readonly>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">Year</div>
+                <div class="col-md-9">
+                  <input id="doi-year" style="width: 100%" value="" readonly>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="doi-accept" class="btn btn-default"
+                    data-dismiss="modal">
+              Reference details are correct.
+            </button>
+            <button type="button" id="doi-reject" class="btn btn-default"
+                    data-dismiss="modal">
+              Reference details are incorrect.
+            </button>
+            <button type="button" id="doi-close" class="btn btn-default"
+                    data-dismiss="modal">
+              Close
+            </button>
           </div>
         </div>
       </div>
