@@ -72,7 +72,7 @@
   {% endif %}
   <form id="new-allocation"
         action="{% block form_action %}{% url 'horizon:allocation:request:request' %}{% endblock %}"
-        method="post">
+        method="post" novalidate="novalidate">
     {% csrf_token %}
     {% for hidden in form.hidden_fields %}
       {{ hidden }}
