@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e420128a_39091f08",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-03-09T23:55:52Z",
+      "side": 1,
+      "message": "Read it again.  It adds an error if (and only if) neither is provided.",
+      "parentUuid": "30bd5ac3_c1e2c3d9",
+      "range": {
+        "startLine": 401,
+        "startChar": 0,
+        "endLine": 408,
+        "endChar": 67
+      },
+      "revId": "23b5383631df996e1c494ab255cf753b9df3eef2",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "881dd197_a9caad5a",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 11
@@ -45,6 +69,30 @@
       "revId": "23b5383631df996e1c494ab255cf753b9df3eef2",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6673e707_5df61ffb",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-03-09T23:55:52Z",
+      "side": 1,
+      "message": "That would be inconsistent with the way that FoR codes, Grant types and project durations have been implemented.  That\u0027s why I did it this way.  To be consistent with \u003e\u003ethose\u003c\u003c modules.\n\nAnd if we are talking about shitty modularization, take a look at the rcallocation api module where everything has been thrown into __init__.py.\n\nIf you want to fix up the module structure it should be a separate campaign.",
+      "parentUuid": "881dd197_a9caad5a",
+      "range": {
+        "startLine": 736,
+        "startChar": 16,
+        "endLine": 736,
+        "endChar": 55
+      },
+      "revId": "23b5383631df996e1c494ab255cf753b9df3eef2",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "3c6d2c4b_3d4faf6b",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 738,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-03-09T23:55:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "78352555_5177f6c0",
+      "range": {
+        "startLine": 738,
+        "startChar": 16,
+        "endLine": 738,
+        "endChar": 19
+      },
+      "revId": "23b5383631df996e1c494ab255cf753b9df3eef2",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "81a777a7_3654d8f4",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 11
@@ -82,6 +154,30 @@
       "writtenOn": "2021-03-09T21:59:50Z",
       "side": 1,
       "message": "maybe it\u0027s a good idea to make this a custom YearField and then use this for the publication year above too?",
+      "range": {
+        "startLine": 833,
+        "startChar": 1,
+        "endLine": 851,
+        "endChar": 5
+      },
+      "revId": "23b5383631df996e1c494ab255cf753b9df3eef2",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aea64790_a8303a80",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 851,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-03-09T23:55:52Z",
+      "side": 1,
+      "message": "Actually, I\u0027m thinking no.  One of the things I want to discuss is whether the Year and Title field should actually be 1) only enterable via the DOI lookup and 2) hidden from the user.",
+      "parentUuid": "81a777a7_3654d8f4",
       "range": {
         "startLine": 833,
         "startChar": 1,
