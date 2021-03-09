@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "30bd5ac3_c1e2c3d9",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-03-09T21:59:50Z",
+      "side": 1,
+      "message": "this will add errors to both fields even if one or the other is provided, why not just make the fields required?",
+      "range": {
+        "startLine": 401,
+        "startChar": 0,
+        "endLine": 408,
+        "endChar": 67
+      },
+      "revId": "23b5383631df996e1c494ab255cf753b9df3eef2",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "881dd197_a9caad5a",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-03-09T21:59:50Z",
+      "side": 1,
+      "message": "instead of putting this in another module it would be better to do it the way we do allocation request state, See near top of file",
+      "range": {
+        "startLine": 736,
+        "startChar": 16,
+        "endLine": 736,
+        "endChar": 55
+      },
+      "revId": "23b5383631df996e1c494ab255cf753b9df3eef2",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78352555_5177f6c0",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 738,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-03-09T21:59:50Z",
+      "side": 1,
+      "message": "then this should be a variable too",
+      "range": {
+        "startLine": 738,
+        "startChar": 16,
+        "endLine": 738,
+        "endChar": 19
+      },
+      "revId": "23b5383631df996e1c494ab255cf753b9df3eef2",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81a777a7_3654d8f4",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 851,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-03-09T21:59:50Z",
+      "side": 1,
+      "message": "maybe it\u0027s a good idea to make this a custom YearField and then use this for the publication year above too?",
+      "range": {
+        "startLine": 833,
+        "startChar": 1,
+        "endLine": 851,
+        "endChar": 5
+      },
+      "revId": "23b5383631df996e1c494ab255cf753b9df3eef2",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
