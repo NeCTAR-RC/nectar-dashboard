@@ -140,9 +140,12 @@ class BaseAllocationForm(forms.ModelForm):
         return self._errors.get('FOR_ERRORS', [])
 
     def clean_project_name(self):
+        # There are stricter validations implemented in the
+        # AllocationRequestForm class.
         data = self.cleaned_data['project_name']
         if data and data.startswith('pt-'):
-            raise forms.ValidationError("Projects can not start with pt-")
+            raise forms.ValidationError(
+                "Project names cannot start with 'pt-'")
         return data
 
     def clean(self):
@@ -174,9 +177,14 @@ class AllocationRequestForm(BaseAllocationForm):
 
     project_name = forms.CharField(
         validators=[
-            RegexValidator(regex=r'^[a-zA-Z][-_a-zA-Z0-9]{1,31}$',
+            RegexValidator(regex=r'^[a-zA-Z][-_a-zA-Z0-9]+$',
                            message='Letters, numbers, underscore and '
-                                   'hyphens only. Must start with a letter.')],
+                                   'hyphens only. Must start with a letter.'),
+            RegexValidator(regex=r'^.{5,32}$',
+                           message='Between 5 and 32 characters required.'),
+            RegexValidator(regex=r'^pt[_-].*$',
+                           inverse_match=True, flags=re.I,
+                           message='Must not start with "pt-" or similar.')],
         max_length=32,
         label='Project Identifier',
         required=True,
