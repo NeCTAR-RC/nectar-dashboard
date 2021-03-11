@@ -59,6 +59,67 @@ class FormsTestCase(helpers.TestCase):
         form = forms.BaseAllocationForm(data=DUMMY_ALLOC_DATA)
         self.assertTrue(form.is_valid())
 
+    def test_validating_project_name(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['project_name'] = 'pt-10001'
+
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(["Project names cannot start with 'pt-'"],
+                         form.errors['project_name'])
+
+        data['project_name'] = 'pt_10001'
+        form = forms.BaseAllocationForm(data=data)
+        self.assertTrue(form.is_valid())
+
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Must not start with "pt-" or similar.'],
+                         form.errors['project_name'])
+
+        data['project_name'] = 'pt_10001'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Must not start with "pt-" or similar.'],
+                         form.errors['project_name'])
+
+        data['project_name'] = 'PT_10001'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Must not start with "pt-" or similar.'],
+                         form.errors['project_name'])
+
+        data['project_name'] = 'abc'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Between 5 and 31 characters required.'],
+                         form.errors['project_name'])
+
+        data['project_name'] = '-abcdef'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Letters, numbers, underscore and hyphens '
+                          'only. Must start with a letter.'],
+                         form.errors['project_name'])
+
+        data['project_name'] = '123-abc'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Letters, numbers, underscore and hyphens '
+                          'only. Must start with a letter.'],
+                         form.errors['project_name'])
+
+        data['project_name'] = 'abc[123]'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Letters, numbers, underscore and hyphens '
+                          'only. Must start with a letter.'],
+                         form.errors['project_name'])
+
+        data['project_name'] = 'abc-123'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertTrue(form.is_valid())
+
     def test_validating_survey_types(self):
         data = DUMMY_ALLOC_DATA.copy()
         data['usage_types'] = ['Rubbish']
