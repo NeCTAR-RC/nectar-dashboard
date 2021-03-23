@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a434844_dc1fb303",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-03-23T10:13:49Z",
+      "side": 1,
+      "message": "is this default just for the migration? Isn\u0027t there a way to specify a default at migration time but not specify it in the model as I assume this field is required and that unspecified isn\u0027t what we want here so could not specify a default?",
+      "range": {
+        "startLine": 740,
+        "startChar": 16,
+        "endLine": 740,
+        "endChar": 48
+      },
+      "revId": "fc797bdcd561f457a7011635fd820bbd20e483af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a58524bb_a9b9d7bc",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 754,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-03-23T10:13:49Z",
+      "side": 1,
+      "message": "this could be null too",
+      "range": {
+        "startLine": 754,
+        "startChar": 8,
+        "endLine": 754,
+        "endChar": 19
+      },
+      "revId": "fc797bdcd561f457a7011635fd820bbd20e483af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "067d29d8_34f8b652",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 765,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-03-23T10:13:49Z",
+      "side": 1,
+      "message": "and this could be null (keep it the same as before) unless I\u0027m missing something?",
+      "range": {
+        "startLine": 765,
+        "startChar": 8,
+        "endLine": 765,
+        "endChar": 19
+      },
+      "revId": "fc797bdcd561f457a7011635fd820bbd20e483af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02bcef61_01dd87e1",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 769,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-03-23T10:13:49Z",
+      "side": 1,
+      "message": "this could also be null",
+      "range": {
+        "startLine": 769,
+        "startChar": 41,
+        "endLine": 769,
+        "endChar": 52
+      },
+      "revId": "fc797bdcd561f457a7011635fd820bbd20e483af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "020446e8_c8079f42",
+        "filename": "nectar_dashboard/rcallocation/templatetags/publication_extras.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-03-23T10:13:49Z",
+      "side": 1,
+      "message": "this doesn\u0027t really need to be a template tag, it would make more sense to be a method (@property) on the Publication model, it would save a DB query too :-)",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 14
+      },
+      "revId": "fc797bdcd561f457a7011635fd820bbd20e483af",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
