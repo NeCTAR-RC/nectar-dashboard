@@ -434,6 +434,7 @@ class AllocationFilter(filters.FilterSet):
                   'project_name': ['exact', 'contains', 'icontains',
                                    'startswith', 'istartswith', 'endswith',
                                    'iendswith', 'regex'],
+                  'convert_trial_project': ['exact'],
                   'provisioned': ['exact'],
                   'parent_request': ['exact'],
                   'associated_site': ['exact'],
