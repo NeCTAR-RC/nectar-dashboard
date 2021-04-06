@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4a9cf54a_fc26aaec",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-04-06T21:52:27Z",
+      "side": 1,
+      "message": "I think this is a bit aggressive, can we make it more friendlier please. The sentence doesn\u0027t really need to be here at all.",
+      "range": {
+        "startLine": 286,
+        "startChar": 131,
+        "endLine": 286,
+        "endChar": 175
+      },
+      "revId": "f8ba645e01922df4117dab45c0754284a27759f0",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
