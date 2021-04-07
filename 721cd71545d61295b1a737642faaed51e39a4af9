@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "32e8fb8c_daea2f97",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-04-07T07:18:04Z",
+      "side": 1,
+      "message": "you should shorten this to just `ncris_facilities`",
+      "range": {
+        "startLine": 304,
+        "startChar": 4,
+        "endLine": 304,
+        "endChar": 30
+      },
+      "revId": "721cd71545d61295b1a737642faaed51e39a4af9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
