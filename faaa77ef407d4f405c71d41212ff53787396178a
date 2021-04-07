@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e02b66b7_4cd2c58f",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 411,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-04-07T11:17:42Z",
+      "side": 1,
+      "message": "This shouldn\u0027t be needed, see other comments in models.py",
+      "range": {
+        "startLine": 407,
+        "startChar": 0,
+        "endLine": 411,
+        "endChar": 55
+      },
+      "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8cb4b3e3_56a49ba1",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 730,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-04-07T11:17:42Z",
+      "side": 1,
+      "message": "it seems strange that this lives here, should it not be as part of the form?",
+      "range": {
+        "startLine": 729,
+        "startChar": 0,
+        "endLine": 730,
+        "endChar": 62
+      },
+      "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b76a040c_ca7ff341",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-04-07T11:17:42Z",
+      "side": 1,
+      "message": "I don\u0027t think this should be here, it makes no sense to default to something that is not valid.\n\nWhen creating the migration you can specify a value for existing rows so can set it to \u0027U\u0027 for those",
+      "range": {
+        "startLine": 740,
+        "startChar": 8,
+        "endLine": 740,
+        "endChar": 48
+      },
+      "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0253b55_3a389a97",
+        "filename": "nectar_dashboard/rcallocation/templatetags/publication_extras.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-04-07T11:17:42Z",
+      "side": 1,
+      "message": "you don\u0027t need to do this, choice fields already have this built in see\n\nhttps://docs.djangoproject.com/en/dev/ref/models/instances/#django.db.models.Model.get_FOO_display",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 55
+      },
+      "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
