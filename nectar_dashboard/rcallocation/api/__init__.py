@@ -15,6 +15,7 @@
 from functools import partial
 
 from django.conf import settings
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework import decorators
 from rest_framework import exceptions
@@ -342,17 +343,30 @@ class UsageTypesField(serializers.RelatedField):
                 "'%s' is not a known UsageType" % data)
 
 
+class NCRISFacilitiesField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.short_name
+
+    def to_internal_value(self, data):
+        try:
+            return models.NCRISFacility.objects.get(
+                Q(short_name=data) | Q(name=data))
+        except models.NCRISFacility.DoesNotExist:
+            raise serializers.ValidationError(
+                "'%s' is not a known NCRIS Facility" % data)
+
+
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
     chief_investigator = serializers.SerializerMethodField()
-    allocation_home = AllocationHomeField(source='*',
-                                          required=False)
+    allocation_home = AllocationHomeField(source='*', required=False)
     allocation_home_display = serializers.SerializerMethodField()
-    associated_site = AssociatedSiteField(allow_null=True,
-                                          required=False)
-    usage_types = UsageTypesField(many=True,
-                                  queryset=models.UsageType.objects.all())
+    associated_site = AssociatedSiteField(allow_null=True, required=False)
+    usage_types = UsageTypesField(
+        many=True, queryset=models.UsageType.objects.all())
+    ncris_facilities = NCRISFacilitiesField(
+        many=True, queryset=models.UsageType.objects.all())
 
     class Meta:
         model = models.AllocationRequest
@@ -460,7 +474,8 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     queryset = models.AllocationRequest.objects.prefetch_related(
         'quotas', 'quotas__quota_set', 'quotas__zone',
         'quotas__quota_set__resource__service_type',
-        'quotas__quota_set__resource', 'investigators', 'associated_site')
+        'quotas__quota_set__resource', 'investigators', 'associated_site',
+        'ncris_facilities', 'usage_types')
 
     filter_class = AllocationFilter
 
@@ -474,7 +489,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
                 'quotas', 'quotas__quota_set', 'quotas__zone',
                 'quotas__quota_set__resource__service_type',
                 'quotas__quota_set__resource', 'investigators',
-                'associated_site')
+                'associated_site', 'ncris_facilities', 'usage_types')
 
     def _perform_create_or_update(self, serializer, kwargs):
         data = serializer.validated_data
