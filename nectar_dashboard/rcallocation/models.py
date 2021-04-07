@@ -44,6 +44,19 @@ class UsageType(models.Model):
         return self.name
 
 
+class NCRISFacility(models.Model):
+    name = models.CharField(
+        'Full NCRIS facility name', max_length=200,
+        unique=True, blank=False)
+
+    short_name = models.CharField(
+        'Common short name or acronym', max_length=200,
+        unique=True, blank=False)
+
+    def __str__(self):
+        return self.short_name
+
+
 class AllocationRequest(models.Model):
     """An AllocationRequest represents a point in time in the history of
     a Nectar allocation.  The history is represented by the parent request
@@ -276,6 +289,10 @@ class AllocationRequest(models.Model):
         in furtherance of its goals, and 3) where this allocation
         will provide resources that benefit the project.""")
 
+    # Legacy: remove when the ncris_facility relation is populated
+    # for all current and historical allocation records.  Until then
+    # don't allow it to be entered, and hide it if the allocation
+    # record has any related NCRISFacility records.
     ncris_support = models.CharField(
         'List NCRIS capabilities supporting this request',
         blank=True,
@@ -285,6 +302,15 @@ class AllocationRequest(models.Model):
         For example, the requested resources may enable a project
         that the NCRIS facility is funding, or they may enable the
         provision of infrastructure for the facility.""")
+
+    ncris_explanation = models.CharField(
+        'NCRIS Support explanation',
+        blank=True,
+        max_length=1024,
+        help_text="""Explain how each listed NCRIS Facility supports or is
+        supported by this request.""")
+
+    ncris_facilities = models.ManyToManyField(NCRISFacility, blank=True)
 
     associated_site = models.ForeignKey(
         'Site',
