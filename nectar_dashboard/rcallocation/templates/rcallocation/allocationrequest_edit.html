@@ -293,7 +293,13 @@
       </div>
       <div class="col-md-12">
         {% include "rcallocation/medium_field.html" with field=form.nectar_support %}
-        {% include "rcallocation/medium_field.html" with field=form.ncris_support %}
+        {% include "rcallocation/medium_field.html" with field=form.ncris_facilities %}
+        {% include "rcallocation/medium_field.html" with field=form.ncris_explanation %}
+        {% if not form.ncris_facilities.value and object and object.ncris_support %}
+        <div>
+          Legacy NCRIS Support field: "{{ object.ncris_support }}"
+        </div>
+        {% endif %}
       </div>
     </div>
     <div class="form-actions">
