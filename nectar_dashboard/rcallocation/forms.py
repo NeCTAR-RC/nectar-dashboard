@@ -48,13 +48,25 @@ class BaseAllocationForm(forms.ModelForm):
     field_of_research_3 = FoRChoiceField("Third Field Of Research")
     usage_types = forms.ModelMultipleChoiceField(
         help_text="""Select one or more items that best describe what
-                     you are using the Nectar Research Cloud for.  If
-                     you select 'Other', include relevant details in the
-                     'Proposed Cloud Usage' textbox.
+        you are using the Nectar Research Cloud for.  If
+        you select 'Other', include relevant details in the
+        'Proposed Cloud Usage' textbox.
         """,
         error_messages={'required': 'Please check one or more of the above'},
         queryset=models.UsageType.objects.filter(enabled=True),
         widget=UsageFieldWidget(attrs={'class': 'form-inline list-unstyled'}),
+        to_field_name='name')
+    ncris_facilities = forms.ModelMultipleChoiceField(
+        label="NCRIS facilities supporting this request",
+        help_text="""Select NCRIS facilities where the facility management
+        actively supports this request in furtherance of its goals.
+        For example, the requested resources may enable a project
+        that the NCRIS facility is funding, or they may enable the
+        provision of infrastructure for the facility.
+        """,
+        required=False,
+        queryset=models.NCRISFacility.objects.all(),
+        widget=forms.SelectMultiple(attrs={}),
         to_field_name='name')
 
     class Meta:
@@ -62,7 +74,8 @@ class BaseAllocationForm(forms.ModelForm):
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
                    'associated_site', 'provisioned', 'managed',
-                   'project_id', 'notes', 'notifications')
+                   'project_id', 'notes', 'notifications', 'ncris_support'
+        )
 
         widgets = {
             'status_explanation': forms.Textarea(
@@ -95,7 +108,6 @@ class BaseAllocationForm(forms.ModelForm):
             'for_percentage_2': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_3': forms.Select(attrs={'class': 'col-md-2'}),
             'nectar_support': forms.TextInput(attrs={'class': 'col-md-12'}),
-            'ncris_support': forms.TextInput(attrs={'class': 'col-md-12'}),
         }
 
     groups = (
