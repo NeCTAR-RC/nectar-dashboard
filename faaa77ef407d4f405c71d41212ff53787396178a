@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "af357c5a_a7bf46c2",
+        "filename": "nectar_dashboard/rcallocation/forms.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 411,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-04-08T04:08:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e02b66b7_4cd2c58f",
+      "range": {
+        "startLine": 407,
+        "startChar": 0,
+        "endLine": 411,
+        "endChar": 55
+      },
+      "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8cb4b3e3_56a49ba1",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 28
@@ -45,6 +69,30 @@
       "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c7ce026_33037d63",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 730,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-04-08T04:08:45Z",
+      "side": 1,
+      "message": "We have been through this before with the grant type and subtype choices.  This is the way we do it.  The alternative is to instantiate and configure a FormField explicitly in the PublicationForm ... rather than letting the ModelForm class do it automatically.  If we wanted to be \"pure\" about it, the help_text would be in the form classes not the model classes.  (And this would save a bunch of useless migrations too.)",
+      "parentUuid": "8cb4b3e3_56a49ba1",
+      "range": {
+        "startLine": 729,
+        "startChar": 0,
+        "endLine": 730,
+        "endChar": 62
+      },
+      "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "553dea72_46c70a2d",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 740,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-04-08T04:08:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b76a040c_ca7ff341",
+      "range": {
+        "startLine": 740,
+        "startChar": 8,
+        "endLine": 740,
+        "endChar": 48
+      },
+      "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f0253b55_3a389a97",
         "filename": "nectar_dashboard/rcallocation/templatetags/publication_extras.py",
         "patchSetId": 28
@@ -91,6 +163,30 @@
       "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0eff18f2_519e1062",
+        "filename": "nectar_dashboard/rcallocation/templatetags/publication_extras.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-04-08T04:08:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0253b55_3a389a97",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 55
+      },
+      "revId": "faaa77ef407d4f405c71d41212ff53787396178a",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
