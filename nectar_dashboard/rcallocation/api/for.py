@@ -82,6 +82,7 @@ def organise_allocations_tree():
         twig['institution'] = allocation['institution']
         twig['instanceQuota'] = allocation['instance_quota']
         twig['coreQuota'] = allocation['core_quota']
+        twig['national'] = allocation['national']
         branch_minor[allocation_code_6].append(twig)
     return allocations_tree
 
@@ -96,7 +97,8 @@ def create_allocation_tree_leaf_node(allocation_summary):
         'name': allocation_summary['projectDescription'],
         'institution': allocation_summary['institution'],
         'instanceQuota': allocation_summary['instanceQuota'],
-        'coreQuota': allocation_summary['coreQuota']
+        'coreQuota': allocation_summary['coreQuota'],
+        'national': allocation_summary['national'],
     }
     return allocation_items
 
@@ -179,6 +181,7 @@ def summary(allocation, code):
     allocation_summary['institution'] = institution_from_email(
         allocation.contact_email)
     allocation_summary['project_description'] = allocation.project_description
+    allocation_summary['national'] = allocation.national
     apply_for_code_to_summary(allocation_summary, code)
     if code == allocation.field_of_research_1:
         apply_partitioned_quotas(
