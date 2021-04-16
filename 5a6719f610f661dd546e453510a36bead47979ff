@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c7aed94a_23ff8c6d",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-04-16T02:14:26Z",
+      "side": 1,
+      "message": "I think you want to use manager.get when getting something by ID (as you expect only one and expect it to exist) whereas filter can return an empty list",
+      "range": {
+        "startLine": 510,
+        "startChar": 8,
+        "endLine": 510,
+        "endChar": 22
+      },
+      "revId": "5a6719f610f661dd546e453510a36bead47979ff",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
