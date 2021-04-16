@@ -22,6 +22,30 @@
       "revId": "5a6719f610f661dd546e453510a36bead47979ff",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2cb609d_bf1add37",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-04-16T02:49:44Z",
+      "side": 1,
+      "message": "I was think of doing that ... but then I tried it.  The update method requires a QuerySet, but get returns a model object.  It needs to be a filter call.",
+      "parentUuid": "c7aed94a_23ff8c6d",
+      "range": {
+        "startLine": 510,
+        "startChar": 8,
+        "endLine": 510,
+        "endChar": 22
+      },
+      "revId": "5a6719f610f661dd546e453510a36bead47979ff",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
