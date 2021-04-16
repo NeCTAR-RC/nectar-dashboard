@@ -12,6 +12,7 @@
 #
 
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from openstack_dashboard.test import helpers
 
@@ -20,6 +21,35 @@ from nectar_dashboard.rcallocation.tests import factories
 
 
 class ModelsTestCase(helpers.TestCase):
+
+    def test_save_updates_timestamps(self):
+        now = timezone.now()
+
+        allocation = factories.AllocationFactory.create(
+            create_quotas=False, status=models.AllocationRequest.APPROVED)
+        self.assertTrue(allocation.submit_date)
+        self.assertTrue(allocation.modified_time)
+        self.assertTrue(allocation.submit_date.year == now.year)
+        self.assertTrue(allocation.modified_time >= now)
+
+        # (Just making sure that the test's assumptions about clock
+        # precision are valid.
+        now2 = timezone.now()
+        self.assertTrue(now2 > now)
+
+        allocation.save()
+        self.assertTrue(allocation.modified_time > now2)
+
+    def test_save_without_updating_timestamps(self):
+        allocation = factories.AllocationFactory.create(
+            create_quotas=False, status=models.AllocationRequest.APPROVED)
+        last_mod = allocation.modified_time
+
+        allocation.save_without_updating_timestamps()
+
+        self.assertTrue(allocation.modified_time == last_mod)
+        allocation = models.AllocationRequest.objects.get(id=allocation.id)
+        self.assertTrue(allocation.modified_time == last_mod)
 
     def test_can_be_amended(self):
         allocation = factories.AllocationFactory.create(

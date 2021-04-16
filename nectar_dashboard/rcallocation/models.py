@@ -493,6 +493,27 @@ class AllocationRequest(models.Model):
                     )
         return fields
 
+    def save_without_updating_timestamps(self):
+        """Saves this AllocationRequest without auto-updating the timestamps.
+        Note that if you do this when the 'submit_date' is None, you may get
+        DB constraint violation, 'cos there is currently a not null constraint
+        on the field.
+        """
+        manager = AllocationRequest.objects
+        saved_modified_time = self.modified_time
+        saved_submit_date = self.submit_date
+
+        # Save does the 'auto_*' updates
+        self.save()
+
+        # Reverse the effect of the 'auto_*' updates in the DB
+        manager.filter(id=self.id).update(modified_time=saved_modified_time)
+        manager.filter(id=self.id).update(submit_date=saved_submit_date)
+
+        # ... and reset the values in 'self'
+        self.modified_time = saved_modified_time
+        self.submit_date = saved_submit_date
+
     def __str__(self):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
 
