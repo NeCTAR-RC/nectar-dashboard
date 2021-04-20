@@ -72,3 +72,12 @@ def copy_allocation(allocation):
         old_object.usage_types.add(usage_type)
 
     return old_object
+
+
+def get_name_variants(name):
+    names = []
+    names.append(name)
+    names.append(name.lower())
+    names.append(name.replace('_', '-'))
+    names.append(name.lower().replace('_', '-'))
+    return names
