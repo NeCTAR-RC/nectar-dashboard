@@ -12,6 +12,7 @@ from select2 import forms as select2_forms
 
 from nectar_dashboard.rcallocation.forcodes import FOR_CODES
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import utils
 
 
 LOG = logging.getLogger(__name__)
@@ -201,7 +202,8 @@ class AllocationRequestForm(BaseAllocationForm):
             return cleaned_data
 
         allocations = models.AllocationRequest.objects.filter(
-            project_name=cleaned_data['project_name'],
+            project_name__in=utils.get_name_variants(
+                cleaned_data['project_name']),
             parent_request_id=None)
 
         project_id = None
