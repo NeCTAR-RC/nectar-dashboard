@@ -1,4 +1,5 @@
 from nectar_dashboard.rcallocation import models
+from django.db.models import F, Func, Value
 
 
 def user_is_allocation_admin(user):
@@ -68,3 +69,14 @@ def copy_allocation(allocation):
         old_object.usage_types.add(usage_type)
 
     return old_object
+
+
+def is_project_name_available(project_name):
+    manager = models.AllocationRequest.objects
+    project_names = manager.annotate(
+      project_name=Func(
+        F('project_name'), Value('_'), Value('-'), function='replace'
+      )
+    )
+    project_name = project_name.lower().replace('_', '-')
+    return project_name in project_names
