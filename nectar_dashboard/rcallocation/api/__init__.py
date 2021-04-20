@@ -383,7 +383,10 @@ class AllocationSerializer(serializers.ModelSerializer):
         return None
 
     def validate_project_name(self, value):
-        projects = models.AllocationRequest.objects.filter(project_name=value)
+        values = [value, value.lower(), value.replace('_', '-'),
+                  value.lower().replace('_', '-')]
+        projects = models.AllocationRequest.objects.filter(
+            project_name__in=values)
         if projects:
             raise serializers.ValidationError("Project name already exists")
         return value
