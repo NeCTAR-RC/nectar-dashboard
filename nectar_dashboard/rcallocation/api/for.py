@@ -161,6 +161,10 @@ def strip_email_sub_domains(domain):
             return 'sydney.edu.au'
         if domain == 'myune.edu.au':
             return 'une.edu.au'
+        if domain == 'aucklanduni.ac.nz':
+            return 'auckland.ac.nz'
+        if domain == 'data61.csiro.au':
+            return 'csiro.au'
     return domain
 
 
