@@ -540,6 +540,15 @@ class AllocationTests(base.AllocationAPITest):
         self.assertEqual(str(response.data['project_name'][0]),
                          "Project name already exists")
 
+    def test_create_duplicate_project_name_normlized(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create(project_name='Test_Project')
+        data = self._make_data()
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['project_name'][0]),
+                         "Project name already exists")
+
     def test_create_multiple_usage_types(self):
         self.client.force_authenticate(user=self.user)
         factories.AllocationFactory.create()
