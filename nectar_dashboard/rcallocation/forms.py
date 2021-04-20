@@ -12,6 +12,7 @@ from select2 import forms as select2_forms
 
 from nectar_dashboard.rcallocation.forcodes import FOR_CODES
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import utils
 
 
 LOG = logging.getLogger(__name__)
@@ -200,33 +201,24 @@ class AllocationRequestForm(BaseAllocationForm):
         if 'project_name' in self._errors:
             return cleaned_data
 
-        allocations = models.AllocationRequest.objects.filter(
-            project_name=cleaned_data['project_name'],
-            parent_request_id=None)
-
-        project_id = None
-
-        if self.instance:
-            allocations = allocations.exclude(pk=self.instance.pk)
-            project_id = self.instance.project_id
-
-        # Only want this restriction on new allocations only
-        if not project_id:
+        if not self.instance:
+            # Only want this restriction on new allocations only
             if len(cleaned_data.get('project_name')) < 5:
                 self.add_error(
                     'project_name',
                     forms.ValidationError('Project identifier must be at '
                                           'least 5 characters in length.'))
 
-        if allocations:
-            self.add_error(
-               'project_name',
-               forms.ValidationError(mark_safe(
-                    'That project identifier already exists. If your '
-                    'allocation has been approved already, please go'
-                    ' <a href="%s">here</a> '
-                    'to amend it. Otherwise, choose a different identifier.'
-                    % reverse('horizon:allocation:user_requests:index'))))
+            if not utils.is_project_name_available:
+                self.add_error(
+                   'project_name',
+                   forms.ValidationError(mark_safe(
+                        'That project identifier already exists. If your '
+                        'allocation has been approved already, please go'
+                        ' <a href="%s">here</a> '
+                        'to amend it. '
+                        'Otherwise, choose a different identifier.'
+                        % reverse('horizon:allocation:user_requests:index'))))
 
         return cleaned_data
 
