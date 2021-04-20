@@ -6,13 +6,13 @@ from nectar_dashboard.rcallocation.tests import factories
 from nectar_dashboard.rcallocation import utils
 
 
-class CopyAllocationTest(helpers.TestCase):
+class UtilsTest(helpers.TestCase):
 
     def setUp(self):
         super().setUp()
         common.factory_setup()
 
-    def test_build_test_allocation(self):
+    def test_copy_allocation(self):
         allocation = factories.AllocationFactory.create(
             contact_email='other@example.com')
         self.assertIsNone(allocation.parent_request)
@@ -53,3 +53,11 @@ class CopyAllocationTest(helpers.TestCase):
                          len(factories.get_active_usage_types()))
         self.assertEqual(len(list(copy.usage_types.all())),
                          len(factories.get_active_usage_types()))
+
+    def test_is_project_name_available(self):
+        factories.AllocationFactory.create(project_name='Fake_project')
+        factories.AllocationFactory.create(project_name='fake-PROject1')
+        self.assertFalse(utils.is_project_name_available('fake-project'))
+        self.assertFalse(utils.is_project_name_available('faKe-proJect'))
+        self.assertFalse(utils.is_project_name_available('Fake_project1'))
+        self.assertTrue(utils.is_project_name_available('Fake_project2'))
