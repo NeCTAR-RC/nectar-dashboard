@@ -68,3 +68,12 @@ def copy_allocation(allocation):
         old_object.usage_types.add(usage_type)
 
     return old_object
+
+
+def is_project_name_available(project_name):
+    manager = models.AllocationRequest.objects
+    project_names = manager.raw(
+        'select unique lower('
+        'replace(project_name, "_", "-")) from rcallocation_allocationrequest')
+    project_name = project_name.lower().replace('_', '-')
+    return project_name in project_names
