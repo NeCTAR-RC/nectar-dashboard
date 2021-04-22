@@ -33,6 +33,40 @@
       "revId": "191635711d559949317cc1607c270270128719bd",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76d97a72_871a105a",
+        "filename": "nectar_dashboard/rcallocation/utils.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-04-22T11:58:27Z",
+      "side": 1,
+      "message": "And come to think of it, we have the same kind of problem here.  What if someone uses a mix of \u0027-\u0027 and \u0027_\u0027 in a project name?  If we are going to make this bombproof, then we need to generate variants with all of the possible 2^N variants of the N \u0027_\u0027 and \u0027-\u0027 characters.",
+      "revId": "191635711d559949317cc1607c270270128719bd",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bffdd1ec_d4e25a40",
+        "filename": "nectar_dashboard/rcallocation/utils.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-04-22T11:58:27Z",
+      "side": 1,
+      "message": "And here too",
+      "revId": "191635711d559949317cc1607c270270128719bd",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
     }
   ]
 }
