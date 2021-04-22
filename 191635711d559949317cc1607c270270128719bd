@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ffb8123_9839a8d6",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_allocations.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-04-22T11:34:28Z",
+      "side": 1,
+      "message": "should be normalized",
+      "revId": "191635711d559949317cc1607c270270128719bd",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "279622ec_1f3f3ec2",
+        "filename": "nectar_dashboard/rcallocation/utils.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-04-22T11:34:28Z",
+      "side": 1,
+      "message": "Not convinced by this.  What if the new project name is \"fred\" and the existing project name is \"Fred\"?  What we should actually be doing is a case insensitive test of the new project name against existing project names.",
+      "revId": "191635711d559949317cc1607c270270128719bd",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
