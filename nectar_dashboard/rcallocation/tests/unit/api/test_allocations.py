@@ -12,7 +12,7 @@
 #
 
 import datetime
-import mock
+from unittest import mock
 
 from rest_framework import status
 
