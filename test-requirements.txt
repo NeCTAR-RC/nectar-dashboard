@@ -3,4 +3,4 @@ nose-exclude
 factory_boy>=2.8.1,<2.9.0
 mox
 mox3
-mock
+import mock

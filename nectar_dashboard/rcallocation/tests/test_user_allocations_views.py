@@ -12,9 +12,9 @@
 #
 
 from operator import itemgetter
+from unittest import mock
 
 from django.urls import reverse
-import mock
 from openstack_dashboard import api
 
 from nectar_dashboard.rcallocation import models
