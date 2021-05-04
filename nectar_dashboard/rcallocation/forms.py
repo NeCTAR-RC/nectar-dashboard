@@ -198,10 +198,8 @@ class AllocationRequestForm(BaseAllocationForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        if 'project_name' in self._errors:
-            return cleaned_data
 
-        if not self.instance:
+        if not self.instance.id:
             # Only want this restriction on new allocations only
             if len(cleaned_data.get('project_name')) < 5:
                 self.add_error(
@@ -209,7 +207,7 @@ class AllocationRequestForm(BaseAllocationForm):
                     forms.ValidationError('Project identifier must be at '
                                           'least 5 characters in length.'))
 
-            if not utils.is_project_name_available:
+            if not utils.is_project_name_available(cleaned_data.get('project_name')):
                 self.add_error(
                    'project_name',
                    forms.ValidationError(mark_safe(
