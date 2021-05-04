@@ -50,7 +50,7 @@ class AllocationDetailView(mixins.UserPassesTestMixin,
         # 2. whether that 'approved' record is the current approval.
         if self.object.is_active():
             approved = self.object
-            approved_is_current = not self.object.is_archived()
+            approved_is_current = not self.object.is_history()
         else:
             parent = (self.object.parent_request or self.object).pk
             all_approved = \

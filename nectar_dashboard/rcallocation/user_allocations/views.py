@@ -39,7 +39,7 @@ class RestrictedAllocationsDetailsView(views.AllocationDetailView):
 
 def check_tm_or_alloc_admin(request, object):
     if object:
-        if object.is_archived():
+        if object.is_history():
             return False
         if not object.contact_email == request.user.username and \
            not utils.user_is_allocation_admin(request.user):

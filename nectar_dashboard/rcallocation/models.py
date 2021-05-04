@@ -357,54 +357,56 @@ class AllocationRequest(models.Model):
         """Return True if the allocation has either been approved,
         false otherwise.
         """
-        return self.status.lower() == 'a'
+        return self.status.upper() == self.APPROVED
 
     def is_rejected(self):
         """Return True if the allocation has either been accepted or
         rejected, false otherwise.
         """
-        return self.status.lower() in ('r', 'j')
+        return self.status.upper() in (self.DECLINED, self.UPDATE_DECLINED)
 
     def is_requested(self):
-        return self.status.lower() in ('e', 'n')
+        return self.status.upper() in (self.SUBMITTED, self.NEW)
 
     def amendment_requested(self):
         """Return True if the user has requested an extention
         """
-        return self.status.lower() in ('x', 'j')
+        return self.status.upper() in (self.UPDATE_PENDING,
+                                       self.UPDATE_DECLINED)
 
-    def is_archived(self):
+    def is_history(self):
         return self.parent_request is not None
 
     def can_be_amended(self):
-        return self.is_active() and not self.is_archived() and self.managed
+        return self.is_active() and not self.is_history() and self.managed
 
     def can_be_edited(self):
-        return not self.is_active() and not self.is_archived() and self.managed
+        return not self.is_active() and not self.is_history() and self.managed
 
     def can_admin_edit(self):
-        return self.status.lower() not in ('p', 'a') \
-            and not self.is_archived() and self.managed
+        return self.status.upper() != self.APPROVED \
+            and not self.is_history() and self.managed
 
     def can_user_edit(self):
-        return self.status.lower() in ('e', 'r', 'n') \
-            and not self.is_archived() and self.managed
+        return self.status.upper() in (self.SUBMITTED, self.DECLINED,
+                                       self.NEW) \
+            and not self.is_history() and self.managed
 
     def can_user_edit_amendment(self):
-        return self.amendment_requested() and not self.is_archived() \
+        return self.amendment_requested() and not self.is_history() \
             and self.managed
 
     def can_be_rejected(self):
-        return self.is_requested() and not self.is_archived() and self.managed
+        return self.is_requested() and not self.is_history() and self.managed
 
     def can_be_approved(self):
-        return self.is_requested() and not self.is_archived() and self.managed
+        return self.is_requested() and not self.is_history() and self.managed
 
     def can_reject_change(self):
         return self.can_approve_change()
 
     def can_approve_change(self):
-        return self.amendment_requested() and not self.is_archived()
+        return self.amendment_requested() and not self.is_history()
 
     def get_quotas_context(self):
         quotas = []
