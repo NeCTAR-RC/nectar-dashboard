@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "970150b3_70391b16",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-04T00:38:03Z",
+      "side": 1,
+      "message": "you should update this and the one below, I think this should be done with the usage types too and possibly others we\u0027ve missed",
+      "range": {
+        "startLine": 474,
+        "startChar": 48,
+        "endLine": 474,
+        "endChar": 64
+      },
+      "revId": "87d9ba464d9607f7ec608a9295b200e1556f44fc",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c3441d9b_c9e0cec0",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-04T00:38:03Z",
+      "side": 1,
+      "message": "this is the default so you don\u0027t really need to define it",
+      "range": {
+        "startLine": 50,
+        "startChar": 21,
+        "endLine": 50,
+        "endChar": 32
+      },
+      "revId": "87d9ba464d9607f7ec608a9295b200e1556f44fc",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0e1486e_57562a8c",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-04T00:38:03Z",
+      "side": 1,
+      "message": "I don\u0027t think it\u0027s applicable to a manytomany field",
+      "range": {
+        "startLine": 313,
+        "startChar": 61,
+        "endLine": 313,
+        "endChar": 71
+      },
+      "revId": "87d9ba464d9607f7ec608a9295b200e1556f44fc",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
