@@ -97,7 +97,7 @@ class AllocationRequest(models.Model):
     parent_request = models.ForeignKey('AllocationRequest', null=True,
                                        blank=True, on_delete=models.SET_NULL)
 
-    status = models.CharField(max_length=1, blank=False,
+    status = models.CharField(max_length=1,
                               choices=REQUEST_STATUS_CHOICES,
                               default=SUBMITTED)
 
@@ -107,7 +107,7 @@ class AllocationRequest(models.Model):
         help_text="A brief explanation of the reason the request has been "
                   "sent back to the user for changes")
 
-    created_by = models.CharField(null=False, blank=False, max_length=100)
+    created_by = models.CharField(max_length=100)
 
     submit_date = models.DateTimeField('Submission Date',
                                        auto_now_add=True)
@@ -155,8 +155,6 @@ class AllocationRequest(models.Model):
     estimated_project_duration = models.IntegerField(
         'Estimated project duration',
         choices=project_duration_choices.DURATION_CHOICE,
-        blank=False,
-        null=False,
         default=1,
         help_text="""Resources are approved for at most 12-months,
                     but projects can extend a request for resources
@@ -544,7 +542,7 @@ class Approver(models.Model):
     an allocation request.
     """
 
-    username = models.EmailField(unique=True, blank=False)
+    username = models.EmailField(unique=True)
     display_name = models.CharField(max_length=64)
     sites = models.ManyToManyField(Site)
 
@@ -605,7 +603,7 @@ class Resource(models.Model):
     unit = models.CharField(max_length=32)
     requestable = models.BooleanField(default=True)
     help_text = models.TextField(null=True, blank=True)
-    resource_type = models.CharField(max_length=10, blank=False,
+    resource_type = models.CharField(max_length=10,
                                      choices=RESOURCE_TYPES,
                                      default=INTEGER)
 
@@ -668,35 +666,30 @@ class ChiefInvestigator(models.Model):
 
     title = models.CharField(
         'Title',
-        blank=False,
         max_length=60,
         help_text="""The chief investigator's title"""
     )
 
     given_name = models.CharField(
         'Given name',
-        blank=False,
         max_length=200,
         help_text="""The chief investigator's given name"""
     )
 
     surname = models.CharField(
         'Surname',
-        blank=False,
         max_length=200,
         help_text="""The chief investigator's surname"""
     )
 
     email = models.EmailField(
         'Institutional email address',
-        blank=False,
         help_text="""Email address must belong the university or
             organisation for accountability."""
     )
 
     institution = models.CharField(
         'Institution',
-        blank=False,
         max_length=200,
         help_text="""The name of the institution or university of
                     the chief investigator including the schools,
@@ -706,7 +699,6 @@ class ChiefInvestigator(models.Model):
     additional_researchers = models.TextField(
         'Please list all other primary investigators, partner investigators '
         'and other research collaborators',
-        blank=True,
         max_length=1000,
         default='',
         help_text="""Please list all other primary investigators, partner
@@ -808,8 +800,6 @@ class Grant(models.Model):
     grant_type = models.CharField(
         "Grant Type",
         choices=GRANT_TYPE_CHOICES,
-        blank=False,
-        null=False,
         max_length=128,
         help_text="""Choose the grant type from the dropdown options."""
     )
@@ -817,8 +807,6 @@ class Grant(models.Model):
     grant_subtype = models.CharField(
         "Grant Subtype",
         choices=GRANT_SUBTYPE_CHOICES,
-        blank=False,
-        null=False,
         max_length=128,
         help_text="""Choose an applicable grant subtype from the
                   dropdown options.  If no option is applicable,
@@ -843,7 +831,6 @@ class Grant(models.Model):
 
     first_year_funded = models.IntegerField(
         'First year funded',
-        blank=False,
         validators=[MinValueValidator(1970), MaxValueValidator(3000)],
         error_messages={
             'min_value': 'Please input a year between 1970 ~ 3000',
@@ -853,7 +840,6 @@ class Grant(models.Model):
 
     last_year_funded = models.IntegerField(
         'Last year funded',
-        blank=False,
         validators=[MinValueValidator(1970), MaxValueValidator(3000)],
         error_messages={
             'min_value': 'Please input a year between 1970 ~ 3000',
