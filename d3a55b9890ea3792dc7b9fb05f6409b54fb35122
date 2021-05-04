@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c530773a_2d1706fb",
+        "filename": "nectar_dashboard/rcallocation/utils.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-05-04T04:49:41Z",
+      "side": 1,
+      "message": "I think this is going to be a table-scan of all of the AllocationRequest records.  We are at 88+ thousand records at the moment, and the number is always increasing.  Unfortunately, there is unlikely to be a more efficient solution ... with adding a \"redundant\" column to the table.",
+      "revId": "d3a55b9890ea3792dc7b9fb05f6409b54fb35122",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
