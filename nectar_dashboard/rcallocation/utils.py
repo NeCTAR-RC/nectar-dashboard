@@ -1,6 +1,3 @@
-from django.db.models import F
-from django.db.models import Func
-from django.db.models import Value
 from nectar_dashboard.rcallocation import models
 
 
@@ -71,20 +68,3 @@ def copy_allocation(allocation):
         old_object.usage_types.add(usage_type)
 
     return old_object
-
-
-def is_project_name_available(project_name):
-    manager = models.AllocationRequest.objects
-    normalized_name = manager.filter().annotate(
-      normalized_name=Func(
-        F('project_name'), Value('_'), Value('-'), function='replace',
-      )
-    ).annotate(
-      project_names=Func(
-        F('normalized_name'), function='LOWER',
-      )
-    )
-    project_names = normalized_name.all().values_list(
-        'project_names', flat=True)
-    project_name = project_name.lower().replace('_', '-')
-    return project_name not in project_names
