@@ -408,6 +408,10 @@ class AllocationRequest(models.Model):
     def can_approve_change(self):
         return self.amendment_requested() and not self.is_history()
 
+    def can_have_publications(self):
+        return self.status.upper() not in (self.SUBMITTED, self.DECLINED,
+                                           self.NEW)
+
     def get_quotas_context(self):
         quotas = []
         for quota in Quota.objects.filter(group__allocation=self):

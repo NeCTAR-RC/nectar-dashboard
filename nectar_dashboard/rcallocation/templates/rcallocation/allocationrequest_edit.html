@@ -249,7 +249,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row{% if not object or not object.can_have_publications %} hidden{% endif %}">
       <div class="publication_formset">
         <div class="col-md-12">
           <h2>Publication/Output</h2>
