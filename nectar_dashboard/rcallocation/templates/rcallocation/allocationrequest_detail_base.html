@@ -348,8 +348,10 @@
                         </tr>
                     {% endfor %}
                 </table>
+            {% elif allocation.can_have_publications %}
+              <p><span class="label label-warning">No Submission</span></p>
             {% else %}
-             <p><span class="label label-warning">No Submission</span></p>
+              <p><span class="label label-warning">No Submission. (None expected for new requests.)</span></p>
             {% endif %}
         </div>
       </div>
