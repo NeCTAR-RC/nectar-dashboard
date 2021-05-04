@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "cde090de_8c3ba60f",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-05-04T01:06:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "970150b3_70391b16",
+      "range": {
+        "startLine": 474,
+        "startChar": 48,
+        "endLine": 474,
+        "endChar": 64
+      },
+      "revId": "87d9ba464d9607f7ec608a9295b200e1556f44fc",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3441d9b_c9e0cec0",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 10
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "9c1690d1_7a3a16f5",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-05-04T01:06:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3441d9b_c9e0cec0",
+      "range": {
+        "startLine": 50,
+        "startChar": 21,
+        "endLine": 50,
+        "endChar": 32
+      },
+      "revId": "87d9ba464d9607f7ec608a9295b200e1556f44fc",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e0e1486e_57562a8c",
         "filename": "nectar_dashboard/rcallocation/models.py",
         "patchSetId": 10
@@ -68,6 +116,30 @@
       "revId": "87d9ba464d9607f7ec608a9295b200e1556f44fc",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "34cf9225_5b1e2723",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-05-04T01:06:30Z",
+      "side": 1,
+      "message": "The documentation doesn\u0027t say that.  And if I don\u0027t set blank\u003dTrue, I don\u0027t think that the form will accept the \"no facilities selected\" case.  See also https://stackoverflow.com/a/2529875/139985.  (I think you might be thinking of null\u003dTrue ... which is said to be nonsensical.)",
+      "parentUuid": "e0e1486e_57562a8c",
+      "range": {
+        "startLine": 313,
+        "startChar": 61,
+        "endLine": 313,
+        "endChar": 71
+      },
+      "revId": "87d9ba464d9607f7ec608a9295b200e1556f44fc",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": false
     }
   ]
 }
