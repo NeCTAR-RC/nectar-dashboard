@@ -156,6 +156,20 @@ class QuotaSanityChecksTest(helpers.TestCase):
         context = build_context(quotas, form=form)
         self.assertEqual(quota_sanity.CINDER_NOT_LOCAL,
                          quota_sanity.cinder_local_check(context)[0])
+        self.assertEqual('monash approved local allocation requests '
+                         'volume storage in QRIScloud',
+                         quota_sanity.cinder_local_check(context)[1])
+
+        form = FakeForm({'associated_site': common.get_site('monash'),
+                         'national': True})
+        quotas = [build_quota('compute', 'instances', 0),
+                  build_quota('volume', 'gigabytes', 10, 'QRIScloud')]
+        context = build_context(quotas, form=form)
+        self.assertEqual(quota_sanity.CINDER_NOT_LOCAL,
+                         quota_sanity.cinder_local_check(context)[0])
+        self.assertEqual('monash approved national allocation requests '
+                         'volume storage in QRIScloud',
+                         quota_sanity.cinder_local_check(context)[1])
 
         form = FakeForm({'associated_site': common.get_site('monash')})
         quotas = [build_quota('compute', 'instances', 0),
@@ -265,6 +279,20 @@ class QuotaSanityChecksTest(helpers.TestCase):
         context = build_context(quotas, form=form)
         self.assertEqual(quota_sanity.MANILA_NOT_LOCAL,
                          quota_sanity.manila_local_check(context)[0])
+        self.assertEqual('uom approved local allocation requests shares '
+                         'in QRIScloud-GPFS',
+                         quota_sanity.manila_local_check(context)[1])
+
+        form = FakeForm({'associated_site': common.get_site('uom'),
+                         'national': True})
+        quotas = [build_quota('compute', 'instances', 0),
+                  build_quota('share', 'shares', 10, 'QRIScloud-GPFS')]
+        context = build_context(quotas, form=form)
+        self.assertEqual(quota_sanity.MANILA_NOT_LOCAL,
+                         quota_sanity.manila_local_check(context)[0])
+        self.assertEqual('uom approved national allocation requests shares '
+                         'in QRIScloud-GPFS',
+                         quota_sanity.manila_local_check(context)[1])
 
     def test_neutron_checks(self):
         quotas = [build_quota('network', 'floatingip', 0),

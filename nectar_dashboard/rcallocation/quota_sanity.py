@@ -96,9 +96,13 @@ def cinder_local_check(context):
                 continue
             zone_home = storage_zone_to_home(q['zone'])
             if zone_home and zone_home != associated_site.name:
+                national = context.get_field('national')
                 return (CINDER_NOT_LOCAL,
-                        '%s-local allocation requests volume storage in %s'
-                        % (associated_site.name, q['zone']))
+                        '%s approved %s allocation requests volume storage '
+                        'in %s'
+                        % (associated_site.name,
+                           'national' if national else 'local',
+                           q['zone']))
     return None
 
 
@@ -173,9 +177,12 @@ def manila_local_check(context):
                 continue
             zone_home = storage_zone_to_home(q['zone'])
             if zone_home and zone_home != associated_site.name:
+                national = context.get_field('national')
                 return (MANILA_NOT_LOCAL,
-                        '%s-local allocation requests shares in %s'
-                        % (associated_site.name, q['zone']))
+                        '%s approved %s allocation requests shares in %s'
+                        % (associated_site.name,
+                           'national' if national else 'local',
+                           q['zone']))
     return None
 
 
