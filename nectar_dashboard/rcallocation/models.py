@@ -650,12 +650,14 @@ class Quota(models.Model):
 
     group = models.ForeignKey(QuotaGroup, on_delete=models.CASCADE)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    requested_quota = models.PositiveIntegerField(
+    requested_quota = models.IntegerField(
         'Requested quota',
-        default='0')
-    quota = models.PositiveIntegerField(
+        default='0',
+        validators=[MinValueValidator(-1)])
+    quota = models.IntegerField(
         "Allocated quota",
-        default='0')
+        default='0',
+        validators=[MinValueValidator(-1)])
 
     class Meta:
         unique_together = ("group", "resource")

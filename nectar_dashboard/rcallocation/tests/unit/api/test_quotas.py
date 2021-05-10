@@ -142,6 +142,39 @@ class QuotaTests(base.AllocationAPITest):
         # Use the same service type to quota group should be existing
         self.assertEqual(self.quota_group.id, quota.group.id)
 
+    def test_create_unlimited_managed(self):
+        self.client.force_authenticate(user=self.user)
+        resource = factories.ResourceFactory(quota_name='test_resource2',
+                                             service_type=self.service_type)
+        data = {
+            'allocation': self.allocation.id,
+            'resource': resource.id,
+            'zone': self.zone.name,
+            'quota': -1,
+            'requested_quota': -1,
+        }
+        response = self.client.post('/rest_api/quotas/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_unlimited_unmanaged(self):
+        self.client.force_authenticate(user=self.user)
+        resource = factories.ResourceFactory(quota_name='test_resource2',
+                                             service_type=self.service_type)
+        data = {
+            'allocation': self.allocation.id,
+            'resource': resource.id,
+            'zone': self.zone.name,
+            'quota': -1,
+            'requested_quota': -1,
+        }
+        self.allocation.managed = False
+        self.allocation.save()
+        response = self.client.post('/rest_api/quotas/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        quota = models.Quota.objects.get(id=response.data['id'])
+        # Use the same service type to quota group should be existing
+        self.assertEqual(self.quota_group.id, quota.group.id)
+
     def test_create_approver(self):
         self.client.force_authenticate(user=self.approver_user)
         resource = factories.ResourceFactory(quota_name='test_resource2',
@@ -158,6 +191,34 @@ class QuotaTests(base.AllocationAPITest):
         quota = models.Quota.objects.get(id=response.data['id'])
         # Use the same service type to quota group should be existing
         self.assertEqual(self.quota_group.id, quota.group.id)
+
+    def test_create_invalid_requested_quota(self):
+        self.client.force_authenticate(user=self.user)
+        resource = factories.ResourceFactory(quota_name='test_resource2',
+                                             service_type=self.service_type)
+        data = {
+            'allocation': self.allocation.id,
+            'resource': resource.id,
+            'zone': self.zone.name,
+            'quota': 20,
+            'requested_quota': -2,
+        }
+        response = self.client.post('/rest_api/quotas/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_invalid_quota(self):
+        self.client.force_authenticate(user=self.user)
+        resource = factories.ResourceFactory(quota_name='test_resource2',
+                                             service_type=self.service_type)
+        data = {
+            'allocation': self.allocation.id,
+            'resource': resource.id,
+            'zone': self.zone.name,
+            'quota': -2,
+            'requested_quota': 10,
+        }
+        response = self.client.post('/rest_api/quotas/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_duplicate(self):
         self.client.force_authenticate(user=self.user)
