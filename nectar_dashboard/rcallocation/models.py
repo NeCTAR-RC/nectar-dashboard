@@ -650,10 +650,10 @@ class Quota(models.Model):
 
     group = models.ForeignKey(QuotaGroup, on_delete=models.CASCADE)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    requested_quota = models.PositiveIntegerField(
+    requested_quota = models.IntegerField(
         'Requested quota',
         default='0')
-    quota = models.PositiveIntegerField(
+    quota = models.IntegerField(
         "Allocated quota",
         default='0')
 
