@@ -54,8 +54,9 @@ class QuotaSanityContextTest(helpers.TestCase):
         self.assertEqual(1, context.get('compute.instances'))
         self.assertEqual(1, context.get('compute.instances', zone='nectar'))
         self.assertEqual(0, context.get('compute.instances', zone='venezuala'))
-        self.assertEqual(1, len(context.get_all('compute.instances')))
-        self.assertEqual(0, len(context.get_all('compute.jellybeans')))
+        self.assertEqual(1, len(context.get_multi('compute.instances')))
+        self.assertEqual(0, len(context.get_multi('compute.jellybeans')))
+        self.assertEqual(2, len(context.get_all()))
         self.assertEqual(DUMMY_FORM, context.form)
 
     # Testing the 'add_quotas' method would entail constructing

@@ -32,6 +32,7 @@ CLUSTER_WITHOUT_FIPS = 'CLUSTER_WITHOUT_FIPS'
 CLUSTER_WITHOUT_ROUTER = 'CLUSTER_WITHOUT_ROUTER'
 APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
+UNLIMITED_QUOTA = 'UNLIMITED_QUOTA'
 
 
 def storage_zone_to_home(zone):
@@ -44,7 +45,7 @@ def storage_zone_to_home(zone):
 def instance_vcpu_check(context):
     cores = context.get('compute.cores')
     instances = context.get('compute.instances')
-    if cores < instances:
+    if cores != -1 and instances != -1 and cores < instances:
         return (INSTANCE_VCPU,
                 "Requested instances (%d) > requested VCPUs (%d)" %
                 (instances, cores))
@@ -81,8 +82,8 @@ def nondefault_ram_check(context):
 
 def cinder_instance_check(context):
     if context.get('compute.instances') == 0:
-        for q in context.get_all('volume.gigabytes'):
-            if q['value'] > 0:
+        for q in context.get_multi('volume.gigabytes'):
+            if q['value'] != 0:
                 return (CINDER_WITHOUT_INSTANCES,
                         'Volume storage requested without any instances')
     return None
@@ -91,8 +92,8 @@ def cinder_instance_check(context):
 def cinder_local_check(context):
     associated_site = context.get_field('associated_site')
     if associated_site:
-        for q in context.get_all('volume.gigabytes'):
-            if q['value'] <= 0:
+        for q in context.get_multi('volume.gigabytes'):
+            if q['value'] == 0:
                 continue
             zone_home = storage_zone_to_home(q['zone'])
             if zone_home and zone_home != associated_site.name:
@@ -107,7 +108,7 @@ def cinder_local_check(context):
 
 
 def trove_storage_check(context):
-    if context.get('database.ram') > 0 \
+    if context.get('database.ram') != 0 \
        and context.get('database.volumes') == 0:
         return (TROVE_WITHOUT_STORAGE,
                 'Database RAM requested without any database storage')
@@ -116,15 +117,14 @@ def trove_storage_check(context):
 
 def trove_ram_check(context):
     ram = context.get('database.ram')
-    if ram == 0 \
-       and context.get('database.volumes') > 0:
+    if ram == 0 and context.get('database.volumes') != 0:
         return (TROVE_WITHOUT_RAM,
                 'Database storage requested without any database RAM')
-    elif ram > 0:
+    elif ram != 0:
         if ram < 4:
             return ('', "Database RAM should be at least 4GB")
-        elif ram > 100:
-            return ('', "Database RAM  max limit is 100GB")
+        elif ram > 100 or ram == -1:
+            return ('', "Database RAM max limit is 100GB")
         elif ram % 4 != 0:
             return ('',
                     "Database RAM should be a multiple of 4")
@@ -132,8 +132,8 @@ def trove_ram_check(context):
 
 
 def trove_backup_check(context):
-    if (context.get('database.ram') > 0
-        or context.get('database.volumes') > 0) \
+    if (context.get('database.ram') != 0
+        or context.get('database.volumes') != 0) \
        and context.get('object.object') == 0:
         return (TROVE_WITHOUT_SWIFT,
                 "No object storage quota requested. This is required if you"
@@ -143,27 +143,35 @@ def trove_backup_check(context):
 
 def magnum_instance_check(context):
     clusters = context.get('container-infra.cluster')
-    if clusters * 2 > context.get('compute.instances'):
+    instances = context.get('compute.instances')
+    if clusters != -1 and instances != -1 and clusters * 2 > instances:
         return (CLUSTER_WITHOUT_INSTANCES,
                 'At least %s instances advised for %s clusters'
                 % (clusters * 2, clusters))
+    return None
 
 
 def magnum_neutron_checks(context):
     clusters = context.get('container-infra.cluster')
-    if clusters > context.get('network.network'):
+    if clusters == -1 or clusters == 0:
+        return None
+    if clusters > context.get('network.network') \
+       and context.get('network.network') != -1:
         return (CLUSTER_WITHOUT_NETWORK,
                 '%s networks advised for %s clusters'
                 % (clusters, clusters))
-    if clusters * 3 > context.get('network.loadbalancer'):
+    if clusters * 3 > context.get('network.loadbalancer') \
+       and context.get('network.loadbalancer') != -1:
         return (CLUSTER_WITHOUT_LBS,
                 '%s load balancers advised for %s clusters'
                 % (clusters * 3, clusters))
-    if clusters * 2 > context.get('network.floatingip'):
+    if clusters * 2 > context.get('network.floatingip') \
+       and context.get('network.floatingip') != -1:
         return (CLUSTER_WITHOUT_FIPS,
                 '%s floating ips advised for %s clusters'
                 % (clusters * 2, clusters))
-    if clusters > context.get('network.router'):
+    if clusters > context.get('network.router') \
+       and context.get('network.router') != -1:
         return (CLUSTER_WITHOUT_ROUTER,
                 '%s routers advised for %s clusters'
                 % (clusters * 2, clusters))
@@ -172,8 +180,8 @@ def magnum_neutron_checks(context):
 def manila_local_check(context):
     associated_site = context.get_field('associated_site')
     if associated_site:
-        for q in context.get_all('share.shares'):
-            if q['value'] <= 0:
+        for q in context.get_multi('share.shares'):
+            if q['value'] == 0:
                 continue
             zone_home = storage_zone_to_home(q['zone'])
             if zone_home and zone_home != associated_site.name:
@@ -191,18 +199,33 @@ def neutron_checks(context):
     networks = context.get('network.network')
     routers = context.get('network.router')
     loadbalancers = context.get('network.loadbalancer')
-    if ips > 0 and (networks == 0 or routers == 0):
+    if ips != 0 and (networks == 0 or routers == 0):
         return (FLOATING_IP_DEP,
                 'Floating ips require at least 1 network and 1 router')
-    if loadbalancers > 0 and (networks == 0 or routers == 0):
+    if loadbalancers != 0 and (networks == 0 or routers == 0):
         return (LOAD_BALANCER_DEP,
                 'Load balancers require at least 1 network and 1 router')
-    if networks > 0 and routers == 0:
+    if networks != 0 and routers == 0:
         return (NO_ROUTER,
                 'Use of advanced networks requires at least 1 router')
-    if networks == 0 and routers > 0:
+    if networks == 0 and routers != 0:
         return (NO_NETWORK,
                 'Use of advanced networks requires at least 1 network')
+
+
+def unlimited_quota_checks(context):
+    res = []
+    for q in context.get_all():
+        if q['value'] == -1:
+            if q['zone'] == 'nectar':
+                res.append((UNLIMITED_QUOTA,
+                            "Unlimited quota for resource: %s" %
+                            q['description']))
+            else:
+                res.append((UNLIMITED_QUOTA,
+                            "Unlimited quota for resource: %s in %s" %
+                            (q['description'], q['zone'])))
+    return res
 
 
 def approver_checks(context):
@@ -250,6 +273,7 @@ STD_CHECKS = [instance_vcpu_check,
               neutron_checks,
               magnum_instance_check,
               magnum_neutron_checks,
+              unlimited_quota_checks,
               approver_checks]
 
 
@@ -286,11 +310,15 @@ class QuotaSanityContext(object):
                 q.resource.service_type.catalog_name,
                 q.resource.quota_name,
                 q.group.zone.name)
+            description = "%s %s" % (
+                q.resource.service_type.name,
+                q.resource.name)
             quotas.append({'key': key,
                            'quota': q,
                            'value': value,
                            'name': name,
-                           'zone': q.group.zone.name})
+                           'zone': q.group.zone.name,
+                           'description': description})
         return quotas
 
     def do_checks(self):
@@ -313,9 +341,12 @@ class QuotaSanityContext(object):
         else:
             return 0
 
-    def get_all(self, quota_name):
+    def get_multi(self, quota_name):
         return [q for q in self.all_quotas.values()
-                if q['name'] == quota_name and q['value'] > 0]
+                if q['name'] == quota_name and q['value'] != 0]
+
+    def get_all(self):
+        return [q for q in self.all_quotas.values() if q['value'] != 0]
 
     def get_field(self, name):
         value = self.form.cleaned_data.get(name)
