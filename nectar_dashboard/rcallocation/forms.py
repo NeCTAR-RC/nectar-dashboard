@@ -229,6 +229,8 @@ class AllocationAmendRequestForm(BaseAllocationForm):
 
 class BaseQuotaForm(forms.ModelForm):
     error_css_class = 'has-error'
+    quota = forms.IntegerField(min_value=0)
+    requested_quota = forms.IntegerField(min_value=0)
 
     class Meta:
         model = models.Quota

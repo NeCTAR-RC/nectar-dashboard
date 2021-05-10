@@ -225,6 +225,19 @@ class QuotaSerializer(serializers.ModelSerializer):
             else:
                 raise serializers.ValidationError("Duplicate quota resource")
 
+        if data['quota'] < -2:
+            raise serializers.ValidationError("Quota value invalid")
+        if data['requested_quota'] < -2:
+            raise serializers.ValidationError("Requested quota value invalid")
+        if allocation.managed:
+            # Unlimited quota is only allowed for UoM local allocations ...
+            if data['quota'] == -1:
+                raise serializers.ValidationError(
+                    "Unlimited quota not allowed")
+            if data['requested_quota'] == -1:
+                raise serializers.ValidationError(
+                    "Unlimited requested quota not allowed")
+
         return data
 
     class Meta:
