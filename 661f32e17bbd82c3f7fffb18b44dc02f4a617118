@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45ff51b9_1d5a331f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-11T10:25:13Z",
+      "side": 1,
+      "message": "unmanaged allocations",
+      "range": {
+        "startLine": 7,
+        "startChar": 29,
+        "endLine": 7,
+        "endChar": 38
+      },
+      "revId": "661f32e17bbd82c3f7fffb18b44dc02f4a617118",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "124943b7_1afd16b2",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-11T10:25:13Z",
+      "side": 1,
+      "message": "Are you sure this is needed? I thought it will filter through to model validation so doesn\u0027t need to be here too",
+      "range": {
+        "startLine": 228,
+        "startChar": 0,
+        "endLine": 231,
+        "endChar": 78
+      },
+      "revId": "661f32e17bbd82c3f7fffb18b44dc02f4a617118",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06b9de8e_d463d59d",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 236,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-11T10:25:13Z",
+      "side": 1,
+      "message": "Unlimited quota not allowed for managed allocations",
+      "range": {
+        "startLine": 236,
+        "startChar": 21,
+        "endLine": 236,
+        "endChar": 49
+      },
+      "revId": "661f32e17bbd82c3f7fffb18b44dc02f4a617118",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9db4a43_2af14259",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-11T10:25:13Z",
+      "side": 1,
+      "message": "same here just to be clear and help debugging",
+      "revId": "661f32e17bbd82c3f7fffb18b44dc02f4a617118",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c7a4d79_12576390",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_quotas.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-11T10:25:13Z",
+      "side": 1,
+      "message": "un",
+      "range": {
+        "startLine": 145,
+        "startChar": 20,
+        "endLine": 145,
+        "endChar": 22
+      },
+      "revId": "661f32e17bbd82c3f7fffb18b44dc02f4a617118",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0cdc2a0b_a3db6ce5",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_quotas.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-11T10:25:13Z",
+      "side": 1,
+      "message": "This should be called test_create_unlimited_unmanaged",
+      "range": {
+        "startLine": 159,
+        "startChar": 30,
+        "endLine": 159,
+        "endChar": 33
+      },
+      "revId": "661f32e17bbd82c3f7fffb18b44dc02f4a617118",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
