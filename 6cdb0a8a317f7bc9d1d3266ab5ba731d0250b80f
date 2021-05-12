@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e94ae59a_b1f8e7a6",
+        "filename": "nectar_dashboard/rcallocation/tests/unit/api/test_quotas.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-05-12T06:20:50Z",
+      "side": 1,
+      "message": "unlimited (and below)",
+      "range": {
+        "startLine": 145,
+        "startChar": 20,
+        "endLine": 145,
+        "endChar": 29
+      },
+      "revId": "6cdb0a8a317f7bc9d1d3266ab5ba731d0250b80f",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
+      "unresolved": true
+    }
+  ]
+}
