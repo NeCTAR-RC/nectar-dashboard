@@ -163,10 +163,11 @@ class AllocationRequest(models.Model):
     convert_trial_project = models.BooleanField(
         'Convert trial project?',
         default=False,
-        help_text='If selected, your existing trial project pt- will be '
-                  'renamed so any resources inside it will become part of '
-                  'this new allocation. A new trial project will be created '
-                  'in its place.')
+        help_text='If selected, all of the instances, security groups, '
+                  'snapshots and objects currently in your project trial '
+                  '(PT) will be transferred to the new project when the '
+                  'allocation is approved.  You may continue to use '
+                  'remaining quotas in the PT until the PT expires.')
 
     approver_email = models.EmailField('Approver email', blank=True)
 
