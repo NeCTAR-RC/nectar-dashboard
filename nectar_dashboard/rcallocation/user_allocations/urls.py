@@ -1,4 +1,5 @@
 from django.conf.urls import url
+
 from nectar_dashboard.rcallocation.user_allocations.views import RestrictedAllocationsEditView  # noqa
 from nectar_dashboard.rcallocation.user_allocations.views import RestrictedAllocationsDetailsView  # noqa
 from nectar_dashboard.rcallocation.user_allocations.views import UserAllocationsListView  # noqa
