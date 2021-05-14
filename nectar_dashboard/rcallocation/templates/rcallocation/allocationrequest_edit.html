@@ -293,7 +293,16 @@
       </div>
       <div class="col-md-12">
         {% include "rcallocation/medium_field.html" with field=form.nectar_support %}
-        {% include "rcallocation/medium_field.html" with field=form.ncris_support %}
+        {% include "rcallocation/medium_field.html" with field=form.ncris_facilities %}
+        {% include "rcallocation/medium_field.html" with field=form.ncris_explanation %}
+        {% if not form.ncris_facilities.value and object and object.ncris_support %}
+        <div>
+          Please reenter the following information in the NCRIS Facilities and NCRIS Support explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the database.
+          <br>
+          Old NCRIS Support information: "{{ object.ncris_support }}"
+          <br>
+        </div>
+        {% endif %}
       </div>
     </div>
     <div class="form-actions">
