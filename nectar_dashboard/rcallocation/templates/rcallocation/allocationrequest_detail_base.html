@@ -297,7 +297,7 @@
             {% else %}
              <p><span class="label label-warning">No Submission</span></p>
             {% endif %}
-              <h4>List any NeCTAR virtual laboratories supporting this request:</h4>
+              <h4>ARDC support for this request; e.g. ARDC projects, VLs:</h4>
               <p>
                 {% if allocation.nectar_support %}
                   {{ allocation.nectar_support }}
@@ -305,14 +305,23 @@
                   <span class="label label-warning">No Submission</span>
                 {% endif %}
               </p>
-              <h4>List NCRIS capabilities supporting this request:</h4>
+              <h4>NCRIS facilities supporting this request:</h4>
+              {% if allocation.ncris_facilities.all|length > 0 %}
               <p>
-                {% if allocation.ncris_support %}
-                  {{ allocation.ncris_support }}
-                {% else %}
-                  <span class="label label-warning">No Submission</span>
-                {% endif %}
+                {% for f in allocation.ncris_facilities.all %}
+                {% if forloop.last %}{{ f.short_name }}{% else %}{{ f.short_name}}, {% endif %}
+                {% endfor %}
               </p>
+              {% endif %}
+              {% if allocation.ncris_explanation %}
+              <p>Explanation: {{ allocation.ncris_explanation }}</p>
+              {% endif %}
+              {% if allocation.ncris_support %}
+              <p>{{ allocation.ncris_support }}</p>
+              {% endif %}
+              {% if allocation.ncris_facilities.all|length == 0 and not allocation.ncris_explanation and not allocation.ncris_support %}
+              <span class="label label-warning">No Submission</span>
+              {% endif %}
         </div>
       </div>
 
