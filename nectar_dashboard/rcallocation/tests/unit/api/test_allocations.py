@@ -308,6 +308,39 @@ class AllocationTests(base.AllocationAPITest):
         self.assertIsNone(allocation.start_date)
         self.assertIsNone(allocation.end_date)
 
+    def test_update_allocation_facilities_none(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.patch(
+            '/rest_api/allocations/1/',
+            {'ncris_facilities': []})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id)
+        self.assertEqual(0, len(allocation.ncris_facilities.all()))
+
+    def test_update_allocation_facilities_two(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.patch(
+            '/rest_api/allocations/1/',
+            {'ncris_facilities': ['ala', 'MA']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id)
+        self.assertEqual(2, len(allocation.ncris_facilities.all()))
+
+        # Check that we can see the facilities in a GET
+        response = self.client.get('/rest_api/allocations/1/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['ncris_facilities'],
+                         ['ALA', 'MA'])
+
+    def test_update_allocation_facilities_unknown(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.patch(
+            '/rest_api/allocations/1/',
+            {'ncris_facilities': ['fish']})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_update_allocation_unauthenticated(self):
         response = self.client.patch('/rest_api/allocations/1/',
                                      {'use_case': 'test-update'})
@@ -346,7 +379,8 @@ class AllocationTests(base.AllocationAPITest):
                 'project_description': project_description,
                 'start_date': start_date,
                 'use_case': use_case,
-                'usage_types': usage_types
+                'usage_types': usage_types,
+                'ncris_facilities': ['ALA']
         }
         data.update(kwargs)
         return data
@@ -368,6 +402,7 @@ class AllocationTests(base.AllocationAPITest):
         self.assertFalse(response.data['national'])
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
+        self.assertEqual(1, len(response.data['ncris_facilities']))
 
     def test_create_as_user(self):
         self.client.force_authenticate(user=self.user)
@@ -384,8 +419,9 @@ class AllocationTests(base.AllocationAPITest):
         self.assertFalse(response.data['national'])
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
+        self.assertEqual(1, len(response.data['ncris_facilities']))
 
-    def test_create_as_with_no_site(self):
+    def test_create_with_no_site(self):
         self.client.force_authenticate(user=self.admin_user)
         data = self._make_data(national=False, associated_site='')
         response = self.client.post('/rest_api/allocations/', data)
@@ -402,6 +438,7 @@ class AllocationTests(base.AllocationAPITest):
         self.assertFalse(response.data['national'])
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
+        self.assertEqual(1, len(response.data['ncris_facilities']))
 
     def test_create_as_user_with_no_site(self):
         self.client.force_authenticate(user=self.user)
@@ -437,6 +474,7 @@ class AllocationTests(base.AllocationAPITest):
         self.assertFalse(response.data['national'])
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
+        self.assertEqual(1, len(response.data['ncris_facilities']))
 
     def test_create_with_associated_site_as_user(self):
         self.client.force_authenticate(user=self.user)
@@ -458,6 +496,7 @@ class AllocationTests(base.AllocationAPITest):
                          response.data['contact_email'])
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
+        self.assertEqual(1, len(response.data['ncris_facilities']))
 
     def test_create_bad_site(self):
         self.client.force_authenticate(user=self.user)
@@ -488,6 +527,7 @@ class AllocationTests(base.AllocationAPITest):
         self.assertTrue(response.data['national'])
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
+        self.assertEqual(1, len(response.data['ncris_facilities']))
 
     def test_create_alloc_home_unassigned(self):
         self.client.force_authenticate(user=self.admin_user)
@@ -499,6 +539,7 @@ class AllocationTests(base.AllocationAPITest):
         self.assertFalse(response.data['national'])
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
+        self.assertEqual(1, len(response.data['ncris_facilities']))
 
     def test_create_alloc_home_as_user(self):
         self.client.force_authenticate(user=self.user)

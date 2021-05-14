@@ -23,6 +23,7 @@ from nectar_dashboard.rcallocation.tests import factories
 
 
 DUMMY_ALLOC_DATA = {'project_description': 'dummy',
+                    'project_name': 'dummy',
                     'estimated_project_duration': 1,
                     'use_case': 'dummy',
                     'estimated_number_users': 1,
@@ -118,6 +119,36 @@ class FormsTestCase(helpers.TestCase):
                          form.errors['project_name'])
 
         data['project_name'] = 'abc-123'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_validating_facilities(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ncris_explanation'] = 'something'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertNotIn('ncris_explanation', form.cleaned_data)
+        self.assertEqual(['No NCRIS Facilities have been selected: '
+                          'chose one or more, or remove the '
+                          'explanation text.'],
+                         form.errors['ncris_explanation'])
+
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ncris_facilities'] = ['ALA']
+        form = forms.AllocationRequestForm(data=data)
+        self.assertTrue(form.is_valid())
+
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ncris_facilities'] = ['Other']
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(["More details are required when you include "
+                          "'Pilot' or 'Other' above."],
+                         form.errors['ncris_explanation'])
+
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ncris_facilities'] = ['Other']
+        data['ncris_explanation'] = 'something'
         form = forms.AllocationRequestForm(data=data)
         self.assertTrue(form.is_valid())
 

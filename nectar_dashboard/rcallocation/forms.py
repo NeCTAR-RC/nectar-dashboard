@@ -8,6 +8,8 @@ from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+
+from select2 import fields as select2_fields
 from select2 import forms as select2_forms
 
 from nectar_dashboard.rcallocation.forcodes import FOR_CODES
@@ -40,6 +42,12 @@ class UsageFieldWidget(forms.CheckboxSelectMultiple):
     option_template_name = 'rcallocation/usage_type.html'
 
 
+class NCRISChoiceField(select2_fields.ModelMultipleChoiceField):
+
+    def label_from_instance(self, facility):
+        return "%s - %s" % (facility.short_name, facility.name)
+
+
 class BaseAllocationForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
@@ -47,6 +55,7 @@ class BaseAllocationForm(forms.ModelForm):
     field_of_research_1 = FoRChoiceField("First Field Of Research")
     field_of_research_2 = FoRChoiceField("Second Field Of Research")
     field_of_research_3 = FoRChoiceField("Third Field Of Research")
+
     usage_types = forms.ModelMultipleChoiceField(
         help_text="""Select one or more items that best describe what
                      you are using the Nectar Research Cloud for.  If
@@ -58,12 +67,30 @@ class BaseAllocationForm(forms.ModelForm):
         widget=UsageFieldWidget(attrs={'class': 'form-inline list-unstyled'}),
         to_field_name='name')
 
+    ncris_facilities = NCRISChoiceField(
+        name='ncris_facilities',
+        model=models.NCRISFacility,
+        label="NCRIS Facilities supporting this request",
+        help_text="""Include any NCRIS Facilities where the facility management
+                     actively supports this request in furtherance of its
+                     goals.  For example, the resources may requested be to
+                     enable a project that the NCRIS Facility is funding, or
+                     they may be for infrastructure for the Facility itself.
+                     If a NCRIS Facility is not a listed option, select the
+                     "Other" option and elaborate in the Explanation field
+                     below.  Please do not record ARDC support here.
+        """,
+        required=False,
+        queryset=models.NCRISFacility.objects.all(),
+        to_field_name='short_name')
+
     class Meta:
         model = models.AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
                    'associated_site', 'provisioned', 'managed',
-                   'project_id', 'notes', 'notifications')
+                   'project_id', 'notes', 'notifications', 'ncris_support'
+        )
 
         widgets = {
             'status_explanation': forms.Textarea(
@@ -96,7 +123,7 @@ class BaseAllocationForm(forms.ModelForm):
             'for_percentage_2': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_3': forms.Select(attrs={'class': 'col-md-2'}),
             'nectar_support': forms.TextInput(attrs={'class': 'col-md-12'}),
-            'ncris_support': forms.TextInput(attrs={'class': 'col-md-12'}),
+            'ncris_explanation': forms.TextInput(attrs={'class': 'col-md-12'}),
         }
 
     groups = (
@@ -152,6 +179,18 @@ class BaseAllocationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        explanation = self.cleaned_data['ncris_explanation']
+        facilities = self.cleaned_data['ncris_facilities']
+        if explanation and not len(facilities):
+            self.add_error('ncris_explanation',
+                           "No NCRIS Facilities have been selected: chose one "
+                           "or more, or remove the explanation text.")
+        elif not explanation and \
+             any(f.short_name in ('Other', 'Pilot') for f in facilities):
+            self.add_error('ncris_explanation',
+                           "More details are required when you include "
+                           "'Pilot' or 'Other' above.")
+
         fors = []
         for for_name, perc_name in self.groups:
             perc = cleaned_data.get(perc_name)
