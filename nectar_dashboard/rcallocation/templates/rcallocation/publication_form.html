@@ -14,9 +14,9 @@
             <td>
               <div class="publication_div">
                 {% if publication_form.instance.id %}
-                {% include "rcallocation/_field.html" with field=publication_form.output_type hide=True button="" %}
-                {% include "rcallocation/_field.html" with field=publication_form.doi hide=True button="" %}
-                {% include "rcallocation/_field.html" with field=publication_form.publication hide=True button="" %}
+                {% include "rcallocation/_field.html" with field=publication_form.output_type hide=True button="" classes=""%}
+                {% include "rcallocation/_field.html" with field=publication_form.doi hide=True button="" classes=""%}
+                {% include "rcallocation/_field.html" with field=publication_form.publication hide=True button="" classes=""%}
                 <div name="description-text">
                   {% autoescape off %}
                   {{ publication_form.instance|pub_summary }}
@@ -38,7 +38,7 @@
                           class="btn btn-default">I have no DOI
                   </button>
                 </div>
-                {% include "rcallocation/_field.html" with field=publication_form.doi hide="" button="check-doi" button_text="Validate DOI" %}
+                {% include "rcallocation/_field.html" with field=publication_form.doi hide="" button="check-doi" button_text="Validate DOI" classes=""%}
                 {% include "rcallocation/field.html" with field=publication_form.publication %}
                 <div name='details-group' {% if publication_form.crossref_metadata|length == 0 %} hidden {% endif %} >
                   <label>Publication details (from crossref)</label>

@@ -128,3 +128,13 @@ img.help-popover {
     width: 18px;
     margin: 10px;
 }
+
+#id_ncris_facilities-group h2 {
+    font-size: 13px;
+    background: #f8f8f8;
+    color: #666;
+}
+
+#id_ncris_facilities-group .selector .selector-chosen .help-icon {
+    background: url(/static/admin/img/icon-unknown.svg) 0 0 no-repeat;
+}

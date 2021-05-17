@@ -261,7 +261,6 @@ def request_allocation(user, model=None, quota_specs=None,
                   'estimated_number_users': quota.fuzz(),
                   'geographic_requirements': fuzzy.FuzzyText().fuzz(),
                   'nectar_support': 'nectar supporting',
-                  'ncris_support': 'ncris supporting',
                   'associated_site': site,
                   }
 

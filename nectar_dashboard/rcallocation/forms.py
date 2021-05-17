@@ -2,13 +2,19 @@ import json
 import logging
 import re
 
+from django.conf.urls import url
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.views.i18n import JavaScriptCatalog
+
 from select2 import forms as select2_forms
+
+from horizon import site_urls
 
 from nectar_dashboard.rcallocation.forcodes import FOR_CODES
 from nectar_dashboard.rcallocation import models
@@ -18,6 +24,14 @@ from nectar_dashboard.rcallocation import utils
 LOG = logging.getLogger(__name__)
 
 FOR_CHOICES = tuple((k, "%s %s" % (k, v)) for k, v in FOR_CODES.items())
+
+
+# Evil hack ...
+site_urls.urlpatterns.append(
+    url(r'^jsi18n/$',
+        JavaScriptCatalog.as_view(),
+        name='javascript-catalog')
+)
 
 
 class FORValidationError(Exception):
@@ -40,6 +54,12 @@ class UsageFieldWidget(forms.CheckboxSelectMultiple):
     option_template_name = 'rcallocation/usage_type.html'
 
 
+class NCRISChoiceField(forms.ModelMultipleChoiceField):
+
+    def label_from_instance(self, facility):
+        return "%s - %s" % (facility.short_name, facility.name)
+
+
 class BaseAllocationForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
@@ -47,6 +67,7 @@ class BaseAllocationForm(forms.ModelForm):
     field_of_research_1 = FoRChoiceField("First Field Of Research")
     field_of_research_2 = FoRChoiceField("Second Field Of Research")
     field_of_research_3 = FoRChoiceField("Third Field Of Research")
+
     usage_types = forms.ModelMultipleChoiceField(
         help_text="""Select one or more items that best describe what
                      you are using the Nectar Research Cloud for.  If
@@ -58,12 +79,27 @@ class BaseAllocationForm(forms.ModelForm):
         widget=UsageFieldWidget(attrs={'class': 'form-inline list-unstyled'}),
         to_field_name='name')
 
+    ncris_facilities = NCRISChoiceField(
+        label="NCRIS facilities supporting this request",
+        help_text="""Select NCRIS facilities where the facility management
+                     actively supports this request in furtherance of its
+                     goals.  For example, the requested resources may
+                     enable a project that the NCRIS facility is funding,
+                     or they may enable the provision of infrastructure
+                     for the facility.
+        """,
+        required=False,
+        queryset=models.NCRISFacility.objects.all(),
+        widget=FilteredSelectMultiple('NCRIS Facilities', is_stacked=False),
+        to_field_name='short_name')
+
     class Meta:
         model = models.AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
                    'associated_site', 'provisioned', 'managed',
-                   'project_id', 'notes', 'notifications')
+                   'project_id', 'notes', 'notifications', 'ncris_support'
+        )
 
         widgets = {
             'status_explanation': forms.Textarea(
@@ -96,7 +132,7 @@ class BaseAllocationForm(forms.ModelForm):
             'for_percentage_2': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_3': forms.Select(attrs={'class': 'col-md-2'}),
             'nectar_support': forms.TextInput(attrs={'class': 'col-md-12'}),
-            'ncris_support': forms.TextInput(attrs={'class': 'col-md-12'}),
+            'ncris_explanation': forms.TextInput(attrs={'class': 'col-md-12'}),
         }
 
     groups = (
