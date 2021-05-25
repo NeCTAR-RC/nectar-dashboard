@@ -708,6 +708,7 @@ class ChiefInvestigator(models.Model):
         'Please list all other primary investigators, partner investigators '
         'and other research collaborators',
         max_length=1000,
+        blank=True,
         default='',
         help_text="""Please list all other primary investigators, partner
         investigators and other research collaborators"""
