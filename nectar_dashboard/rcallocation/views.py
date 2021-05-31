@@ -499,7 +499,10 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
             q = quota_data.get('id', None)
             if q is None:
                 q = models.Quota()
-                q.resource = quota_data['resource']
+                if 'resource' in quota_data:
+                    q.resource = quota_data['resource']
+                else:
+                    continue
             q.quota = quota_data.get('quota', 0)
             q.requested_quota = quota_data.get('requested_quota', 0)
             q.group = group
