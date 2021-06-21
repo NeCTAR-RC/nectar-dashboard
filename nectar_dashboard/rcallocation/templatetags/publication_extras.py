@@ -75,13 +75,23 @@ def format_pub_date(msg):
     return escape(pub_date['date-parts'][0][0]) if pub_date else 'Not recorded'
 
 
+def format_author_name(author):
+    if 'family' in author:
+        if 'given' in author:
+            return author['family'] + "," + author['given']
+        else:
+            return author['family']
+    else:
+        if 'given' in author:
+            return author['given']
+        else:
+            return 'no name'
+
+
 def format_authors(msg):
     authors = msg.get('author')
     if authors:
-        str = "; ".join(map(lambda author:
-                            (author['family'] + "," + author['given'])
-                            if author.get('given') else author['family'],
-                            authors))
+        str = "; ".join(map(format_author_name, authors))
         return escape(str)
     else:
         return 'Not recorded'
