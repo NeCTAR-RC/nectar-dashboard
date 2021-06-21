@@ -22,6 +22,30 @@
       },
       "revId": "c1c255684dfdc1292094aaf79b9d86a6b6998556",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae56efb0_7d8c6bbe",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 27
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-06-21T05:59:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "afe6952b_bfe232ad",
+      "range": {
+        "startLine": 378,
+        "startChar": 35,
+        "endLine": 378,
+        "endChar": 44
+      },
+      "revId": "c1c255684dfdc1292094aaf79b9d86a6b6998556",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     }
   ]
 }
