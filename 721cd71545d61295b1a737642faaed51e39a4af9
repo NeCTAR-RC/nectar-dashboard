@@ -1,6 +1,7 @@
 {
   "comments": [
     {
+      "unresolved": true,
       "key": {
         "uuid": "32e8fb8c_daea2f97",
         "filename": "nectar_dashboard/rcallocation/models.py",
@@ -20,8 +21,31 @@
         "endChar": 30
       },
       "revId": "721cd71545d61295b1a737642faaed51e39a4af9",
-      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5",
-      "unresolved": true
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be7945e6_8a22552a",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-06-21T01:12:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "32e8fb8c_daea2f97",
+      "range": {
+        "startLine": 304,
+        "startChar": 4,
+        "endLine": 304,
+        "endChar": 30
+      },
+      "revId": "721cd71545d61295b1a737642faaed51e39a4af9",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     }
   ]
 }
