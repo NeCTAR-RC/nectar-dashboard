@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "afe6952b_bfe232ad",
+        "filename": "nectar_dashboard/rcallocation/api/__init__.py",
+        "patchSetId": 27
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-06-21T04:41:53Z",
+      "side": 1,
+      "message": "whoops",
+      "range": {
+        "startLine": 378,
+        "startChar": 35,
+        "endLine": 378,
+        "endChar": 44
+      },
+      "revId": "c1c255684dfdc1292094aaf79b9d86a6b6998556",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    }
+  ]
+}
