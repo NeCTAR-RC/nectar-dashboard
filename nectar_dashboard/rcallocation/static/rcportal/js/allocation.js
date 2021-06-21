@@ -1191,12 +1191,24 @@ $('#modal-doi-checker').on('shown.bs.modal', function (e) {
     }
 });
 
+function format_author(author) {
+    if author.family {
+        if author.given {
+            return author.family + "," author.given;
+        } else {
+            return author.family;
+        }
+    } else if (author.given) {
+        return author.given;
+    } else {
+        return "no name";
+    }
+};
+
 function format_authors(msg) {
     var authors = msg['author'];
     return escapeText(authors ?
-                      authors.map(author => author.given ?
-                                  (author.family + "," + author.given) :
-                                  author.family).join(";") :
+                      authors.map(author => format_author(author)).join(";") :
                       "Not recorded");
 };
 
