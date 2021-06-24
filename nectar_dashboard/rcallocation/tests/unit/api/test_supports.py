@@ -21,52 +21,54 @@ from nectar_dashboard.rcallocation import models
 
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
-class FacilitiesTest(base.AllocationAPITest):
+class SupportsTest(base.AllocationAPITest):
 
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
-        # The 0058 migration populates the initial facilities
-        self.ala = models.NCRISFacility.objects.get(short_name='ALA')
+        # The 0060 migration populates the initial ARDC programs and projects
+        self.cvl = models.ARDCSupport.objects.get(short_name='CVL')
 
-    def test_list_facilities(self):
+    def test_list_projects(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get('/rest_api/ncris-facilities/')
+        response = self.client.get('/rest_api/ardc-projects/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(22, len(response.data['results']))
+        self.assertEqual(51, len(response.data['results']))
 
-    def test_list_facilities_unauthenticated(self):
-        response = self.client.get('/rest_api/ncris-facilities/')
+    def test_list_projects_unauthenticated(self):
+        response = self.client.get('/rest_api/ardc-projects/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(22, len(response.data['results']))
+        self.assertEqual(51, len(response.data['results']))
 
-    def test_create_facility_no_permission(self):
+    def test_create_project_no_permission(self):
         self.client.force_authenticate(user=self.user)
-        data = {'name': 'Applied Magic Facility'}
-        response = self.client.post('/rest_api/ncris-facilities/', data)
+        data = {'name': 'Applied Magic Project'}
+        response = self.client.post('/rest_api/ardc-projects/', data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_create_facility_duplicate(self):
+    def test_create_project_duplicate(self):
         self.client.force_authenticate(user=self.admin_user)
         data = {'name': 'Astronomy Australia Ltd'}
-        response = self.client.post('/rest_api/ncris-facilities/', data)
+        response = self.client.post('/rest_api/ardc-projects/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_facility(self):
+    def test_create_project(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'name': 'Applied Magic Facility', 'short_name': 'AMF'}
-        response = self.client.post('/rest_api/ncris-facilities/', data)
+        data = {'name': 'Applied Magic Project',
+                'short_name': 'AMF',
+                'rank': 50}
+        response = self.client.post('/rest_api/ardc-projects/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_update_facility(self):
+    def test_update_project(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'name': 'Atlas of Lovely Australia'}
-        response = self.client.patch('/rest_api/ncris-facilities/%s/' %
-                                     self.ala.id, data)
+        data = {'name': 'Chimeric Virtual Laboratory'}
+        response = self.client.patch('/rest_api/ardc-projects/%s/' %
+                                     self.cvl.id, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_facility(self):
+    def test_delete_project(self):
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.delete('/rest_api/ncris-facilities/%s/' %
-                                      self.ala.id)
+        response = self.client.delete('/rest_api/ardc-projects/%s/' %
+                                      self.cvl.id)
         self.assertEqual(response.status_code,
                          status.HTTP_405_METHOD_NOT_ALLOWED)
