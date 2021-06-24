@@ -48,6 +48,12 @@ class NCRISChoiceField(select2_fields.ModelMultipleChoiceField):
         return "%s - %s" % (facility.short_name, facility.name)
 
 
+class ARDCChoiceField(select2_fields.ModelMultipleChoiceField):
+
+    def label_from_instance(self, support):
+        return "%s - %s" % (support.short_name, support.name)
+
+
 class BaseAllocationForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
@@ -66,6 +72,23 @@ class BaseAllocationForm(forms.ModelForm):
         queryset=models.UsageType.objects.filter(enabled=True),
         widget=UsageFieldWidget(attrs={'class': 'form-inline list-unstyled'}),
         to_field_name='name')
+
+    ardc_support = ARDCChoiceField(
+        name='ardc_support',
+        model=models.ARDCSupport,
+        label="ARDC program or project supporting this request",
+        help_text="""ARDC and its predecessor organizations have provided
+                     direct funding for a number of projects under various
+                     programs.  If this allocation request supports one of
+                     these ARDC funded projects or an ARDC-internal project,
+                     select the most specific item or items from the menu.
+                     If this is a "program", please include the (official)
+                     ARDC project name in the "ARDC Support details" field.
+        """,
+        required=False,
+        queryset=models.ARDCSupport.objects.filter(enabled=True)
+                                   .order_by('rank', 'short_name'),
+        to_field_name='short_name')
 
     ncris_facilities = NCRISChoiceField(
         name='ncris_facilities',
@@ -89,7 +112,8 @@ class BaseAllocationForm(forms.ModelForm):
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
                    'associated_site', 'provisioned', 'managed',
-                   'project_id', 'notes', 'notifications', 'ncris_support'
+                   'project_id', 'notes', 'notifications', 'ncris_support',
+                   'nectar_support'
         )
 
         widgets = {
@@ -122,8 +146,8 @@ class BaseAllocationForm(forms.ModelForm):
             'for_percentage_1': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_2': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_3': forms.Select(attrs={'class': 'col-md-2'}),
-            'nectar_support': forms.TextInput(attrs={'class': 'col-md-12'}),
             'ncris_explanation': forms.TextInput(attrs={'class': 'col-md-12'}),
+            'ardc_explanation': forms.TextInput(attrs={'class': 'col-md-12'}),
         }
 
     groups = (
@@ -179,13 +203,28 @@ class BaseAllocationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        explanation = self.cleaned_data['ncris_explanation']
+        ardc_explanation = self.cleaned_data['ardc_explanation']
+        ncris_explanation = self.cleaned_data['ncris_explanation']
+        supports = self.cleaned_data['ardc_support']
         facilities = self.cleaned_data['ncris_facilities']
-        if explanation and not len(facilities):
+
+        if ardc_explanation and not len(supports):
+            self.add_error('ardc_explanation',
+                           "No ARDC projects or programs have been selected: "
+                           "choose one or more, or remove the explanation "
+                           "text.")
+        elif not ardc_explanation and \
+             any(s.explain for s in supports):
+            self.add_error('ardc_explanation',
+                           "Add details for the ARDC support that you "
+                           "are claiming for your request.")
+
+        if ncris_explanation and not len(facilities):
             self.add_error('ncris_explanation',
-                           "No NCRIS Facilities have been selected: chose one "
-                           "or more, or remove the explanation text.")
-        elif not explanation and \
+                           "No NCRIS Facilities have been selected: "
+                           "choose one or more, or remove the explanation "
+                           "text.")
+        elif not ncris_explanation and \
              any(f.short_name in ('Other', 'Pilot') for f in facilities):
             self.add_error('ncris_explanation',
                            "More details are required when you include "
