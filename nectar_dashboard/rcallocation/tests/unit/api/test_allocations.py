@@ -308,6 +308,39 @@ class AllocationTests(base.AllocationAPITest):
         self.assertIsNone(allocation.start_date)
         self.assertIsNone(allocation.end_date)
 
+    def test_update_allocation_ardc_none(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.patch(
+            '/rest_api/allocations/1/',
+            {'ardc_support': []})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id)
+        self.assertEqual(0, len(allocation.ardc_support.all()))
+
+    def test_update_allocation_ardc_two(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.patch(
+            '/rest_api/allocations/1/',
+            {'ardc_support': ['cvl', 'BCCVL']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id)
+        self.assertEqual(2, len(allocation.ardc_support.all()))
+
+        # Check that we can see the ardc_support in a GET
+        response = self.client.get('/rest_api/allocations/1/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['ardc_support'],
+                         ['BCCVL', 'CVL'])
+
+    def test_update_allocation_ardc_unknown(self):
+        self.client.force_authenticate(user=self.admin_user)
+        response = self.client.patch(
+            '/rest_api/allocations/1/',
+            {'ardc_support': ['fish']})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_update_allocation_facilities_none(self):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.patch(
