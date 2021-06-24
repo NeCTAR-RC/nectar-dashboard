@@ -122,22 +122,24 @@ class FormsTestCase(helpers.TestCase):
         form = forms.AllocationRequestForm(data=data)
         self.assertTrue(form.is_valid())
 
-    def test_validating_facilities(self):
+    def test_validating_facilities_unwanted_explanation(self):
         data = DUMMY_ALLOC_DATA.copy()
         data['ncris_explanation'] = 'something'
         form = forms.AllocationRequestForm(data=data)
         self.assertFalse(form.is_valid())
         self.assertNotIn('ncris_explanation', form.cleaned_data)
         self.assertEqual(['No NCRIS Facilities have been selected: '
-                          'chose one or more, or remove the '
+                          'choose one or more, or remove the '
                           'explanation text.'],
                          form.errors['ncris_explanation'])
 
+    def test_validating_facilities_no_explanation_required(self):
         data = DUMMY_ALLOC_DATA.copy()
         data['ncris_facilities'] = ['ALA']
         form = forms.AllocationRequestForm(data=data)
         self.assertTrue(form.is_valid())
 
+    def test_validating_facilities_explanation_required(self):
         data = DUMMY_ALLOC_DATA.copy()
         data['ncris_facilities'] = ['Other']
         form = forms.AllocationRequestForm(data=data)
@@ -146,9 +148,43 @@ class FormsTestCase(helpers.TestCase):
                           "'Pilot' or 'Other' above."],
                          form.errors['ncris_explanation'])
 
+    def test_validating_facilities_explanation_allowed(self):
         data = DUMMY_ALLOC_DATA.copy()
         data['ncris_facilities'] = ['Other']
         data['ncris_explanation'] = 'something'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_validating_supports_unwanted_explanation(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ardc_explanation'] = 'something'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertNotIn('ardc_explanation', form.cleaned_data)
+        self.assertEqual(["No ARDC projects or programs have been selected: "
+                          "choose one or more, or remove the explanation "
+                          "text."],
+                         form.errors['ardc_explanation'])
+
+    def test_validating_supports_no_explanation_required(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ardc_support'] = ['CVL']
+        form = forms.AllocationRequestForm(data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_validating_supports_explanation_required(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ardc_support'] = ['ANDS']
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(["Add details for the ARDC support that you "
+                          "are claiming for your request."],
+                         form.errors['ardc_explanation'])
+
+    def test_validating_supports_explanation_allowed(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ardc_support'] = ['CVL']
+        data['ardc_explanation'] = 'something'
         form = forms.AllocationRequestForm(data=data)
         self.assertTrue(form.is_valid())
 

@@ -136,6 +136,25 @@ class SiteViewSet(viewsets.ModelViewSet):
                                  status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
+class ARDCSupportSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.ARDCSupport
+        fields = '__all__'
+
+
+class ARDCSupportViewSet(viewsets.ModelViewSet):
+    permission_classes = (rest_auth.ReadOrAdmin,)
+    queryset = models.ARDCSupport.objects.all()
+    serializer_class = ARDCSupportSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        # ARDCSupport objects should not be destroyed.
+        return response.Response(
+            {'error': 'ARDCSupport objects should not be destroyed'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
 class NCRISFacilitySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -384,6 +403,19 @@ class NCRISFacilitiesField(serializers.RelatedField):
                 "'%s' is not a known NCRIS Facility" % data)
 
 
+class ARDCSupportField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.short_name
+
+    def to_internal_value(self, data):
+        try:
+            return models.ARDCSupport.objects.get(
+                Q(short_name__iexact=data) | Q(name__iexact=data))
+        except models.ARDCSupport.DoesNotExist:
+            raise serializers.ValidationError(
+                "'%s' is not a known ARDC project or program" % data)
+
+
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = QuotaGroupsField(many=False, read_only=True)
     status_display = serializers.SerializerMethodField()
@@ -393,6 +425,8 @@ class AllocationSerializer(serializers.ModelSerializer):
     associated_site = AssociatedSiteField(allow_null=True, required=False)
     usage_types = UsageTypesField(
         many=True, queryset=models.UsageType.objects.all())
+    ardc_support = ARDCSupportField(
+        many=True, queryset=models.ARDCSupport.objects.all())
     ncris_facilities = NCRISFacilitiesField(
         many=True, queryset=models.NCRISFacility.objects.all())
 
@@ -502,7 +536,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         'quotas', 'quotas__quota_set', 'quotas__zone',
         'quotas__quota_set__resource__service_type',
         'quotas__quota_set__resource', 'investigators', 'associated_site',
-        'ncris_facilities', 'usage_types')
+        'ncris_facilities', 'usage_types', 'ardc_support')
 
     filter_class = AllocationFilter
 
@@ -516,7 +550,8 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
                 'quotas', 'quotas__quota_set', 'quotas__zone',
                 'quotas__quota_set__resource__service_type',
                 'quotas__quota_set__resource', 'investigators',
-                'associated_site', 'ncris_facilities', 'usage_types')
+                'associated_site', 'ncris_facilities', 'usage_types',
+                'ardc_support')
 
     def _perform_create_or_update(self, serializer, kwargs):
         data = serializer.validated_data
