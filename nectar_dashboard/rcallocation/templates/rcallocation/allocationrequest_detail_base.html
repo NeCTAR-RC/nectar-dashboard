@@ -298,13 +298,23 @@
              <p><span class="label label-warning">No Submission</span></p>
             {% endif %}
               <h4>ARDC (or ANDS, Nectar, or RDS) funded projects supporting this request:</h4>
-              <p>
-                {% if allocation.nectar_support %}
-                  {{ allocation.nectar_support }}
-                {% else %}
-                  <span class="label label-warning">No Submission</span>
-                {% endif %}
-              </p>
+              {% if allocation.ardc_support.all|length > 0 %}
+              <ul>
+                {% for f in allocation.ardc_suppport.all %}
+                <li> {{ f.short_name }} - {{ f.name }} </li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+              {% if allocation.ardc_explanation %}
+              <p>Additional details: {{ allocation.ardc_explanation }}</p>
+              {% endif %}
+              {% if allocation.ardc_support.all|length == 0 and not allocation.ardc_explanation and allocation.nectar_support %}
+                <p>{{ allocation.nectsr_support }}</p>
+              {% endif %}
+              {% if allocation.ardc_support.all|length == 0 and not allocation.ardc_explanation and not allocation.nectar_support %}
+              <span class="label label-warning">No Submission</span>
+              {% endif %}
+
               <h4>NCRIS Facilities supporting this request:</h4>
               {% if allocation.ncris_facilities.all|length > 0 %}
               <ul>
