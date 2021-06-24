@@ -152,6 +152,36 @@ class FormsTestCase(helpers.TestCase):
         form = forms.AllocationRequestForm(data=data)
         self.assertTrue(form.is_valid())
 
+    def test_validating_supports(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ardc_explanation'] = 'something'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertNotIn('ardc_explanation', form.cleaned_data)
+        self.assertEqual(["No ARDC projects or programs been selected: "
+                          "chose one or more, or remove the explanation "
+                          "text."],
+                         form.errors['ardc_explanation'])
+
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ardc_support'] = ['CVL']
+        form = forms.AllocationRequestForm(data=data)
+        self.assertTrue(form.is_valid())
+
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ardc_support'] = ['ANDS']
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(["Add details for the ARDC support that you "
+                          "are claiming for your request."],
+                         form.errors['ardc_explanation'])
+
+        data = DUMMY_ALLOC_DATA.copy()
+        data['ardc_support'] = ['CVL']
+        data['ardc_explanation'] = 'something'
+        form = forms.AllocationRequestForm(data=data)
+        self.assertTrue(form.is_valid())
+
     def test_validating_survey_types(self):
         data = DUMMY_ALLOC_DATA.copy()
         data['usage_types'] = ['Rubbish']
