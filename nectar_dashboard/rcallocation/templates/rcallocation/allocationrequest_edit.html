@@ -292,7 +292,16 @@
         </div>
       </div>
       <div class="col-md-12">
-        {% include "rcallocation/medium_field.html" with field=form.nectar_support %}
+        {% include "rcallocation/medium_field.html" with field=form.ardc_support %}
+        {% include "rcallocation/medium_field.html" with field=form.ardc_explanation %}
+        {% if not form.ardc_support.value and object and object.nectar_support %}
+        <div>
+          Please reenter the following information in the ARDC Support and explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the database.
+          <br>
+          Old Nectar Support information: "{{ object.ardc_support }}"
+          <br>
+        </div>
+        {% endif %}
         {% include "rcallocation/medium_field.html" with field=form.ncris_facilities %}
         {% include "rcallocation/medium_field.html" with field=form.ncris_explanation %}
         {% if not form.ncris_facilities.value and object and object.ncris_support %}
