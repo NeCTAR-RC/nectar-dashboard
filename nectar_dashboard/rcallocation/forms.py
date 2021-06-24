@@ -48,6 +48,12 @@ class NCRISChoiceField(select2_fields.ModelMultipleChoiceField):
         return "%s - %s" % (facility.short_name, facility.name)
 
 
+class ARDCChoiceField(select2_fields.ModelMultipleChoiceField):
+
+    def label_from_instance(self, support):
+        return "%s - %s" % (support.short_name, support.name)
+
+
 class BaseAllocationForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
@@ -66,6 +72,22 @@ class BaseAllocationForm(forms.ModelForm):
         queryset=models.UsageType.objects.filter(enabled=True),
         widget=UsageFieldWidget(attrs={'class': 'form-inline list-unstyled'}),
         to_field_name='name')
+
+    ardc_support = ARDCChoiceField(
+        name='ardc_support',
+        model=models.ARDCSupport,
+        label="ARDC program or project supporting this request",
+        help_text="""ARDC and its predecessor organizations have provided
+                     direct funding for a number of projects under various
+                     programs.  If this allocation request supports one of
+                     these ARDC funded projects or an ARDC-internal project,
+                     select the most specific item or items from the menu.
+                     If you this is a "program", please the (official)
+                     ARDC project name in the "ARDC Support details" field.
+        """,
+        required=False,
+        queryset=models.ARDCSupport.objects.filter(enabled=True),
+        to_field_name='short_name')
 
     ncris_facilities = NCRISChoiceField(
         name='ncris_facilities',
@@ -89,7 +111,8 @@ class BaseAllocationForm(forms.ModelForm):
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
                    'associated_site', 'provisioned', 'managed',
-                   'project_id', 'notes', 'notifications', 'ncris_support'
+                   'project_id', 'notes', 'notifications', 'ncris_support',
+                   'nectar_support'
         )
 
         widgets = {
@@ -122,8 +145,8 @@ class BaseAllocationForm(forms.ModelForm):
             'for_percentage_1': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_2': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_3': forms.Select(attrs={'class': 'col-md-2'}),
-            'nectar_support': forms.TextInput(attrs={'class': 'col-md-12'}),
             'ncris_explanation': forms.TextInput(attrs={'class': 'col-md-12'}),
+            'ardc_explanation': forms.TextInput(attrs={'class': 'col-md-12'}),
         }
 
     groups = (
