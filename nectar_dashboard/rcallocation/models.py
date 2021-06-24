@@ -55,6 +55,49 @@ class NCRISFacility(models.Model):
         return self.short_name
 
 
+class ARDCSupport(models.Model):
+    name = models.CharField(
+        'Full ARDC program or project name', max_length=200, unique=True)
+
+    short_name = models.CharField(
+        'Common short name or acronym', max_length=200, unique=True)
+
+    project = models.BooleanField(
+        'Distinguishes projects from programs',
+        default=True,
+        help_text='True for projects, false for programs')
+
+    project_id = models.CharField(
+        'ARDC project ID',
+        blank=True,
+        max_length=20)
+
+    start_date = models.DateField(
+        'Start date',
+        null=True,
+        help_text='The day when the program or project starts')
+
+    end_date = models.DateField(
+        'End date',
+        null=True,
+        help_text='The day when the program or project ends')
+
+    hide = models.BooleanField(
+        'Determines if the user can choose this program or project',
+        default=False,
+        help_text='True hides the program or project')
+
+    explain = models.BooleanField(
+        'Determines if this program or project requires more details',
+        default=False,
+        help_text='When true, the ARDC Support Details field '
+        'should provide details.  This is typically used for programs '
+        'rather than projects')
+
+    def __str__(self):
+        return self.short_name
+
+
 class AllocationRequest(models.Model):
     """An AllocationRequest represents a point in time in the history of
     a Nectar allocation.  The history is represented by the parent request
@@ -274,6 +317,10 @@ class AllocationRequest(models.Model):
     for_percentage_3 = models.IntegerField(
         choices=PERCENTAGE_CHOICES, default=0)
 
+    # Legacy: remove when the ardc_support relation is populated
+    # for all current and historical allocation records.  Until then
+    # don't allow it to be entered, and hide it if the allocation
+    # record has any related ARDCSupport records.
     nectar_support = models.CharField(
         """List any ARDC (or ANDS, Nectar, or RDS) funded projects
         supporting this request.""",
@@ -284,6 +331,15 @@ class AllocationRequest(models.Model):
         and 2) where the project's management supports this request
         in furtherance of its goals, and 3) where this allocation
         will provide resources that benefit the project.""")
+
+    ardc_support = models.ManyToManyField(ARDCSupport, blank=True)
+
+    ardc_explanation = models.CharField(
+        'ARDC Support details',
+        blank=True,
+        max_length=1024,
+        help_text="""Provide details of how the ARDC program(s)
+        supported this request.""")
 
     # Legacy: remove when the ncris_facility relation is populated
     # for all current and historical allocation records.  Until then
