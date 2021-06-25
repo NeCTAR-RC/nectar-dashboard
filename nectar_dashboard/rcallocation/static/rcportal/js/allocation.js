@@ -1192,9 +1192,9 @@ $('#modal-doi-checker').on('shown.bs.modal', function (e) {
 });
 
 function format_author(author) {
-    if author.family {
-        if author.given {
-            return author.family + "," author.given;
+    if (author.family) {
+        if (author.given) {
+            return author.family + "," + author.given;
         } else {
             return author.family;
         }
