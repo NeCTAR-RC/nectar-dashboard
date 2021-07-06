@@ -289,7 +289,7 @@ class Checker(object):
         return res
 
     def get_field(self, name):
-        value = self.form.cleaned_data.get(name)
+        value = self.form.cleaned_data.get(name) if self.form else None
         if value is None and self.allocation:
             value = getattr(self.allocation, name, None)
         return value
@@ -344,3 +344,43 @@ class QuotaSanityChecker(Checker):
     def get_all_quotas(self, quota_name):
         return [q for q in self.all_quotas.values()
                 if q['name'] == quota_name and q['value'] > 0]
+
+
+NO_SURVEY = 'NO_SURVEY'
+LEGACY_NCRIS = 'LEGACY_NCRIS'
+LEGACY_ARDC = 'LEGACY_ARDC'
+
+
+def survey_check(checker):
+    if checker.get_field('usage_types').all().count() == 0:
+        return (NO_SURVEY,
+                'The Usage Survey section needs to be completed')
+
+
+def ncris_check(checker):
+    if (checker.get_field('ncris_support')
+        and checker.get_field('ncris_facilities').all().count() == 0):
+        return (LEGACY_NCRIS,
+                'The information that you previously entered for '
+                'NCRIS support text box needs to be reviewed and '
+                'reentered in the NCRIS facilities and details fields')
+
+
+def ardc_check(checker):
+    if (checker.get_field('nectar_support')
+        and checker.get_field('ardc_support').all().count() == 0):
+        return (LEGACY_ARDC,
+                'The information that you previously entered for '
+                'Nectar support text box needs to be reentered in the '
+                'ARDC support and details fields')
+
+
+NAG_CHECKS = [survey_check, ncris_check, ardc_check]
+
+
+class NagChecker(Checker):
+
+    def __init__(self, form=None, user=None,
+                 checks=NAG_CHECKS, allocation=None):
+        super().__init__(form=form, user=user,
+                         checks=checks, allocation=allocation)
