@@ -12,11 +12,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from datetime import datetime
 import logging
 
 from django.conf import settings
 
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import output_type_choices
 
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
@@ -289,7 +291,7 @@ class Checker(object):
         return res
 
     def get_field(self, name):
-        value = self.form.cleaned_data.get(name)
+        value = self.form.cleaned_data.get(name) if self.form else None
         if value is None and self.allocation:
             value = getattr(self.allocation, name, None)
         return value
@@ -344,3 +346,85 @@ class QuotaSanityChecker(Checker):
     def get_all_quotas(self, quota_name):
         return [q for q in self.all_quotas.values()
                 if q['name'] == quota_name and q['value'] > 0]
+
+
+NO_SURVEY = 'NO_SURVEY'
+LEGACY_NCRIS = 'LEGACY_NCRIS'
+LEGACY_ARDC = 'LEGACY_ARDC'
+EXPIRED_GRANT = 'EXPIRED_GRANT'
+UNSPECIFIED_OUTPUT = 'UNSPECIFIED_OUTPUT'
+NO_CROSSREF = 'NO_CROSSREF'
+
+# Grants that have expired this number of years ago are no longer
+# relevant to allocation decisions.  Allocations ctty consensus is
+# that 4 years is about right.
+EXPIRED_GRANT_CUTOFF_YEARS = 4
+
+
+def survey_check(checker):
+    if checker.get_field('usage_types').all().count() == 0:
+        return (NO_SURVEY,
+                'One or more "Usage Types" need to be selected.')
+
+
+def ncris_check(checker):
+    if (checker.get_field('ncris_support')
+        and checker.get_field('ncris_facilities').all().count() == 0):
+        return (LEGACY_NCRIS,
+                'The information that you previously entered for '
+                'NCRIS support text box needs to be reviewed and '
+                'reentered in the NCRIS facilities and details fields.')
+
+
+def ardc_check(checker):
+    if (checker.get_field('nectar_support')
+        and checker.get_field('ardc_support').all().count() == 0):
+        return (LEGACY_ARDC,
+                'The information that you previously entered for '
+                'Nectar support text box needs to be reentered in the '
+                'ARDC support and details fields.')
+
+
+def grant_check(checker):
+    cutoff = datetime.now().year - EXPIRED_GRANT_CUTOFF_YEARS
+    if models.Grant.objects.filter(allocation=checker.allocation,
+                                   last_year_funded__lt=(cutoff + 1)).count():
+        return (EXPIRED_GRANT,
+                'One or more of your listed research grants ended in %s or '
+                'earlier. Old grants that are no longer relevant to '
+                'allocation renewal assessment should be removed from the '
+                'form.' % (cutoff))
+
+
+def output_checks(checker):
+    UNSPECIFIED = output_type_choices.UNSPECIFIED
+    JOURNAL = output_type_choices.PEER_REVIEWED_JOURNAL_ARTICLE
+
+    res = []
+    if models.Publication.objects.filter(allocation=checker.allocation,
+                                         output_type=UNSPECIFIED).count():
+        res.append((UNSPECIFIED_OUTPUT,
+                    'One or more of the Publications / Outputs listed on the '
+                    'form needs to be reentered with a publication category '
+                    'and (if available) a DOI.  When you have done this, '
+                    'please delete the old entry.'))
+    if models.Publication.objects.filter(allocation=checker.allocation,
+                                         output_type=JOURNAL,
+                                         crossref_metadata="").count():
+        res.append((NO_CROSSREF,
+                    'One or more of your Publications has been entered as a '
+                    'peer-reviewed journal article, but it does not have a '
+                    'validated DOI.  Please reenter it.'))
+    return res
+
+
+NAG_CHECKS = [survey_check, ncris_check, ardc_check, grant_check,
+              output_checks]
+
+
+class NagChecker(Checker):
+
+    def __init__(self, form=None, user=None,
+                 checks=NAG_CHECKS, allocation=None):
+        super().__init__(form=form, user=user,
+                         checks=checks, allocation=allocation)
