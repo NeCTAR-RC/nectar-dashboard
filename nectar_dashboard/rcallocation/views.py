@@ -19,9 +19,9 @@ from horizon import views as horizon_views
 from novaclient import exceptions as n_exc
 from openstack_dashboard import api
 
+from nectar_dashboard.rcallocation import checkers
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import models
-from nectar_dashboard.rcallocation import quota_sanity
 from nectar_dashboard.rcallocation import tables
 from nectar_dashboard.rcallocation import utils
 
@@ -432,7 +432,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         # into a format that can be used for quota sanity checks.
         quota_valid = True
         if not ignore_warnings:
-            sc_context = quota_sanity.QuotaSanityContext(
+            sc_context = checkers.QuotaSanityChecker(
                 allocation=self.object,
                 form=form,
                 user=self.request.user,
