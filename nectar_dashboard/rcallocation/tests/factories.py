@@ -147,11 +147,27 @@ class AllocationFactory(factory.django.DjangoModelFactory):
 
     @classmethod
     def create(cls, create_quotas=True, **kwargs):
+        usage_types = kwargs.pop('usage_types', None)
+        ncris_facilities = kwargs.pop('ncris_facilities', [])
+        ardc_support = kwargs.pop('ardc_support', [])
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
 
-        for usage_type in get_active_usage_types():
-            allocation.usage_types.add(usage_type)
+        if usage_types is None:
+            for u in get_active_usage_types():
+                allocation.usage_types.add(u)
+        else:
+            for name in usage_types:
+                u = models.UsageType.objects.get(name=name)
+                allocation.usage_types.add(u)
+
+        for name in ncris_facilities:
+            f = models.NCRISFacility.objects.get(short_name=name)
+            allocation.ncris_facilities.add(f)
+
+        for name in ardc_support:
+            a = models.ARDCSupport.objects.get(short_name=name)
+            allocation.ardc_support.add(a)
 
         if create_quotas:
             monash = models.Zone.objects.get(name='monash')
