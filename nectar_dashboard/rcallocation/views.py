@@ -400,6 +400,13 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         kwargs['quota_formsets'] = self.get_quota_formsets()
         kwargs.update(self.get_nonquota_formsets())
         kwargs['warnings'] = []
+
+        if self.object:
+            nag_checker = checkers.NagChecker(
+                form=None, allocation=self.object, user=self.request.user)
+            kwargs['nags'] = nag_checker.do_checks()
+        else:
+            kwargs['nags'] = []
         return self.render_to_response(self.get_context_data(**kwargs))
 
     def post(self, request, *args, **kwargs):
