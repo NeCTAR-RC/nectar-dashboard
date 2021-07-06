@@ -322,7 +322,7 @@
       {% endif %}
     </div>
 
-    <!-- MRC dashboard model dialog -->
+    <!-- MRC dashboard modal dialog -->
     <div id="modal-uom-dashboard" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -342,6 +342,43 @@
         </div>
       </div>
     </div>
+
+    {% if nags|length > 0 %}
+    <script>
+      $(window).on('load',
+                   function() {
+                     var delayMs = 1000;
+                     setTimeout(function() {
+                                  $('#modal-nags').modal('show');
+                                }, delayMs);
+                   });
+    </script>
+    <!-- Nags modal dialog -->
+    <div id="modal-nags" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Attention Required</h4>
+          </div>
+          <div class="modal-body">
+            <p>The following issues should be addressed before you
+              submit your ammendment to the Allocation Request form</p>
+            <p>
+              <ul>
+                {% for nag in nags %}
+                <li> {{ nag.1 }} </li>
+                {% endfor %}
+              </ul>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
 
     <!-- DOI checker modal dialog -->
     <div id="modal-doi-checker" class="modal" tabindex="-1"
