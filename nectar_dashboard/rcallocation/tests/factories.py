@@ -26,6 +26,7 @@ from nectar_dashboard.rcallocation import project_duration_choices
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
+GRANT_SUBTYPES = dict(grant_type.GRANT_SUBTYPES)
 ALL_SITES = ['uom', 'qcif', 'monash']
 
 for_code = fuzzy.FuzzyChoice(forcodes.FOR_CODES.keys())
@@ -35,6 +36,7 @@ duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys())
 percent = fuzzy.FuzzyInteger(1, 100)
 alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
 grant_types = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
+grant_subtypes = fuzzy.FuzzyChoice(GRANT_SUBTYPES.keys())
 site = fuzzy.FuzzyChoice((models.Site.objects.get_or_create(name=s,
                                                             display_name=s)[0]
                           for s in ALL_SITES))
@@ -107,6 +109,7 @@ class GrantFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Grant'
     grant_type = grant_types
+    grant_subtype = grant_subtypes
     funding_body_scheme = 'ARC funding scheme'
     grant_id = 'arc-grant-0001'
     first_year_funded = 2015
@@ -147,11 +150,27 @@ class AllocationFactory(factory.django.DjangoModelFactory):
 
     @classmethod
     def create(cls, create_quotas=True, **kwargs):
+        usage_types = kwargs.pop('usage_types', None)
+        ncris_facilities = kwargs.pop('ncris_facilities', [])
+        ardc_support = kwargs.pop('ardc_support', [])
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
 
-        for usage_type in get_active_usage_types():
-            allocation.usage_types.add(usage_type)
+        if usage_types is None:
+            for u in get_active_usage_types():
+                allocation.usage_types.add(u)
+        else:
+            for name in usage_types:
+                u = models.UsageType.objects.get(name=name)
+                allocation.usage_types.add(u)
+
+        for name in ncris_facilities:
+            f = models.NCRISFacility.objects.get(short_name=name)
+            allocation.ncris_facilities.add(f)
+
+        for name in ardc_support:
+            a = models.ARDCSupport.objects.get(short_name=name)
+            allocation.ardc_support.add(a)
 
         if create_quotas:
             monash = models.Zone.objects.get(name='monash')
