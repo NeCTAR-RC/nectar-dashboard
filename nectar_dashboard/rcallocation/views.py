@@ -432,7 +432,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         # into a format that can be used for quota sanity checks.
         quota_valid = True
         if not ignore_warnings:
-            sc_context = quota_sanity.QuotaSanityContext(
+            sc_context = quota_sanity.QuotaSanityChecker(
                 allocation=self.object,
                 form=form,
                 user=self.request.user,

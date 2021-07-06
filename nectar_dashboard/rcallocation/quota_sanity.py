@@ -1,3 +1,17 @@
+# Copyright 2021 Australian Research Data Commons
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
 import logging
 
 from django.conf import settings
@@ -42,8 +56,8 @@ def storage_zone_to_home(zone):
 
 
 def instance_vcpu_check(context):
-    cores = context.get('compute.cores')
-    instances = context.get('compute.instances')
+    cores = context.get_quota('compute.cores')
+    instances = context.get_quota('compute.instances')
     if cores < instances:
         return (INSTANCE_VCPU,
                 "Requested instances (%d) > requested VCPUs (%d)" %
@@ -53,22 +67,22 @@ def instance_vcpu_check(context):
 
 
 def no_vcpu_check(context):
-    if context.get('compute.cores') == 0:
+    if context.get_quota('compute.cores') == 0:
         return (NO_VCPU, "No VCPUs requested")
     else:
         return None
 
 
 def no_instance_check(context):
-    if context.get('compute.instances') == 0:
+    if context.get_quota('compute.instances') == 0:
         return (NO_INSTANCE, "No instances requested")
     else:
         return None
 
 
 def nondefault_ram_check(context):
-    vcpus = context.get('compute.cores')
-    mem = context.get('compute.ram')
+    vcpus = context.get_quota('compute.cores')
+    mem = context.get_quota('compute.ram')
     if vcpus > 0 and mem > 0:
         if vcpus * 4 < mem:
             return (LARGE_MEM,
@@ -80,8 +94,8 @@ def nondefault_ram_check(context):
 
 
 def cinder_instance_check(context):
-    if context.get('compute.instances') == 0:
-        for q in context.get_all('volume.gigabytes'):
+    if context.get_quota('compute.instances') == 0:
+        for q in context.get_all_quotas('volume.gigabytes'):
             if q['value'] > 0:
                 return (CINDER_WITHOUT_INSTANCES,
                         'Volume storage requested without any instances')
@@ -91,7 +105,7 @@ def cinder_instance_check(context):
 def cinder_local_check(context):
     associated_site = context.get_field('associated_site')
     if associated_site:
-        for q in context.get_all('volume.gigabytes'):
+        for q in context.get_all_quotas('volume.gigabytes'):
             if q['value'] <= 0:
                 continue
             zone_home = storage_zone_to_home(q['zone'])
@@ -107,17 +121,17 @@ def cinder_local_check(context):
 
 
 def trove_storage_check(context):
-    if context.get('database.ram') > 0 \
-       and context.get('database.volumes') == 0:
+    if context.get_quota('database.ram') > 0 \
+       and context.get_quota('database.volumes') == 0:
         return (TROVE_WITHOUT_STORAGE,
                 'Database RAM requested without any database storage')
     return None
 
 
 def trove_ram_check(context):
-    ram = context.get('database.ram')
+    ram = context.get_quota('database.ram')
     if ram == 0 \
-       and context.get('database.volumes') > 0:
+       and context.get_quota('database.volumes') > 0:
         return (TROVE_WITHOUT_RAM,
                 'Database storage requested without any database RAM')
     elif ram > 0:
@@ -132,9 +146,9 @@ def trove_ram_check(context):
 
 
 def trove_backup_check(context):
-    if (context.get('database.ram') > 0
-        or context.get('database.volumes') > 0) \
-       and context.get('object.object') == 0:
+    if (context.get_quota('database.ram') > 0
+        or context.get_quota('database.volumes') > 0) \
+       and context.get_quota('object.object') == 0:
         return (TROVE_WITHOUT_SWIFT,
                 "No object storage quota requested. This is required if you"
                 " want to use the database service backup functionality")
@@ -142,28 +156,28 @@ def trove_backup_check(context):
 
 
 def magnum_instance_check(context):
-    clusters = context.get('container-infra.cluster')
-    if clusters * 2 > context.get('compute.instances'):
+    clusters = context.get_quota('container-infra.cluster')
+    if clusters * 2 > context.get_quota('compute.instances'):
         return (CLUSTER_WITHOUT_INSTANCES,
                 'At least %s instances advised for %s clusters'
                 % (clusters * 2, clusters))
 
 
 def magnum_neutron_checks(context):
-    clusters = context.get('container-infra.cluster')
-    if clusters > context.get('network.network'):
+    clusters = context.get_quota('container-infra.cluster')
+    if clusters > context.get_quota('network.network'):
         return (CLUSTER_WITHOUT_NETWORK,
                 '%s networks advised for %s clusters'
                 % (clusters, clusters))
-    if clusters * 3 > context.get('network.loadbalancer'):
+    if clusters * 3 > context.get_quota('network.loadbalancer'):
         return (CLUSTER_WITHOUT_LBS,
                 '%s load balancers advised for %s clusters'
                 % (clusters * 3, clusters))
-    if clusters * 2 > context.get('network.floatingip'):
+    if clusters * 2 > context.get_quota('network.floatingip'):
         return (CLUSTER_WITHOUT_FIPS,
                 '%s floating ips advised for %s clusters'
                 % (clusters * 2, clusters))
-    if clusters > context.get('network.router'):
+    if clusters > context.get_quota('network.router'):
         return (CLUSTER_WITHOUT_ROUTER,
                 '%s routers advised for %s clusters'
                 % (clusters * 2, clusters))
@@ -172,7 +186,7 @@ def magnum_neutron_checks(context):
 def manila_local_check(context):
     associated_site = context.get_field('associated_site')
     if associated_site:
-        for q in context.get_all('share.shares'):
+        for q in context.get_all_quotas('share.shares'):
             if q['value'] <= 0:
                 continue
             zone_home = storage_zone_to_home(q['zone'])
@@ -187,10 +201,10 @@ def manila_local_check(context):
 
 
 def neutron_checks(context):
-    ips = context.get('network.floatingip')
-    networks = context.get('network.network')
-    routers = context.get('network.router')
-    loadbalancers = context.get('network.loadbalancer')
+    ips = context.get_quota('network.floatingip')
+    networks = context.get_quota('network.network')
+    routers = context.get_quota('network.router')
+    loadbalancers = context.get_quota('network.loadbalancer')
     if ips > 0 and (networks == 0 or routers == 0):
         return (FLOATING_IP_DEP,
                 'Floating ips require at least 1 network and 1 router')
@@ -253,19 +267,45 @@ STD_CHECKS = [instance_vcpu_check,
               approver_checks]
 
 
-class QuotaSanityContext(object):
+class Checker(object):
+
+    def __init__(self, form=None, user=None,
+                 checks=STD_CHECKS, allocation=None):
+        self.checks = checks
+        self.form = form
+        self.user = user
+        self.allocation = allocation
+
+    def do_checks(self):
+        res = []
+        for check in self.checks:
+            info = check(self)
+            # A check may return a tuple or a list of tuples
+            if info:
+                if isinstance(info, list):
+                    res.extend(info)
+                else:
+                    res.append(info)
+        return res
+
+    def get_field(self, name):
+        value = self.form.cleaned_data.get(name)
+        if value is None and self.allocation:
+            value = getattr(self.allocation, name, None)
+        return value
+
+
+class QuotaSanityChecker(Checker):
 
     def __init__(self, form=None, requested=True, user=None,
                  quotas=[], approving=False, checks=STD_CHECKS,
                  allocation=None):
+        super().__init__(form=form, user=user, checks=checks,
+                         allocation=allocation)
         self.all_quotas = {}
         self._do_add(quotas)
-        self.checks = checks
         self.requested = requested
-        self.form = form
-        self.user = user
         self.approving = approving
-        self.allocation = allocation
 
     def add_quotas(self, quotas_to_check):
         self._do_add(self._convert_quotas(quotas_to_check))
@@ -293,19 +333,7 @@ class QuotaSanityContext(object):
                            'zone': q.group.zone.name})
         return quotas
 
-    def do_checks(self):
-        res = []
-        for check in self.checks:
-            info = check(self)
-            # A check may return a tuple or a list of tuples
-            if info:
-                if isinstance(info, list):
-                    res.extend(info)
-                else:
-                    res.append(info)
-        return res
-
-    def get(self, quota_name, zone='nectar'):
+    def get_quota(self, quota_name, zone='nectar'):
         quotas = [q for q in self.all_quotas.values()
                   if q['name'] == quota_name and q['zone'] == zone]
         if len(quotas) >= 1:
@@ -313,12 +341,7 @@ class QuotaSanityContext(object):
         else:
             return 0
 
-    def get_all(self, quota_name):
+    def get_all_quotas(self, quota_name):
         return [q for q in self.all_quotas.values()
                 if q['name'] == quota_name and q['value'] > 0]
 
-    def get_field(self, name):
-        value = self.form.cleaned_data.get(name)
-        if value is None and self.allocation:
-            value = getattr(self.allocation, name, None)
-        return value
