@@ -27,6 +27,7 @@ class RestrictedAllocationsEditView(BaseAllocationUpdateView):
     model = models.AllocationRequest
     form_class = forms.UserAllocationRequestForm
     success_url = "../../"
+    USER_EDIT = True
 
 
 class RestrictedAllocationsDetailsView(views.AllocationDetailView):

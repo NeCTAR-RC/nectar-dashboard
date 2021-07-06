@@ -289,7 +289,7 @@ class Checker(object):
         return res
 
     def get_field(self, name):
-        value = self.form.cleaned_data.get(name)
+        value = self.form.cleaned_data.get(name) if self.form else None
         if value is None and self.allocation:
             value = getattr(self.allocation, name, None)
         return value
@@ -344,3 +344,22 @@ class QuotaSanityChecker(Checker):
     def get_all_quotas(self, quota_name):
         return [q for q in self.all_quotas.values()
                 if q['name'] == quota_name and q['value'] > 0]
+
+# ------------------
+
+NO_SURVEY = 'NO_SURVEY'
+
+def survey_check(checker):
+    if checker.get_field('usage_types').all().count() == 0:
+        return (NO_SURVEY,
+                'The Usage Survey section needs to be completed')
+
+NAG_CHECKS = [survey_check]
+
+
+class NagChecker(Checker):
+
+    def __init__(self, form=None, user=None,
+                 checks=NAG_CHECKS, allocation=None):
+        super().__init__(form=form, user=user,
+                         checks=checks, allocation=allocation)
