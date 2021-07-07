@@ -570,6 +570,8 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                     group.save()
                     for quota in quotas_to_save:
                         quota.group = group
+                        if quota.requested_quota is None:
+                            quota.requested_quota = 0
                         quota.save()
 
         # Delete empty quota groups
