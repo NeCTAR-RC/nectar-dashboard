@@ -39,6 +39,30 @@
       },
       "revId": "9682057bb9756ec4a1c122f1daa86304a784e97e",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7639b0f7_5d1b91dc",
+        "filename": "nectar_dashboard/rcallocation/views.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 573,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-07T02:44:52Z",
+      "side": 1,
+      "message": "Well that would have the same effect.  But if quota.requested_quota is zero, assigning zero to it is unnecessary.  I think the intent is clearer this way.",
+      "parentUuid": "919c7ebc_e4835396",
+      "range": {
+        "startLine": 573,
+        "startChar": 24,
+        "endLine": 573,
+        "endChar": 56
+      },
+      "revId": "9682057bb9756ec4a1c122f1daa86304a784e97e",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     }
   ]
 }
