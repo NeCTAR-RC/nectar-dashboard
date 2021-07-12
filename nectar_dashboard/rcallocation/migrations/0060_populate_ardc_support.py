@@ -20,13 +20,17 @@ PROGRAMS = [
     ("ARDC BDC", "Bushfire Data Challenges program"),
 ]
 
-OTHER = [
+ARDC = [
     # Current but unclassified
     ("ARDC Internal", "ARDC Internal projects"),
-    ("ARDC Nectar", "ARDC Nectar cloud operations"),
+    ("ARDC Nectar Ops", "ARDC Nectar cloud ops"),
+    ("Nectar Node Ops", "Nectar Node cloud ops"),
+]
+
+LEGACY = [
     # Old programs
-    ("Nectar VLs", "Nectar Virual Laboratory program"),
-    ("Nectar DeVLs", "Nectar Data enhanced Virual Laboratory program"),
+    ("Nectar VLs", "Nectar Virtual Laboratory (VL) program"),
+    ("Nectar DeVLs", "Nectar Data enhanced Virtual Laboratory (DeVL) program"),
     ("Nectar Other", "Other Nectar supported projects"),
     ("ANDS", "ANDS supported projects"),
     ("RDS / RDSI", "RDS / RDSI supported projects"),
@@ -177,7 +181,10 @@ PLATFORM_MENU_GROUP = 10
 NDA_MENU_GROUP = 20
 VL_MENU_GROUP = 30
 PROGRAM_MENU_GROUP = 40
-OTHER_MENU_GROUP = 50
+ARDC_MENU_GROUP = 50
+LEGACY_MENU_GROUP = 60
+FINAL_MENU_GROUP = 70
+
 
 
 class Migration(migrations.Migration):
@@ -198,14 +205,26 @@ class Migration(migrations.Migration):
         for p in NDA_PROJECTS:
             ARDCSupport.objects.create(
                 name=p[1], short_name=p[0],
-                project_id=p[0], rank=PLATFORM_MENU_GROUP)
+                project_id=p[0], rank=NDA_MENU_GROUP)
         for p in VL_PROJECTS:
             ARDCSupport.objects.create(
                 name=p[1], short_name=p[0], rank=VL_MENU_GROUP)
-        for p in OTHER:
+        for p in ARDC:
             ARDCSupport.objects.create(
                 name=p[1], short_name=p[0],
-                project=False, explain=True, rank=OTHER_MENU_GROUP)
+                project=False, explain=True, 
+                rank=ARDC_MENU_GROUP)
+        for p in LEGACY:
+            ARDCSupport.objects.create(
+                name=p[1], short_name=p[0],
+                project=False, explain=True, 
+                rank=LEGACY_MENU_GROUP)
+        # The "Other" catch-all
+        ARDCSupport.objects.create(
+                name="Other projects not covered above",
+                short_name='Other',
+                project=False, explain=True, 
+                rank=FINAL_MENU_GROUP)
 
     def removeARDCSupport(apps, schema_editor):
         ARDCSupport = apps.get_model('rcallocation', 'ARDCSupport')

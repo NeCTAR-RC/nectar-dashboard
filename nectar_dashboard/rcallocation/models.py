@@ -77,6 +77,9 @@ class ARDCSupport(models.Model):
         default=True,
         help_text='False hides the program or project')
 
+    # Used by the allocation form to order these objects in a select
+    # widget, if they have the same value they will be grouped together
+    # using optgroups.
     rank = models.IntegerField(
         'Determines the primary ranking in menus',
         default=100,
