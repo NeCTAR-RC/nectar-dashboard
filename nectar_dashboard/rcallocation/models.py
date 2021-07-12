@@ -77,6 +77,14 @@ class ARDCSupport(models.Model):
         default=True,
         help_text='False hides the program or project')
 
+    # The purpose of this field is to control the order in which the
+    # alternatives are displayed in a menu or checkbox list or other
+    # UI component used to present the alternatives to the user for
+    # selection.  You could call this grouping.  Indeed, with some
+    # widgets this may map to an '<optgroup>' HTML element.  But we
+    # call it a 'rank' to avoid any implication that the 'groups' have
+    # any deep meaning.   (If the need arises to classify the projects
+    # and programs more rigorously, 'rank' probably will be redundant.)
     rank = models.IntegerField(
         'Determines the primary ranking in menus',
         default=100,
