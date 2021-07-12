@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
+from django.forms.models import ModelChoiceIterator
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
@@ -48,10 +49,32 @@ class NCRISChoiceField(select2_fields.ModelMultipleChoiceField):
         return "%s - %s" % (facility.short_name, facility.name)
 
 
-class ARDCChoiceField(select2_fields.ModelMultipleChoiceField):
+class ARDCSupportChoiceIterator(ModelChoiceIterator):
 
     def label_from_instance(self, support):
         return "%s - %s" % (support.short_name, support.name)
+
+    def __iter__(self):
+        group = []
+        rank = -1
+        for s in self.queryset.order_by('rank', 'short_name'):
+            if s.rank != rank:
+                yield ('------------', group)
+                group = []
+                rank = s.rank
+            group.append((s.short_name, self.label_from_instance(s)))
+        if len(group):
+            yield ('------------', group)
+
+
+class ARDCChoiceField(select2_fields.ModelMultipleChoiceField):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,
+                         queryset=models.ARDCSupport.objects.filter(
+                             enabled=True),
+                         choice_iterator_cls=ARDCSupportChoiceIterator,
+                         **kwargs)
 
 
 class BaseAllocationForm(forms.ModelForm):
@@ -86,8 +109,7 @@ class BaseAllocationForm(forms.ModelForm):
                      ARDC project name in the "ARDC Support details" field.
         """,
         required=False,
-        queryset=models.ARDCSupport.objects.filter(enabled=True)
-                                   .order_by('rank', 'short_name'),
+        overlay="Enter an ARDC project or program name",
         to_field_name='short_name')
 
     ncris_facilities = NCRISChoiceField(
@@ -105,6 +127,7 @@ class BaseAllocationForm(forms.ModelForm):
         """,
         required=False,
         queryset=models.NCRISFacility.objects.all(),
+        overlay="Enter an NCRIS Facility name",
         to_field_name='short_name')
 
     class Meta:

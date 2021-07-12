@@ -32,12 +32,12 @@ class SupportsTest(base.AllocationAPITest):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/rest_api/ardc-projects/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(76, len(response.data['results']))
+        self.assertEqual(78, len(response.data['results']))
 
     def test_list_projects_unauthenticated(self):
         response = self.client.get('/rest_api/ardc-projects/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(76, len(response.data['results']))
+        self.assertEqual(78, len(response.data['results']))
 
     def test_create_project_no_permission(self):
         self.client.force_authenticate(user=self.user)
