@@ -50,6 +50,28 @@ class NCRISChoiceField(select2_fields.ModelMultipleChoiceField):
 
 class ARDCChoiceField(select2_fields.ModelMultipleChoiceField):
 
+    def _build_choices(self, dummy):
+        # Create a 'tree' of choices to make the menu more intuitive
+        res = []
+        group = []
+        rank = -1
+        for s in self._qs:
+            if s.rank != rank:
+                res.append(('------------', group))
+                group = []
+                rank = s.rank
+            group.append((s.short_name, self.label_from_instance(s)))
+        if len(group):
+            res.append(('------------', group))
+        return res
+
+    def __init__(self, *args, **kwargs):
+        self._qs = models.ARDCSupport.objects.filter(enabled=True) \
+                                             .order_by('rank', 'short_name')
+        kwargs['queryset'] = self._qs
+        kwargs['choice_iterator_cls'] = self._build_choices
+        super().__init__(*args, **kwargs)
+
     def label_from_instance(self, support):
         return "%s - %s" % (support.short_name, support.name)
 
@@ -86,8 +108,7 @@ class BaseAllocationForm(forms.ModelForm):
                      ARDC project name in the "ARDC Support details" field.
         """,
         required=False,
-        queryset=models.ARDCSupport.objects.filter(enabled=True)
-                                   .order_by('rank', 'short_name'),
+        overlay="Enter an ARDC project or program name",
         to_field_name='short_name')
 
     ncris_facilities = NCRISChoiceField(
@@ -105,6 +126,7 @@ class BaseAllocationForm(forms.ModelForm):
         """,
         required=False,
         queryset=models.NCRISFacility.objects.all(),
+        overlay="Enter an NCRIS Facility name",
         to_field_name='short_name')
 
     class Meta:
