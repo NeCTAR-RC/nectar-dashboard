@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3080cf60_ba13f761",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-13T22:22:11Z",
+      "side": 1,
+      "message": "I\u0027m still confused by this. Does this mean the \"rank\" field is in reality a grouping field and you set things with the same rank to be grouped?\n\nMaybe we could change the rank field to make that clear?\n",
+      "revId": "47bacc2b111f08a5507aee44d18fe91a704b9078",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    }
+  ]
+}
