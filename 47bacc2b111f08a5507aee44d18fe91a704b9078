@@ -16,6 +16,24 @@
       "message": "I\u0027m still confused by this. Does this mean the \"rank\" field is in reality a grouping field and you set things with the same rank to be grouped?\n\nMaybe we could change the rank field to make that clear?\n",
       "revId": "47bacc2b111f08a5507aee44d18fe91a704b9078",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fbb1563b_037f5ff9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-13T23:19:35Z",
+      "side": 1,
+      "message": "1) You have correctly understood what is going on.  Except that this are solely ranks that affect the ordering of menus and the like.  By calling them ranks we avoid having to place any deep meaning on the grouping ... and any temptation for other code to interpret them as having any meaning.  2) Renaming the rank field would require another migration.  Bad idea ... even if the name choice was poor ... which I disagree with.",
+      "parentUuid": "3080cf60_ba13f761",
+      "revId": "47bacc2b111f08a5507aee44d18fe91a704b9078",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     }
   ]
 }
