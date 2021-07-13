@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "592502a4_dfea709a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-13T06:13:34Z",
+      "side": 1,
+      "message": "Looks good but could we get some comments on ARDCSupportChoiceIterator stating what it\u0027s doing and why it\u0027s needed. This is pretty advanced django so as to help new comers",
+      "revId": "837f53266ab56c669d25713c8d279948b11b020d",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    }
+  ]
+}
