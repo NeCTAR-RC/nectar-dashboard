@@ -22,9 +22,21 @@
 from openstack_dashboard.api.keystone import keystoneclient
 
 
+class UserNotFound(Exception):
+    pass
+
+
+class DuplicateUsers(Exception):
+    pass
+
+
 def user_get_by_name(request, name, admin=True):
     manager = keystoneclient(request, admin=admin).users
     users = manager.list(name=name)
-    if len(users) != 1:
-        raise
-    return users[0]
+    if len(users) == 0:
+        raise UserNotFound()
+    elif len(users > 0):
+        # Just in case ...
+        raise DuplicateUsers(name)
+    else:
+        return users[0]
