@@ -41,6 +41,30 @@
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "866dac96_fa340694",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-16T05:29:12Z",
+      "side": 1,
+      "message": "No good reason ... I\u0027ll fix.",
+      "parentUuid": "54b2c8fd_a0e0191f",
+      "range": {
+        "startLine": 7,
+        "startChar": 24,
+        "endLine": 7,
+        "endChar": 45
+      },
+      "revId": "0f5943cce22ce97233340f9249701707dc2596c5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7ba3ce4c_40c56b22",
@@ -66,6 +90,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cde71805_518b3c72",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-16T05:29:12Z",
+      "side": 1,
+      "message": "I would have to do some digging.  But if I recall, the code that produces the failure messages catches Exception.  That could be changed, of course.",
+      "parentUuid": "7ba3ce4c_40c56b22",
+      "range": {
+        "startLine": 26,
+        "startChar": 12,
+        "endLine": 26,
+        "endChar": 29
+      },
+      "revId": "0f5943cce22ce97233340f9249701707dc2596c5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bb04c0c4_d898cc2c",
         "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
         "patchSetId": 1
@@ -77,6 +125,30 @@
       "writtenOn": "2021-07-16T05:09:50Z",
       "side": 1,
       "message": "Users don\u0027t really get to create accounts in the same way you might with other services, as it\u0027s more of an automatic thing when you log into the dashboard. They may not even realised it has happened.\n\nMaybe just say \u0027check that the user has an existing Nectar Research Cloud account\u0027 instead. I want to be specific about adding \u0027Research Cloud\u0027 too as with some new projects (e.g. VDI, Jupyter Hub) they will be Nectar services too, but not necessarily the RC.",
+      "range": {
+        "startLine": 26,
+        "startChar": 51,
+        "endLine": 27,
+        "endChar": 26
+      },
+      "revId": "0f5943cce22ce97233340f9249701707dc2596c5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4fe8e58_581bc273",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-16T05:29:12Z",
+      "side": 1,
+      "message": "Would \"ask the user if they have previously logged into the Nectar Dashboard and agreed to the Terms and Conditions\" be better?   (I didn\u0027t want to use that many words ...)\n\nThe problem (for me) with \"check that the user ...\" is that the TM has no way of actually checking ... apart from asking the user themselves. \n\nAre you planning on have the VDI, etc projects work with the user having to agree to the Nectar terms and conditions and / or not have a Nectar account (in Keystone)?  Either way, lets deal with that aspect when it arises.",
+      "parentUuid": "bb04c0c4_d898cc2c",
       "range": {
         "startLine": 26,
         "startChar": 51,
