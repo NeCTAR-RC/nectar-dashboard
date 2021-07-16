@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7587d014_56da7ea0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2021-07-16T05:09:50Z",
+      "side": 1,
+      "message": "Let me know what you think of my suggestions",
+      "revId": "0f5943cce22ce97233340f9249701707dc2596c5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54b2c8fd_a0e0191f",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2021-07-16T05:09:50Z",
+      "side": 1,
+      "message": "Any reason why you added the spaces around this?",
+      "range": {
+        "startLine": 7,
+        "startChar": 24,
+        "endLine": 7,
+        "endChar": 45
+      },
+      "revId": "0f5943cce22ce97233340f9249701707dc2596c5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ba3ce4c_40c56b22",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2021-07-16T05:09:50Z",
+      "side": 1,
+      "message": "Is there a specific Not Found error that is returned? Can this be more specific?",
+      "range": {
+        "startLine": 26,
+        "startChar": 12,
+        "endLine": 26,
+        "endChar": 29
+      },
+      "revId": "0f5943cce22ce97233340f9249701707dc2596c5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb04c0c4_d898cc2c",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2021-07-16T05:09:50Z",
+      "side": 1,
+      "message": "Users don\u0027t really get to create accounts in the same way you might with other services, as it\u0027s more of an automatic thing when you log into the dashboard. They may not even realised it has happened.\n\nMaybe just say \u0027check that the user has an existing Nectar Research Cloud account\u0027 instead. I want to be specific about adding \u0027Research Cloud\u0027 too as with some new projects (e.g. VDI, Jupyter Hub) they will be Nectar services too, but not necessarily the RC.",
+      "range": {
+        "startLine": 26,
+        "startChar": 51,
+        "endLine": 27,
+        "endChar": 26
+      },
+      "revId": "0f5943cce22ce97233340f9249701707dc2596c5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    }
+  ]
+}
