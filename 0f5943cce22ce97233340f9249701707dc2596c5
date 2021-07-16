@@ -112,6 +112,30 @@
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3529433_e07f9ced",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-16T07:52:05Z",
+      "side": 1,
+      "message": "I have improved the error message.",
+      "parentUuid": "cde71805_518b3c72",
+      "range": {
+        "startLine": 26,
+        "startChar": 12,
+        "endLine": 26,
+        "endChar": 29
+      },
+      "revId": "0f5943cce22ce97233340f9249701707dc2596c5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bb04c0c4_d898cc2c",
@@ -149,6 +173,30 @@
       "side": 1,
       "message": "Would \"ask the user if they have previously logged into the Nectar Dashboard and agreed to the Terms and Conditions\" be better?   (I didn\u0027t want to use that many words ...)\n\nThe problem (for me) with \"check that the user ...\" is that the TM has no way of actually checking ... apart from asking the user themselves. \n\nAre you planning on have the VDI, etc projects work with the user having to agree to the Nectar terms and conditions and / or not have a Nectar account (in Keystone)?  Either way, lets deal with that aspect when it arises.",
       "parentUuid": "bb04c0c4_d898cc2c",
+      "range": {
+        "startLine": 26,
+        "startChar": 51,
+        "endLine": 27,
+        "endChar": 26
+      },
+      "revId": "0f5943cce22ce97233340f9249701707dc2596c5",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1109a0c9_a8d996a2",
+        "filename": "nectar_dashboard/project_members/templates/project-members/_add.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-16T07:52:05Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "e4fe8e58_581bc273",
       "range": {
         "startLine": 26,
         "startChar": 51,
