@@ -484,7 +484,7 @@ class AdminAllocationSerializer(AllocationSerializer):
 
 
 class AllocationFilter(filters.FilterSet):
-    parent_request__isnull = filters.BooleanFilter(name='parent_request',
+    parent_request__isnull = filters.BooleanFilter(field_name='parent_request',
                                                    lookup_expr='isnull')
     chief_investigator = filters.CharFilter('investigators__email')
     allocation_home = filters.CharFilter(method='filter_allocation_home')
