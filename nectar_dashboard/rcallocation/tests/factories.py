@@ -37,9 +37,7 @@ percent = fuzzy.FuzzyInteger(1, 100)
 alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
 grant_types = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
 grant_subtypes = fuzzy.FuzzyChoice(GRANT_SUBTYPES.keys())
-site = fuzzy.FuzzyChoice((models.Site.objects.get_or_create(name=s,
-                                                            display_name=s)[0]
-                          for s in ALL_SITES))
+site = fuzzy.FuzzyChoice((models.Site.objects.get(name=s) for s in ALL_SITES))
 
 
 def get_active_usage_types():
