@@ -7,7 +7,7 @@ readme = open('README.rst').read()
 
 setuptools.setup(
     name='nectar-dashboard',
-    version='5.0',
+    version='6.0',
     description='nectar-dashboard',
     long_description=readme,
     author='Sam Morrison',
@@ -15,11 +15,10 @@ setuptools.setup(
     url='https://github.com/NeCTAR-RC/nectar-dashboard',
     packages=setuptools.find_packages(),
     include_package_data=True,
-    install_requires=["horizon~=16.0",
-                      "trove-dashboard~=13.0",
-                      "django<2.1",
+    install_requires=["horizon~=19.0",
+                      "django~=2.2",
                       "djangorestframework",
-                      "django-filter~=1.0",
+                      "django-filter~=2.1.0",
                       "pymysql",
                       "python-dateutil",
                       "manukaclient>=0.5.0"],
