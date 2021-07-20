@@ -1,4 +1,4 @@
-git+https://github.com/NeCTAR-RC/horizon.git@nectar/train#egg=horizon
+git+https://github.com/Nectar-RC/horizon.git@nectar/wallaby#egg=horizon
 django-cors-headers
 python-memcached
 manukaclient>=0.7.0
