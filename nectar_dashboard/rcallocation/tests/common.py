@@ -48,7 +48,20 @@ def allocation_to_dict(model):
     return allocation
 
 
+def sites_setup():
+    for s in factories.ALL_SITES:
+        models.Site.objects.get_or_create(name=s, display_name=s)
+
+
+def get_site(name):
+    try:
+        return models.Site.objects.get(name=name)
+    except models.Site.DoesNotExist:
+        return None
+
+
 def factory_setup():
+    sites_setup()
     melbourne = factories.ZoneFactory(name='melbourne')
     monash = factories.ZoneFactory(name='monash')
     tas = factories.ZoneFactory(name='tas')
@@ -75,18 +88,6 @@ def factory_setup():
     factories.ResourceFactory(quota_name='loadbalancer',
                               service_type=network_st)
     factories.ResourceFactory(quota_name='floatingip', service_type=network_st)
-
-
-def sites_setup():
-    for s in factories.ALL_SITES:
-        models.Site.objects.get_or_create(name=s, display_name=s)
-
-
-def get_site(name):
-    try:
-        return models.Site.objects.get(name=name)
-    except models.Site.DoesNotExist:
-        return None
 
 
 def approvers_setup():
