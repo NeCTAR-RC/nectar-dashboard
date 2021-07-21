@@ -18,6 +18,24 @@
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fcc58c93_b1a6ea7f",
+        "filename": "nectar_dashboard/rcallocation/checkers.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-21T10:17:55Z",
+      "side": 1,
+      "message": "The intention is to nag about grants that ended the year before last.  Current policy is that grants that ended last year are sufficient to allow continuation of a national funded allocation in some circumstances.  So we don\u0027t want to encourage the user to remove them ... yet.",
+      "parentUuid": "3db7c181_f1e0637d",
+      "revId": "9aa9764dde169f8214ae8f644f2e3e82ec515404",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a2d92926_1a2f9757",
@@ -31,6 +49,30 @@
       "writtenOn": "2021-07-21T10:05:27Z",
       "side": 1,
       "message": "How about:\n\n\"The following items require your attention before you submit this amendment. These may be a result of changes that we have made to this form since your last submission.\"",
+      "range": {
+        "startLine": 365,
+        "startChar": 15,
+        "endLine": 366,
+        "endChar": 67
+      },
+      "revId": "9aa9764dde169f8214ae8f644f2e3e82ec515404",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "991747b8_267e2513",
+        "filename": "nectar_dashboard/rcallocation/templates/rcallocation/allocationrequest_edit.html",
+        "patchSetId": 8
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-21T10:17:55Z",
+      "side": 1,
+      "message": "OK.",
+      "parentUuid": "a2d92926_1a2f9757",
       "range": {
         "startLine": 365,
         "startChar": 15,
