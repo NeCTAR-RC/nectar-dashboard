@@ -393,6 +393,7 @@ def request_allocation(user, model=None, quota_specs=None,
             form['investigators-%s-%s' % (i, k)] = v
 
     form['usage_types'] = [usage.name for usage in usage_types]
+    form['associated_site'] = site or ''
 
     model_dict['quotas'] = all_quotas
     model_dict['institutions'] = institutions
