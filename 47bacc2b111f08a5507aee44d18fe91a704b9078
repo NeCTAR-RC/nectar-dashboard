@@ -34,6 +34,23 @@
       "parentUuid": "3080cf60_ba13f761",
       "revId": "47bacc2b111f08a5507aee44d18fe91a704b9078",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e9fd7bf_7a544b5b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000280
+      },
+      "writtenOn": "2021-07-22T04:59:51Z",
+      "side": 1,
+      "message": "Please update the comments in the code to be more explicit for new developers. That is the only thing needed to be changed before a +2 can be granted to this review.\n\nThe decision was made as part of meeting on 22-Jul-2021 (Sam, Paul, Stephen, Sengor) as part of the formal process outlined here:\nhttps://docs.google.com/document/d/1hDZTHNKbUWRA8xzKASUo1vBuT0Ft0jrso_yy9allOzM",
+      "revId": "47bacc2b111f08a5507aee44d18fe91a704b9078",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     }
   ]
 }
