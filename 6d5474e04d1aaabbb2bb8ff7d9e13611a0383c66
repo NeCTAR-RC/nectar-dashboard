@@ -46,6 +46,30 @@
       },
       "revId": "6d5474e04d1aaabbb2bb8ff7d9e13611a0383c66",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fc7d987_a0b9433e",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-22T08:59:26Z",
+      "side": 1,
+      "message": "Please change the text to make it a bit easier to understand. I don\u0027t believe we are using it for anything else. If we do in the future then the help should be updated.",
+      "parentUuid": "d65653ed_62589c60",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 71
+      },
+      "revId": "6d5474e04d1aaabbb2bb8ff7d9e13611a0383c66",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     }
   ]
 }
