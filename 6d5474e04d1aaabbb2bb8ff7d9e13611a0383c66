@@ -22,6 +22,30 @@
       },
       "revId": "6d5474e04d1aaabbb2bb8ff7d9e13611a0383c66",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d65653ed_62589c60",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-07-22T08:56:35Z",
+      "side": 1,
+      "message": "Well that is only true so long as we use a select widget.  We could some other widget, like we did for the usage survey for example.\n\nDoes this conflict with what was agreed at the code review?",
+      "parentUuid": "b89114c5_a0923f2c",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 71
+      },
+      "revId": "6d5474e04d1aaabbb2bb8ff7d9e13611a0383c66",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     }
   ]
 }
