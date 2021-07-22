@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b89114c5_a0923f2c",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-22T08:47:41Z",
+      "side": 1,
+      "message": "How about something a bit simpler and more descriptive:\n\nUsed by the allocation form to order these objects in a select widget, if they have the same value they will be grouped together using optgroups.",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 71
+      },
+      "revId": "6d5474e04d1aaabbb2bb8ff7d9e13611a0383c66",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    }
+  ]
+}
