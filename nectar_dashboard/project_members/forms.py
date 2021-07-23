@@ -39,14 +39,21 @@ class AddUserToProjectForm(forms.SelfHandlingForm):
         role_id = getattr(settings, 'KEYSTONE_MEMBER_ROLE_ID', '1')
 
         try:
-            user = api_ext.user_get_by_name(request, data['email'])
+            email = data['email']
+            user = api_ext.user_get_by_name(request, email)
             api.keystone.add_tenant_user_role(request,
                                               project=project_id,
                                               user=user.id,
                                               role=role_id)
             messages.success(request,
                              _('User added successfully.'))
-        except Exception:
-            exceptions.handle(request, _('Unable to add user to project.'))
+        except api_ext.UserNotFound:
+            exceptions.handle(request,
+                              'Unable to add user to project: there is no '
+                              'Nectar RC account registered for "%s"' % email)
+            return False
+        except Exception as e:
+            LOG.exception(e)
+            exceptions.handle(request, 'Unable to add user to project.')
             return False
         return True
