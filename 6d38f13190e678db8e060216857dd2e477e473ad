@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47a2225b_427365c5",
+        "filename": "nectar_dashboard/rcallocation/checkers.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-07-26T23:21:23Z",
+      "side": 1,
+      "message": "Maybe this should say \"Please select one or more usage types in the \u0027Usage Information\u0027 section\"\n\nThe word survey isn\u0027t mentioned anywhere on the form",
+      "range": {
+        "startLine": 367,
+        "startChar": 17,
+        "endLine": 367,
+        "endChar": 63
+      },
+      "revId": "6d38f13190e678db8e060216857dd2e477e473ad",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    }
+  ]
+}
