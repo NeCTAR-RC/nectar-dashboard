@@ -295,21 +295,20 @@
         {% include "rcallocation/medium_field.html" with field=form.ardc_support %}
         {% include "rcallocation/medium_field.html" with field=form.ardc_explanation %}
         {% if not form.ardc_support.value and object and object.nectar_support %}
-        <div>
-          Please reenter the following information in the ARDC Support and explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.
-          <br>
-          Old Nectar Support information: "{{ object.nectar_support }}"
-          <br>
+	<div class="alert alert-warning" role="alert">
+          <p>Please reenter the following information in the ARDC Support and explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.</p>
+          <p>Old Nectar Support information: "{{ object.nectar_support }}"</p>
         </div>
         {% endif %}
         {% include "rcallocation/medium_field.html" with field=form.ncris_facilities %}
         {% include "rcallocation/medium_field.html" with field=form.ncris_explanation %}
         {% if not form.ncris_facilities.value and object and object.ncris_support %}
-        <div>
-          Please reenter the following information in the NCRIS Facilities and NCRIS Support explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.
-          <br>
+        <div class="alert alert-warning" role="alert">
+	  <p>
+          Please reenter the following information in the NCRIS Facilities and NCRIS Support explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.</p>
+	  <p>
           Old NCRIS Support information: "{{ object.ncris_support }}"
-          <br>
+          </p>
         </div>
         {% endif %}
       </div>
