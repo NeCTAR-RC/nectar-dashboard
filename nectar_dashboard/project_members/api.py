@@ -35,7 +35,7 @@ def user_get_by_name(request, name, admin=True):
     users = manager.list(name=name)
     if len(users) == 0:
         raise UserNotFound()
-    elif len(users > 0):
+    elif len(users) > 1:
         # Just in case ...
         raise DuplicateUsers(name)
     else:
