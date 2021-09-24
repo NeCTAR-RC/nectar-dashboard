@@ -452,6 +452,25 @@ class QuotaSanityChecksTest(helpers.TestCase):
         self.assertEqual(checkers.CLUSTER_WITHOUT_FIPS,
                          checkers.magnum_neutron_checks(checker)[0])
 
+    def test_flavor_check(self):
+        quotas = [build_quota('compute', 'flavor:compute-v3', 0),
+                  build_quota('compute', 'flavor:memory-v3', 0),
+                  build_quota('compute', 'flavor:huge-v3', 0)]
+        checker = build_checker(quotas)
+        self.assertIsNone(checkers.flavor_check(checker))
+
+        quotas = [build_quota('compute', 'flavor:compute-v3', 1),
+                  build_quota('compute', 'flavor:memory-v3', 1),
+                  build_quota('compute', 'flavor:huge-v3', 1)]
+        checker = build_checker(quotas)
+        self.assertEqual(checkers.FLAVORS_NOT_JUSTIFIED,
+                         checkers.flavor_check(checker)[0])
+
+        form = FakeForm({'usage_patterns':
+                         'Need lots of RAM ... because reasons'})
+        checker = build_checker(quotas, form=form)
+        self.assertIsNone(checkers.flavor_check(checker))
+
 
 QS_LOG = 'nectar_dashboard.rcallocation.checkers.LOG'
 

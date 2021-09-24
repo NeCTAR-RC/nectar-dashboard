@@ -46,6 +46,7 @@ CLUSTER_WITHOUT_NETWORK = 'CLUSTER_WITHOUT_NETWORK'
 CLUSTER_WITHOUT_LBS = 'CLUSTER_WITHOUT_LBS'
 CLUSTER_WITHOUT_FIPS = 'CLUSTER_WITHOUT_FIPS'
 CLUSTER_WITHOUT_ROUTER = 'CLUSTER_WITHOUT_ROUTER'
+FLAVORS_NOT_JUSTIFIED = 'FLAVORS_NOT_JUSTIFIED'
 APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 
@@ -163,6 +164,7 @@ def magnum_instance_check(context):
         return (CLUSTER_WITHOUT_INSTANCES,
                 'At least %s instances advised for %s clusters'
                 % (clusters * 2, clusters))
+    return None
 
 
 def magnum_neutron_checks(context):
@@ -183,6 +185,7 @@ def magnum_neutron_checks(context):
         return (CLUSTER_WITHOUT_ROUTER,
                 '%s routers advised for %s clusters'
                 % (clusters * 2, clusters))
+    return None
 
 
 def manila_local_check(context):
@@ -219,11 +222,24 @@ def neutron_checks(context):
     if networks == 0 and routers > 0:
         return (NO_NETWORK,
                 'Use of advanced networks requires at least 1 network')
+    return None
+
+
+def flavor_check(context):
+    cpu_enhanced = context.get_quota('compute.flavor:compute-v3')
+    ram_enhanced = context.get_quota('compute.flavor:memory-v3')
+    huge_ram = context.get_quota('compute.flavor:hugeram-v3')
+    if (cpu_enhanced or ram_enhanced or huge_ram) \
+       and not context.get_field('usage_patterns'):
+        return (FLAVORS_NOT_JUSTIFIED,
+                'Requests for access to enhanced flavors must be explained '
+                'in the "Justification ..." field.')
+    return None
 
 
 def approver_checks(context):
     if context.user is None or not context.approving:
-        return
+        return None
     username = context.user.username
     try:
         approver = models.Approver.objects.get(username=username)
@@ -266,6 +282,7 @@ STD_CHECKS = [instance_vcpu_check,
               neutron_checks,
               magnum_instance_check,
               magnum_neutron_checks,
+              flavor_check,
               approver_checks]
 
 
@@ -365,6 +382,7 @@ def survey_check(checker):
     if checker.get_field('usage_types').all().count() == 0:
         return (NO_SURVEY,
                 'One or more "Usage Types" need to be selected.')
+    return None
 
 
 def ncris_check(checker):
@@ -374,6 +392,7 @@ def ncris_check(checker):
                 'The information that you previously entered for '
                 'NCRIS support text box needs to be reviewed and '
                 'reentered in the NCRIS facilities and details fields.')
+    return None
 
 
 def ardc_check(checker):
@@ -383,6 +402,7 @@ def ardc_check(checker):
                 'The information that you previously entered for '
                 'Nectar support text box needs to be reentered in the '
                 'ARDC support and details fields.')
+    return None
 
 
 def grant_check(checker):
@@ -394,6 +414,7 @@ def grant_check(checker):
                 'earlier. Old grants that are no longer relevant to '
                 'allocation renewal assessment should be removed from the '
                 'form.' % (cutoff))
+    return None
 
 
 def output_checks(checker):
