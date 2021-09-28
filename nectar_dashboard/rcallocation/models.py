@@ -146,6 +146,7 @@ class AllocationRequest(models.Model):
         # Allocation has been deleted
         (DELETED, 'Deleted'),
     )
+
     parent_request = models.ForeignKey('AllocationRequest', null=True,
                                        blank=True, on_delete=models.SET_NULL)
 
@@ -379,6 +380,16 @@ class AllocationRequest(models.Model):
         help_text="""If true, this indicates that the allocation
         was most recently assessed as meeting the criteria for Nectar
         National funding""")
+
+    special_approval = models.CharField(
+        "Special RC-NAS approval reasons",
+        blank=True,
+        max_length=1024,
+        help_text="""Use this field to record reasons the allocation
+        is approved as National despite not meeting the primary criteria;
+        i.e. a current competitive, NCRIS support or ARDC support.
+        See the RC-NAS policy for the possible reasons.  This is only
+        visible to allocation admins""")
 
     provisioned = models.BooleanField(default=False)
 

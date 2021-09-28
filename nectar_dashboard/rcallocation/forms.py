@@ -149,7 +149,8 @@ class BaseAllocationForm(forms.ModelForm):
         model = models.AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
-                   'associated_site', 'provisioned', 'managed',
+                   'associated_site', 'special_approval',
+                   'provisioned', 'managed',
                    'project_id', 'notes', 'notifications', 'ncris_support',
                    'nectar_support'
         )

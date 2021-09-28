@@ -20,7 +20,7 @@ class UserAllocationRequestAmendForm(base_forms.AllocationAmendRequestForm):
 
     class Meta(base_forms.AllocationAmendRequestForm.Meta):
         exclude = ('project_id', 'allocation_home',
-                   'associated_site', 'national',
+                   'associated_site', 'special_approval', 'national',
                    'status_explanation', 'convert_project_trial'
                    ) + base_forms.AllocationAmendRequestForm.Meta.exclude
 

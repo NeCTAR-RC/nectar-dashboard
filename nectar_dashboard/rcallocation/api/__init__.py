@@ -438,7 +438,7 @@ class AllocationSerializer(serializers.ModelSerializer):
                             'national', 'associated_site',
                             'contact_email', 'approver_email',
                             'project_id', 'provisioned', 'notifications',
-                            'allocation_home',
+                            'special_approval', 'allocation_home',
                             'allocation_home_display', 'managed')
 
     @staticmethod
@@ -559,6 +559,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         if not self.is_write_admin():
             if data.get('national') \
                or data.get('associated_site') \
+               or data.get('special_approval') \
                or data.get('allocation_home'):
                 raise exceptions.PermissionDenied()
         if compat_info:

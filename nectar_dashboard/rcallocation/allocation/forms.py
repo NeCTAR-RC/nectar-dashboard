@@ -14,7 +14,7 @@ class AllocationApproveForm(forms.ModelForm):
         fields = (
             'project_name', 'project_description',
             'estimated_project_duration', 'status_explanation',
-            'associated_site', 'national',
+            'associated_site', 'national', 'special_approval',
         )
 
         exclude = ('nectar_support', 'ncris_support',)
@@ -26,6 +26,9 @@ class AllocationApproveForm(forms.ModelForm):
             'status_explanation': forms.Textarea(
                 attrs={'class': 'col-md-6 form-control',
                        'style': 'height:120px; width:420px'}),
+            'special_approval': forms.Textarea(
+                attrs={'class': 'col-md-6 form-control',
+                       'style': 'height:60px; width:420px'}),
             'associated_site': forms.Select(attrs={'class': 'col-md-6'}),
             'national': forms.CheckboxInput(),
         }

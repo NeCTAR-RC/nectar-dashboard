@@ -341,7 +341,7 @@
 
       <div class="row">
         <div class="col-md-8">
-          <h3>Publication/Output</h3>
+          <h3>Publications / Outputs</h3>
             {% if allocation.publications.all %}
                  <table class="table table-hover">
                     {% for pub in allocation.publications.all %}
@@ -378,16 +378,16 @@
             {% endif %}
         </div>
       </div>
+      {% if allocation.status_explanation %}
       <div class="row">
         <div class="col-md-12">
-          {% if allocation.status_explanation %}
             <h3>Reviewer Comment</h3>
             <p>
               {{allocation.status_explanation}}
             </p>
-          {% endif %}
         </div>
       </div>
+      {% endif %}
       {% block extra_details %}
       {% endblock %}
       <div class="row">
