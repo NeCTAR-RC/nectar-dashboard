@@ -117,6 +117,24 @@ class GrantFactory(factory.django.DjangoModelFactory):
     total_funding = 20000
 
 
+class ARDCSupportFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.ARDCSupport'
+    name = fuzzy.FuzzyText()
+    short_name = fuzzy.FuzzyText()
+    project = fuzzy.FuzzyChoice([False, True])
+    enabled = True
+    rank = 100
+    explain = False
+
+
+class NCRISFacilityFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.NCRISFacility'
+    name = fuzzy.FuzzyText()
+    short_name = fuzzy.FuzzyText()
+
+
 class InvestigatorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.ChiefInvestigator'
