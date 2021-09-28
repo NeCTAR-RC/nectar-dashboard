@@ -20,6 +20,7 @@ from openstack_dashboard.test import helpers
 
 from nectar_dashboard.rcallocation import checkers
 from nectar_dashboard.rcallocation.tests import common
+from nectar_dashboard.rcallocation.tests import factories
 
 
 def build_quota(service, resource, value, zone='nectar'):
@@ -42,13 +43,15 @@ class FakeForm(object):
 DUMMY_FORM = FakeForm({})
 
 
-def build_checker(quotas, form=DUMMY_FORM, approver=None):
+def build_checker(quotas, form=DUMMY_FORM, approver=None, allocation=None):
     if approver is None:
-        return checkers.QuotaSanityChecker(quotas=quotas, form=form)
+        return checkers.QuotaSanityChecker(quotas=quotas, form=form,
+                                           allocation=allocation)
     else:
         user = models.User(username=approver)
         return checkers.QuotaSanityChecker(quotas=quotas, form=form,
-                                               user=user, approving=True)
+                                           allocation=allocation,
+                                           user=user, approving=True)
 
 
 class QuotaSanityCheckerTest(helpers.TestCase):
@@ -479,6 +482,7 @@ class QuotaSanityApproverChecksTest(helpers.TestCase):
 
     def setUp(self):
         super().setUp()
+        common.factory_setup()
         common.sites_setup()
         common.approvers_setup()
 
@@ -508,3 +512,22 @@ class QuotaSanityApproverChecksTest(helpers.TestCase):
         checker = build_checker(quotas, approver="test_user2")
         self.assertEqual(checkers.APPROVER_NOT_AUTHORIZED,
                          checkers.approver_checks(checker)[0][0])
+
+    def test_grants_not_approving(self):
+        checker = build_checker([])
+        self.assertIsNone(checkers.grant_checks(checker))
+
+    def test_grants_approving_local(self):
+        allocation = factories.AllocationFactory.create(
+            project_name='fun', national=False)
+        checker = build_checker([], approver='test_user',
+                                allocation=allocation)
+        self.assertIsNone(checkers.grant_checks(checker))
+
+    def test_grants_approving_national(self):
+        allocation = factories.AllocationFactory.create(
+            project_name='fun', national=True)
+        checker = build_checker([], approver='test_user',
+                                allocation=allocation)
+        self.assertEqual(checkers.NO_VALID_GRANTS,
+                         checkers.grant_checks(checker)[0][0])
