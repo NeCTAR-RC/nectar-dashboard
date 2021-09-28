@@ -14,7 +14,7 @@ class AllocationApproveForm(forms.ModelForm):
         fields = (
             'project_name', 'project_description',
             'estimated_project_duration', 'status_explanation',
-            'associated_site', 'national',
+            'associated_site', 'national', 'special_approval',
         )
 
         exclude = ('nectar_support', 'ncris_support',)
