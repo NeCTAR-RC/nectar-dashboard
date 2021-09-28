@@ -49,6 +49,7 @@ CLUSTER_WITHOUT_ROUTER = 'CLUSTER_WITHOUT_ROUTER'
 FLAVORS_NOT_JUSTIFIED = 'FLAVORS_NOT_JUSTIFIED'
 APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
+NO_VALID_GRANTS = 'NO_VALID_GRANTS'
 
 
 def storage_zone_to_home(zone):
@@ -269,6 +270,28 @@ def approver_checks(context):
              approving '%s' storage quota""" % z) for z in other_zones]
 
 
+def grant_checks(context):
+    if not context.approving:
+        # These are approver-only checks.  When we look at the form
+        # submitted by the user, there is not enough context to know
+        # if warnings about grants, etc are relevant.
+        return None
+
+    this_year = datetime.now().year
+    if not context.get_field('national') \
+       or context.get_field('special_approval') \
+       or context.allocation.ardc_support.get_queryset().count() \
+       or context.allocation.ncris_facilities.get_queryset().count():
+        return None
+    for g in context.allocation.grants.get_queryset():
+        if g.grant_type in ('arc', 'nhmrc', 'comp', 'govt') \
+           and g.last_year_funded >= this_year:
+            return None
+    return [(NO_VALID_GRANTS,
+             "There are no current competitive grants for this request. "
+             "Either approve it as Local, or add a Special approval reason.")]
+
+
 STD_CHECKS = [instance_vcpu_check,
               no_vcpu_check,
               no_instance_check,
@@ -283,7 +306,9 @@ STD_CHECKS = [instance_vcpu_check,
               magnum_instance_check,
               magnum_neutron_checks,
               flavor_check,
-              approver_checks]
+              approver_checks,
+              grant_checks,
+]
 
 
 class Checker(object):
