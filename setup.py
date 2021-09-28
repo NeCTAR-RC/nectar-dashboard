@@ -21,6 +21,7 @@ setuptools.setup(
                       "django-filter~=2.1.0",
                       "pymysql",
                       "python-dateutil",
+                      "django-cors-headers",
                       "manukaclient>=0.5.0"],
     license="GPLv3+",
     zip_safe=False,
