@@ -30,7 +30,9 @@ class AllocationApproveForm(forms.ModelForm):
                 attrs={'class': 'col-md-6 form-control',
                        'style': 'height:60px; width:420px'}),
             'associated_site': forms.Select(attrs={'class': 'col-md-6'}),
-            'national': forms.CheckboxInput(),
+            'national': forms.CheckboxInput(
+                attrs={'class': 'col-md-6 form-control',
+                       'style': 'height:20px; width:20px'}),
         }
 
     def __init__(self, **kwargs):
