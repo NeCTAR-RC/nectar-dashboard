@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "965dab8a_262faa3d",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 1000077
+      },
+      "writtenOn": "2021-09-29T23:43:02Z",
+      "side": 1,
+      "message": "This results in weird output in the migration file. Is it ok?",
+      "range": {
+        "startLine": 388,
+        "startChar": 0,
+        "endLine": 392,
+        "endChar": 39
+      },
+      "revId": "66b0221c39c4fbb92ba9a8d10bbb10995008bdd7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    }
+  ]
+}
