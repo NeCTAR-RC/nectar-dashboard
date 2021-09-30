@@ -22,6 +22,30 @@
       },
       "revId": "66b0221c39c4fbb92ba9a8d10bbb10995008bdd7",
       "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6a6091b_ac4e0f86",
+        "filename": "nectar_dashboard/rcallocation/models.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 1000157
+      },
+      "writtenOn": "2021-09-30T00:07:33Z",
+      "side": 1,
+      "message": "I assume you are referring to the \"\"\" string.  OK in what sense?  Yes, it works.  Yes, we\u0027ve have used \"\"\" help_text strings a few times before in this model.  I agree that the strings in the generated migrations look a bit odd.  I could fix ALL of the \"\"\" in the model, but the migration code is not designed to be human readable, so (IMO) it doesn\u0027t achieve much.",
+      "parentUuid": "965dab8a_262faa3d",
+      "range": {
+        "startLine": 388,
+        "startChar": 0,
+        "endLine": 392,
+        "endChar": 39
+      },
+      "revId": "66b0221c39c4fbb92ba9a8d10bbb10995008bdd7",
+      "serverId": "f182a8af-62ca-4ceb-ab81-14f8fec9c6c5"
     }
   ]
 }
