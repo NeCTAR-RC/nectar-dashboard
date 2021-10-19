@@ -22,6 +22,8 @@ from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import factories
 
 
+@mock.patch('nectar_dashboard.rcallocation.notifier.FreshdeskNotifier',
+            new=base.FAKE_FD_NOTIFIER_CLASS)
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class AllocationTests(base.AllocationAPITest):
 

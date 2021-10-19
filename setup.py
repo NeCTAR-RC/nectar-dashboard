@@ -21,6 +21,7 @@ setuptools.setup(
                       "django-filter~=2.1.0",
                       "pymysql",
                       "python-dateutil",
+                      "python-freshdesk",
                       "django-cors-headers",
                       "manukaclient>=0.5.0",
                       "django-select2-forms @ git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms"],

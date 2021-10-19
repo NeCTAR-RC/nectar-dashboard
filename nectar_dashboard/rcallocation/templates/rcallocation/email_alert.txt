@@ -1,7 +1,7 @@
 {% block subject %}Allocation request [{{ allocation.project_description }}]{% endblock %}
 
 {% block body %}
-{% block preamble %}{% endblock %}
+{% block preamble %}
 Allocation Request Received
 ---------------------------
 
@@ -12,18 +12,14 @@ A request for an extension/change to the allocation for project {{ allocation.pr
 An allocation request has been created by "{{ allocation.contact_email }}".
 {% endif %}
 {% endspaceless %}
-You can view the request at: {{ base_url }}{% url 'horizon:allocation:user_requests:allocation_view' pk=allocation.pk %}
-
+You can view the request in the Nectar Dashboard at: {{ base_url }}{% url 'horizon:allocation:user_requests:allocation_view' pk=allocation.pk %}
+{% endblock %}
+{% block allocation_details %}
+Allocation Request Summary
+--------------------------
 
 Project name: {{ allocation.project_description }}
 Duration:     {{ allocation.estimated_project_duration }} months
-
-Quota
------
-{% spaceless %}
-{% for quota in quotas %}
-* {{ quota.service_type }} - {{ quota.resource|title }}: {% if quota.resource_type == 'boolean' %}Enabled{% else %}{{ quota.requested_quota }} {{ quota.unit }}{% endif %}{% endfor %}{{ quota.resource.resource_type }}
-{% endspaceless %}
 
 Use Case Details
 ----------------
@@ -32,17 +28,28 @@ Use Case:
 {{ allocation.use_case }}
 
 Usage pattern:
-{{ allocation.usage_patterns|default:"Not given." }}
+{{ allocation.usage_patterns|default:"None given." }}
 
 Geographical Requirements:
 {{ allocation.geographic_requirements|default:"None given." }}
 
-Fields Of Research breakdown:
+Fields Of Research:
 {% spaceless %}
+{% if allocation.field_of_research_1 or allocation.field_of_research_2 or allocation.field_of_research_3 %}
 {% if allocation.field_of_research_1 %}{{ allocation.get_field_of_research_1_display }} ({{ allocation.for_percentage_1 }}%){% endif %}
 {% if allocation.field_of_research_2 %}{{ allocation.get_field_of_research_2_display }} ({{ allocation.for_percentage_2 }}%){% endif %}
 {% if allocation.field_of_research_3 %}{{ allocation.get_field_of_research_3_display }} ({{ allocation.for_percentage_3 }}%){% endif %}
+{% else %}
+None given.
+{% endif %}
 {% endspaceless %}
+Quotas
+------
+{% spaceless %}
+{% for quota in quotas %}
+* {{ quota.service_type }} - {{ quota.resource|title }}{% if quota.zone != 'NeCTAR' %} - {{ quota.zone }}{% endif %}: {% if quota.resource_type == 'boolean' %}Enabled{% else %}{{ quota.requested_quota }} {{ quota.unit }}{% endif %}{% endfor %}{{ quota.resource.resource_type }}
+{% endspaceless %}
+{% endblock %}
 
 Kind Regards,
 The Nectar Research Cloud Team.
