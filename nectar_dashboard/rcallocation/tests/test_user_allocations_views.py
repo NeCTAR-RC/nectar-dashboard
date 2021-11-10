@@ -25,6 +25,8 @@ from nectar_dashboard.rcallocation.tests import common
 from .factories import AllocationFactory
 
 
+@mock.patch('nectar_dashboard.rcallocation.notifier.FreshdeskNotifier',
+            new=base.FAKE_FD_NOTIFIER_CLASS)
 class RequestTestCase(base.BaseTestCase):
 
     def assert_allocation(self, model, quotas=[], requestable=True,

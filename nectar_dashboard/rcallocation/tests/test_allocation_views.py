@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.urls import reverse
 
 from nectar_dashboard.rcallocation import models
@@ -41,7 +43,11 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
         self.assertEqual(initial_state, model_state,
                          msg="allocation fields changed unexpectedly")
 
+    @mock.patch('nectar_dashboard.rcallocation.notifier.FreshdeskNotifier',
+                new=base.FAKE_FD_NOTIFIER_CLASS)
     def test_approve_request(self):
+        base.FAKE_FD_NOTIFIER.send_email.reset_mock()
+
         # Prep a record in 'E' state
         model, form = common.request_allocation(user=self.user)
         form['ignore_warnings'] = True
@@ -90,3 +96,11 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
         self.assertEqual(1,
                          models.AllocationRequest.objects.filter(
             parent_request_id=allocation.id).count())
+
+        base.FAKE_FD_NOTIFIER.send_email.assert_called_once()
+        call_kwargs = base.FAKE_FD_NOTIFIER.send_email.mock_calls[0].kwargs
+        self.assertEqual("test_user", call_kwargs['email'])
+        self.assertEqual(
+            f"Allocation request [{allocation.project_description}]",
+            call_kwargs['subject'])
+        # Not checking the expansion of the template body.

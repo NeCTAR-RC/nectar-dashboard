@@ -11,6 +11,8 @@
 #   under the License.
 #
 
+from unittest import mock
+
 from django.urls import reverse
 
 from nectar_dashboard.rcallocation import models
@@ -18,6 +20,8 @@ from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import common
 
 
+@mock.patch('nectar_dashboard.rcallocation.notifier.FreshdeskNotifier',
+            new=base.FAKE_FD_NOTIFIER_CLASS)
 class RequestTestCase(base.BaseTestCase):
 
     def assert_allocation(self, model, quotas=[],
@@ -81,6 +85,8 @@ class RequestTestCase(base.BaseTestCase):
                 'additional_researchers'])
 
     def test_request_allocation(self):
+        base.FAKE_FD_NOTIFIER.send_email.reset_mock()
+
         response = self.client.get(
             reverse('horizon:allocation:request:request'))
         self.assertStatusCode(response, 200)
@@ -106,6 +112,13 @@ class RequestTestCase(base.BaseTestCase):
         self.assert_allocation(model, **expected_model)
         self.assertTrue(model.managed)
         self.assertTrue(model.notifications)
+        base.FAKE_FD_NOTIFIER.send_email.assert_called_once()
+        call_kwargs = base.FAKE_FD_NOTIFIER.send_email.mock_calls[0].kwargs
+        self.assertEqual("test_user", call_kwargs['email'])
+        self.assertEqual(
+            f"Allocation request [{form['project_description']}]",
+            call_kwargs['subject'])
+        # Not checking the expansion of the template body.
 
     def _test_allocation(self, form_errors={},
                          **kwargs):

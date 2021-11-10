@@ -11,6 +11,8 @@
 #   under the License.
 #
 
+from unittest import mock
+
 from openstack_dashboard.test import helpers
 from rest_framework import test
 
@@ -21,6 +23,11 @@ from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 from nectar_dashboard.rcallocation.tests import utils
+
+
+FAKE_FD_NOTIFIER = mock.MagicMock()
+FAKE_FD_NOTIFIER.__enter__.return_value = FAKE_FD_NOTIFIER
+FAKE_FD_NOTIFIER_CLASS = mock.MagicMock(return_value=FAKE_FD_NOTIFIER)
 
 
 class BaseTestCase(helpers.TestCase):

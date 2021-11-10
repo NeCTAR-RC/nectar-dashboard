@@ -343,12 +343,22 @@ USER_INFO_LOOKUP_ROLES = [('openstack.roles.allocationadmin',
                            'openstack.roles.helpdesk',
                            'openstack.roles.admin')]
 
-# following is the comma separated list of people who are to receive
-# e-mail when an allocation request is submitted
-ALLOCATION_EMAIL_RECIPIENTS = ("sorrison@gmail.com",)
+# Allocation notifier choices: 'freshdesk' and 'smtp'
+ALLOCATION_NOTIFIER = 'freshdesk'
+
+# Freshdesk details for ticket interactions and / or email outbounding
+FRESHDESK_DOMAIN = "nectar.org.au"
+FRESHDESK_KEY = "secret"
+FRESHDESK_GROUP_ID = '1'
+FRESHDESK_EMAIL_CONFIG_ID = '123'
+
+# These are extra addressees (CC and BCC) for notification emails.
+# They should are iterables
+ALLOCATION_EMAIL_RECIPIENTS = ("someone@gmail.com",)
+ALLOCATION_EMAIL_BCC_RECIPIENTS = ()
+
+# Additional parameters for SMTP-based email envelopes
 ALLOCATION_EMAIL_FROM = "allocations@nectar.org.au"
-ALLOCATION_EMAIL_PROVISIONER = "sorrison@gmail.com"
-ALLOCATION_EMAIL_BCC_RECIPIENTS = []
 ALLOCATION_EMAIL_REPLY_TO = 'noreply@nectar.org.au'
 
 ALLOCATION_GLOBAL_READ_ROLES = ['read_only']

@@ -5,8 +5,6 @@ import datetime
 import logging
 import re
 
-from django.conf import settings
-from django.core.mail import EmailMessage
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.core.validators import RegexValidator
@@ -19,6 +17,7 @@ from nectar_dashboard.rcallocation import grant_type as nectar_grant_type
 from nectar_dashboard.rcallocation import output_type_choices
 from nectar_dashboard.rcallocation import project_duration_choices
 
+from nectar_dashboard.rcallocation.notifier import create_notifier
 
 LOG = logging.getLogger(__name__)
 
@@ -513,15 +512,17 @@ class AllocationRequest(models.Model):
                            'requested_quota': quota.requested_quota})
         return quotas
 
-    def send_email_notification(self, template_name, extra_context={}):
+    def send_email_notification(self, template, extra_context={}):
         if not self.notifications:
             return
-        email = EmailMessage(to=(self.contact_email,),
-                             from_email=settings.ALLOCATION_EMAIL_FROM,
-                             cc=settings.ALLOCATION_EMAIL_RECIPIENTS,
-                             bcc=settings.ALLOCATION_EMAIL_BCC_RECIPIENTS,
-                             reply_to=[settings.ALLOCATION_EMAIL_REPLY_TO])
-        # Create context
+
+        notifier = create_notifier(self)
+
+        # Select the template
+        format = 'html' if notifier.expects_html else 'txt'
+        template_name = f"rcallocation/email_{template}.{format}"
+
+        # Prepare context for template rendering
         context = extra_context.copy()
         context['allocation'] = self
         context['quotas'] = self.get_quotas_context()
@@ -533,17 +534,20 @@ class AllocationRequest(models.Model):
         if 'request' in context:
             context['base_url'] = '{}://{}'.format(
                 context['request'].scheme, context['request'].get_host())
-        # Render template, get body and subject and send email
+
+        # Render template, separate body and subject, and send email
         text = render_to_string(template_name, context)
-        email.subject, delimiter, email.body = text.partition('\n\n')
-        email.send()
+        subject, _, body = text.partition('\n\n')
+        notifier.send_email(email=self.contact_email,
+                            subject=subject,
+                            body=body)
 
     def send_notifications(self, extra_context={}):
         if self.status in [self.NEW, self.SUBMITTED, self.UPDATE_PENDING]:
             if self.status == self.NEW:
-                template = 'rcallocation/email_alert_acknowledge.txt'
+                template = 'alert_acknowledge'
             else:
-                template = 'rcallocation/email_alert.txt'
+                template = 'alert'
             self.send_email_notification(template, extra_context=extra_context)
             if self.status == self.NEW:
                 # N is a special state showing that the
@@ -552,7 +556,7 @@ class AllocationRequest(models.Model):
                 self.status = self.SUBMITTED
                 self.save()
         elif self.is_rejected():
-            template = 'rcallocation/email_alert_rejected.txt'
+            template = 'alert_rejected'
             self.send_email_notification(template, extra_context=extra_context)
 
     def get_all_fields(self):
