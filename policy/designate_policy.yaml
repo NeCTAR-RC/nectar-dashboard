@@ -1,0 +1,6 @@
+"cloud_admin": "role:cloud_admin"
+"read_only":   "role:monitoring or role:read_only or role:helpdesk"
+"admin_or_monitoring": "rule:admin or rule:read_only or rule:cloud_admin"
+
+"all_tenants": "rule:admin_or_monitoring"
+"create_zone": "rule:admin"
