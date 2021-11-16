@@ -1,0 +1,2 @@
+"manage_public_package": "rule:admin_api"
+"admin_api": "role:admin or is_admin:True"

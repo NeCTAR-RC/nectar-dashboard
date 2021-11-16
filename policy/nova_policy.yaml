@@ -1,0 +1,46 @@
+"context_is_admin": "role:admin"
+"admin_api": "is_admin:True"
+"admin_or_owner": "is_admin:True or project_id:%(project_id)s"
+
+# Nectar shortcuts
+"default": "rule:admin_or_owner"
+"monitoring": "role:monitoring"
+"monitoring_or_default": "rule:default or rule:read_only"
+"allocation_admin": "role:AllocationAdmin"
+"quota_admin": "role:QuotaAdmin or rule:provisioner"
+"provisioner": "role:provisioner"
+"cloud_admin": "role:cloud_admin"
+"read_only": "role:monitoring or role:read_only or role:helpdesk"
+"admin_or_monitoring": "rule:admin_api or rule:read_only or rule:cloud_admin"
+"operator_or_admin": "rule:cloud_admin or rule:admin_api"
+
+"os_compute_api:os-aggregates:index": "rule:admin_or_monitoring"
+"os_compute_api:os-aggregates:show": "rule:admin_or_monitoring"
+"os_compute_api:os-hypervisors": "rule:admin_or_monitoring"
+"os_compute_api:os-services": "rule:admin_or_monitoring"
+
+"os_compute_api:os-quota-class-sets:show": "rule:quota_admin or quota_class:%(quota_class)s"
+"os_compute_api:os-quota-class-sets:update": "rule:quota_admin"
+"os_compute_api:os-quota-sets:delete": "rule:quota_admin"
+"os_compute_api:os-quota-sets:detail": "rule:quota_admin or rule:admin_or_monitoring"
+"os_compute_api:os-quota-sets:update": "rule:quota_admin"
+"os_compute_api:os-used-limits": "rule:monitoring_or_default or rule:allocation_admin"
+
+"os_compute_api:os-simple-tenant-usage:list": "rule:admin_or_monitoring"
+"os_compute_api:os-simple-tenant-usage:show": "rule:monitoring_or_default"
+
+# Nectar: Allow force_host role to do forced host
+"os_compute_api:servers:create:forced_host": "rule:admin_api or role:force_host"
+
+"os_compute_api:servers:detail:get_all_tenants": "rule:admin_or_monitoring"
+"os_compute_api:servers:detail": "rule:monitoring_or_default"
+"os_compute_api:servers:index:get_all_tenants": "rule:admin_or_monitoring"
+"os_compute_api:servers:index": "rule:monitoring_or_default"
+"os_compute_api:servers:show": "rule:monitoring_or_default"
+"os_compute_api:servers:show:host_status": "rule:admin_or_monitoring"
+"os_compute_api:os-extended-server-attributes": "rule:admin_or_monitoring"
+"os_compute_api:servers:allow_all_filters": "rule:admin_or_monitoring"
+
+# Admin and operator policies
+"os_compute_api:os-flavor-access:add_tenant_access": "rule:operator_or_admin"
+"os_compute_api:os-flavor-access:remove_tenant_access": "rule:operator_or_admin"
