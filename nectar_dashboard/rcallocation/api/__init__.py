@@ -538,7 +538,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         'quotas__quota_set__resource', 'investigators', 'associated_site',
         'ncris_facilities', 'usage_types', 'ardc_support')
 
-    filter_class = AllocationFilter
+    filterset_class = AllocationFilter
 
     def get_queryset(self):
         if not self.request.user.is_authenticated:
