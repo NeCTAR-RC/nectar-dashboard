@@ -77,6 +77,46 @@ class PublicationExtrasTestCase(helpers.TestCase):
                              '{"message": '
                              ' {"author": [{"family": "Moriarty"},'
                              '             {"family": "Eccles"}]}}'))
+        self.assertEqual("<i>Title</i>: Not recorded, "
+                         "<i>Author(s)</i>: Moriarty; Eccles, "
+                         "<i>Publication</i>: Not recorded, "
+                         "<i>Year</i>: Not recorded",
+                         publication_extras.crossref_summary(
+                             '{"message": '
+                             ' {"author": [{"name": "Moriarty"},'
+                             '             {"name": "Eccles"}]}}'))
+        self.assertEqual("<i>Title</i>: Not recorded, "
+                         "<i>Author(s)</i>: Moriarty; Eccles, "
+                         "<i>Publication</i>: Not recorded, "
+                         "<i>Year</i>: Not recorded",
+                         publication_extras.crossref_summary(
+                             '{"message": '
+                             ' {"author": [{"name": "Moriarty"},'
+                             '             {"name": "Eccles"}]}}'))
+        self.assertEqual("<i>Title</i>: Not recorded, "
+                         "<i>Author(s)</i>: one; two; three; four; five, "
+                         "<i>Publication</i>: Not recorded, "
+                         "<i>Year</i>: Not recorded",
+                         publication_extras.crossref_summary(
+                             '{"message": '
+                             ' {"author": [{"name": "one"},'
+                             '             {"name": "two"},'
+                             '             {"name": "three"},'
+                             '             {"name": "four"},'
+                             '             {"name": "five"}]}}'))
+        self.assertEqual("<i>Title</i>: Not recorded, "
+                         "<i>Author(s)</i>: one; two; three; "
+                         "four; five ..., "
+                         "<i>Publication</i>: Not recorded, "
+                         "<i>Year</i>: Not recorded",
+                         publication_extras.crossref_summary(
+                             '{"message": '
+                             ' {"author": [{"name": "one"},'
+                             '             {"name": "two"},'
+                             '             {"name": "three"},'
+                             '             {"name": "four"},'
+                             '             {"name": "five"},'
+                             '             {"name": "six"}]}}'))
         # Prevent injection via the authors
         self.assertEqual("<i>Title</i>: Not recorded, "
                          "<i>Author(s)</i>: &lt;tag&gt;&amp;, "

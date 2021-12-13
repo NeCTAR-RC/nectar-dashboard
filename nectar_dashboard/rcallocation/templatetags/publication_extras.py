@@ -1,3 +1,4 @@
+
 # Copyright 2021 Australian Research Data Commons
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -81,17 +82,21 @@ def format_author_name(author):
             return author['family'] + "," + author['given']
         else:
             return author['family']
+    elif 'given' in author:
+        return author['given']
+    elif 'name' in author:
+        return author['name']
     else:
-        if 'given' in author:
-            return author['given']
-        else:
-            return 'no name'
+        return 'no name'
 
 
 def format_authors(msg):
+    # Limit to the first 5 authors with elipsis
     authors = msg.get('author')
     if authors:
-        str = "; ".join(map(format_author_name, authors))
+        str = "; ".join(map(format_author_name, authors[:5]))
+        if len(authors) > 5:
+            str = str + " ..."
         return escape(str)
     else:
         return 'Not recorded'
