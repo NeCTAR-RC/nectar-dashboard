@@ -1200,6 +1200,8 @@ function format_author(author) {
         }
     } else if (author.given) {
         return author.given;
+    } else if (author.name) {
+        return author.name;
     } else {
         return "no name";
     }
@@ -1207,9 +1209,15 @@ function format_author(author) {
 
 function format_authors(msg) {
     var authors = msg['author'];
-    return escapeText(authors ?
-                      authors.map(author => format_author(author)).join(";") :
-                      "Not recorded");
+    var text = "Not recorded";
+    if (authors) {
+        text = authors.slice(0, 5)
+                      .map(author => format_author(author)).join(";");
+        if (authors.length > 5) {
+            text = text + " ...";
+        }
+    }
+    return escapeText(text)
 };
 
 function format_pub_date(msg) {
