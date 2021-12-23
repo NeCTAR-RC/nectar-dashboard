@@ -278,14 +278,14 @@ def grant_checks(context):
         return None
 
     this_year = datetime.now().year
-    if not context.get_field('national') \
-       or context.get_field('special_approval') \
-       or context.allocation.ardc_support.get_queryset().count() \
-       or context.allocation.ncris_facilities.get_queryset().count():
+    if (not context.get_field('national')
+        or context.get_field('special_approval')
+        or context.allocation.ardc_support.get_queryset().count()
+        or context.allocation.ncris_facilities.get_queryset().count()):
         return None
     for g in context.allocation.grants.get_queryset():
-        if g.grant_type in ('arc', 'nhmrc', 'comp', 'govt') \
-           and g.last_year_funded >= this_year:
+        if (g.grant_type in ('arc', 'nhmrc', 'comp', 'govt', 'rdc')
+            and g.last_year_funded >= this_year):
             return None
     return [(NO_VALID_GRANTS,
              "There are no current competitive grants for this request. "

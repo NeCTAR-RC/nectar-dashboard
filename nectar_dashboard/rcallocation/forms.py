@@ -548,6 +548,7 @@ class GrantForm(NectarBaseModelForm):
         grant_type = cleaned_data.get('grant_type', '')
         grant_subtype = cleaned_data.get('grant_subtype', '')
         grant_id = cleaned_data.get('grant_id')
+        funding_body_scheme = cleaned_data.get('funding_body_scheme')
         if grant_type == 'arc':
             if not grant_subtype.startswith('arc-'):
                 self.add_error(
@@ -568,6 +569,17 @@ class GrantForm(NectarBaseModelForm):
                 self.add_error(
                     'grant_id',
                     ValidationError('Enter the NHMRC grant id for this grant'))
+        elif grant_type == 'rdc':
+            if not grant_subtype.startswith('rdc-'):
+                self.add_error(
+                    'grant_subtype',
+                    ValidationError(
+                        'Select an RDC grant subtype for this grant'))
+            if not funding_body_scheme and not grant_id:
+                self.add_error(
+                    'funding_body_scheme',
+                    ValidationError('Provide details for this grant '
+                                    'or a grant id (below!)'))
         elif grant_type == 'state':
             if grant_subtype not in ['act', 'nsw', 'nt', 'qld',
                                      'sa', 'tas', 'vic', 'wa']:
@@ -580,10 +592,10 @@ class GrantForm(NectarBaseModelForm):
                     'grant_subtype',
                     ValidationError('Inappropriate subtype for this grant'))
 
-        if grant_type not in ['arc', 'nhmrc', ''] \
+        if grant_type not in ['arc', 'nhmrc', 'rdc', ''] \
            or (grant_type in ['arc', 'nhmrc']
                and grant_subtype.endswith('-other')):
-            if not cleaned_data.get('funding_body_scheme'):
+            if not funding_body_scheme:
                 self.add_error(
                     'funding_body_scheme',
                     ValidationError('Provide details for this grant'))

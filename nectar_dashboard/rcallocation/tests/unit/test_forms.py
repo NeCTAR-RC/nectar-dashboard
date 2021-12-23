@@ -256,6 +256,20 @@ class FormsTestCase(helpers.TestCase):
         self.assertEqual(['Provide details for this grant'],
                          form.errors.get('funding_body_scheme'))
 
+        # RDCC grant conditionality
+        form = forms.GrantForm(data={'grant_type': 'rdc',
+                                     'grant_subtype': 'unspecified'})
+        self.assertEqual(['Select an RDC grant subtype for this grant'],
+                         form.errors['grant_subtype'])
+
+        form = forms.GrantForm(data={'grant_type': 'rdc',
+                                     'grant_subtype': 'rdc-ael'})
+        self.assertIsNone(form.errors.get('grant_subtype'))
+        self.assertIsNone(form.errors.get('grant_id'))
+        self.assertEqual(['Provide details for this grant '
+                          'or a grant id (below!)'],
+                         form.errors.get('funding_body_scheme'))
+
         # State grant conditionality
         STATES = ['act', 'nsw', 'nt', 'qld', 'sa', 'tas', 'vic', 'wa']
         for subtype in GRANT_SUBTYPES:
@@ -272,7 +286,7 @@ class FormsTestCase(helpers.TestCase):
 
         # Other grant conditionality
         for type in GRANT_TYPES:
-            if type[0] in ['arc', 'nhmrc', 'state']:
+            if type[0] in ['arc', 'nhmrc', 'rdc', 'state']:
                 continue
             form = forms.GrantForm(data={'grant_type': type[0],
                                          'grant_subtype': 'unspecified'})
@@ -289,8 +303,10 @@ class FormsTestCase(helpers.TestCase):
                             and subtype[0].startswith('arc-'))
                            or (type[0] == 'nhmrc'
                                and subtype[0].startswith('nhmrc-'))
+                           or (type[0] == 'rdc'
+                               and subtype[0].startswith('rdc-'))
                            or (type[0] == 'state' and subtype[0] in STATES)
-                           or (type[0] not in ['arc', 'nhmrc', 'state']
+                           or (type[0] not in ['arc', 'nhmrc', 'state', 'rdc']
                                and subtype[0] == 'unspecified'))
                 if allowed:
                     self.assertIsNone(form.errors.get('grant_subtype'))

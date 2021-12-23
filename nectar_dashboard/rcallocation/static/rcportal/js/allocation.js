@@ -435,6 +435,7 @@ $(function(){
             [["", "---------"],
              ["arc", "Australian Research Council"],
              ["nhmrc", "NHMRC"],
+             ["rdc", "Rural Research and Developmemt Corporation"],
              ["comp", "Other Australian Federal Govt competitive grant"],
              ["govt", "Australian Federal Govt non-competitive funding"],
              ["state", "Australian State / Territory Govt funding"],
@@ -482,6 +483,21 @@ $(function(){
              ["nhmrc-iriiss", "NHMRC Independent Research Institute Infrastructure Support Scheme"],
              ["nhmrc-bdri", "NHMRC Boosting Dementia Research Initiatives (various)"],
              ["nhmrc-other", "Other NHMRC scheme"],
+             ["rdc-wa", "Wine Australia"],
+             ["rdc-crdc", "Cotton RDC"],
+             ["rdc-frdc", "Fisheries RDC"],
+             ["rdc-grdc", "Grains RDC"],
+             ["rdc-agrifutures", "Rural Industries RDC (AgriFutures Australia)"],
+             ["rdc-ael", "Australian Eggs Ltd"],
+             ["rdc-livecorp", "Australian Livestock Export Corp Ltd (LiveCorp)"],
+             ["rdc-ampc", "Australian Meat Processor Corp"],
+             ["rdc-apl", "Australian Pork Ltd"],
+             ["rdc-awil", "Australian Wool Innovation Ltd"],
+             ["rdc-dal", "Dairy Australia Ltd"],
+             ["rdc-fwpa", "Forest and Wood Products Australia"],
+             ["rdc-hial", "Horticulture Innovation Australia Ltd"],
+             ["rdc-mla", "Meat and Livestock Australia"],
+             ["rdc-sral", "Sugar Research Australia Ltd"],
              ["act", "Australian Capital Territory Govt funding"],
              ["nsw", "New South Wales Govt funding"],
              ["nt", "Northern Territory Govt funding"],
@@ -687,6 +703,8 @@ $(function(){
             pattern = /^arc-.*$/;
         } else if (type == 'nhmrc') {
             pattern = /^nhmrc-.*$/;
+        } else if (type == 'rdc') {
+            pattern = /^rdc-.*$/;
         } else if (type == 'state') {
             pattern = /^(act|nsw|nt|qld|sa|tas|vic|wa)$/;
         } else if (type == '') {
