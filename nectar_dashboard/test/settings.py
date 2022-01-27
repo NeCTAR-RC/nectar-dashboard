@@ -394,6 +394,10 @@ ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS = {
 
 HORIZON_CONFIG['WARNING_INFO_URL'] = \
     "https://support.ehelp.edu.au/support/home"
+HORIZON_CONFIG['FRESHDECK_SEARCH_URL'] = (
+    "https://support.ehelp.edu.au/a/tickets/filters/search"
+    "?orderBy=updated_at&orderType=desc&ref=_created")
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
