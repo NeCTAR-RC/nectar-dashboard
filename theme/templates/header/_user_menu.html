@@ -1,7 +1,19 @@
 {% load i18n %}
 {% load themes %}
 
-<li class="dropdown user-menu">
+{% if HORIZON_CONFIG.help_url %}
+  <li class="user-menu">
+    <a href="{{ HORIZON_CONFIG.help_url }}" role="button">
+      Support Center
+    </a>
+  </li>
+{% endif %}
+<li class="user-menu">
+  <a href="https://tutorials.rc.nectar.org.au/" role="button">
+    Tutorials
+  </a>
+</li>
+<li class="user-menu">
   <a href="#" role="button" class="launch-support-ticket">
     <span class="fa fa-life-ring"></span>
     Support Ticket
@@ -26,14 +38,6 @@
         <a href="{{ HORIZON_CONFIG.bug_url }}" target="_blank">
           <span class="fa fa-bug"></span>
           {% trans "Report Bug" %}
-        </a>
-      </li>
-    {% endif %}
-    {% if HORIZON_CONFIG.help_url %}
-      <li>
-        <a href="{{ HORIZON_CONFIG.help_url }}" target="_blank">
-          <span class="fa fa-question-circle"></span>
-          {% trans "Help" %}
         </a>
       </li>
     {% endif %}

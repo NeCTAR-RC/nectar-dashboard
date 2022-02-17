@@ -15,19 +15,13 @@
       </button>
 
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
-        <span class="sr-only">{% trans "Toggle navigation" %}</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+        <span class="sr-only">{% trans "Toggle user menu" %}</span>
+        <span class="fa fa-user"></span>
       </button>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapse">
-      <ul class="nav navbar-nav">
-        {% include "header/_context_selection.html" %}
-      </ul>
-
       <ul class="nav navbar-nav navbar-right">
         <li id="extensible-header" class="extensible-header"></li>
         {% if profiler_enabled %}

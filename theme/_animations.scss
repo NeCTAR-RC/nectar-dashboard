@@ -1,0 +1,25 @@
+/*
+ * CSS Functions
+ */
+
+@keyframes drawDashed {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes flashingHex {
+  0% { fill: #f8b20e; }
+  25% { fill: #f8b20e; }
+  50% { fill: #f8b20e; }
+  75% { fill: #f8b20e; }
+  100%   { fill: #ddd; }
+}

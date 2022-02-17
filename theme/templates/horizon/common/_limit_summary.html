@@ -1,0 +1,43 @@
+{% load i18n horizon %}
+
+{% spaceless %}
+  <div class="quota-dynamic limit-summary">
+    <h3 class="quota-heading">{% trans "Limit Summary" %}</h3>
+    <div class="row">
+    {% for section in charts %}
+      {% if forloop.first or forloop.last %}
+        <div class="col-xs-12 col-lg-6">
+      {% endif %}
+
+      <div class="panel panel-default shadow">
+        <div class="panel-heading">{{ section.title }}</div>
+        <div class="panel-body">
+          <div class="row">
+            {% for chart in section.charts %}
+              <div class="d3_quota_bar col-xs-6 col-sm-4">
+                <div class="pie-chart-usage" data-used="{% quotapercent chart.used chart.quota %}"></div>
+                <div class="quota_title" title="{{ chart.name }}" data-toggle="tooltip"> {{ chart.name }}</div>
+                <div class="quota_subtitle">
+                  {% if chart.quota|quotainf != '-1' %}
+                    {% blocktrans trimmed with usedphrase=chart.text used=chart.used_display available=chart.quota_display %}
+                      {{ usedphrase }} {{ used }} of {{ available }}
+                    {% endblocktrans %}
+                  {% else %}
+                    {% blocktrans trimmed with usedphrase=chart.text used=chart.used_display %}
+                      {{ usedphrase }} {{ used }} (No Limit)
+                    {% endblocktrans %}
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {% if not forloop.first %}
+        </div>
+      {% endif %}
+    {% endfor %}
+    </div>
+  </div>
+{% endspaceless %}

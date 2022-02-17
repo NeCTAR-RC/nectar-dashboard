@@ -1,21 +1,17 @@
 {% load i18n %}
 
-{% block pre_login %}
-<form id="" class="ng-pristine ng-valid ng-scope"
-      method="POST"
-      action="{{ HORIZON_CONFIG.rcshibboleth_url }}{% if redirect_field_name in request.GET %}%3F{{ redirect_field_name|urlencode }}%3D{{ request.GET.next|urlencode }}{% endif %}"
-      autocomplete="off"
-      ng-controller="hzLoginController">
-  {% csrf_token %}
-{% endblock %}
+    {% block pre_login %}
+    <form id="" class="ng-pristine ng-valid ng-scope"
+          method="POST"
+          action="{{ HORIZON_CONFIG.rcshibboleth_url }}{% if redirect_field_name in request.GET %}%3F{{ redirect_field_name|urlencode }}%3D{{ request.GET.next|urlencode }}{% endif %}"
+          autocomplete="off"
+          ng-controller="hzLoginController">
+      {% csrf_token %}
+    {% endblock %}
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
     {% block login_header %}
     {% endblock %}
-    </div>
-
-    <div class="panel-body">
+    
     {% block login_body %}
       {% include "auth/_description.html" %}
       <fieldset hz-login-finder>
@@ -56,23 +52,20 @@
         {% endif %}
       </fieldset>
     {% endblock %}
-    </div>
 
-    <div class="panel-footer">
       {% block login_footer %}
+      <button id="loginBtn" type="submit" class="btn btn-primary">
+        <span>Login VIA AAF (Australia)</span>
+      </button>
       {% if HORIZON_CONFIG.rcshibboleth_url_nz %}
-      <a href="{{ HORIZON_CONFIG.rcshibboleth_url_nz }}" id="nzloginBtn" type="submit" class="btn btn-info pull-left">
-        <span>NZ Log In via Tuakiri</span>
+      <a href="{{ HORIZON_CONFIG.rcshibboleth_url_nz }}" id="nzloginBtn" type="submit" class="btn btn-info">
+        <span>Login VIA Tuakiri (NZ)</span>
       </a>
       {% endif %}
-      <button id="loginBtn" type="submit" class="btn btn-warning pull-right">
-        <span>Australian Log In via AAF</span>
-      </button>
       <div class="clearfix"></div>
       {% endblock %}
-    </div>
-  </div>
+      <p class="p-3"><a href="{{ HORIZON_CONFIG.help_url }}/support/solutions/articles/6000055377-getting-an-account" target="_blank">Having trouble logging in?</a></p>
 
-{% block post_login%}
-</form>
-{% endblock %}
+    {% block post_login%}
+    </form>
+    {% endblock %}

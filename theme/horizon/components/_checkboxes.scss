@@ -1,0 +1,30 @@
+//
+// Custom Material Checkboxes
+// --------------------------------------------------
+
+.themable-checkbox {
+
+  input[type=checkbox] {
+
+    // The checkbox - Unchecked
+    & + label {
+      @extend .mdi-checkbox-blank-outline;
+
+      &:before {
+        @extend .mdi;
+        content: "\F131";
+        font-size: $font-size-h5;
+      }
+    }
+
+    // The checkbox - Checked
+    &:checked + label {
+      @extend .mdi-checkbox-marked;
+
+      &:before {
+        content: "\F132";
+        color: $brand-primary;
+      }
+    }
+  }
+}

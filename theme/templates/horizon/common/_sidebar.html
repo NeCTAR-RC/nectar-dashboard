@@ -1,0 +1,10 @@
+{% load branding horizon context_selection i18n %}
+
+<nav id='sidebar'>
+  <div class="sidebar-content">
+    <ul id="project_select" class="list-unstyled">
+      {% include "header/_context_selection.html" %}
+    </ul>
+  {% horizon_nav %}
+  </div>
+</nav>

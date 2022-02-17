@@ -1,89 +1,455 @@
-@import "_variables";
+/**** Custom Styles for ARDC Nectar Research Cloud ****/
+/**** Based on Horizon theme ****/
 
-// combat angular-material from Heat dashboard
+// Use ARDC Proxima Nova
+@import url("https://use.typekit.net/nlr0joz.css");
+// Import Bootstrap variables and override
+@import "variables";
+@import "bootstrap/variables";
+
+/*
+ * Global styles
+ */
 html {
-  background-color: #fff;
+  background-color: $body-bg; // combat angular-material from Heat dashboard
 }
 
-/* Use flex box to push footer to bottom */
+html, body:not(#splash) {
+  overflow: hidden;
+}
+
 body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
+  // height: auto !important; // Reset Horizon theme body height
+  // min-height: auto !important; // Reset Horizon theme body min-height
+  &#splash {
+    overflow-y: auto;
+    //display: flex;
+    //flex-direction: column;
+    #footer {
+      //margin-top: -150px;
+    }
+  }
 }
 
-/* container login used in splash page */
-,#main_content, 
-.container.login {
-  flex: 1;
+table,
+.table,
+.table_wrapper {
+  width: 100%;
+}
+
+button, select, html, textarea, input {
+  font-family: proxima-nova, sans-serif;
+}
+
+.btn {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+  &:focus,
+  &:focus-visible {
+    outline: none !important;
+  }
+}
+
+.btn-link {
+  text-decoration: none;
+}
+
+.btn-group > .btn {
+  @media (max-width: 991px) {
+    margin-bottom: 5px;
+  }
+}
+
+.panel {
+  .panel-heading {
+    font-weight: bold;
+  }
+}
+
+.equal {
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .row.equal {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .row.equal > div[class*='col-'] {  
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/*
+ * Login Page
+ */
+#login_content {
+  position: relative;
+  height: 100%;
+  overflow-y: hidden;
+  margin-bottom: -30px;
+  background: #ffffff;
+  #login_bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    min-width: 1020px;
+    @media (max-width: 1199px) {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    @media (min-width: 1200px) and (max-width: 1400px) {
+      transform: translateX(-10%);
+    }
+    #honeycomb {
+      opacity: 0;
+      will-change: opacity;
+      animation: fadeIn 0.5s linear 0.5s forwards;
+      #honeycomb-hex {
+        #hex-flashing {
+          polygon {
+            animation: flashingHex 1s linear infinite alternate;
+            &:nth-child(1) { animation-delay: 0.2s }
+            &:nth-child(2) { animation-delay: 0.4s }
+            &:nth-child(3) { animation-delay: 0.6s }
+            &:nth-child(4) { animation-delay: 0.8s }
+            &:nth-child(5) { animation-delay: 1s }
+            &:nth-child(6) { animation-delay: 1.2s }
+            &:nth-child(7) { animation-delay: 1.4s }
+            &:nth-child(8) { animation-delay: 1.6s }
+            &:nth-child(9) { animation-delay: 1.8s }
+            &:nth-child(10) { animation-delay: 0.2s }
+            &:nth-child(12) { animation-delay: 0.4s }
+            &:nth-child(10) { animation-delay: 0.2s }
+            &:nth-child(13) { animation-delay: 0.6s }
+            &:nth-child(14) { animation-delay: 0.8s }
+            &:nth-child(15) { animation-delay: 1s }
+            &:nth-child(16) { animation-delay: 1.2s }
+            &:nth-child(17) { animation-delay: 1.4s }
+          }
+        }
+      }
+    }
+    #lines {
+      path, line {
+        opacity: 0;
+        stroke-dasharray: 12 12;
+        stroke-dashoffset: 1000;
+        will-change: opacity;
+        animation: fadeIn 0.5s linear 2s forwards, drawDashed 20s linear 2s infinite;
+      }
+      circle {
+        opacity: 0;
+        will-change: opacity;
+        animation: fadeIn 0.5s linear 2s forwards;
+      }
+    }
+    #symbols {
+      opacity: 0;
+      will-change: opacity;
+      animation: fadeIn 0.5s linear 1s forwards;
+    }
+  }
+  .login {
+    margin-top: 0;
+    text-align: center;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    .login-logo {
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 100%;
+    }
+    .btn {
+      margin: 5px;
+    }
+  }
+}
+
+/*
+ * Main Content Section
+ */
+#main_content {
+  height: 100%;
+  #sidebar {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.175);
+  }
+  #content_body {
+    height: 100%;
+    overflow-y: scroll;
+    padding-left: 0 !important;  // Reset Horizon theme left padding for screens > 768px
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; // Push footer to bottom
+    .container-fluid {
+      width: 100%; // Fix narrow width caused by parent flex property
+      padding-right: 30px;
+      padding-left: 30px;
+    }
+  }
 }
 
 /*
  * Nav bar
  */
 .navbar {
-  font-size: 1.1em;
+  font-size: 16px;
+  &.navbar-inverse {
+    background-color: $black;
+    border-color: transparent;
+  }
+  .navbar-brand {
+    font-size: 20px;
+    img {
+      margin-right: 10px;
+    }
+  }
+  .navbar-nav {
+    margin: 0;
+    .user-menu {
+      &:not(.dropdown) {
+        text-transform: uppercase;
+      }
+      > a {
+        padding-right: 10px;
+        padding-left: 10px;
+      }
+    }
+  }
+  .navbar-toggle {
+    color: #fff;
+    line-height: 1;
+    &#sidebar-toggle {
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+  }
 }
+
+/*
+ * Sidebar
+ */
+#sidebar {
+  font-weight: bold;
+  width: 240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
+  @media (max-width: 991px) {
+    left: -240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
+  }
+  #project_select {
+    padding: 20px;
+    li a {
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      text-transform: none;
+      span.fa-list-alt {
+        display: none;
+      }
+    }
+  }
+  #sidebar-accordion {
+    width: 240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
+  }
+  .nav > li > a {
+    padding: 10px 20px; // Change horizon sidebar padding to allow scroll bar to fit
+  }
+  .openstack-dashboard {
+    text-align: left;
+    border-top: 1px solid #e6e6e6;
+    > a {
+      font-size: larger;
+    }
+  }
+  li.openstack-panel-group {
+    text-align: left;
+    > a:before {
+      content: "";
+      display: inline-block;
+      width: 15px;
+    }
+  }
+  a.openstack-panel {
+    text-align: left;
+    &:before {
+      content: "";
+      display: inline-block;
+      width: 30px;
+    }
+  }
+}
+
+transition: all 0.3s ease 0s;
+position: fixed;
+top: 64px;
+bottom: 0;
+z-index: 3;
+left: -220px;
+overflow-y: auto;
+overflow-x: hidden;
 
 /*
  * Footer
  */
 .footer {
-  font-size: 1.1em;
-  margin-top: 20px;
-  background: #000;
-  color: #fff;
-  padding: 20px;
-
-  ul {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 10px;
+  position: relative;
+  padding: 24px 0;
+  .container-fluid {
+    max-width: 1170px;
   }
-
-  h3::after, h4::after {
-    content: "";
-    background: #fff;
-    height: 2px;
-    display: block;
-    margin-top: 10px;
-    max-width: 50px;
+  &.bg-dark {
+    background-color: #000 !important;
   }
-
   .footer-text {
+    p {
+      margin: 1rem 0;
+    }
     a {
       color: $ardc-orange;
-      text-decoration: underline;
-
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         color: $ardc-pink;
+        text-decoration: underline;
       }
     }
+    ul {
+      list-style: none;
+    }
   }
-
+  .footer-logos {
+    display: table;
+    vertical-align: right;
+    .footer-logo-ardc {
+      display: table-cell;
+      width: 60%;
+      padding: 5px;
+    }
+    .footer-logo-ncris {
+      display: table-cell;
+      width: 40%;
+      padding: 5px;
+    }
+  }
+  h4 {
+    text-transform:  uppercase;
+    &:after {
+      content: "";
+      background: #fff;
+      height: 2px;
+      display: block;
+      margin-top: 10px;
+      max-width: 50px;
+    }
+  }
   .footer-links {
     a {
-      color: #ccc;
+      color: #fff;
       text-decoration: none;
-
-      &:hover, &:focus {
-        color: $ardc-blue;
-      }
     }
   }
 }
 
-/* Alignment of logos in footer */
-.vertical-align {
-  display: flex;
-  flex-direction: row;
+.quota-dynamic {
+  overflow: visible;
+  padding: 0;
 }
 
-.vertical-align > [class^="col-"],
-.vertical-align > [class*=" col-"] {
+.form-actions {
+  margin-bottom: 30px;
+}
+
+.app-list .app p {
+  font-size: 13px;
+}
+
+.hz-magic-search-context .hz-dynamic-table-preamble {
+  @media (max-width: 1080px) {
+    display: block;
+    .hz-magic-search-bar {
+      padding-right: 0;
+    }
+  }
+}
+
+.table_actions {
+  float: none;
+  width: 100%;
+  @media (min-width: 992px) {
+    text-align: right;
+  }
+  .btn, .form-control {
+    @media (max-width: 991px) {
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.modal.loading {
   display: flex;
   align-items: center;
   justify-content: center;
+  .modal-content {
+    background: none;
+    box-shadow: none;
+    .modal-body {
+      color: #fff;
+      .loader {
+        -webkit-animation: unset;
+        animation: unset;
+        font-size: unset;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="512" height="517.64" viewBox="0 0 512 517.64"><polygon id="polygon1" points="209.72 381.51 279.63 258.82 209.72 136.12 69.9 136.12 0 258.82 69.9 381.51 209.72 381.51" fill="%23f5b01a" fill-opacity="0.5"><animate id="polygon1-anim" attributeType="xml" attributeName="fill-opacity" begin="0s" values="0.5;1;1;0.5;0.5;0.5" dur="1.8s" repeatCount="indefinite" /></polygon><polygon id="polygon2" points="442.1 245.39 512 122.69 442.1 0 302.28 0 232.37 122.69 302.28 245.39 442.1 245.39" fill="%23f5b01a" fill-opacity="0.5"><animate id="polygon2-anim" attributeType="xml" attributeName="fill-opacity" begin="0s" values="0.5;0.5;0.5;1;1;0.5" dur="1.8s" repeatCount="indefinite" /></polygon><polygon id="polygon3" points="442.1 517.64 512 394.95 442.1 272.25 302.28 272.25 232.37 394.95 302.28 517.64 442.1 517.64" fill="%23f5b01a" fill-opacity="1"><animate id="polygon3-anim" attributeType="xml" attributeName="fill-opacity" begin="0s" values="1;0.5;0.5;0.5;0.5;1" dur="1.8s" repeatCount="indefinite" /></polygon></svg>');
+        //background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="512" height="517.64" viewBox="0 0 512 517.64"><polygon id="polygon1" points="209.72 381.51 279.63 258.82 209.72 136.12 69.9 136.12 0 258.82 69.9 381.51 209.72 381.51" fill="%23f5b01a" fill-opacity="0.5"><animate id="polygon1-anim" attributeType="xml" attributeName="fill-opacity" begin="0s" values="0.5;1;1;1;1;0.5" dur="2s" repeatCount="indefinite" /></polygon><polygon id="polygon2" points="442.1 245.39 512 122.69 442.1 0 302.28 0 232.37 122.69 302.28 245.39 442.1 245.39" fill="%23f5b01a" fill-opacity="0.5"><animate id="polygon2-anim" attributeType="xml" attributeName="fill-opacity" begin="0s" values="0.5;0.5;1;1;1;0.5" dur="2s" repeatCount="indefinite" /></polygon><polygon id="polygon3" points="442.1 517.64 512 394.95 442.1 272.25 302.28 272.25 232.37 394.95 302.28 517.64 442.1 517.64" fill="%23f5b01a" fill-opacity="0.5"><animate id="polygon3-anim" attributeType="xml" attributeName="fill-opacity" begin="0s" values="0.5;0.5;0.5;1;1;0.5" dur="2s" repeatCount="indefinite" /></polygon></svg>') !important;
+        background-size: contain;
+        display: inline-block;
+        width: 100px;
+        height: 101px;
+        &:before {
+          content: none;
+        }
+      }
+      .loader-caption {
+        padding-top: 0;
+      }
+    }
+  }
 }
 
+.pie-chart .svg-pie-chart .slice.margin {
+  fill: #f2f2f2;
+}
 
+/*
+ * CSS Functions
+ */
+ @keyframes drawDashed {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes flashingHex {
+  0% { fill: #f8b20e; }
+  25% { fill: #f8b20e; }
+  50% { fill: #f8b20e; }
+  75% { fill: #f8b20e; }
+  100%   { fill: #fce09f; }
+}
