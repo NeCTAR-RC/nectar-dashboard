@@ -24,6 +24,8 @@ setuptools.setup(
                       "python-freshdesk",
                       "django-cors-headers",
                       "manukaclient>=0.5.0",
+                      "gnocchiclient",
+                      "django-mathfilters",
                       "django-select2-forms @ git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms"],
     license="GPLv3+",
     zip_safe=False,

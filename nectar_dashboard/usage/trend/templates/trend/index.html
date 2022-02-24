@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans "Usage Trend" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Usage Trend") %}
+{% endblock page_header %}
+
+{% block css %}
+{% include "_stylesheets.html" %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.css" integrity="sha512-rBi1cGvEdd3NmSAQhPWId5Nd6QxE8To4ADjM2a6n0BrqQdisZ/RPUlm0YycDzvNL1HHAh1nKZqI0kSbif+5upQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" type="text/css" href="{% static 'js/DataTables/datatables.min.css' %}"/>
+{% endblock %}
+
+{% block custom_head_js %}
+{{ block.super }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js" integrity="sha512-oh5t+CdSBsaVVAvxcZKy3XJdP7ZbYUBSRCXDTVn0ODewMDDNnELsrG9eDm8rVZAQg7RsDD/8K3MjPAFB13o6eA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js" integrity="sha512-mh+AjlD3nxImTUGisMpHXW03gE6F4WdQyvuFRkjecwuWLwD2yCijw4tKA3NsEFpA1C3neiKhGXPSIGSfCYPMlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js" integrity="sha512-R/QOHLpV1Ggq22vfDAWYOaMd5RopHrJNMxi8/lJu8Oihwi4Ho4BRFeiMiCefn9rasajKjnx9/fTQ/xkWnkDACg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/nectar_usage.js' %}"></script>
+{% endblock %}
+
+{% block main %}
+<div id="usage_trend_page">
+  <div class="block-title d-md-flex align-items-center justify-content-between mb-2">
+    <h3>Usage Trend</h3>
+    <div class="d-inline-block">
+      <form class="form-inline">
+        <label for="date_selector" class="mr-3">Select Usage Period:</label>
+        <input type="text" id="date_selector" class="form-control" name="daterange" />
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-lg-6">
+      <div class="panel panel-info shadow h-100">
+        <div class="panel-body d-flex align-items-middle">
+          <h2 id="su_total" class="usage-stats-value">0</h2>
+          <div class="usage-stats-description">
+            <h4>Service Units used</h4>
+            <h6>in the selected date range</h6>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default shadow">
+        <div class="panel-body">
+          <h4>Understanding your project usage...</h4>
+          <p>The Nectar Cloud is moving to a Usage Based Quota system where a Service Unit budget will be requested and allocated for compute resources. The Usage Summary graph shows your current compute usage in service units.</p>
+          <blockquote>
+            <p><strong>NOTE:</strong> Service Unit usage data is only available from 01/01/22.</p>
+          </blockquote>
+          <h5>Service Unit</h5>
+          <p>A Service Unit (SU) is a measure of the cost of using Nectar compute resources. Each Nectar flavor has an associated SU-per-hour cost, as set out in the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000205341-nectar-flavors">Nectar Flavors support page</a>. The cost of each flavor is based on the amount of VCPUs, RAM and other factors like CPU priority and the flavor generation.</p>
+          <h5>Service Unit Budget</h5>
+          <p>From <insert date> each renewed or new allocation will have a Service Unit Budget.  This is the number of Service Units that can be used by the project for its allocation period; i.e. from the start date to the end date. Your allocation’s Service Unit Budget is requested on the Allocation request form, and is subject to review and approval by the Allocation Approvers.
+Next time you fill in the Allocation Request form, you need to estimate how many SUs you will require and use that as your requested budget. Please refer to the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units">Service Unit support page</a> for help on how to do this.</p>
+        </div>
+        <div class="panel-footer">
+          <a href="{% url 'horizon:allocation:request:request' %}" class="btn btn-primary btn-sm">Request allocation</a>
+          <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units" class="btn btn-default btn-sm">Learn more about usage</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-lg-6">
+      <div class="panel panel-default shadow">
+        <div class="panel-heading">Usage by Instance</div>
+        <div class="panel-body">
+          <div class="alert alert-warning text-center usage-error">There is no usage data recorded for the selected date range because there weren't any instances running.</div>
+          <div class="w-75 m-auto">
+            <canvas class="usage-chart" id="instance_chart"></canvas>
+          </div>
+          <p class="chart-description text-center my-4">The above chart shows the usage (SU) comparison by instance up to the top 5 instances in the selected usage period. If the total number of instances running in the project during the selected period is more than 5, the usage is shown in the pie chart in "other".</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default shadow">
+        <div class="panel-heading">Project Usage to Date</div>
+        <div class="panel-body">
+          <div class="alert alert-warning text-center usage-error">There is no usage data recorded for the selected date range because there weren't any instances running.</div>
+          <canvas class="usage-chart" id="trend_chart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default shadow">
+        <div class="panel-heading">Project Usage Breakdown</div>
+        <div class="panel-body">
+            <table id="usage_table" class="table table-striped table-bordered display" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th>Instance ID</th>
+                  <th>Instance Name</th>
+                  <th>Date Created</th>
+                  <th>Date Deleted</th>
+                  <th>Availability Zone</th>
+                  <th>Flavor</th>
+                  <th>Instance Hours</th>
+                  <th>Usage Total (Service Units)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 text-center mb-5">
+      <h3 class="mb-4">Something not looking right?</h3>
+      <h5>Do you have any feedback or questions regarding this page?<br />Please contact us by creating a support ticket.</h5>
+      <button class="btn btn-default mt-4 mb-5" title="Support ticket" onclick="window.FreshWidget.show();">Create Support Ticket</button>
+      <p><strong>Please note</strong>, instances using private flavors will show an increase in Service Unit usage starting from 28/03/22.</p>
+    </div>
+  </div>
+</div>
+<script>
+  $(function() {
+    let defaultBegin = moment().subtract(3, 'months');
+    let defaultEnd = moment();
+    let minDate = moment().subtract(2, 'years');
+    usageTrend.showDataWithRange(defaultBegin.format('YYYY-MM-DD'), defaultEnd.format('YYYY-MM-DD'));
+
+    $('input[name="daterange"]').daterangepicker({
+      opens: 'left',
+      startDate: defaultBegin,
+      endDate: defaultEnd,
+      minDate: minDate,
+      locale: {
+        format: 'DD/MM/YYYY'
+      },
+      ranges: {
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'Last 3 Months': [moment().subtract(3, 'months'), moment()],
+           'Last 6 Months': [moment().subtract(6, 'months'), moment()],
+        }
+    }, function(begin, end, label) {
+      console.log("A new date selection was made: " + begin.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+      usageTrend.showDataWithRange(begin.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+    });
+  });
+</script>
+
+{% endblock %}

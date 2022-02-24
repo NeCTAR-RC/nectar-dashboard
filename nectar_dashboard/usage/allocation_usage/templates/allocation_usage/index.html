@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load mathfilters %}
+{% block title %}{% trans "Usage Trend" %}{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Usage Trend") %}
+{% endblock page_header %}
+
+{% block custom_head_js %}
+{{ block.super }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js" integrity="sha512-oh5t+CdSBsaVVAvxcZKy3XJdP7ZbYUBSRCXDTVn0ODewMDDNnELsrG9eDm8rVZAQg7RsDD/8K3MjPAFB13o6eA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="{% static 'js/nectar_usage.js'%}"></script>
+{% endblock %}
+
+{% block main %}
+<div id="usage_allocation_page">
+  <div class="block-title">
+    <h3>Allocation Usage for {{ allocation.project_name }}</h3>
+  </div>
+  <div class="d-md-flex align-items-center justify-content-between mb-3">
+    <div class="d-inline-block">
+      <h4 class="text-muted text-uppercase"><small>Allocation usage budget:</small> {{ su_budget }} SU</h4>
+    </div>
+    <a class="btn btn-primary" href="{% url 'horizon:allocation:user_requests:edit_change_request' allocation.id %}">Request More Budget</a>
+  </div>
+  <div class="row equal">
+    <div class="col-sx-12 col-sm-12 col-md-4 mb-3">
+      <div class="panel panel-info shadow h-100">
+        <div class="panel-body d-flex align-items-middle">
+          <h2 class="usage-stats-value">{{ su_used | floatformat }}</h2>
+          <div class="usage-stats-description">
+            <h4>Service Units used</h4>
+            <h6>in this allocation period to date</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sx-12 col-sm-12 col-md-4 mb-3">
+      <div class="panel panel-danger shadow h-100">
+        <div class="panel-body d-flex align-items-middle">
+          <h2 class="usage-stats-value">{{ su_budget | sub:su_used | floatformat }}</h2>
+          <div class="usage-stats-description">
+            <h4>Service Units remaining</h4>
+            <h6>in this allocation period</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sx-12 col-sm-12 col-md-4 mb-3">
+      <div class="panel panel-primary shadow h-100">
+        <div class="panel-body d-flex align-items-middle">
+          <h2 class="usage-stats-value">{{ total_hours }}</h2>
+          <div class="usage-stats-description">
+            <h4>Total hours</h4>
+            <h6>of instances running</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default shadow">
+        <div class="panel-heading">Cumulative Usage for This Allocation</div>
+        <div class="panel-body">
+          {% if budget_tracking > 0 %}
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+              <i class="fa fa-exclamation-triangle fa-lg mr-4" aria-hidden="true"></i>
+              <div>
+                <strong>This project is at risk of running out of budget!</strong><br/>Your service unit usage is tracking higher than expected at this time in the project's current allocation period. Do you need to <a href="{% url 'horizon:allocation:user_requests:edit_change_request' allocation.id %}">request more budget</a>?
+              </div>
+            </div>
+          {% endif %}
+          <canvas id="cumulative_chart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  usageAllocation.showUsage({{ cumulative_data|safe }}, {{ on_target_data|safe }});
+</script>
+
+{% endblock %}

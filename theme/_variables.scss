@@ -13,7 +13,6 @@ $ardc-orange: #F8B20E !default;
 $ardc-purple: #8E489B !default;
 $ardc-grey:   #969696 !default;
 
-
 //== Colors
 //
 //## Gray and brand colors for use across Bootstrap.
@@ -166,7 +165,7 @@ $state-info-bg:                  lighten($brand-info, 50%) !default;
 $state-info-border:              $brand-info !default;
 
 $state-warning-text:             darken($brand-warning, 15%) !default;
-$state-warning-bg:               lighten($brand-warning, 50%) !default;
+$state-warning-bg:               lighten($brand-warning, 40%) !default;
 $state-warning-border:           $brand-warning !default;
 
 $state-danger-text:              darken($brand-danger, 15%) !default;

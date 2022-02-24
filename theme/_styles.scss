@@ -41,6 +41,15 @@ button, select, html, textarea, input {
   font-family: proxima-nova, sans-serif;
 }
 
+blockquote {
+  border-left: 5px solid $brand-primary;
+}
+
+a:focus {
+  outline: 5px auto $brand-primary;
+  outline-offset: 0;
+}
+
 .btn {
   text-transform: uppercase;
   font-weight: 600;
@@ -94,6 +103,10 @@ button, select, html, textarea, input {
   }
 }
 
+.badge {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
 /*
  * Login Page
  */
@@ -446,10 +459,83 @@ button, select, html, textarea, input {
   fill: #f2f2f2;
 }
 
+.usage-error {
+  display: none;
+}
+
+#usage_trend_page {
+  input#date_selector {
+    min-width: 190px;
+    border: 1px solid $brand-info;
+    color: darken($brand-info, 10%);
+  }
+  .usage-stats-value {
+    line-height: normal;
+    padding: 10px 20px 10px 10px;
+    margin: 0;
+    text-align: center;
+  }
+  #usage_table_filter {
+    text-align: right;
+    label {
+      input {
+        margin-left: 6px;
+      }
+    }
+  }
+  #usage_table_paginate {
+    text-align: right;
+  }
+  table.dataTable thead .sorting:after,
+  table.dataTable thead .sorting_asc:after,
+  table.dataTable thead .sorting_desc:after,
+  table.dataTable thead .sorting_asc_disabled:after,
+  table.dataTable thead .sorting_desc_disabled:after {
+    font-family: FontAwesome;
+    content: "\f0d8";
+    margin-left: 6px;
+    opacity: 0.3;
+  }
+  table.dataTable thead .sorting_asc:after {
+    content: "\f0d7";
+    opacity: 1;
+  }
+  table.dataTable thead .sorting_desc:after {
+    content: "\f0d8";
+    opacity: 1;
+  }
+}
+
 .usage_info_wrapper .datepicker > div {
   display: table;
 }
 
+.daterangepicker {
+  td {
+    &.in-range {
+      background-color: lighten($brand-info, 60%) !important;
+    }
+    &.active,
+    &.active:hover {
+      background-color: darken($brand-info, 5%) !important;
+    }
+  }
+  .drp-calendar {
+    width: auto; // override horizon .left and .right width 50%
+  }
+  .ranges li.active {
+    background-color: darken($brand-info, 10%) !important;
+  }
+}
+
+#usage_allocation_page {
+  .usage-stats-value {
+    line-height: normal;
+    padding: 10px 20px 10px 10px;
+    margin: 0;
+    text-align: center;
+  }
+}
 /*
  * CSS Functions
  */

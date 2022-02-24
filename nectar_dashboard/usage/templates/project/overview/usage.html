@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans "Instance Overview" %}{% endblock %}
+
+{% block custom_head_js %}
+{{ block.super }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js" integrity="sha512-oh5t+CdSBsaVVAvxcZKy3XJdP7ZbYUBSRCXDTVn0ODewMDDNnELsrG9eDm8rVZAQg7RsDD/8K3MjPAFB13o6eA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="{% static 'js/nectar_usage.js'%}"></script>
+{% endblock %}
+
+{% block main %}
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default shadow">
+        <div class="panel-heading">Past 3 Months Usage Trend</div>
+        <div class="panel-body">
+          <div class="row equal">
+            <div class="col-xs-12 col-sm-8 col-lg-9">
+              <div class="alert alert-warning text-center usage-error">There is no usage data recorded because there weren't any instances running. Do you want to <a href="{% url 'horizon:project:instances:index' %}">create an instance</a>?</div>
+              <canvas class="usage-chart" id="usage_chart"></canvas>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-lg-3 justify-content-center">
+              <div class="text-center">
+                <p class="h5">You have used</p>
+                <p id="su_total" class="h1 my-4">0</p>
+                <p class="h5">Service Units in the past 3 months.</p>
+                <p>To learn more about your project usage and budget, view the complete Usage Trend summary.</p>
+                <a href="{% url 'horizon:project:usage-trend:index' %}" class="btn btn-primary">Usage Trend</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let defaultBegin = moment().subtract(3, 'months');
+    let defaultEnd = moment();
+    usageOverview.showUsage(defaultBegin.format('YYYY-MM-DD'), defaultEnd.format('YYYY-MM-DD'));
+  </script>
+
+  {% include "horizon/common/_limit_summary.html" %}
+
+  {% if simple_tenant_usage_enabled %}
+    {% include "horizon/common/_usage_summary.html" %}
+    {{ table.render }}
+  {% endif %}
+
+{% endblock %}

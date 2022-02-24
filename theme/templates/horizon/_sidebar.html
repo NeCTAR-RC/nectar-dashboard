@@ -26,8 +26,8 @@
                         data-target="#sidebar-accordion-{{ dashboard.slug }}-{{ group.slug }}"
                         aria-controls="sidebar-accordion-{{ dashboard.slug }}-{{ group.slug }}"
                         {% if current.slug == dashboard.slug and current_panel_group != group.slug %}class="collapsed"
-                        {% elif current.slug != dashboard.slug and forloop.counter0 != 0 %}class="collapsed"{% endif %}>
-                        {{ group.name }}
+                         {% elif current.slug != dashboard.slug and forloop.counter0 != 0 %}class="collapsed"{% endif %}>
+                        {{ group.name }} {% if group.name == 'Usage' %} <span class="badge bg-danger">NEW</span> {% endif %}
                         <span class="openstack-toggle fa pull-right"></span>
                       </a>
                   {% endif %}

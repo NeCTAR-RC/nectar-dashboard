@@ -3,6 +3,7 @@ ADD_INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'select2',
+    'mathfilters',
 ]
 
 REST_FRAMEWORK = {

@@ -1,6 +1,9 @@
 git+https://github.com/Nectar-RC/horizon.git@nectar/wallaby#egg=horizon
+git+https://github.com/Nectar-RC/cloudkitty-dashboard.git@nectar/wallaby#egg=cloudkittydashboard
 django-cors-headers
 python-memcached
 python-freshdesk
 manukaclient>=0.7.0
+gnocchiclient
+django-mathfilters
 git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms
