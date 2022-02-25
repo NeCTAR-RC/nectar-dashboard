@@ -678,9 +678,13 @@ class ServiceType(models.Model):
     description = models.TextField(null=True, blank=True)
     zones = models.ManyToManyField(Zone)
     notes = models.TextField(null=True, blank=True)
+    order = models.PositiveIntegerField(null=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['order', 'name']
 
 
 class Resource(models.Model):
