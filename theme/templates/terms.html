@@ -5,12 +5,12 @@
 
 {% block body_id %}terms{% endblock %}
 
+
 {% block content %}
-  <div class="container">
-    <div class="span12">
-      <div class="form-actions">
-        <a class="btn btn-primary" href="javascript:history.go(-1)">Back</a>
-      </div>
+  <div class="container py-5">
+    <div class="form-actions">
+       <a class="btn btn-primary" href="javascript:history.go(-1)">Back</a>
+    </div>
     <h1>Nectar Research Cloud Service Schedule</h1>
     <p>By signing into or otherwise using the Service, you agree to the terms of this Service Schedule and <a href="https://ardc.edu.au/wp-content/uploads/2020/10/ARDC_Service_agreement.pdf">ARDC's Standard Terms of Service</a></p>
     <ol type="1">
@@ -121,10 +121,9 @@
         </ol>
       </li>
     </ol>
-
-      <div class="form-actions">
-        <a class="btn btn-primary" href="javascript:history.go(-1)">Back</a>
-      </div>
+    <div class="form-actions">
+      <a class="btn btn-primary" href="javascript:history.go(-1)">Back</a>
     </div>
   </div>
+  {% include '_footer.html' %}
 {% endblock %}

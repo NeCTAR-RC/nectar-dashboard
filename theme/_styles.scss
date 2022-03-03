@@ -14,7 +14,7 @@ html {
   background-color: $body-bg; // combat angular-material from Heat dashboard
 }
 
-html, body:not(#splash) {
+html, body:not(#splash):not(#terms) {
   overflow: hidden;
 }
 
@@ -25,9 +25,9 @@ body {
     overflow-y: auto;
     //display: flex;
     //flex-direction: column;
-    #footer {
-      //margin-top: -150px;
-    }
+  }
+  &#terms {
+    overflow-y: auto;
   }
 }
 
@@ -197,6 +197,14 @@ button, select, html, textarea, input {
       padding-left: 30px;
     }
   }
+}
+
+#static_content {
+  height: 100%;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; // Push footer to bottom
 }
 
 /*
