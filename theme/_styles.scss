@@ -45,6 +45,12 @@ button, select, html, textarea, input {
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 1px;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out, filter .15s ease-in-out;
+  // &:focus,
+  // &:active,
+  // &:hover {
+  //   color: #fff;
+  // }
   &:focus,
   &:focus-visible {
     outline: none !important;
@@ -71,6 +77,10 @@ button, select, html, textarea, input {
   display: flex;
   display: -webkit-flex;
   flex-wrap: wrap;
+}
+
+.breadcrumb > .active {
+  color: $gray;
 }
 
 @media (min-width: 768px) {
@@ -253,6 +263,7 @@ button, select, html, textarea, input {
   width: 240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
   @media (max-width: 991px) {
     left: -240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
+    padding-bottom: 64px;
   }
   #project_select {
     padding: 20px;
@@ -271,6 +282,11 @@ button, select, html, textarea, input {
   }
   #sidebar-accordion {
     width: 240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
+    .list-group-item.active,
+    .list-group-item.active:hover,
+    .list-group-item.active:focus {
+      color: #000;
+    }
   }
   .nav > li > a {
     padding: 10px 20px; // Change horizon sidebar padding to allow scroll bar to fit
@@ -299,15 +315,6 @@ button, select, html, textarea, input {
     }
   }
 }
-
-transition: all 0.3s ease 0s;
-position: fixed;
-top: 64px;
-bottom: 0;
-z-index: 3;
-left: -220px;
-overflow-y: auto;
-overflow-x: hidden;
 
 /*
  * Footer
@@ -437,6 +444,10 @@ overflow-x: hidden;
 
 .pie-chart .svg-pie-chart .slice.margin {
   fill: #f2f2f2;
+}
+
+.usage_info_wrapper .datepicker > div {
+  display: table;
 }
 
 /*

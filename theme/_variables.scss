@@ -22,7 +22,7 @@ $ardc-grey:   #969696 !default;
 $gray-darker:            #111111 !default;
 $gray-dark:              #333333 !default;
 $gray:                   $ardc-grey;
-$gray-light:             #b2b2b2 !default;
+$gray-light:             #a0a0a0 !default;
 $gray-lighter:           #fcfcfc !default;
 
 $brand-primary:         $ardc-orange;
@@ -43,7 +43,7 @@ $text-color:            $gray-darker !default;
 $headings-color:        inherit !default;
 
 //** Global textual link color.
-$link-color:            $brand-info !default;
+$link-color:            darken($brand-info, 10%) !default;
 
 // Global border radius values.
 $border-radius-base:        4px !default;
@@ -133,24 +133,24 @@ $btn-default-color:              #333 !default;
 $btn-default-bg:                 #fff !default;
 $btn-default-border:             #ccc !default;
 
-$btn-primary-color:              #fff !default;
-$btn-primary-bg:                 darken($brand-primary, 2%) !default;
-$btn-primary-border:             darken($brand-primary, 2%) !default;
+$btn-primary-color:              #000 !default;
+$btn-primary-bg:                 lighten($brand-primary, 5%) !default;
+$btn-primary-border:             $btn-primary-bg !default;
 
-$btn-success-color:              #fff !default;
-$btn-success-bg:                 $brand-success !default;
+$btn-success-color:              #000 !default;
+$btn-success-bg:                 lighten($brand-success, 5%) !default;
 $btn-success-border:             $btn-success-bg !default;
 
-$btn-info-color:                 #fff !default;
-$btn-info-bg:                    $brand-info !default;
+$btn-info-color:                 #000 !default;
+$btn-info-bg:                    lighten($brand-info, 5%) !default;
 $btn-info-border:                $btn-info-bg !default;
 
-$btn-warning-color:              #fff !default;
-$btn-warning-bg:                 $brand-warning !default;
+$btn-warning-color:              #000 !default;
+$btn-warning-bg:                 lighten($brand-warning, 5%) !default;
 $btn-warning-border:             $btn-warning-bg !default;
 
-$btn-danger-color:               #fff !default;
-$btn-danger-bg:                  $brand-danger !default;
+$btn-danger-color:               #000 !default;
+$btn-danger-bg:                  lighten($brand-danger, 2%) !default;
 $btn-danger-border:              $btn-danger-bg !default;
 
 //== Form states and alerts
