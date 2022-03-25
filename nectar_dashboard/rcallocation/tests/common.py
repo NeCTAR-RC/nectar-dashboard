@@ -23,7 +23,7 @@ from nectar_dashboard.rcallocation.tests import factories
 
 DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
-GROUP_NAMES = ['compute', 'object', 'volume', 'network']   # ... and more
+GROUP_NAMES = ['compute', 'object', 'volume', 'network', 'rating']
 
 
 def allocation_to_dict(model):
@@ -71,18 +71,21 @@ def factory_setup():
     object_st = factories.ServiceTypeFactory(catalog_name='object')
     compute_st = factories.ServiceTypeFactory(catalog_name='compute')
     network_st = factories.ServiceTypeFactory(catalog_name='network')
+    rating_st = factories.ServiceTypeFactory(catalog_name='rating')
     volume_st.zones.add(melbourne)
     volume_st.zones.add(monash)
     volume_st.zones.add(tas)
     object_st.zones.add(nectar)
     compute_st.zones.add(nectar)
     network_st.zones.add(nectar)
+    rating_st.zones.add(nectar)
     factories.ResourceFactory(quota_name='object', service_type=object_st)
     factories.ResourceFactory(quota_name='gigabytes', service_type=volume_st)
     factories.ResourceFactory(quota_name='cores', service_type=compute_st)
     factories.ResourceFactory(quota_name='instances', service_type=compute_st)
     factories.ResourceFactory(quota_name='ram', service_type=compute_st,
                               requestable=False)
+    factories.ResourceFactory(quota_name='budget', service_type=rating_st)
     factories.ResourceFactory(quota_name='router', service_type=network_st)
     factories.ResourceFactory(quota_name='network', service_type=network_st)
     factories.ResourceFactory(quota_name='loadbalancer',

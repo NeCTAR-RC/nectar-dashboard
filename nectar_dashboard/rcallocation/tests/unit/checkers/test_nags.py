@@ -17,6 +17,7 @@ from datetime import datetime
 from openstack_dashboard.test import helpers
 
 from nectar_dashboard.rcallocation import checkers
+from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import output_type_choices
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
@@ -33,11 +34,44 @@ class NagCheckerTest(helpers.TestCase):
 
     def test_init(self):
         allocation = factories.AllocationFactory.create(project_name='fun')
-        form = []
-        checker = checkers.Checker(allocation=allocation, form=form)
-        self.assertIsNotNone(checker.allocation)
-        self.assertIsNotNone(checker.form)
+        checker = checkers.NagChecker(allocation=allocation)
+        self.assertEqual(allocation, checker.allocation)
+        self.assertIsNone(checker.form)
         self.assertTrue(len(checker.checks) > 0)
+
+    def test_get_quota(self):
+        allocation = factories.AllocationFactory.create()
+        checker = checkers.NagChecker(allocation=allocation)
+        self.assertEqual(0, checker.get_quota('rating.budget'))
+        quota = models.Quota.objects.get(
+            group__allocation=allocation,
+            resource__quota_name='budget')
+        quota.quota = 1000
+        quota.requested_quota = 2000
+        quota.save()
+        self.assertEqual(1000, checker.get_quota('rating.budget'))
+        self.assertEqual(2000, checker.get_quota('rating.budget',
+                                                 requested=True))
+
+        # Transitional states.  When a new resource or service type
+        # is added, pre-existing allocations won't have the matching
+        # QuotaGroup or Quota object.  Check that 'get_quota' will cope.
+        quota = models.Quota.objects.get(
+            group__allocation=allocation,
+            resource__quota_name='budget')
+        group = quota.group
+        quota.delete()
+        self.assertEqual(0, checker.get_quota('rating.budget'))
+        group.delete()
+        self.assertEqual(0, checker.get_quota('rating.budget'))
+
+        # Check handling of missing ServiceType or Resource objects
+        with self.assertRaises(RuntimeError) as context:
+            checker.get_quota('rating.missing')
+        self.assertTrue("('rating', 'missing')" in str(context.exception))
+        with self.assertRaises(RuntimeError) as context:
+            checker.get_quota('missing.missing')
+        self.assertTrue("('missing', 'missing')" in str(context.exception))
 
 
 CUTOFF = checkers.EXPIRED_GRANT_CUTOFF_YEARS

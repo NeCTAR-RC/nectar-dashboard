@@ -197,6 +197,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
             object_st = models.ServiceType.objects.get(catalog_name='object')
             compute_st = models.ServiceType.objects.get(catalog_name='compute')
             network_st = models.ServiceType.objects.get(catalog_name='network')
+            rating_st = models.ServiceType.objects.get(catalog_name='rating')
 
             objects = models.Resource.objects.get(quota_name='object',
                                                   service_type=object_st)
@@ -208,6 +209,8 @@ class AllocationFactory(factory.django.DjangoModelFactory):
                                                     service_type=compute_st)
             ram = models.Resource.objects.get(quota_name='ram',
                                               service_type=compute_st)
+            budget = models.Resource.objects.get(quota_name='budget',
+                                                 service_type=rating_st)
             router = models.Resource.objects.get(quota_name='router',
                                               service_type=network_st)
             network = models.Resource.objects.get(quota_name='network',
@@ -229,6 +232,9 @@ class AllocationFactory(factory.django.DjangoModelFactory):
             group_compute = QuotaGroupFactory(allocation=allocation,
                                               service_type=compute_st,
                                               zone=nectar)
+            group_rating = QuotaGroupFactory(allocation=allocation,
+                                             service_type=rating_st,
+                                             zone=nectar)
             group_network = QuotaGroupFactory(allocation=allocation,
                                               service_type=network_st,
                                               zone=nectar)
@@ -238,6 +244,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
             QuotaFactory(group=group_compute, resource=cores)
             QuotaFactory(group=group_compute, resource=instances)
             QuotaFactory(group=group_compute, resource=ram)
+            QuotaFactory(group=group_rating, resource=budget)
             QuotaFactory(group=group_network, resource=router)
             QuotaFactory(group=group_network, resource=network)
             QuotaFactory(group=group_network, resource=loadbalancer)

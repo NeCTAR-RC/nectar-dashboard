@@ -411,7 +411,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
 
         if self.object:
             nag_checker = checkers.NagChecker(
-                form=None, allocation=self.object, user=self.request.user)
+                allocation=self.object, user=self.request.user)
             kwargs['nags'] = nag_checker.do_checks()
         else:
             kwargs['nags'] = []

@@ -50,12 +50,21 @@ FLAVORS_NOT_JUSTIFIED = 'FLAVORS_NOT_JUSTIFIED'
 APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 NO_VALID_GRANTS = 'NO_VALID_GRANTS'
+NO_BUDGET = 'NO_BUDGET'
 
 
 def storage_zone_to_home(zone):
     for home, zones in settings.ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS.items():
         if zone in zones:
             return home
+    return None
+
+
+def no_budget_check(context):
+    budget = context.get_quota('rating.budget')
+    if budget <= 0:
+        return (NO_BUDGET,
+                'No Service Unit Budget has been entered')
     return None
 
 
@@ -227,13 +236,10 @@ def neutron_checks(context):
 
 
 def flavor_check(context):
-    cpu_enhanced = context.get_quota('compute.flavor:compute-v3')
-    ram_enhanced = context.get_quota('compute.flavor:memory-v3')
     huge_ram = context.get_quota('compute.flavor:hugeram-v3')
-    if (cpu_enhanced or ram_enhanced or huge_ram) \
-       and not context.get_field('usage_patterns'):
+    if huge_ram and not context.get_field('usage_patterns'):
         return (FLAVORS_NOT_JUSTIFIED,
-                'Requests for access to enhanced flavors must be explained '
+                'Requests for access to special flavors must be explained '
                 'in the "Justification ..." field.')
     return None
 
@@ -292,7 +298,8 @@ def grant_checks(context):
              "Either approve it as Local, or add a Special approval reason.")]
 
 
-STD_CHECKS = [instance_vcpu_check,
+STD_CHECKS = [no_budget_check,
+              instance_vcpu_check,
               no_vcpu_check,
               no_instance_check,
               nondefault_ram_check,
@@ -390,6 +397,7 @@ class QuotaSanityChecker(Checker):
                 if q['name'] == quota_name and q['value'] > 0]
 
 
+ADD_BUDGET = 'ADD_BUDGET'
 NO_SURVEY = 'NO_SURVEY'
 LEGACY_NCRIS = 'LEGACY_NCRIS'
 LEGACY_ARDC = 'LEGACY_ARDC'
@@ -401,6 +409,16 @@ NO_CROSSREF = 'NO_CROSSREF'
 # relevant to allocation decisions.  Allocations ctty consensus is
 # that 4 years is about right.
 EXPIRED_GRANT_CUTOFF_YEARS = 4
+
+
+def new_budget_check(context):
+    budget = context.get_quota('rating.budget')
+    if budget <= 0:
+        return (ADD_BUDGET,
+                'Your allocation needs to change to use a Service Unit '
+                'Budget. You need to estimate how many Service Units (SUs) '
+                'your project needs for the next period.')
+    return None
 
 
 def survey_check(checker):
@@ -464,13 +482,39 @@ def output_checks(checker):
     return res
 
 
-NAG_CHECKS = [survey_check, ncris_check, ardc_check, grant_check,
-              output_checks]
+NAG_CHECKS = [new_budget_check, survey_check, ncris_check, ardc_check,
+              grant_check, output_checks]
 
 
 class NagChecker(Checker):
 
-    def __init__(self, form=None, user=None,
-                 checks=NAG_CHECKS, allocation=None):
-        super().__init__(form=form, user=user,
+    def __init__(self, user=None, checks=NAG_CHECKS, allocation=None):
+        super().__init__(form=None, user=user,
                          checks=checks, allocation=allocation)
+
+    def get_quota(self, quota_name, zone='nectar', requested=False):
+        '''Fetch the quota value from the allocation object.'''
+
+        if self.allocation is None:
+            return 0
+        service_name, resource_name = quota_name.split('.')
+        try:
+            resource = models.Resource.objects.get(
+                service_type__catalog_name=service_name,
+                quota_name=resource_name)
+        except models.Resource.DoesNotExist:
+            # Either the ServiceType or Resource could be missing or have
+            # the wrong catalog names ...
+            raise RuntimeError(
+                f"Can't get quota: Resource for ('{service_name}', "
+                f"'{resource_name}') not found.")
+        try:
+            quota = models.Quota.objects.get(
+                group__allocation=self.allocation.pk,
+                resource=resource, group__zone__name=zone)
+            return quota.requested_quota if requested else quota.quota
+        except models.Quota.DoesNotExist:
+            # This is an "expected" condition when an existing allocation
+            # record doesn't have a QuotaGroup or Quota object for the
+            # given quota name.
+            return 0

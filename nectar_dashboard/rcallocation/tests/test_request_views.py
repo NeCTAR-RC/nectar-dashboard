@@ -196,6 +196,7 @@ class RequestTestCase(base.BaseTestCase):
         quota_specs = [
             common.quota_spec('compute', 'instances', requested_quota=1),
             common.quota_spec('compute', 'cores', requested_quota=2),
+            common.quota_spec('rating', 'budget', requested_quota=1000),
         ]
         expected_model, form = common.request_allocation(
             user=self.user, quota_specs=quota_specs)
@@ -220,8 +221,7 @@ class RequestTestCase(base.BaseTestCase):
             reverse('horizon:allocation:request:request'))
         self.assertStatusCode(response, 200)
         quota_specs = [
-            common.quota_spec('compute', 'instances', requested_quota=2),
-            common.quota_spec('compute', 'cores', requested_quota=1),
+            common.quota_spec('rating', 'budget', requested_quota=0),
         ]
         expected_model, form = common.request_allocation(
             user=self.user, quota_specs=quota_specs)
