@@ -164,11 +164,15 @@
           }
 
           var is_enabled = false;
-          $(this).find('input[id$="-requested_quota"]').each(function() {
-            if (this.value > 0) {
-              is_enabled = true;
-            }
-          });
+          if (service_type == "rating") {
+            is_enabled = true;
+          } else {
+            $(this).find('input[id$="-requested_quota"]').each(function() {
+              if (this.value > 0) {
+                is_enabled = true;
+             }
+            });
+          }
 
           var toggle = $(this).find('input:checkbox.toggle-quota');
           if (toggle.length) {
