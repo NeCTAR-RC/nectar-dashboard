@@ -73,6 +73,21 @@ def is_write_admin(user):
     return False
 
 
+class NoDestroyViewSet(viewsets.ModelViewSet):
+
+    permission_classes = (rest_auth.ReadOrAdmin,)
+
+    def destroy(self, request, *args, **kwargs):
+        # Don't destroy these objects as it will "break" the form
+        # representations for current and historic allocation records.
+        # Where possible, mark the object as 'disabled'.  Where not
+        # possible, coding is probably required to make it possible.
+        # (Or ... it is "hack the database" time ...)
+        return response.Response(
+            {'error': 'Configuration objects should not be destroyed'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
 class ZoneSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -80,8 +95,7 @@ class ZoneSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ZoneViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (rest_auth.ReadOrAdmin,)
+class ZoneViewSet(NoDestroyViewSet):
     queryset = models.Zone.objects.all()
     serializer_class = ZoneSerializer
 
@@ -106,14 +120,12 @@ class ServiceTypeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ServiceTypeViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (rest_auth.ReadOrAdmin,)
+class ServiceTypeViewSet(NoDestroyViewSet):
     queryset = models.ServiceType.objects.all()
     serializer_class = ServiceTypeSerializer
 
 
-class ResourceViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (rest_auth.ReadOrAdmin,)
+class ResourceViewSet(NoDestroyViewSet):
     queryset = models.Resource.objects.all()
     serializer_class = ResourceSerializer
 
@@ -125,15 +137,9 @@ class SiteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SiteViewSet(viewsets.ModelViewSet):
-    permission_classes = (rest_auth.ReadOrAdmin,)
+class SiteViewSet(NoDestroyViewSet):
     queryset = models.Site.objects.all()
     serializer_class = SiteSerializer
-
-    def destroy(self, request, *args, **kwargs):
-        # Sites should be disabled, not destroyed.
-        return response.Response({'error': 'Sites should not be destroyed'},
-                                 status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class ARDCSupportSerializer(serializers.ModelSerializer):
@@ -143,16 +149,9 @@ class ARDCSupportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ARDCSupportViewSet(viewsets.ModelViewSet):
-    permission_classes = (rest_auth.ReadOrAdmin,)
+class ARDCSupportViewSet(NoDestroyViewSet):
     queryset = models.ARDCSupport.objects.all()
     serializer_class = ARDCSupportSerializer
-
-    def destroy(self, request, *args, **kwargs):
-        # ARDCSupport objects should not be destroyed.
-        return response.Response(
-            {'error': 'ARDCSupport objects should not be destroyed'},
-            status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class NCRISFacilitySerializer(serializers.ModelSerializer):
@@ -162,16 +161,9 @@ class NCRISFacilitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class NCRISFacilityViewSet(viewsets.ModelViewSet):
-    permission_classes = (rest_auth.ReadOrAdmin,)
+class NCRISFacilityViewSet(NoDestroyViewSet):
     queryset = models.NCRISFacility.objects.all()
     serializer_class = NCRISFacilitySerializer
-
-    def destroy(self, request, *args, **kwargs):
-        # NCRIS Facilities should not be destroyed.
-        return response.Response({'error':
-                                  'NCRISFacilities should not be destroyed'},
-                                 status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class ApproverSerializer(serializers.ModelSerializer):
@@ -190,9 +182,9 @@ class ApproverViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         # Approvers should be disabled, not destroyed.
-        return response.Response({'error':
-                                  'Approvers should not be destroyed'},
-                                 status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return response.Response(
+            {'error': 'Approver objects should not be destroyed'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
