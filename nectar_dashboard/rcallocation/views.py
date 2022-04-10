@@ -4,6 +4,7 @@ import logging
 from operator import methodcaller
 import re
 
+from django.conf import settings
 from django.contrib.auth import mixins
 from django.db.models import Q
 from django.db import transaction
@@ -225,6 +226,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
 
             initial = []
             existing_resources = []
+            existing_quotas = []
             if self.object:
                 existing_quotas = models.Quota.objects.filter(
                     group__allocation=self.object,
@@ -236,6 +238,12 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                     existing_resources = [quota.resource
                                           for quota in existing_quotas]
 
+            if (not existing_quotas and service_type.experimental
+                    and not getattr(
+                        settings, 'SHOW_EXPERIMENTAL_SERVICE_TYPES', False)):
+                # Only show experimental service types if existing quota
+                # or SHOW_EXPERIMENTAL_SERVICE_TYPES=true
+                continue
             resources = service_type.resource_set.filter(**resource_kwargs)
             for resource in resources:
                 if resource not in existing_resources:

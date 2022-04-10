@@ -679,6 +679,7 @@ class ServiceType(models.Model):
     zones = models.ManyToManyField(Zone)
     notes = models.TextField(null=True, blank=True)
     order = models.PositiveIntegerField(null=True)
+    experimental = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
