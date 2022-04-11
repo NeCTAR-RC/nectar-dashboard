@@ -19,7 +19,7 @@ $ardc-grey:   #969696 !default;
 /* Bootstrap variables overrides */
 
 $gray-darker:            #111111 !default;
-$gray-dark:              #333333 !default;
+$gray-dark:              #666666 !default;
 $gray:                   $ardc-grey;
 $gray-light:             #a0a0a0 !default;
 $gray-lighter:           #fcfcfc !default;
@@ -40,7 +40,22 @@ $body-bg:               $gray-lighter;
 //** Global text color on `<body>`.
 $text-color:            $gray-darker !default;
 $headings-color:        inherit !default;
-
+//** Text muted color
+$text-muted:                  $gray-dark !default;
+//** Abbreviations and acronyms border color
+$abbr-border-color:           $gray-light !default;
+//** Headings small color
+$headings-small-color:        $gray-dark !default;
+//** Blockquote small color
+$blockquote-small-color:      $gray-dark !default;
+//** Blockquote border color
+$blockquote-border-color:     $gray-light !default;
+//** Page header border color
+$page-header-border-color:    $gray-light !default;
+//** Horizontal line color.
+$hr-border:                   $gray-light !default;
+//** Global textual link color.
+$link-color:            darken($brand-info, 10%) !default;
 //** Global textual link color.
 $link-color:            darken($brand-info, 10%) !default;
 
@@ -116,7 +131,7 @@ $nav-tabs-border-color:                     #ddd !default;
 $nav-tabs-link-hover-border-color:          $gray-lighter !default;
 
 $nav-tabs-active-link-hover-bg:             $body-bg !default;
-$nav-tabs-active-link-hover-color:          $gray !default;
+$nav-tabs-active-link-hover-color:          $gray-dark !default;
 $nav-tabs-active-link-hover-border-color:   #ddd !default;
 
 $nav-tabs-justified-link-border-color:            #ddd !default;
@@ -156,19 +171,19 @@ $btn-danger-border:              $btn-danger-bg !default;
 //
 //## Define colors for form feedback states and, by default, alerts.
 
-$state-success-text:             darken($brand-success, 15%) !default;
+$state-success-text:             darken($brand-success, 20%) !default;
 $state-success-bg:               lighten($brand-success, 50%) !default;
 $state-success-border:           $brand-success !default;
 
-$state-info-text:                darken($brand-info, 15%) !default;
+$state-info-text:                darken($brand-info, 20%) !default;
 $state-info-bg:                  lighten($brand-info, 50%) !default;
 $state-info-border:              $brand-info !default;
 
-$state-warning-text:             darken($brand-warning, 15%) !default;
-$state-warning-bg:               lighten($brand-warning, 40%) !default;
+$state-warning-text:             darken($brand-warning, 25%) !default;
+$state-warning-bg:               lighten($brand-warning, 45%) !default;
 $state-warning-border:           $brand-warning !default;
 
-$state-danger-text:              darken($brand-danger, 15%) !default;
+$state-danger-text:              darken($brand-danger, 20%) !default;
 $state-danger-bg:                lighten($brand-danger, 50%) !default;
 $state-danger-border:            $brand-danger !default;
 

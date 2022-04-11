@@ -5,7 +5,7 @@
 
 $white:             #fff !default;
 $black:             #000 !default;
-$brand-secondary:	  $gray !default;
+$brand-secondary:	  $ardc-purple !default;
 $enable-gradients:  false !default;
 $enable-shadows:    true !default;
 $border-width:      1px !default;
@@ -2705,10 +2705,6 @@ $theme-colors: map-merge((
 
 @each $color, $value in $theme-colors {
   @include text-emphasis-variant(".text-#{$color}", $value);
-}
-
-.text-muted {
-  color: $gray !important;
 }
 
 .text-hide {

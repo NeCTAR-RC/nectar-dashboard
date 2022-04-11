@@ -48,16 +48,15 @@
       </div>
       <div class="panel panel-default shadow">
         <div class="panel-body">
-          <h4>Understanding your project usage...</h4>
-          <p>The Nectar Cloud is moving to a Usage Based Quota system where a Service Unit budget will be requested and allocated for compute resources. The Usage Summary graph shows your current compute usage in service units.</p>
+          <h4>Understanding Your Project Usage</h4>
+          <p>The Nectar Cloud is moving to a Usage-Based Quota system where a Service Unit budget will be requested and allocated for compute resources. The Usage Summary graph shows your current compute usage in service units.</p>
           <blockquote>
             <p><strong>NOTE:</strong> Service Unit usage data is only available from 01/01/22.</p>
           </blockquote>
           <h5>Service Unit</h5>
           <p>A Service Unit (SU) is a measure of the cost of using Nectar compute resources. Each Nectar flavor has an associated SU-per-hour cost, as set out in the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000205341-nectar-flavors">Nectar Flavors support page</a>. The cost of each flavor is based on the amount of VCPUs, RAM and other factors like CPU priority and the flavor generation.</p>
           <h5>Service Unit Budget</h5>
-          <p>From <insert date> each renewed or new allocation will have a Service Unit Budget.  This is the number of Service Units that can be used by the project for its allocation period; i.e. from the start date to the end date. Your allocation’s Service Unit Budget is requested on the Allocation request form, and is subject to review and approval by the Allocation Approvers.
-Next time you fill in the Allocation Request form, you need to estimate how many SUs you will require and use that as your requested budget. Please refer to the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units">Service Unit support page</a> for help on how to do this.</p>
+          <p>Each renewed or new allocation will have a Service Unit Budget. This is the number of Service Units that can be used by the project for its allocation period; i.e. from the start date to the end date. Your allocation’s Service Unit Budget is requested on the Allocation request form, and is subject to review and approval by the Allocation Approvers. Next time you fill in the Allocation Request form, you need to estimate how many SUs you will require and use that as your requested budget. Please refer to the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units">Service Unit support page</a> for help on how to do this.</p>
         </div>
         <div class="panel-footer">
           <a href="{% url 'horizon:allocation:request:request' %}" class="btn btn-primary btn-sm">Request allocation</a>
@@ -73,7 +72,7 @@ Next time you fill in the Allocation Request form, you need to estimate how many
           <div class="w-75 m-auto">
             <canvas class="usage-chart" id="instance_chart"></canvas>
           </div>
-          <p class="chart-description text-center my-4">The above chart shows the usage (SU) comparison by instance up to the top 5 instances in the selected usage period. If the total number of instances running in the project during the selected period is more than 5, the usage is shown in the pie chart in "other".</p>
+          <p class="chart-description text-center my-4">The above chart shows the usage (SU) comparison by instance for up to the top 5 instances in the selected usage period. If the total number of instances running in the project during the selected period is more than 5, the usage is shown in the pie chart in "other".</p>
         </div>
       </div>
     </div>
@@ -81,7 +80,7 @@ Next time you fill in the Allocation Request form, you need to estimate how many
   <div class="row">
     <div class="col-xs-12">
       <div class="panel panel-default shadow">
-        <div class="panel-heading">Project Usage to Date</div>
+        <div class="panel-heading">Usage Summary</div>
         <div class="panel-body">
           <div class="alert alert-warning text-center usage-error">There is no usage data recorded for the selected date range because there weren't any instances running.</div>
           <canvas class="usage-chart" id="trend_chart"></canvas>
