@@ -109,7 +109,8 @@ class QuotaForm(base_forms.BaseQuotaForm):
         if not quota:
             self.fields['requested_quota'].widget = forms.HiddenInput()
         self.initial['quota'] = self.instance.requested_quota
-        if self.res and self.res.resource_type == models.Resource.BOOLEAN:
+        if (self.resource
+                and self.resource.resource_type == models.Resource.BOOLEAN):
             self.fields['quota'].widget = base_forms.IntegerCheckboxInput(
                 attrs={'data-toggle': 'toggle'})
 

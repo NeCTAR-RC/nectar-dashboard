@@ -361,10 +361,11 @@ class BaseQuotaForm(forms.ModelForm):
         super().__init__(**kwargs)
         inst = kwargs.get('instance', None)
         if inst:
-            self.res = inst.resource
+            self.resource = inst.resource
         else:
-            self.res = self.initial.get('resource')
-        if self.res and self.res.resource_type == models.Resource.BOOLEAN:
+            self.resource = self.initial.get('resource')
+        if (self.resource
+                and self.resource.resource_type == models.Resource.BOOLEAN):
             self.fields['requested_quota'].widget = IntegerCheckboxInput(
                 attrs={'data-toggle': 'toggle'})
 
@@ -406,6 +407,10 @@ class QuotaForm(BaseQuotaForm):
             allocation = inst.group.allocation
             if allocation.status == models.AllocationRequest.APPROVED:
                 self.initial['requested_quota'] = inst.quota
+
+        if self.resource and self.resource.default:
+            if self.initial.get('requested_quota', 0) < self.resource.default:
+                self.initial['requested_quota'] = self.resource.default
 
 
 class BaseQuotaGroupForm(forms.ModelForm):

@@ -710,6 +710,11 @@ class Resource(models.Model):
     resource_type = models.CharField(max_length=10,
                                      choices=RESOURCE_TYPES,
                                      default=INTEGER)
+    default = models.IntegerField(
+        null=True,
+        help_text="This is used to set an initial value on quota forms if no "
+        "quota is requested. Will also be used if existing is less "
+        "than this")
 
     def __str__(self):
         return self.name
