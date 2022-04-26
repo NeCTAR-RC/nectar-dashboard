@@ -122,7 +122,7 @@
           Resource may not always be available.</p>
         <div id="quota_formset">
           {% for service_type, form_tuple in quota_formsets %}
-          <div id="panel-quota-{{ service_type.catalog_name }}" class="col-md-12">
+          <div id="panel-quota-{{ service_type.catalog_name }}">
             <div class="panel panel-default">
               <div class="panel-heading" style="display:flex;">
                 <div style="flex: 1;">
@@ -321,6 +321,125 @@
       {% endif %}
     </div>
 
+    <!-- Usage Budget Modal -->
+    <div id="usage_budget_modal" class="modal modal-bordered fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title text-center">Service Unit Budget Guide</h4>
+          </div>
+          <div class="modal-body">
+            <div class="text-center">
+              <h2>How to Estimate your Budget</h2>
+              <p>All new and renewed allocations will have a budget in <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units" target="_blank">service units</a> (SUs). Only compute instances on the Nectar Cloud will consume service units. This budget helps Nectar manage usage to provide more flexible resources and will enable new services in the future.</p>
+              <p>It's important to understand how much budget your allocation requires. You need to estimate your budget when requesting an allocation, but don't worry if you get it wrong, you can always request more later.</p>
+              <p class="lead">Here are 4 different methods to help you determine how much budget you need...</p>
+            </div>
+            <div class="row equal align-items-center my-5 mx-3">
+              <div class="col-xs-12 col-md-6">
+                <h4 class="text-uppercase underline-short">Method 1</h4>
+                <h3 class="mt-0">Recommended Budgets for Common use-cases.</h3>
+                <p>If you are new to Nectar, the simplest approach may be to specify a "recommended" SU budget for corresponding to one of the following common use-cases:</p>
+                <p><strong>"Like my laptop"</strong><br />A typical researcher laptop has 4 cores and 8GB of RAM. That is equivalent to an instance with an m3.medium flavor. The SU cost for an m3.medium for one year is 1,000 SU.</p>
+                <p><strong>"A bigger laptop"</strong><br />A high end researcher laptop might have 8 cores and 16GB of RAM. That is equivalent to an instance with an m3.large flavor. The SU cost for an m3.large for one year is 2,000 SU.</p>
+                <p><strong>"I just want to run a website"</strong><br />A typical website to host some web pages, some small web applications, or some datasets needs 2 cores and 4GB of RAM. That is equivalent to an instance with an m3.small flavor. The SU cost for an m3.small for one year is 500 SU.</p>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                <table class="table table-borderless text-center">
+                  <thead style="border-bottom: 2px solid #000;">
+                    <tr>
+                      <th colspan="3" class="text-center">Use-case For Allocation</th>
+                      <th class="text-center text-secondary">SU Budget Estimate<br />(one year)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>I want compute power like my laptop.</td>
+                      <td>=</td>
+                      <td>m3.medium</td>
+                      <td class="text-secondary">1,000</td>
+                    </tr>
+                    <tr>
+                      <td>I want a bigger, more powerful laptop.</td>
+                      <td>=</td>
+                      <td>m3.large</td>
+                      <td class="text-secondary">2,000</td>
+                    </tr>
+                    <tr>
+                      <td>I just want to run a website.</td>
+                      <td>=</td>
+                      <td>m3.small</td>
+                      <td class="text-secondary">500</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row equal align-items-center my-5 mx-3">
+              <div class="col-xs-12 col-md-6">
+                <h4 class="text-uppercase underline-short">Method 2</h4>
+                <h3 class="mt-0">Estimating based on Flavors.</h3>
+                <p>If you have a good idea of what kind of Nectar resources you are likely to need, you can do your own estimate calculations based on the flavors.</p>
+                <ol>
+                  <li>Look at the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000205341" target="_blank">Nectar Flavors</a> page and work out which one(s) best fit your needs.</li>
+                  <li>Take the SU cost per hour (or year) for a chosen flavor and multiply that by the time you intend to run the instance during the allocation period.</li>
+                  <li>Sum over all of the instances to get the total budget.</li>
+                </ol>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                <table class="table table-borderless text-center">
+                  <thead style="border-bottom: 2px solid #000;">
+                    <tr>
+                      <th colspan="3" class="text-center">Example Flavor Calculation</th>
+                      <th class="text-center text-secondary">SU Budget Estimate <br />(one year)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>2 x m3.large instance for 6 months<br />+<br />m3.small instance for 12 months</td>
+                      <td>=</td>
+                      <td>2 x 2,000 SU x 0.5 years<br />+<br />500 SU x 1 year</td>
+                      <td class="text-secondary">2,500</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row equal align-items-center my-5 mx-3">
+              <div class="col-xs-12 col-md-6">
+                <h4 class="text-uppercase underline-short">Method 3</h4>
+                <h3 class="mt-0">Estimating based on previous usage patterns.</h3>
+                <p>If you have been using compute resources (e.g. instances) on the Nectar Cloud for a while, you can view your project usage in the Dashboard.</p>
+                <ol>
+                  <li>Check out the <a href="{% url 'horizon:project:usage-trend:index' %}" target="_blank">Usage Trend</a> page to get an idea of how many service units your project has used over time.</li>
+                  <li>When the page loads, it will show you data for the past 3 months by default. You can change the date range to a more relevant period if you like.</li>
+                  <li>On this page you can see which instances were running, including the flavor, to help you understand the usage breakdown.</li>
+                </ol>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                <img src="/static/rcportal/img/usage-breakdown.jpg" alt="Usage Breakdown" class="img-responsive" />
+              </div>
+            </div>
+            <div class="row equal align-items-center my-5 mx-3">
+              <div class="col-xs-12 col-md-6">
+                <h4 class="text-uppercase underline-short">Method 4</h4>
+                <h3 class="mt-0">Same as last time.</h3>
+                <p>If you're renewing an allocation, you could simply request the same budget that was approved in the last period. However, in this case it's a good idea to checkout the Allocation Usage page to make sure your previous budget was appropriate.</p>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                <img src="/static/rcportal/img/usage-allocation.jpg" alt="Allocation Usage" class="img-responsive" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units" target="_blank" class="btn btn-warning">Learn more</a>
+            <button type="button" class="btn btn-success" data-dismiss="modal">OK, Got it!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- MRC dashboard modal dialog -->
     <div id="modal-uom-dashboard" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
@@ -404,7 +523,7 @@
               not know about.  Please check the place that you got the
               DOI from.  (You could also try visiting the CrossRef site
               and searching for the correct DOI there.)
-            </div> 
+            </div>
            <div id="doi-found" class="alert alert-success" hidden>
               DOI found.  Please the details below and confirm that
               this is the correct DOI for the Research Output that

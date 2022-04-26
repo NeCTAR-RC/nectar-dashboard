@@ -21,7 +21,7 @@ $ardc-grey:   #969696 !default;
 $gray-darker:            #111111 !default;
 $gray-dark:              #666666 !default;
 $gray:                   $ardc-grey;
-$gray-light:             #a0a0a0 !default;
+$gray-light:             #b5b5b5 !default;
 $gray-lighter:           #fcfcfc !default;
 
 $brand-primary:         $ardc-orange;
@@ -54,8 +54,6 @@ $blockquote-border-color:     $gray-light !default;
 $page-header-border-color:    $gray-light !default;
 //** Horizontal line color.
 $hr-border:                   $gray-light !default;
-//** Global textual link color.
-$link-color:            darken($brand-info, 10%) !default;
 //** Global textual link color.
 $link-color:            darken($brand-info, 10%) !default;
 
@@ -152,7 +150,7 @@ $btn-primary-bg:                 lighten($brand-primary, 5%) !default;
 $btn-primary-border:             $btn-primary-bg !default;
 
 $btn-success-color:              #000 !default;
-$btn-success-bg:                 lighten($brand-success, 5%) !default;
+$btn-success-bg:                 lighten($brand-success, 2%) !default;
 $btn-success-border:             $btn-success-bg !default;
 
 $btn-info-color:                 #000 !default;
