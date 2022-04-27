@@ -662,6 +662,9 @@ class Zone(models.Model):
     display_name = models.CharField(max_length=64)
     enabled = models.BooleanField(default=True)
 
+    class Meta:
+        ordering = ['display_name']
+
     def __str__(self):
         return self.display_name
 
