@@ -29,6 +29,8 @@ from openstack_dashboard import theme_settings
 from openstack_dashboard.utils import settings as settings_utils
 
 from nectar_dashboard import enabled as nectar_enabled
+from nectar_dashboard.enabled import usage as nectar_usage
+
 
 # this is used to protect from client XSS attacks, but it's worth
 # enabling in our test setup to find any issues it might cause
@@ -125,7 +127,7 @@ STATICFILES_DIRS = settings_utils.get_xstatic_dirs(
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
 settings_utils.update_dashboards(
     [
-        enabled, nectar_enabled,
+        enabled, nectar_enabled, nectar_usage,
     ],
     HORIZON_CONFIG,
     INSTALLED_APPS,
