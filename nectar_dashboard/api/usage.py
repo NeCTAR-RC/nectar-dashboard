@@ -91,8 +91,7 @@ def instance_data(request):
 
     g_instances = gnocchi_client.resource.search(
         resource_type='instance',
-        query=(f'ended_at=null or '
-               f'(ended_at >= "{begin}" and ended_at <= "{end}")')
+        query=(f'ended_at=null or ended_at >= "{begin}"')
     )
     gnocchi_map = {i.get('id'): i for i in g_instances}
 

@@ -124,8 +124,7 @@ class ApiTest(helpers.APIMockTestCase):
 
         g_client.resource.search.assert_called_once_with(
             resource_type='instance',
-            query=('ended_at=null or (ended_at >= "2021-12-15" '
-                   'and ended_at <= "2022-03-17")'),
+            query=('ended_at=null or ended_at >= "2021-12-15"'),
         )
         expected_data = [
             {'id': 'instance-1', 'rate': 1.32,
