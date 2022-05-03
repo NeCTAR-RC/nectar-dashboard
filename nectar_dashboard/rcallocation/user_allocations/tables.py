@@ -33,12 +33,20 @@ class UserEditChangeRequest(tables.EditRequest):
         return instance.can_user_edit_amendment()
 
 
+class CreateAllocation(horizon_tables.LinkAction):
+    name = "create"
+    verbose_name = "Request a new allocation"
+    url = "horizon:allocation:request:request"
+    icon = "plus"
+
+
 class UserAllocationListTable(tables.BaseAllocationListTable):
     view_url = "horizon:allocation:user_requests:allocation_view"
 
     class Meta(tables.BaseAllocationListTable.Meta):
         row_actions = (UserEditRequest, UserAmendRequest,
                        UserEditChangeRequest)
+        table_actions = (CreateAllocation,)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
