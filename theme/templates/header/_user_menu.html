@@ -1,6 +1,11 @@
 {% load i18n %}
 {% load themes %}
 
+<li class="user-menu">
+  <a href="https://desktop.rc.nectar.org.au/" role="button">
+    Desktop Service
+  </a>
+</li>
 {% if HORIZON_CONFIG.help_url %}
   <li class="user-menu">
     <a href="{{ HORIZON_CONFIG.help_url }}" role="button">
