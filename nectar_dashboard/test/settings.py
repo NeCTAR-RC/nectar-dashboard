@@ -393,6 +393,9 @@ ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS = {
     'uom': ['melbourne'],
 }
 
+# FoR code series allowed for new allocations and amendments.  The series
+# names are defined in forcodes.py file.
+ALLOCATION_FOR_CODE_SERIES = "ANZSRC_2020"
 
 HORIZON_CONFIG['WARNING_INFO_URL'] = \
     "https://support.ehelp.edu.au/support/home"
@@ -424,8 +427,14 @@ REST_VIEW_SETS = (
     ('resources', 'nectar_dashboard.rcallocation.api.ResourceViewSet', None),
     ('zones', 'nectar_dashboard.rcallocation.api.ZoneViewSet', None),
     ('service-types', 'nectar_dashboard.rcallocation.api.ServiceTypeViewSet', None),
-    ('for-codes', 'nectar_dashboard.rcallocation.api.for.FORViewSet', 'for-codes'),
-    ('for-tree', 'nectar_dashboard.rcallocation.api.for.AllocationTreeViewSet', 'for-tree'),
+    ('for-codes', 'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet', 'for-codes'),
+    ('for-codes-2008', 'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet', 'for-codes-2008'),
+    ('for-codes-2020', 'nectar_dashboard.rcallocation.api.for.FOR2020ViewSet', 'for-codes-2020'),
+    ('for-codes-all', 'nectar_dashboard.rcallocation.api.for.FORAllViewSet', 'for-codes-all'),
+    ('for-tree', 'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet', 'for-tree'),
+    ('for-tree-2008', 'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet', 'for-tree-2008'),
+    ('for-tree-2020', 'nectar_dashboard.rcallocation.api.for.AllocationTree2020ViewSet', 'for-tree-2020'),
+    ('for-tree-all', 'nectar_dashboard.rcallocation.api.for.AllocationTreeAllViewSet', 'for-tree-all'),
     ('ncris-facilities', 'nectar_dashboard.rcallocation.api.NCRISFacilityViewSet', None),
     ('ardc-projects', 'nectar_dashboard.rcallocation.api.ARDCSupportViewSet', None),
     ('sites', 'nectar_dashboard.rcallocation.api.SiteViewSet', None),

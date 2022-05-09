@@ -85,7 +85,8 @@ def factory_setup():
     factories.ResourceFactory(quota_name='instances', service_type=compute_st)
     factories.ResourceFactory(quota_name='ram', service_type=compute_st,
                               requestable=False)
-    factories.ResourceFactory(quota_name='budget', service_type=rating_st)
+    factories.ResourceFactory(quota_name='budget', name="Budget",
+                              service_type=rating_st)
     factories.ResourceFactory(quota_name='router', service_type=network_st)
     factories.ResourceFactory(quota_name='network', service_type=network_st)
     factories.ResourceFactory(quota_name='loadbalancer',
@@ -247,7 +248,8 @@ def request_allocation(user, model=None, quota_specs=None,
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
     forp_2 = fuzzy.FuzzyInteger(1, 9 - forp_1).fuzz()
     forp_3 = 10 - (forp_1 + forp_2)
-    for_code = fuzzy.FuzzyChoice(forcodes.FOR_CODES.keys())
+    for_code = fuzzy.FuzzyChoice(
+        forcodes.FOR_CODES[forcodes.FOR_SERIES].keys())
     quota = fuzzy.FuzzyInteger(1, 100000)
     site = model.associated_site if model else None
 

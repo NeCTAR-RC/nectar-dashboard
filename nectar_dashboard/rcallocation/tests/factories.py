@@ -29,7 +29,7 @@ GRANT_TYPES = dict(grant_type.GRANT_TYPES)
 GRANT_SUBTYPES = dict(grant_type.GRANT_SUBTYPES)
 ALL_SITES = ['uom', 'qcif', 'monash']
 
-for_code = fuzzy.FuzzyChoice(forcodes.FOR_CODES.keys())
+for_code = fuzzy.FuzzyChoice(forcodes.FOR_CODES[forcodes.FOR_SERIES].keys())
 _1_year = datetime.date.today() + datetime.timedelta(days=365)
 _3_years = datetime.date.today() + datetime.timedelta(days=365 * 3)
 duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys())
@@ -165,7 +165,7 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     nectar_support = 'nectar supporting'
 
     @classmethod
-    def create(cls, create_quotas=True, **kwargs):
+    def create(cls, create_quotas=True, quota_value=0, **kwargs):
         usage_types = kwargs.pop('usage_types', None)
         ncris_facilities = kwargs.pop('ncris_facilities', [])
         ardc_support = kwargs.pop('ardc_support', [])
@@ -238,16 +238,27 @@ class AllocationFactory(factory.django.DjangoModelFactory):
             group_network = QuotaGroupFactory(allocation=allocation,
                                               service_type=network_st,
                                               zone=nectar)
-            QuotaFactory(group=group_object, resource=objects)
-            QuotaFactory(group=group_volume_monash, resource=volumes)
-            QuotaFactory(group=group_volume_melbourne, resource=volumes)
-            QuotaFactory(group=group_compute, resource=cores)
-            QuotaFactory(group=group_compute, resource=instances)
-            QuotaFactory(group=group_compute, resource=ram)
-            QuotaFactory(group=group_rating, resource=budget)
-            QuotaFactory(group=group_network, resource=router)
-            QuotaFactory(group=group_network, resource=network)
-            QuotaFactory(group=group_network, resource=loadbalancer)
-            QuotaFactory(group=group_network, resource=floatingip)
+            QuotaFactory(group=group_object, resource=objects,
+                         quota=quota_value)
+            QuotaFactory(group=group_volume_monash, resource=volumes,
+                         quota=quota_value)
+            QuotaFactory(group=group_volume_melbourne, resource=volumes,
+                         quota=quota_value)
+            QuotaFactory(group=group_compute, resource=cores,
+                         quota=quota_value)
+            QuotaFactory(group=group_compute, resource=instances,
+                         quota=quota_value)
+            QuotaFactory(group=group_compute, resource=ram,
+                         quota=quota_value)
+            QuotaFactory(group=group_rating, resource=budget,
+                         quota=quota_value)
+            QuotaFactory(group=group_network, resource=router,
+                         quota=quota_value)
+            QuotaFactory(group=group_network, resource=network,
+                         quota=quota_value)
+            QuotaFactory(group=group_network, resource=loadbalancer,
+                         quota=quota_value)
+            QuotaFactory(group=group_network, resource=floatingip,
+                         quota=quota_value)
 
         return allocation

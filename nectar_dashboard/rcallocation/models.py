@@ -264,8 +264,10 @@ class AllocationRequest(models.Model):
         help_text="""Estimated number of users, researchers and collaborators
         to be supported by the allocation.""")
 
+    # At the model level, we need to represent both 2008 and 2020 code
+    # indefinitely.
     FOR_CHOICES = tuple((k, "%s %s" % (k, v))
-                        for k, v in forcodes.FOR_CODES.items())
+                        for k, v in forcodes.FOR_CODES_ALL.items())
     PERCENTAGE_CHOICES = (
         (0, '0%'),
         (10, '10%'),
@@ -691,6 +693,18 @@ class ServiceType(models.Model):
         ordering = ['order', 'name']
 
 
+class ResourceManager(models.Manager):
+
+    def get_by_path(self, path):
+        """Finds the Resource for a 'service_name.resource_name' path."""
+        parts = path.split(".")
+        assert len(parts) == 2, "Invalid resource path syntax"
+        return self.get_queryset() \
+                   .filter(quota_name=parts[1],
+                           service_type__catalog_name=parts[0]) \
+                   .first()
+
+
 class Resource(models.Model):
     """A Resource represents a resource or capability that is controlled
     / rationed by way of quotas.  Resources that are numerically quantifiable
@@ -718,6 +732,8 @@ class Resource(models.Model):
         help_text="This is used to set an initial value on quota forms if no "
         "quota is requested. Will also be used if existing is less "
         "than this")
+
+    objects = ResourceManager()
 
     def __str__(self):
         return self.name

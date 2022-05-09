@@ -17,11 +17,15 @@ import logging
 
 from django.conf import settings
 
+from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import output_type_choices
 
 
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
+
+FOR_CODES = forcodes.FOR_CODES[forcodes.FOR_SERIES]
+
 
 # The following warning code strings will used as anchors in the
 # support page that contains "more information" about the errors.
@@ -51,6 +55,7 @@ APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 NO_VALID_GRANTS = 'NO_VALID_GRANTS'
 NO_BUDGET = 'NO_BUDGET'
+REENTER_FOR_CODES = 'REENTER_FOR_CODES'
 
 
 def storage_zone_to_home(zone):
@@ -482,8 +487,20 @@ def output_checks(checker):
     return res
 
 
+def for_check(checker):
+    for for_code in [checker.allocation.field_of_research_1,
+                     checker.allocation.field_of_research_2,
+                     checker.allocation.field_of_research_3]:
+        if for_code and for_code not in FOR_CODES.keys():
+            return [(REENTER_FOR_CODES,
+                     'This allocation request is using legacy Field of '
+                     'Research (FoR) codes.  You will need to reenter the '
+                     'FoR information using '
+                     f'{forcodes.FOR_SERIES.replace("_", " ")} codes.')]
+
+
 NAG_CHECKS = [new_budget_check, survey_check, ncris_check, ardc_check,
-              grant_check, output_checks]
+              grant_check, output_checks, for_check]
 
 
 class NagChecker(Checker):

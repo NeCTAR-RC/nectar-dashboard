@@ -21,6 +21,7 @@ from novaclient import exceptions as n_exc
 from openstack_dashboard import api
 
 from nectar_dashboard.rcallocation import checkers
+from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import tables
@@ -415,6 +416,8 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
             kwargs['nags'] = nag_checker.do_checks()
         else:
             kwargs['nags'] = []
+        kwargs['for_series'] = forcodes.FOR_SERIES.replace('_', ' ')
+
         return self.render_to_response(self.get_context_data(**kwargs))
 
     def post(self, request, *args, **kwargs):

@@ -13,14 +13,16 @@ from django.utils.safestring import mark_safe
 from select2 import fields as select2_fields
 from select2 import forms as select2_forms
 
-from nectar_dashboard.rcallocation.forcodes import FOR_CODES
+from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import utils
 
 
 LOG = logging.getLogger(__name__)
 
-FOR_CHOICES = tuple((k, "%s %s" % (k, v)) for k, v in FOR_CODES.items())
+FOR_CODES = forcodes.FOR_CODES[forcodes.FOR_SERIES]
+FOR_CHOICES = tuple((k, "%s %s" % (k, v))
+                    for k, v in FOR_CODES.items())
 
 
 class FORValidationError(Exception):
@@ -34,7 +36,7 @@ class FoRChoiceField(select2_forms.ChoiceField):
             choices=FOR_CHOICES,
             widget_kwargs={'choices': FOR_CHOICES,
                            'attrs': {'class': 'col-md-2'}},
-            overlay="Enter a 2, 4 or 6 digit FoR code",
+            overlay=f"Enter a 2, 4 or 6 digit {forcodes.FOR_SERIES} FoR code",
             sortable=True,
             required=False)
 

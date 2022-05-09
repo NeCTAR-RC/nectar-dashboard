@@ -1,3 +1,5 @@
+# Copyright 2022 Australian Research Data Commons
+#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -11,57 +13,107 @@
 #   under the License.
 #
 
-from django.conf import settings
 from django.db.models import Prefetch
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import response
 from rest_framework import viewsets
 
+from horizon.utils import memoized
+
 from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import models
 
 
-class FORViewSet(viewsets.GenericViewSet):
+@memoized.memoized
+def get_instances_resource_id():
+    return models.Resource.objects.get_by_path('compute.instances').id
+
+
+@memoized.memoized
+def get_cores_resource_id():
+    return models.Resource.objects.get_by_path('compute.cores').id
+
+
+@memoized.memoized
+def get_budget_resource_id():
+    return models.Resource.objects.get_by_path('rating.budget').id
+
+
+class FOR2008ViewSet(viewsets.GenericViewSet):
 
     @method_decorator(cache_page(86400))
     def list(self, request, *args, **kwargs):
-        return response.Response(forcodes.FOR_CODES)
+        return response.Response(forcodes.FOR_CODES_2008)
 
 
-class AllocationTreeViewSet(viewsets.GenericViewSet):
+class FOR2020ViewSet(viewsets.GenericViewSet):
 
     @method_decorator(cache_page(86400))
     def list(self, request, *args, **kwargs):
-        tree = restructure_allocations_tree()
+        return response.Response(forcodes.FOR_CODES_2020)
+
+
+class FORAllViewSet(viewsets.GenericViewSet):
+
+    @method_decorator(cache_page(86400))
+    def list(self, request, *args, **kwargs):
+        return response.Response(forcodes.FOR_CODES_ALL)
+
+
+class AllocationTree2008ViewSet(viewsets.GenericViewSet):
+
+    @method_decorator(cache_page(86400))
+    def list(self, request, *args, **kwargs):
+        tree = restructure_allocations_tree(forcodes.FOR_CODES_2008)
         return response.Response(tree)
 
 
-def partition_active_allocations():
-    allocation_summaries = list()
-    active_allocations = models.AllocationRequest.objects.filter(
-        status__in=[models.AllocationRequest.APPROVED,
-                    models.AllocationRequest.UPDATE_PENDING]).filter(
-        parent_request__isnull=True).prefetch_related(
-        Prefetch('quotas', queryset=models.QuotaGroup.objects.filter(
-            service_type='compute', zone='nectar')),
-        Prefetch('quotas__quota_set', to_attr='quota_cache'))
+class AllocationTree2020ViewSet(viewsets.GenericViewSet):
 
+    @method_decorator(cache_page(86400))
+    def list(self, request, *args, **kwargs):
+        tree = restructure_allocations_tree(forcodes.FOR_CODES_2020)
+        return response.Response(tree)
+
+
+class AllocationTreeAllViewSet(viewsets.GenericViewSet):
+
+    @method_decorator(cache_page(86400))
+    def list(self, request, *args, **kwargs):
+        tree = restructure_allocations_tree(forcodes.FOR_CODES_ALL)
+        return response.Response(tree)
+
+
+def partition_active_allocations(for_code_map):
+    allocation_summaries = list()
+    active_allocations = models.AllocationRequest.objects \
+            .filter(status__in=[models.AllocationRequest.APPROVED,
+                    models.AllocationRequest.UPDATE_PENDING]) \
+            .filter(parent_request__isnull=True) \
+            .prefetch_related(
+                Prefetch('quotas',
+                         queryset=models.QuotaGroup.objects.filter(
+                             service_type__in=['compute', 'rating'],
+                             zone='nectar')),
+                Prefetch('quotas__quota_set', to_attr='quota_cache'))
+
+    codes = for_code_map.keys()
     for active_allocation in active_allocations:
         code = active_allocation.field_of_research_1
-        if code:
+        if code in codes:
             allocation_summaries.append(summary(active_allocation, code))
         code = active_allocation.field_of_research_2
-        if code:
+        if code in codes:
             allocation_summaries.append(summary(active_allocation, code))
         code = active_allocation.field_of_research_3
-        if code:
+        if code in codes:
             allocation_summaries.append(summary(active_allocation, code))
     return allocation_summaries
 
 
-def organise_allocations_tree():
-    allocations = partition_active_allocations()
+def organise_allocations_tree(for_code_map):
+    allocations = partition_active_allocations(for_code_map)
     allocations_tree = dict()
 
     for allocation in allocations:
@@ -82,6 +134,7 @@ def organise_allocations_tree():
         twig['institution'] = allocation['institution']
         twig['instanceQuota'] = allocation['instance_quota']
         twig['coreQuota'] = allocation['core_quota']
+        twig['budgetQuota'] = allocation['budget_quota']
         twig['national'] = allocation['national']
         branch_minor[allocation_code_6].append(twig)
     return allocations_tree
@@ -98,13 +151,14 @@ def create_allocation_tree_leaf_node(allocation_summary):
         'institution': allocation_summary['institution'],
         'instanceQuota': allocation_summary['instanceQuota'],
         'coreQuota': allocation_summary['coreQuota'],
+        'budgetQuota': allocation_summary['budgetQuota'],
         'national': allocation_summary['national'],
     }
     return allocation_items
 
 
-def restructure_allocations_tree():
-    allocations_tree = organise_allocations_tree()
+def restructure_allocations_tree(for_code_map):
+    allocations_tree = organise_allocations_tree(for_code_map)
     restructured_tree = create_allocation_tree_branch_node('allocations')
     traverse_allocations_tree(allocations_tree, restructured_tree, 0)
     return restructured_tree
@@ -136,14 +190,19 @@ def apply_partitioned_quotas(allocation, allocation_summary, percentage):
     fraction = float(percentage) / 100.0
     instance_quota = 0
     core_quota = 0
-    if allocation.quotas.all():
-        for quota in allocation.quotas.all()[0].quota_cache:
-            if quota.resource_id == settings.INSTANCE_RESOURCE_ID:
+    budget_quota = 0
+
+    for group in allocation.quotas.all():
+        for quota in group.quota_cache:
+            if quota.resource_id == get_instances_resource_id():
                 instance_quota = quota.quota
-            elif quota.resource_id == settings.CORES_RESOURCE_ID:
+            elif quota.resource_id == get_cores_resource_id():
                 core_quota = quota.quota
+            elif quota.resource_id == get_budget_resource_id():
+                budget_quota = quota.quota
     allocation_summary['instance_quota'] = instance_quota * fraction
     allocation_summary['core_quota'] = core_quota * fraction
+    allocation_summary['budget_quota'] = budget_quota * fraction
 
 
 def strip_email_sub_domains(domain):
