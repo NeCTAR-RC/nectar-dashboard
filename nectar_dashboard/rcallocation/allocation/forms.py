@@ -24,11 +24,9 @@ class AllocationApproveForm(forms.ModelForm):
             'project_description': forms.TextInput(
                 attrs={'readonly': 'readonly'}),
             'status_explanation': forms.Textarea(
-                attrs={'class': 'col-md-6 form-control',
-                       'style': 'height:120px; width:420px'}),
+                attrs={'class': 'form-control'}),
             'special_approval': forms.Textarea(
-                attrs={'class': 'col-md-6 form-control',
-                       'style': 'height:60px; width:420px'}),
+                attrs={'class': 'form-control'}),
             'associated_site': forms.Select(attrs={'class': 'col-md-6'}),
             'national': forms.CheckboxInput(
                 attrs={'class': 'col-md-6 form-control',
@@ -75,14 +73,13 @@ class AllocationRejectForm(forms.ModelForm):
         fields = ('project_name', 'project_description', 'status_explanation',)
         widgets = {
             'project_name': forms.TextInput(
-                attrs={'class': 'form-control col-md-6',
+                attrs={'class': 'form-control',
                        'readonly': 'readonly'}),
             'project_description': forms.TextInput(
-                attrs={'class': 'form-control col-md-6',
+                attrs={'class': 'form-control',
                        'readonly': 'readonly'}),
             'status_explanation': forms.Textarea(
-                attrs={'class': 'form-control col-md-6',
-                       'style': 'height:120px; width:420px'})
+                attrs={'class': 'form-control'})
         }
 
     def __init__(self, **kwargs):

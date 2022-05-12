@@ -5,23 +5,20 @@
 <input id="id_{{ service_type.catalog_name }}___prefix__-MAX_NUM_FORMS" name="{{ service_type.catalog_name }}___prefix__-MAX_NUM_FORMS" type="hidden" value="1000" />
 
 {% for resource in service_type.resource_set.all %}
-<div class="row form-group quota-resource">
+<div class="form-inline quota-resource">
 
   <input class="form-control" id="id_{{ service_type.catalog_name }}___prefix__-{{ forloop.counter0 }}-resource" name="{{ service_type.catalog_name }}___prefix__-{{ forloop.counter0 }}-resource" value="{{ resource.id }}" type="hidden">
-  <div id="quota-resource-{{ resource.id }}" class="form-inline">
-    <div class="form-group input-group col-sm-2">
-      <label class="label-resource-name control-label pull-right"></label>
-    </div>
-    <div class="form-group input-group requested_quota">
+  <div id="quota-resource-{{ resource.id }}" class="form-group">
+    <label class="label-resource-name control-label"></label>
+    <div class="input-group requested_quota">
       <input id="id_{{ service_type.catalog_name }}___prefix__-{{ forloop.counter0 }}-requested_quota" class="form-control" min="0" name="{{ service_type.catalog_name }}___prefix__-{{ forloop.counter0 }}-requested_quota" type="number" value="0">
       <span class="input-group-addon label-resource-unit"></span>
     </div>
     <input class="quota-group-enabled form-control" id="id_{{ service_type.catalog_name }}___prefix__-enabled" name="{{ service_type.catalog_name }}___prefix__-enabled" type="hidden" value="true">
     {% if forloop.first %}
-    <div class="form-group input-group">
-      <input class="form-control" id="id_{{ service_type.catalog_name }}___prefix__-service_type" name="{{ service_type.catalog_name }}___prefix__-service_type" value="{{ service_type.catalog_name }}" type="hidden">
+      <input type="hidden" class="form-control" id="id_{{ service_type.catalog_name }}___prefix__-service_type" name="{{ service_type.catalog_name }}___prefix__-service_type" value="{{ service_type.catalog_name }}">
       {% if service_type.zones.all|length == 1 %}
-      <input class="form-control" id="id_{{ service_type.catalog_name }}___prefix__-zone" name="{{ service_type.catalog_name }}___prefix__-zone" type="hidden" value="nectar" />
+      <input type="hidden" class="form-control" id="id_{{ service_type.catalog_name }}___prefix__-zone" name="{{ service_type.catalog_name }}___prefix__-zone" value="nectar" />
       {% else %}
       <select class="form-control" id="id_{{ service_type.catalog_name }}___prefix__-zone" name="{{ service_type.catalog_name }}___prefix__-zone">
         <option value="" selected="selected">---------</option>
@@ -31,8 +28,7 @@
           {% endif %}
         {% endfor %}
       </select>
-      {% endif %}
-    </div>
+    {% endif %}
     <button class="btn btn-link btn-xs quota-group-delete" type="button" name="action" value="delete">
       <i class="fa fa-times text-danger"></i>
     </button>

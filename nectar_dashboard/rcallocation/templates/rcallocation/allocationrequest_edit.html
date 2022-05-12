@@ -63,7 +63,7 @@
   <hr/>
   <blockquote>
     <strong>Info:</strong>
-    Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-primary"></span>
+    Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-secondary"></span>
     sign.
   </blockquote>
   {% if warnings|length > 0 %}
@@ -79,34 +79,36 @@
       {{ hidden }}
     {% endfor %}
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-6">
         {% include "rcallocation/field.html" with field=form.project_name %}
       </div>
-      <div class="col-md-8">
+      <div class="col-md-6">
         {% include "rcallocation/field.html" with field=form.contact_email %}
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4">
-        {% include "rcallocation/field.html" with field=form.project_description %}
+      <div class="col-md-6">
+        <div class="form-group">
+          {% include "rcallocation/field.html" with field=form.project_description %}
+        </div>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-6">
         <div class="form-group">
           <label>
             Generated project DNS zone name
             <img class="help-popover" src="/static/rcportal/img/help.png" data-content="This will be the Nectar DNS zone name that will be created for your project. This is based on the project identifer value. See our <a href='https://support.ehelp.edu.au/support/solutions/articles/6000201311' target='_blank'>support documentation</a> for more information." data-original-title="Generated project DNS zone name" data-html="true">
-         </label>
+          </label>
           <div class="controls">
-            <div class="input-group" style="width: 300px;">
-                <input id="id_dns_domain" class="form-control" readonly="readonly" type="text">
-            </div>
+            <input id="id_dns_domain" disabled class="form-control" readonly="readonly" type="text">
           </div>
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         {% include "rcallocation/field.html" with field=form.estimated_project_duration %}
+      </div>
+      <div class="col-md-6">
         {% block convert_trial_project %}
         {% include "rcallocation/field.html" with field=form.convert_trial_project %}
         {% endblock %}
@@ -114,7 +116,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-xs-12">
         <h2>Cloud Resources</h2>
         <p>Specify the maximum infrastructure that your project will need access to.
           This quota can be extended at a later date if more resources are required.
@@ -124,12 +126,12 @@
           {% for service_type, form_tuple in quota_formsets %}
           <div id="panel-quota-{{ service_type.catalog_name }}">
             <div class="panel panel-default">
-              <div class="panel-heading" style="display:flex;">
+              <div class="panel-heading" style="display:flex; align-items: center;">
                 <div style="flex: 1;">
                   <h4 class="list-group-item-heading">{{ service_type.name }}</h4>
                   <p class="list-group-item-text">{{ service_type.description|safe }}</p>
                 </div>
-                <div>
+                <div style="margin-left: 15px;">
                   <input id="check-{{ service_type.catalog_name }}" class="toggle-quota" type="checkbox" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
                 </div>
                 <div style="clear: both;"></div>
@@ -143,9 +145,9 @@
                   </div>
                   <div id="quotas-{{ service_type.catalog_name }}" class="quotas">
                     <div class="quota-group">
-			          {% for group_form, formset in form_tuple %}
+			              {% for group_form, formset in form_tuple %}
     	                {% if formset.non_form_errors %}
-        	              <div class="form-group has-error">
+        	              <div class="has-error">
                             <span class="help-block">{{ formset.non_form_errors }}</span>
             	          </div>
 	                    {% endif %}
@@ -166,21 +168,33 @@
           </div>
           {% endfor %}
         </div> <!-- quota_formset -->
-      </div> <!-- col-md-12 -->
+      </div> <!-- col-xs-12 -->
     </div> <!-- row -->
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-xs-12">
         <h2>Usage Information</h2>
         <hr/>
-        {% include "rcallocation/field.html" with field=form.use_case %}
-        {% include "rcallocation/field.html" with field=form.usage_patterns %}
-        {% include "rcallocation/field.html" with field=form.geographic_requirements %}
-        {% include "rcallocation/field.html" with field=form.estimated_number_users %}
-        {% include "rcallocation/field.html" with field=form.usage_types %}
+        <div class="row">
+          <div class="col-md-6">
+            {% include "rcallocation/field.html" with field=form.use_case %}
+          </div>
+          <div class="col-md-6">
+            {% include "rcallocation/field.html" with field=form.usage_patterns %}
+          </div>
+          <div class="col-md-6">
+            {% include "rcallocation/field.html" with field=form.geographic_requirements %}
+          </div>
+          <div class="col-md-6">
+            {% include "rcallocation/field.html" with field=form.estimated_number_users %}
+          </div>
+          <div class="col-xs-12">
+            {% include "rcallocation/field.html" with field=form.usage_types %}
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-xs-12">
         <h2>Fields of Research (FOR)</h2>
         <hr/>
         <span class="label label-info">Note:</span>
@@ -194,30 +208,32 @@
         <br/>
         <br/>
         {% for error in form.get_for_errors %}
-        <div class="form-group has-error">
+        <div class="has-error">
           <span class="help-block">{{error}}</span>
         </div>
         {% endfor %}
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-6 col-lg-4">
         {% for group in form.grouped_fields %}
         <div class="form-group">
           {% for field in group %}
             {% if forloop.first %}
               <label>{{ field.label }}</label>
             {% endif %}
-            {% if field.errors %}
-              <div class="form-group has-error">
-              {{ field }}
-              {% for error in field.errors %}
-                <span class="help-block">{{ error }}</span>
-              {% endfor %}
-              </div>
-            {% else %}
-              {{ field }}
-            {% endif %}
+            <div class="controls">
+              {% if field.errors %}
+                <div class="has-error">
+                {{ field }}
+                {% for error in field.errors %}
+                  <span class="help-block">{{ error }}</span>
+                {% endfor %}
+                </div>
+              {% else %}
+                {{ field }}
+              {% endif %}
+            </div>
           {% endfor %}
         </div>
         {% endfor %}
@@ -225,7 +241,7 @@
     </div>
     <div class="row">
       <div class="institution_formset">
-        <div class="col-md-12">
+        <div class="col-xs-12">
           <h2>Supported Institutions</h2>
           <hr/>
           <span class="label label-info">Note:</span>
@@ -252,7 +268,7 @@
 
     <div class="row{% if not object or not object.can_have_publications %} hidden{% endif %}">
       <div class="publication_formset">
-        <div class="col-md-12">
+        <div class="col-xs-12">
           <h2>Publication/Output</h2>
           <hr/>
           <span class="label label-info">Note:</span>
@@ -267,36 +283,13 @@
     </div>
 
     <div class="row">
-      <div class="col-md-12">
-        <h2>Research Grant Information</h2>
+      <div class="col-xs-12">
+        <h2>Project Support</h2>
         <hr/>
-	{% if grant_formset.non_form_errors %}
-	<div class="alert alert-danger" role="alert">
-	  {{ grant_formset.non_form_errors }}
-	</div>
-	{% endif %}
-        <p><span class="label label-info">Note:</span>
-	  Research grant information aids in the assessment of research allocations and indicates the scale of the research supported. You must put at least one grant, or specify you have no grants for the project</p>
-        <p>A National project allocation request can only be approved if the project is:</p>
-	  <ul>
-	    <li>funded through a <a href="https://docs.education.gov.au/system/files/doc/other/2018_acgr_listing_final.pdf">national competitive research grant</a></li>
-	    <li>funded by, or supports, a <a href="https://www.education.gov.au/funded-research-infrastructure-projects">National Collaborative Research Infrastructure Strategy</a> (NCRIS) capability, including ARDC, Nectar, ANDS or RDS (e.g. a Virtual Laboratory)</li>
-            <li>approved by the Nectar Allocation Committee (as per the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000191233-research-cloud-national-allocation-scheme-rc-nas-policy-">RC-NAS Policy</a>).
-	  </ul>
-	<p>Note that if a project meets the above criteria, it is not automatically entitled to a national allocation. In some cases it may be more suited to a local allocation.</p>
-	<p>If your project is not eligible for a national allocation it may receive a local (node-prioritised) allocation at a particular node.</p>
-        <p>If your project is supported by NCRIS or ARDC, record that information in the separate fields at the end of this form.  Please do not record it as a research grant.</p>
-        <br/>
-        <div class="grant_formset">
-          {{ grant_formset.management_form }}
-          {% include "rcallocation/grant_form.html" %}
-        </div>
-      </div>
-      <div class="col-md-12">
         {% include "rcallocation/medium_field.html" with field=form.ardc_support %}
         {% include "rcallocation/medium_field.html" with field=form.ardc_explanation %}
         {% if not form.ardc_support.value and object and object.nectar_support %}
-	<div class="alert alert-warning" role="alert">
+	      <div class="alert alert-warning" role="alert">
           <p>Please reenter the following information in the ARDC Support and explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.</p>
           <p>Old Nectar Support information: "{{ object.nectar_support }}"</p>
         </div>
@@ -305,13 +298,37 @@
         {% include "rcallocation/medium_field.html" with field=form.ncris_explanation %}
         {% if not form.ncris_facilities.value and object and object.ncris_support %}
         <div class="alert alert-warning" role="alert">
-	  <p>
-          Please reenter the following information in the NCRIS Facilities and NCRIS Support explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.</p>
-	  <p>
-          Old NCRIS Support information: "{{ object.ncris_support }}"
-          </p>
+          <p>Please reenter the following information in the NCRIS Facilities and NCRIS Support explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.</p>
+          <p>Old NCRIS Support information: "{{ object.ncris_support }}"</p>
         </div>
         {% endif %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        <h2>Research Grant Information</h2>
+        <hr/>
+        {% if grant_formset.non_form_errors %}
+          <div class="alert alert-danger" role="alert">
+            {{ grant_formset.non_form_errors }}
+          </div>
+        {% endif %}
+        <p><span class="label label-info">Note:</span> Research grant information aids in the assessment of research allocations and indicates the scale of the research supported. You must put at least one grant, or specify you have no grants for the project</p>
+        <p>A National project allocation request can only be approved if the project is:</p>
+        <ul>
+          <li>funded through a <a href="https://docs.education.gov.au/system/files/doc/other/2018_acgr_listing_final.pdf">national competitive research grant</a></li>
+          <li>funded by, or supports, a <a href="https://www.education.gov.au/funded-research-infrastructure-projects">National Collaborative Research Infrastructure Strategy</a> (NCRIS) capability, including ARDC, Nectar, ANDS or RDS (e.g. a Virtual Laboratory)</li>
+          <li>approved by the Nectar Allocation Committee (as per the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000191233-research-cloud-national-allocation-scheme-rc-nas-policy-">RC-NAS Policy</a>).
+        </ul>
+        <p>Note that if a project meets the above criteria, it is not automatically entitled to a national allocation. In some cases it may be more suited to a local allocation.</p>
+        <p>If your project is not eligible for a national allocation it may receive a local (node-prioritised) allocation at a particular node.</p>
+        <p>If your project is supported by NCRIS or ARDC, record that information in the separate fields at the end of this form.  Please do not record it as a research grant.</p>
+        <br/>
+        <div class="grant_formset">
+          {{ grant_formset.management_form }}
+          {% include "rcallocation/grant_form.html" %}
+        </div>
       </div>
     </div>
     <div class="form-actions">

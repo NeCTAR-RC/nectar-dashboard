@@ -11,7 +11,7 @@
 
 {% block main %}
   <div class="dash_block">
-    <div class="allocation content_body">
+    <div class="allocation">
       <h2>{{ allocation.project_description }}</h2>
       <br/>
       <div class="row">
@@ -168,8 +168,6 @@
           {% else %}
           <p><span class="label label-warning">Not recorded</span></p>
           {% endif %}
-        </div>
-      </div>
           <h3>Estimated Number of Users</h3>
           <p>
             {% if allocation.estimated_number_users %}
@@ -390,11 +388,8 @@
       {% endif %}
       {% block extra_details %}
       {% endblock %}
-      <div class="row">
-        <div class="form-group">
-          {% block detail_actions %}
-          {% endblock %}
-        </div>
-      </div>
+          
+      {% block detail_actions %}{% endblock %}
+    </div>
   </div>
 {% endblock %}

@@ -158,9 +158,7 @@ class BaseAllocationForm(forms.ModelForm):
         )
 
         widgets = {
-            'status_explanation': forms.Textarea(
-                attrs={'class': 'col-md-6',
-                       'style': 'height:120px; width:420px'}),
+            'status_explanation': forms.Textarea(),
             'estimated_project_duration': forms.Select(
                 attrs={'class': 'col-md-6'}),
             'convert_trial_project': forms.Select(
@@ -172,23 +170,17 @@ class BaseAllocationForm(forms.ModelForm):
                 ]),
             'project_name': forms.TextInput(attrs={'class': 'col-md-12'}),
             'contact_email': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'use_case': forms.Textarea(
-                attrs={'class': 'col-md-6',
-                       'style': 'height:120px; width:420px'}),
-            'usage_patterns': forms.Textarea(
-                attrs={'class': 'col-md-6',
-                       'style': 'height:120px; width:420px'}),
+            'use_case': forms.Textarea(),
+            'usage_patterns': forms.Textarea(),
             'associated_site': forms.CheckboxInput(
                 attrs={'class': 'col-md-6'}),
             'national': forms.CheckboxInput(attrs={'class': 'col-md-6'}),
-            'geographic_requirements': forms.Textarea(
-                attrs={'class': 'col-md-6',
-                       'style': 'height:120px; width:420px'}),
+            'geographic_requirements': forms.Textarea(),
             'for_percentage_1': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_2': forms.Select(attrs={'class': 'col-md-2'}),
             'for_percentage_3': forms.Select(attrs={'class': 'col-md-2'}),
-            'ncris_explanation': forms.TextInput(attrs={'class': 'col-md-12'}),
-            'ardc_explanation': forms.TextInput(attrs={'class': 'col-md-12'}),
+            'ncris_explanation': forms.TextInput(),
+            'ardc_explanation': forms.TextInput(),
         }
 
     groups = (
@@ -479,8 +471,7 @@ class ChiefInvestigatorForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.ChiefInvestigator
         widgets = {
-            'additional_researchers': forms.Textarea(
-                attrs={'style': 'height:120px; width:420px'}),
+            'additional_researchers': forms.Textarea(),
         }
 
 
@@ -497,10 +488,8 @@ class PublicationForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Publication
         widgets = {
-            'publication': forms.Textarea(
-                attrs={'style': 'height:120px; width:420px'}),
-            'doi': forms.TextInput(
-                attrs={'style': 'width:420px'}),
+            'publication': forms.Textarea(),
+            'doi': forms.TextInput(),
             'crossref_metadata': forms.HiddenInput()
         }
 

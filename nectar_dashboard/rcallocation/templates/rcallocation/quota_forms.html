@@ -1,52 +1,50 @@
 <div class="quota-resource">
   {% for form in formset.forms %}
-  <div class="row form-group">
     {% for hidden in form.hidden_fields %}
       {{ hidden }}
     {% endfor %}
     {% if form.non_field_errors %}
-      <div class="form-group has-error">
+      <div class="has-error">
         <span class="help-block">{{ form.non_field_errors }}</span>
       </div>
     {% endif %}
-    <div id="quota-resource-{{ form.resource.value }}" class="form-inline">
-      <div class="form-group input-group col-sm-2">
-        <label class="label-resource-name control-label pull-right"></label>
-      </div>
-      <div class="form-group input-group requested_quota">
-        {{ form.requested_quota }}
-        {% if form.requested_quota.field.widget.input_type == "number" %}
-          <span class="input-group-addon label-resource-unit"></span>
-        {% endif %}
-      </div>
-      <img class="help-popover" src="/static/rcportal/img/help.png" style="display: none;">
-      {% if form.requested_quota.errors %}
-        <div class="form-group has-error">
-          <span class="help-block">{{ form.requested_quota.errors }}</span>
+    <div class="form-inline">
+      <div id="quota-resource-{{ form.resource.value }}" class="form-group">
+        <label class="label-resource-name control-label"></label>
+        <div class="input-group requested_quota">
+          {{ form.requested_quota }}
+          {% if form.requested_quota.field.widget.input_type == "number" %}
+            <span class="input-group-addon label-resource-unit"></span>
+          {% endif %}
         </div>
-      {% endif %}
-      {% if forloop.first %}
-        {% for hidden in group_form.hidden_fields %}
-          {{ hidden }}
-        {% endfor %}
-        {% if group_form.non_field_errors %}
-        <div class="form-group has-error">
-          <span class="help-block">{{ group_form.non_field_errors }}</span>
-        </div>
-        {% endif %}
-        <div class="form-group input-group {%if group_form.zone.errors %}has-error{% endif %}">
-          {{ group_form.zone }}
-        </div>
-        {% if group_form.zone.errors %}
-          <div class="form-group has-error">
-            <span class="help-block">{{ group_form.zone.errors }}</span>
+        <img class="help-popover" src="/static/rcportal/img/help.png" style="display: none;">
+        {% if form.requested_quota.errors %}
+          <div class="has-error">
+            <span class="help-block">{{ form.requested_quota.errors }}</span>
           </div>
         {% endif %}
-      {% endif %}
-      <button class="btn btn-link btn-xs quota-resource-delete" type="button" name="action" value="delete" style="display: none;">
-        <i class="fa fa-times text-danger"></i>
-      </button>
+        {% if forloop.first %}
+          {% for hidden in group_form.hidden_fields %}
+            {{ hidden }}
+          {% endfor %}
+          {% if group_form.non_field_errors %}
+            <div class="has-error">
+              <span class="help-block">{{ group_form.non_field_errors }}</span>
+            </div>
+          {% endif %}
+          {% if group_form.zone.errors %}
+            <div class="has-error">
+              {{ group_form.zone }}
+              <span class="help-block">{{ group_form.zone.errors }}</span>
+            </div>
+          {% else %}
+            {{ group_form.zone }}
+          {% endif %}
+        {% endif %}
+        <button class="btn btn-link btn-xs quota-resource-delete" type="button" name="action" value="delete" style="display: none;">
+          <i class="fa fa-times text-danger"></i>
+        </button>
+      </div>
     </div>
-  </div>
   {% endfor %}
 </div>

@@ -86,22 +86,22 @@ body {
 }
 
 .alloc-icon-ok {
-    color: #468847;
+    color: darken($brand-success, 10%);
 }
 
 .alloc-icon-wip {
-    color: #c09853;
+    color: darken($brand-warning, 10%);
 }
 
 .delete-icon-sp{
     cursor: pointer;
 }
 
-.medium_width{
-    width: 600px;
+.medium_width {
+    max-width: 600px;
 }
 
-.grant_div{
+.grant_div {
     padding: 10px;
     border: 1px solid #ccc;
     -moz-border-radius: 5px;
@@ -124,32 +124,113 @@ body {
 }
 
 .pending_warn_level_0 {
-    background-color: #00ff00 !important;
+    background-color: $brand-success !important;
 }
 
 .pending_warn_level_1 {
-    background-color: #ffd700 !important;
+    background-color: $brand-info !important;
 }
 
 .pending_warn_level_2 {
-    background-color: #ffa500 !important;
+    background-color: $brand-warning !important;
 }
 
 
 .pending_warn_level_3 {
-    background-color: #ff0000 !important;
+    background-color: $brand-danger !important;
 }
 
 .pending_warn_level_4 {
-    background-color: #800080 !important;
+    background-color: #8E489B !important;
 }
 
 #panel-quota-rating .toggle.btn {
   visibility: hidden;
 }
 
+.quota-group {
+  margin-bottom: 10px;
+}
+
+.flex-group {
+  display: flex;
+  align-items: center;
+  div:first-child {
+    flex-grow: 1;
+  }
+}
+
 img.help-popover {
     height: 18px;
     width: 18px;
     margin: 10px;
+}
+
+.more_fields_tab {
+  fieldset {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 600px;
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+    button.field-delete-btn {
+      position: absolute;
+      right: 10px;
+      top: -10px;
+    }
+  }
+}
+
+.form-actions {
+  margin-bottom: 0 !important;
+}
+
+.dash_block {
+  margin-bottom: 30px;
+}
+.select2-container-multi .select2-choices .select2-search-choice {
+  line-height: normal;
+}
+.select2-container .select2-choice abbr {
+  top: 7px;
+}
+.select2-search-choice-close {
+  top: 7px;
+}
+.select2-container .select2-choice {
+  border: none;
+}
+
+.form-control.select2-container .select2-choices, 
+.datepicker input.select2-container .select2-choices {
+ border: none !important;
+}
+
+.form-control.select2-container, 
+.datepicker input.select2-container {
+  margin-bottom: 5px;
+}
+.select2-container-active .select2-choice,
+.select2-container-active .select2-choices {
+  border: 1px solid $brand-info !important;
+}
+.select2-results .select2-highlighted {
+  background: $brand-info !important;
+}
+.select2-drop-active {
+  border: 1px solid $brand-info !important;
+}
+
+@media (min-width: 768px) {
+  .form-inline .form-group,
+  .table_actions .form-group {
+    margin-bottom: 5px;
+    min-width: 160px;
+  }
+  .form-inline .control-label,
+  .table_actions .control-label {
+
+    min-width: 160px;
+  }
 }

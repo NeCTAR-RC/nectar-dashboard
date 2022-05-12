@@ -1,36 +1,32 @@
 <div class="label_header">
     <label>
         {{ field.label }}
-        <span class="glyphicon glyphicon-asterisk text-primary"></span>
+        <span class="glyphicon glyphicon-asterisk text-secondary"></span>
         {% if field.help_text %}
             <img class="help-popover" src="{{ STATIC_URL }}rcportal/img/help.png" data-content="{{ field.help_text }}" data-original-title="{{ field.label }}" data-html="true">
         {% endif %}
     </label>
 </div>
-<table class="more_fields_tab">
-    <tbody>
-    {% for institution_form in institution_formset.forms %}
-        <tr>
-            {% if institution_form.non_field_errors %}
-                <div class="alert alert-danger" role="alert">{{ institution_form.non_field_errors }}</div>
-            {% endif %}
-            <td>
-                {{ institution_form.id }}
-                {{ institution_form.DELETE.as_hidden }}
-            </td>
-            {% if forloop.first %}
-                {% include "rcallocation/non_removable_field.html" with field=institution_form.name %}
-            {% else %}
-                {% include "rcallocation/removable_field.html" with field=institution_form.name %}
-            {% endif %}
-        </tr>
-    {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-            <td></td>
-            <td class="add_another_row"><input type="button" class="btn btn-default" value="Add Institution" id="add_another"></td>
-            <td></td>
-        </tr>
-    </tfoot>
-</table>
+<div class="more_fields_tab">
+    <div class="field_rows">
+        {% for institution_form in institution_formset.forms %}
+            <fieldset>
+                {% if institution_form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">{{ institution_form.non_field_errors }}</div>
+                {% endif %}
+                <div>
+                    {{ institution_form.id }}
+                    {{ institution_form.DELETE.as_hidden }}
+                </div>
+                {% if forloop.first %}
+                    {% include "rcallocation/non_removable_field.html" with field=institution_form.name %}
+                {% else %}
+                    {% include "rcallocation/removable_field.html" with field=institution_form.name %}
+                {% endif %}
+            </fieldset>
+        {% endfor %}
+    </div>
+    <div class="add_another_row">
+        <input type="button" class="btn btn-default" value="Add Institution" id="add_another">
+    </div>
+</div>

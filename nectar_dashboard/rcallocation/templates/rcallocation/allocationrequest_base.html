@@ -31,7 +31,7 @@
   <hr/>
   <blockquote>
     <strong>Info:</strong>
-    Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-primary"></span>
+    Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-secondary"></span>
     sign.
   </blockquote>
   {% if warnings|length > 0 %}
@@ -75,8 +75,8 @@
         <div class="col-md-12">
           <h2>Cloud Resources</h2>
           <div id="quota_formset">
-	    {% for service_type, form_tuple in quota_formsets %}
-            <div id="panel-quota-{{ service_type.catalog_name }}" class="col-md-12">
+	        {% for service_type, form_tuple in quota_formsets %}
+            <div id="panel-quota-{{ service_type.catalog_name }}">
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <h4 class="list-group-item-heading">{{ service_type.name }}</h4>
@@ -127,7 +127,7 @@
         </div>
       </div>
     </fieldset>
-    <div class="form-actions">
+    <div class="form-actions my-5">
       {% block submit_buttons %}
       <input type="submit" value="Submit" class="btn btn-primary"/>
       {% endblock %}

@@ -1,15 +1,12 @@
-<table class="more_fields_tab">
-    <tbody>
-    {% for grant_form in grant_formset.forms %}
-        <tr>
-            {% if grant_form.non_field_errors %}
-                <div class="alert alert-danger" role="alert">{{ grant_form.non_field_errors }}</div>
-            {% endif %}
-            <td>
+<div class="more_fields_tab">
+    <div class="field_rows">
+        {% for grant_form in grant_formset.forms %}
+            <fieldset>
+                {% if grant_form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">{{ grant_form.non_field_errors }}</div>
+                {% endif %}
                 {{ grant_form.id }}
                 {{ grant_form.DELETE.as_hidden }}
-            </td>
-            <td>
                 <div class="grant_div">
                     {% include "rcallocation/field.html" with field=grant_form.grant_type %}
                     {% include "rcallocation/field.html" with field=grant_form.grant_subtype %}
@@ -19,25 +16,17 @@
                     {% include "rcallocation/field.html" with field=grant_form.last_year_funded %}
                     {% include "rcallocation/field.html" with field=grant_form.total_funding %}
                 </div>
-            </td>
-            <td>
-                <button class="pull-right btn btn-default" id="delete-grant" type="button">
-                    {% if forloop.first %}I don't have any grants{% else %}Delete{% endif %}
+            
+                <button class="btn btn-danger field-delete-btn" id="delete-grant" type="button">
+                    <i class="fa fa-close"></i> {% if forloop.first %}I don't have any grants{% else %}Delete{% endif %}
                 </button>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-            <td></td>
-            <td class="add_another_row">
-                <br/>
-                <input type="button" class="btn btn-default" value="Add Grant" id="add_another">
-                <br/>
-            </td>
-            <td></td>
-        </tr>
-    </tfoot>
-</table>
+            </fieldset>
+        {% endfor %}
+    </div>
+    <div class="add_another_row">
+        <button class="btn btn-default" value="Add Grant" id="add_another" type="button">
+            <i class="fa fa-plus"></i> Add Grant
+        </button>
+    </div>
+</div>
 <br/>

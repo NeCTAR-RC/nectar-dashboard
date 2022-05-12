@@ -78,7 +78,7 @@
           */
           if (resource['quota_name'] == 'ram' && resource['service_type'] == 'compute') {
 
-            var ig = $(this).find('.quota').find('.input-group')
+            var ig = $(this).find('.quota').find('.input-g')
             ig.after('<div class="resource-custom-override">' +
                      '  <label class="radio-inline">' +
                      '    <input type="radio" name="resource_custom_override" value="default">' +
@@ -120,7 +120,7 @@
         });
 
         $('input[name="resource_custom_override"]').change(function(){
-          var ig = $(this).closest('.controls').find('.input-group');
+          var ig = $(this).closest('.controls').find('.input-g');
 
           if ($(this).val() == 'custom') {
             ig.show();
@@ -278,9 +278,9 @@ $(function(){
         if(opts.show_label == true){
             show_label_div(opts);
         }
-        var total_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr').length;
+        var total_rows = $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').length;
         var form_new_row = create_row(opts.prefix, total_rows, opts);
-        $('div.'+ opts.formset_class_id + ' table > tbody:last').append(form_new_row);
+        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first').append(form_new_row);
         total_rows +=1;
         var total_forms_input = $('#id_' + opts.prefix + '-TOTAL_FORMS');
         total_forms_input.val(total_rows);
@@ -297,33 +297,27 @@ $(function(){
     }
 
     function create_row(prefix, count, opts){
-        var new_row = "<tr>";
-        new_row += "<td>";
+        var new_row = "<fieldset>";
         new_row += "<input id='id_" + prefix + "-" + count + "-id' name='" + prefix + "-" + count + "-id' type='hidden'>";
-        new_row += "<input id='id_" + prefix + "-" + count + "-DELETE' type='hidden' value='False' name='" + prefix + "-" + count + "-DELETE'>";
-        new_row += "</td>";
-        new_row += "<td>";
-        new_row += "<div class='form-group'>";
-        new_row += "<div class='controls'>";
+        new_row += "<input id='id_" + prefix + "-" + count + "-DELETE' type='hidden' value='false' name='" + prefix + "-" + count + "-DELETE'>";
+        new_row += "<div class='flex-group form-group'>";
         var input_style_css = opts.input_style_css;
         if (input_style_css != ''){
-            new_row += "<div class='input-group " + input_style_css +"'>";
+            new_row += "<div class='input-g " + input_style_css +"'>";
         }else{
-            new_row += "<div class='input-group'>";
+            new_row += "<div class='input-g'>";
         }
         new_row += "<input class='form-control' id='id_" + prefix + "-" + count + "-" + opts.field_name + "' maxlength='255' name='" + prefix + "-" + count + "-" + opts.field_name + "' type='text'>";
-        new_row += "</div> </div></div>";
-        new_row += "</td>";
-        new_row += "<td>" ;
-        new_row += "<span title='remove' id='id_" + prefix + "-" + count + "-" + opts.field_name +"' class='delete-icon-sp'> &nbsp; &nbsp;<img class='delete-icon' src='/static/rcportal/img/delete.png'> &nbsp; &nbsp; </span>"
-        new_row += "</td>";
-        new_row += "</tr>";
+        new_row += "</div>";
+        new_row += "<span title='remove' id='id_" + prefix + "-" + count + "-" + opts.field_name +"' class='delete-icon-sp text-danger'> &nbsp; &nbsp;<i class='fa fa-times'></i> &nbsp; &nbsp; </span>"
+        new_row += "</div>";
+        new_row += "</fieldset>";
         return new_row;
     };
 
     function delete_form_row(formset, opts, span){
         var span_id = span.attr('id');
-        var current_tr = span.closest('tr');
+        var current_tr = span.closest('fieldset');
         //check the input id field is empty or not
         var id_input = current_tr.find('input[id$=-id]');
 
@@ -342,8 +336,8 @@ $(function(){
         }
 
         //reset the total_forms_input value
-        var total_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr').length;
-        var total_hidden_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr.hidden').length;
+        var total_rows = $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').length;
+        var total_hidden_rows = $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset.hidden').length;
         var total_forms_input = $('#id_' + opts.prefix + '-TOTAL_FORMS');
         total_forms_input.val(total_rows);
         if ((total_rows == 0 || total_rows == total_hidden_rows ) && opts.show_label == true){
@@ -352,7 +346,7 @@ $(function(){
     };
 
     function resort_form_rows(formset, opts){
-        $('div.'+ opts.formset_class_id + ' table > tbody > tr').each(function(){
+        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').each(function() {
             var current_index = this.rowIndex;
 
             //reindex the id input field
@@ -413,9 +407,9 @@ $(function(){
     var next_year = (new Date().getFullYear() + 1).toString();
 
     function create_form_row(formset, opts) {
-        var total_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr').length;
+        var total_rows = $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').length;
         var form_new_row = create_row(opts.prefix, total_rows, opts);
-        $('div.'+ opts.formset_class_id + ' table > tbody:last').append(form_new_row);
+        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first').append(form_new_row);
         fix_grant_subtype_options($('#id_' + opts.prefix + '-' + total_rows + '-' + 'grant_subtype'), true);
         total_rows += 1;
         var total_forms_input = $('#id_' + opts.prefix + '-TOTAL_FORMS');
@@ -423,18 +417,15 @@ $(function(){
     };
 
     function create_row(prefix, row_index, opts){
-        var new_row = "<tr>";
-        new_row += "<td>";
+        var new_row = "<fieldset>";
         new_row += "<input type='hidden' name='" + opts.prefix + "-" + row_index + "-id' id='id_" + opts.prefix + "-" + row_index + "-id'>";
         new_row += "<input type='hidden' name='" + opts.prefix + "-" + row_index + "-DELETE' id='id_" + opts.prefix + "-" + row_index + "-DELETE'>";
-        new_row += "</td>";
-        new_row += "<td>";
         new_row += "<div class='grant_div'>";
         //type
-        new_row += "<div class='form-group '>";
+        new_row += "<div class='form-group'>";
         new_row += create_input_field_label(opts, 'grant_type', 'Grant Type', row_index, true, 'Choose the grant type from the dropdown options.');
         new_row += "<div class='controls'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_select_field(opts, 'grant_type', row_index,
             [["", "---------"],
              ["arc", "Australian Research Council"],
@@ -454,7 +445,7 @@ $(function(){
         new_row += "<div class='form-group '>";
         new_row += create_input_field_label(opts, 'grant_subtype', 'Grant Subtype', row_index, true, 'Choose an applicable grant subtype from the dropdown options.  If no option is applicable, choose "unspecified" and then fill in the "Other funding source details" field below.');
         new_row += "<div class='controls'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_select_field(opts, 'grant_subtype', row_index,
             [["", "---------"],
              ["arc-discovery", "ARC Discovery project"],
@@ -519,7 +510,7 @@ $(function(){
         new_row += "<div class='form-group '>";
         new_row += create_input_field_label(opts, 'funding_body_scheme', 'Other funding source details', row_index, false, 'For example, details of a state government grant scheme, or an industry funding source.');
         new_row += "<div class='controls'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_input_field(opts, 'funding_body_scheme', 'Funding body and scheme', row_index);
         new_row += "</div>";
         new_row += "</div>";
@@ -528,7 +519,7 @@ $(function(){
         new_row += "<div class='form-group '>";
         new_row += create_input_field_label(opts, 'grant_id', 'Grant ID', row_index, false, 'Specify the grant id.');
         new_row += "<div class='controls'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_input_field(opts, 'grant_id', 'Grant ID', row_index);
         new_row += "</div>";
         new_row += "</div>";
@@ -537,7 +528,7 @@ $(function(){
         new_row += "<div class='form-group '>";
         new_row += create_input_field_label(opts, 'first_year_funded', 'First year funded', row_index, true, 'Specify the first year funded');
         new_row += "<div class='controls'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_year_input_field(opts, 'first_year_funded', this_year, row_index);
         new_row += "</div>";
         new_row += "</div>";
@@ -546,7 +537,7 @@ $(function(){
         new_row += "<div class='form-group '>";
         new_row += create_input_field_label(opts, 'last_year_funded', 'Last year funded', row_index, true, 'Specify the last year funded');
         new_row += "<div class='controls'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_year_input_field(opts, 'last_year_funded', next_year, row_index);
         new_row += "</div>";
         new_row += "</div>";
@@ -555,20 +546,16 @@ $(function(){
         new_row += "<div class='form-group '>";
         new_row += create_input_field_label(opts, 'total_funding', 'Total funding (AUD)', row_index, true, 'Total funding amount in AUD.');
         new_row += "<div class='controls'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_number_input_field(opts, 'total_funding', '0', row_index);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
         // closed grant_div
-        new_row += "</div>"
-        new_row += "</td>";
-        new_row += "<td>";
-        new_row += "<button type='button' id='delete-grant' class='pull-right btn btn-default'>";
-        new_row += "Delete";
+        new_row += "<button type='button' id='delete-grant' class='btn btn-danger field-delete-btn'>";
+        new_row += "<i class='fa fa-close'></i> Delete";
         new_row += "</button>";
-        new_row += "</td>";
-        new_row += "</tr>";
+        new_row += "</fieldset>";
         return new_row;
     };
 
@@ -619,7 +606,7 @@ $(function(){
 
     function delete_form_row(formset, opts, span){
         var span_id = span.attr('id');
-        var current_tr = span.closest('tr');
+        var current_tr = span.closest('fieldset');
         //check the input id field is empty or not
         var id_input = current_tr.find('input[id$=-id]');
 
@@ -637,7 +624,7 @@ $(function(){
             current_tr.toggleClass('hidden');
         }
         //reset the total_forms_input value
-        var total_rows = $('div.'+ opts.formset_class_id + ' table > tbody > tr').length;
+        var total_rows = $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').length;
         var total_forms_input = $('#id_' + opts.prefix + '-TOTAL_FORMS');
         total_forms_input.val(total_rows);
     };
@@ -645,7 +632,7 @@ $(function(){
     function resort_form_rows(formset, opts){
         var match = new RegExp(opts.prefix + '-\\d+-', 'g');
 
-        $('div.'+ opts.formset_class_id + ' table > tbody > tr').each(function() {
+        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').each(function() {
             var current_index = this.rowIndex;
             //reindex the id input field
             var id_input = $(this).find('input[id$=-id]');
@@ -809,7 +796,7 @@ $(function(){
         new_row += create_field_div(opts, 'output_type', row_index, '');
         new_row += create_input_field_label(opts, 'output_type', 'Research Output type', row_index, false, "Select a publication type that best describes the publication.  The 'Media publication' type is intended to encompass traditional media and 'new' media such as websites, blogs and social media.");
         new_row += "<div class='controls'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_select_field(opts, 'output_type', row_index,
             [["", "Select a research output type"],
              ["AJ", "Peer reviewed journal article"],
@@ -851,7 +838,7 @@ $(function(){
         new_row += create_input_field_label(opts, 'doi', 'Digital Object Identifier(DOI)', row_index, false, "Provide the Research Output's DOI. A DOI should be provided for all books and peer-reviewed papers. A valid DOI starts with '10.&lt;number&gt;/'. This is followed by letters, numbers and other characters. For example: '10.23456/abc-123'.");
         new_row += "<div class='controls'>";
         new_row += "<div class='form-inline'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_input_field(opts, 'doi', 'text',
                                       'style="width:420px" maxlength="256"',
                                       row_index);
@@ -866,9 +853,9 @@ $(function(){
         new_row += create_field_div(opts, 'publication', row_index, 'hidden');
         new_row += create_input_field_label(opts, 'publication', 'Citation reference', row_index, false, "Provide details of the Research Output according to its type. For example a Paper or Book's citation, a Dataset's title and URI, Software product's name and website URL, a Patent's title and number. This field should not be used for Research Outputs with DOIs known to CrossRef.");
         new_row += "<div class='controls'>";
-        new_row += "<div class='input-group'>";
+        new_row += "<div class='input-g'>";
         new_row += create_textarea_field(opts, 'publication',
-                                         'cols="40" rows="10" style="height:120px; width:420px" maxlength="512"',
+                                         'maxlength="512"',
                                          row_index);
         new_row += "</div>";
         new_row += "</div>";

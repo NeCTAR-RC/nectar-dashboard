@@ -14,20 +14,25 @@
         the managing organisation unit.
         <br/>
         <br/>
-
-        <div class="col-xs-3 col-sm-2">
-            {% include "rcallocation/field.html" with field=investigator_form.title %}
-        </div>
-        <div class="col-xs-3 col-sm-2">
-            {% include "rcallocation/field.html" with field=investigator_form.given_name %}
-        </div>
-        <div class="col-xs-3 col-sm-2">
-            {% include "rcallocation/field.html" with field=investigator_form.surname %}
-        </div>
-        <div class="col-md-12">
-            {% include "rcallocation/field.html" with field=investigator_form.email %}
-            {% include "rcallocation/field.html" with field=investigator_form.institution %}
-            {% include "rcallocation/field.html" with field=investigator_form.additional_researchers %}
+        <div class="row">
+            <div class="col-sm-4">
+                {% include "rcallocation/field.html" with field=investigator_form.title %}
+            </div>
+            <div class="col-sm-4">
+                {% include "rcallocation/field.html" with field=investigator_form.given_name %}
+            </div>
+            <div class="col-sm-4">
+                {% include "rcallocation/field.html" with field=investigator_form.surname %}
+            </div>
+            <div class="col-md-6">
+                {% include "rcallocation/field.html" with field=investigator_form.email %}
+            </div>
+            <div class="col-md-6">
+                {% include "rcallocation/field.html" with field=investigator_form.institution %}
+            </div>
+            <div class="col-md-12">
+                {% include "rcallocation/field.html" with field=investigator_form.additional_researchers %}
+            </div>
         </div>
     </div>
 </div>
