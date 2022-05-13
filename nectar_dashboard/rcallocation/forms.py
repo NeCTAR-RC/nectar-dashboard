@@ -412,6 +412,11 @@ class QuotaForm(BaseQuotaForm):
             if self.initial.get('requested_quota', 0) < self.resource.default:
                 self.initial['requested_quota'] = self.resource.default
 
+    def has_changed(self):
+        if self.resource and self.resource.default:
+            return True
+        return super().has_changed()
+
 
 class BaseQuotaGroupForm(forms.ModelForm):
 
