@@ -123,6 +123,27 @@ body {
     font-size: small;
 }
 
+.pending_warn_level_0 {
+    background-color: #008000 !important;
+}
+
+.pending_warn_level_1 {
+    background-color: #ffd700 !important;
+}
+
+.pending_warn_level_2 {
+    background-color: #ffa500 !important;
+}
+
+
+.pending_warn_level_3 {
+    background-color: #ff0000 !important;
+}
+
+.pending_warn_level_4 {
+    background-color: #800080 !important;
+}
+
 #panel-quota-rating .toggle.btn {
   visibility: hidden;
 }

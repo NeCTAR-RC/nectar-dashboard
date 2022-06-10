@@ -393,6 +393,15 @@ ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS = {
     'uom': ['melbourne'],
 }
 
+SITE_MEMBERS_MAPPING = {
+    'ardc': ['ardc.edu.au'],
+    'monash': ['monash.edu', 'rmit.edu.au'],
+    'qcif': ['uq.edu.au', 'qut.edu.au', 'griffith.edu.au',
+             'cqu.edu.au', 'usq.edu.au', 'usc.edu.au', 'jcu.edu.au',
+             'bond.edu.au', 'qcif.edu.au', 'csiro.au'],
+    'uom': ['unimelb.edu.au', 'florey.edu.au', 'csiro.au'],
+}
+
 # FoR code series allowed for new allocations and amendments.  The series
 # names are defined in forcodes.py file.
 ALLOCATION_FOR_CODE_SERIES = "ANZSRC_2020"

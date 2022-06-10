@@ -27,7 +27,7 @@ DURATION_CHOICES = dict(project_duration_choices.DURATION_CHOICE)
 ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GRANT_TYPES = dict(grant_type.GRANT_TYPES)
 GRANT_SUBTYPES = dict(grant_type.GRANT_SUBTYPES)
-ALL_SITES = ['uom', 'qcif', 'monash']
+ALL_SITES = ['uom', 'qcif', 'monash', 'ardc']
 
 for_code = fuzzy.FuzzyChoice(forcodes.FOR_CODES[forcodes.FOR_SERIES].keys())
 _1_year = datetime.date.today() + datetime.timedelta(days=365)

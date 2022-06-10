@@ -617,6 +617,23 @@ class AllocationRequest(models.Model):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
 
 
+class SiteManager(models.Manager):
+
+    def get_by_approver(self, username):
+        # Get the sites for an approver, logging the cases which
+        # require attention
+        try:
+            approver = Approver.objects.get(username=username)
+        except Approver.DoesNotExist:
+            LOG.warning("No Approver found for '%s'", username)
+            return []
+        sites = approver.sites.all()
+        if len(sites) == 0:
+            LOG.warning("Approver for '%s' has no associated sites",
+                        username)
+        return sites
+
+
 class Site(models.Model):
     """A Site represents site in the Nectar federation that the allocation
     system knows about.
@@ -625,6 +642,8 @@ class Site(models.Model):
     name = models.CharField(unique=True, max_length=32)
     display_name = models.CharField(max_length=64)
     enabled = models.BooleanField(default=True)
+
+    objects = SiteManager()
 
     def __str__(self):
         return self.display_name

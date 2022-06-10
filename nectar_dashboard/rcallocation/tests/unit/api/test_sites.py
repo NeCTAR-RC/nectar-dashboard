@@ -17,6 +17,7 @@ from rest_framework import status
 
 from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import common
+from nectar_dashboard.rcallocation.tests import factories
 
 from nectar_dashboard.rcallocation import models
 
@@ -33,12 +34,14 @@ class SiteTest(base.AllocationAPITest):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/rest_api/sites/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(3, len(response.data['results']))
+        self.assertEqual(len(factories.ALL_SITES),
+                         len(response.data['results']))
 
     def test_list_sites_unauthenticated(self):
         response = self.client.get('/rest_api/sites/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(3, len(response.data['results']))
+        self.assertEqual(len(factories.ALL_SITES),
+                         len(response.data['results']))
 
     def test_create_site_no_permission(self):
         self.client.force_authenticate(user=self.user)

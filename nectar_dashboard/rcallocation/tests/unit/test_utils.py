@@ -61,3 +61,28 @@ class UtilsTest(helpers.TestCase):
         self.assertFalse(utils.is_project_name_available('faKe-proJect'))
         self.assertFalse(utils.is_project_name_available('Fake_project1'))
         self.assertTrue(utils.is_project_name_available('Fake_project2'))
+
+    def test_get_member_map(self):
+        member_map = utils.get_member_map()
+        self.assertEqual(1, len(member_map['ardc.edu.au']))
+        self.assertEqual('ardc', member_map['ardc.edu.au'][0].name)
+        self.assertEqual(2, len(member_map['csiro.au']))
+
+    def test_sites_from_email(self):
+        self.assertEqual(1,
+                         len(utils.sites_from_email("ab.cd@ardc.edu.au")))
+        self.assertEqual('ardc',
+                         utils.sites_from_email("ab.cd@ardc.edu.au")[0].name)
+        self.assertEqual('uom',
+                         utils.sites_from_email(
+                             "ab.cd@student.unimelb.edu.au")[0].name)
+        self.assertEqual('uom',
+                         utils.sites_from_email(
+                             "ab.cd@exchange.unimelb.edu.au")[0].name)
+        self.assertEqual('qcif',
+                         utils.sites_from_email(
+                             "ab.cd@student.griffithuni.edu.au")[0].name)
+        self.assertEqual(2,
+                         len(utils.sites_from_email("ab.cd@csiro.au")))
+        self.assertEqual(0,
+                         len(utils.sites_from_email("ab.cd@gmail.com")))

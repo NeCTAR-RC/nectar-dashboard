@@ -484,7 +484,7 @@ class QuotaSanityChecksTest(helpers.TestCase):
         self.assertIsNone(checkers.flavor_check(checker))
 
 
-QS_LOG = 'nectar_dashboard.rcallocation.checkers.LOG'
+MODELS_LOG = 'nectar_dashboard.rcallocation.models.LOG'
 
 
 class QuotaSanityApproverChecksTest(helpers.TestCase):
@@ -503,7 +503,7 @@ class QuotaSanityApproverChecksTest(helpers.TestCase):
     def test_not_approver(self):
         quotas = [build_quota('volume', 'gigabytes', 1, 'QRIScloud')]
         checker = build_checker(quotas, approver="not_a_user")
-        with mock.patch(QS_LOG) as mock_log:
+        with mock.patch(MODELS_LOG) as mock_log:
             self.assertEqual(checkers.APPROVER_PROBLEM,
                              checkers.approver_checks(checker)[0])
             mock_log.warning.assert_called_once()
@@ -511,7 +511,7 @@ class QuotaSanityApproverChecksTest(helpers.TestCase):
     def test_no_approver_sites(self):
         quotas = [build_quota('volume', 'gigabytes', 1, 'QRIScloud')]
         checker = build_checker(quotas, approver="test_user3")
-        with mock.patch(QS_LOG) as mock_log:
+        with mock.patch(MODELS_LOG) as mock_log:
             self.assertEqual(checkers.APPROVER_PROBLEM,
                              checkers.approver_checks(checker)[0])
             mock_log.warning.assert_called_once()

@@ -252,17 +252,8 @@ def flavor_check(context):
 def approver_checks(context):
     if context.user is None or not context.approving:
         return None
-    username = context.user.username
-    try:
-        approver = models.Approver.objects.get(username=username)
-    except models.Approver.DoesNotExist:
-        LOG.warning("No Approver object found for '%s'", username)
-        return (APPROVER_PROBLEM,
-                'Problem with approver registration: contact Core Services')
-    sites = approver.sites.all()
+    sites = models.Site.objects.get_by_approver(context.user.username)
     if len(sites) == 0:
-        LOG.warning("Approver object for '%s' has no associated sites",
-                    username)
         return (APPROVER_PROBLEM,
                 'Problem with approver registration: contact Core Services')
 

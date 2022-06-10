@@ -23,6 +23,7 @@ from horizon.utils import memoized
 
 from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import utils
 
 
 @memoized.memoized
@@ -205,43 +206,10 @@ def apply_partitioned_quotas(allocation, allocation_summary, percentage):
     allocation_summary['budget_quota'] = budget_quota * fraction
 
 
-def strip_email_sub_domains(domain):
-    prefix = domain.split('.', 1)[0]
-    if prefix in ('my', 'ems', 'exchange', 'groupwise',
-                  'student', 'students', 'studentmail'):
-        _, _, domain = domain.partition('.')
-        if domain == 'griffithuni.edu.au':
-            return 'griffith.edu.au'
-        if domain == 'waimr.uwa.edu.au':
-            return 'uwa.edu.au'
-        if domain == 'uni.sydney.edu.au':
-            return 'sydney.edu.au'
-        if domain == 'usyd.edu.au':
-            return 'sydney.edu.au'
-        if domain == 'myune.edu.au':
-            return 'une.edu.au'
-        if domain == 'aucklanduni.ac.nz':
-            return 'auckland.ac.nz'
-        if domain == 'data61.csiro.au':
-            return 'csiro.au'
-    return domain
-
-
-def extract_email_domain(email_address):
-    _, _, domain = email_address.partition('@')
-    return domain
-
-
-def institution_from_email(contact_email):
-    email_domain = extract_email_domain(contact_email)
-    domain = strip_email_sub_domains(email_domain)
-    return domain
-
-
 def summary(allocation, code):
     allocation_summary = dict()
     allocation_summary['id'] = allocation.id
-    allocation_summary['institution'] = institution_from_email(
+    allocation_summary['institution'] = utils.institution_from_email(
         allocation.contact_email)
     allocation_summary['project_description'] = allocation.project_description
     allocation_summary['national'] = allocation.national
