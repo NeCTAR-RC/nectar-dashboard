@@ -28,10 +28,26 @@
   </div>
   {% endif %}
 </div>
+<div class="row">
+  <div class="col-md-6">
+    <pr/>
+    <br/>
+    <p><span class="label label-info">Note:</span>To start a conversation
+      with the user about their allocation request, first click "See Related
+      Tickets" to see Freshdesk tickets tagged with this allocation.  Next
+      choose one from the list, change its status to "Open", change its
+      group to "Allocations" and assign it to yourself.  When you finish
+      the conversation, please remember to "Resolve" the ticket in the
+      normal way.
+    </p>
+    <p>If the "See Related Tickets" page gets stuck with a "spinner", try
+      refreshing the page.  (We think it is a Freshdesk bug.)
+    </p>
+  </div>
+</div
 {% endblock %}
 
 {% block detail_actions %}
-<br>
 <div class="row">
   <div class="col-md-12">
   {% if allocation.can_approve_change %}
