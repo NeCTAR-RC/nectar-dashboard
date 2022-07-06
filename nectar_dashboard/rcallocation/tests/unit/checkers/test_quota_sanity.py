@@ -414,6 +414,41 @@ class QuotaSanityChecksTest(helpers.TestCase):
         self.assertEqual(checkers.CLUSTER_WITHOUT_INSTANCES,
                          checkers.magnum_instance_check(checker)[0])
 
+    def test_reservation_check(self):
+        quotas = [build_quota('nectar-reservation', 'days', 0),
+                  build_quota('nectar-reservation', 'reservations', 0)]
+        checker = build_checker(quotas)
+        self.assertFalse(checkers.reservation_check(checker))
+
+        quotas = [build_quota('nectar-reservation', 'days', 1),
+                  build_quota('nectar-reservation', 'reservations', 1)]
+        checker = build_checker(quotas)
+        self.assertFalse(checkers.reservation_check(checker))
+
+        quotas = [build_quota('nectar-reservation', 'days', 1),
+                  build_quota('nectar-reservation', 'reservations', 0)]
+        checker = build_checker(quotas)
+        self.assertEqual(checkers.ZERO_RESERVATIONS,
+                         checkers.reservation_check(checker)[0][0])
+
+        quotas = [build_quota('nectar-reservation', 'days', 0),
+                  build_quota('nectar-reservation', 'reservations', 1)]
+        checker = build_checker(quotas)
+        self.assertEqual(checkers.ZERO_DURATION,
+                         checkers.reservation_check(checker)[0][0])
+
+        quotas = [build_quota('nectar-reservation', 'days', 0),
+                  build_quota('nectar-reservation', 'reservations', 0),
+                  build_quota('nectar-reservation', 'flavor:GPU', 1)]
+        checker = build_checker(quotas)
+
+        self.assertEqual(2, len(checkers.reservation_check(checker)))
+        quotas = [build_quota('nectar-reservation', 'days', 0),
+                  build_quota('nectar-reservation', 'reservations', 0),
+                  build_quota('nectar-reservation', 'flavor:Huge RAM', 1)]
+        checker = build_checker(quotas)
+        self.assertEqual(2, len(checkers.reservation_check(checker)))
+
     def test_magnum_neutron_checks(self):
         quotas = [build_quota('container-infra', 'cluster', 0)]
         checker = build_checker(quotas)
