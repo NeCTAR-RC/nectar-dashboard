@@ -405,13 +405,13 @@ class QuotaSanityChecker(Checker):
         quotas = [q for q in self.all_quotas.values()
                   if q['name'] == quota_name and q['zone'] == zone]
         if len(quotas) >= 1:
-            return quotas[0]['value']
+            return quotas[0]['value'] or 0    # Normalize falsy to 0
         else:
             return 0
 
     def get_all_quotas(self, quota_name):
         return [q for q in self.all_quotas.values()
-                if q['name'] == quota_name and q['value'] > 0]
+                if q['name'] == quota_name and (q['value'] or 0) > 0]
 
 
 ADD_BUDGET = 'ADD_BUDGET'

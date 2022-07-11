@@ -380,6 +380,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+        approving = self.editor_attr == 'approver_email'
 
         if self.object:
             # Ensure old projects have to set an investigator and
@@ -413,7 +414,13 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         if self.object:
             nag_checker = checkers.NagChecker(
                 allocation=self.object, user=self.request.user)
-            kwargs['nags'] = nag_checker.do_checks()
+            nags = nag_checker.do_checks()
+            kwargs['nags'] = nags
+            if len(nags) > 0:
+                tags = [n[0] for n in nags]
+                person = 'approver' if approving else 'user'
+                LOG.info(f"Showing the {person} nags {tags} "
+                         f"for allocation '{self.object.project_name}'")
         else:
             kwargs['nags'] = []
         kwargs['for_series'] = forcodes.FOR_SERIES.replace('_', ' ')
@@ -422,6 +429,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        approving = self.editor_attr == 'approver_email'
 
         # Create / assemble the form and non-quota formsets.  Note that
         # form instantiation may modify the state of self.object; e.g.
@@ -449,13 +457,12 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         # Primary validation of quotas + gathering of the values
         # into a format that can be used for quota sanity checks.
         quota_valid = True
-        if not ignore_warnings:
-            sc_context = checkers.QuotaSanityChecker(
-                allocation=self.object,
-                form=form,
-                user=self.request.user,
-                approving=self.editor_attr == 'approver_email',
-                requested=self.ONLY_REQUESTABLE_RESOURCES)
+        sc_context = checkers.QuotaSanityChecker(
+            allocation=self.object,
+            form=form,
+            user=self.request.user,
+            approving=approving,
+            requested=self.ONLY_REQUESTABLE_RESOURCES)
 
         quota_formsets = self.get_quota_formsets()
         for service_type, form_tuple in quota_formsets:
@@ -482,17 +489,22 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         form_dict['quota_formsets'] = quota_formsets
 
         if valid:
-            if ignore_warnings:
-                return self.form_valid(**form_dict)
-
-            # Only do quota sanity checks if everything else about
-            # the form is valid.
             warnings = sc_context.do_checks()
             if len(warnings) == 0:
                 return self.form_valid(**form_dict)
             else:
-                form_dict['warnings'] = warnings
-                return self.form_invalid(**form_dict)
+                tags = [w[0] for w in warnings]
+                name = form.cleaned_data.get('project_name', '???')
+                person = 'approver' if approving else 'user'
+                if ignore_warnings:
+                    LOG.info(f"The {person} ignored warnings {tags} "
+                             f"for allocation '{name}'")
+                    return self.form_valid(**form_dict)
+                else:
+                    form_dict['warnings'] = warnings
+                    LOG.info(f"Showing the {person} warnings {tags} "
+                             f"for allocation '{name}'")
+                    return self.form_invalid(**form_dict)
         else:
             return self.form_invalid(**form_dict)
 
@@ -576,7 +588,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                     else:
                         zero_check = quota.quota
 
-                    if zero_check > 0:
+                    if (zero_check or 0) > 0:
                         quotas_to_save.append(quota)
                     else:
                         if quota.id:
@@ -618,6 +630,9 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         """If the form is invalid, re-render the context data with the
         data-filled forms and errors.
         """
+
+        for_series = forcodes.FOR_SERIES.replace('_', ' ')
         return self.render_to_response(
             self.get_context_data(form=form, warnings=warnings,
+                                  nags=[], for_series=for_series,
                                   is_invalid=True, **formsets))
