@@ -3,8 +3,8 @@ import json
 
 from horizon import views as horizon_views
 
+from nectar_dashboard.api import allocation as allocation_api
 from nectar_dashboard.api import usage
-from nectar_dashboard.rcallocation import models
 
 
 class IndexView(horizon_views.HorizonTemplateView):
@@ -15,21 +15,14 @@ class IndexView(horizon_views.HorizonTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        allocations = models.AllocationRequest.objects \
-            .filter(project_id=self.request.user.project_id) \
-            .filter(status=models.AllocationRequest.APPROVED)
+        allocation = allocation_api.get_current_allocation(self.request)
 
-        if allocations:
-            allocation = allocations[0]
-            context['allocation'] = allocations[0]
-        else:
+        if not allocation:
             # Should never get here due to test in allowed method of panel
             raise
-        resource = models.Resource.objects.get(quota_name='budget')
-        budget = models.Quota.objects.get(group__allocation=allocation,
-                                          resource=resource)
 
-        su_budget = budget.quota
+        context['allocation'] = allocation
+        su_budget = allocation_api.get_quota(self.request, 'rating.budget')
         context['su_budget'] = su_budget
         today = datetime.datetime.today()
 
