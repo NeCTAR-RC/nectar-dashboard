@@ -64,10 +64,22 @@ a:focus {
   &:focus-visible {
     outline: none !important;
   }
+  &.disabled,
+  &[disabled] {
+    background-color: #969696;
+    border-color: #969696;
+    &:hover {
+      background-color: #969696;
+      border-color: #969696;
+    }
+  }
 }
 
 .btn-link {
   text-decoration: none;
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .btn-group > .btn {

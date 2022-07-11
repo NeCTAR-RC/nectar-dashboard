@@ -25,8 +25,8 @@ $theme-colors: map-merge((
   "info":       $brand-info,
   "warning":    $brand-warning,
   "danger":     $brand-danger,
-  "light":      $gray-light,
-  "dark":       $gray-dark
+  "light":      $gray-lighter,
+  "dark":       $gray-darker
 ), $theme-colors);
 
 // Mixins
