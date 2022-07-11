@@ -28,17 +28,17 @@ from nectar_dashboard.rcallocation import utils
 
 @memoized.memoized
 def get_instances_resource_id():
-    return models.Resource.objects.get_by_path('compute.instances').id
+    return models.Resource.objects.get_by_codename('compute.instances').id
 
 
 @memoized.memoized
 def get_cores_resource_id():
-    return models.Resource.objects.get_by_path('compute.cores').id
+    return models.Resource.objects.get_by_codename('compute.cores').id
 
 
 @memoized.memoized
 def get_budget_resource_id():
-    return models.Resource.objects.get_by_path('rating.budget').id
+    return models.Resource.objects.get_by_codename('rating.budget').id
 
 
 class FOR2008ViewSet(viewsets.GenericViewSet):

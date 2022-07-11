@@ -714,9 +714,9 @@ class ServiceType(models.Model):
 
 class ResourceManager(models.Manager):
 
-    def get_by_path(self, path):
-        """Finds the Resource for a 'service_name.resource_name' path."""
-        parts = path.split(".")
+    def get_by_codename(self, codename):
+        """Finds the Resource for a 'service_name.resource_name' codename."""
+        parts = codename.split(".")
         assert len(parts) == 2, "Invalid resource path syntax"
         return self.get_queryset() \
                    .filter(quota_name=parts[1],
