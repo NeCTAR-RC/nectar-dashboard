@@ -20,7 +20,7 @@ def get_quota(request, resource_code):
     if allocation is None:
         return None
 
-    resource = models.Reseource.objects.get_by_codename(resource_code)
+    resource = models.Resource.objects.get_by_codename(resource_code)
     quota = models.Quota.objects.get(group__allocation=allocation,
                                      resource=resource)
 
