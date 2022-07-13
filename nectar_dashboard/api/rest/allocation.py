@@ -1,3 +1,4 @@
+import django.http
 from django.views import generic
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
@@ -17,7 +18,10 @@ class Quota(generic.View):
         """Get quota for a given resource
 
         """
-        return allocation.get_quota(request, resource_code)
+        quota = allocation.get_quota(request, resource_code)
+        if quota:
+            return quota
+        return django.http.HttpResponseNotFound('No Allocation')
 
 
 @urls.register
@@ -32,4 +36,7 @@ class Usage(generic.View):
         """Get su usage for an allocation
 
         """
-        return allocation.get_usage(request)
+        usage = allocation.get_usage(request)
+        if usage:
+            return usage
+        return django.http.HttpResponseNotFound('No Allocation')
