@@ -50,6 +50,15 @@ a:focus {
   outline-offset: 0;
 }
 
+input {
+  &:focus,
+  &.focus,
+  &:focus-visible {
+    outline: none !important;
+    outline-offset: 0 !important;
+  }
+}
+
 .btn {
   text-transform: uppercase;
   font-weight: 600;
@@ -309,6 +318,11 @@ a:focus {
       > a {
         padding-right: 10px;
         padding-left: 10px;
+      }
+      span.user-name {
+        @media(min-width: 992px) and (max-width: 1200px) {
+          display: none;
+        }
       }
     }
   }
