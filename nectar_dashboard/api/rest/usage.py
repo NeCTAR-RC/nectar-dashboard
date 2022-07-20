@@ -7,19 +7,44 @@ from nectar_dashboard.api import usage
 
 @urls.register
 class Summary(generic.View):
-    """API for load balancers.
+    """Cloudkitty summary
+
+    """
+    url_regex = r'nectar/usage/summary/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """List summary
+
+        The listing result is an object with property "items".
+        """
+        detailed = request.GET.get('detailed', False)
+        resource_type = request.GET.get('type', None)
+        filters = {}
+
+        if resource_type:
+            filters['type'] = resource_type
+
+        return usage.get_summary(request, filters=filters,
+                                 detailed=detailed)
+
+
+@urls.register
+class SummaryByType(generic.View):
+    """DEPRECATED: Cloudkitty summary for type by type
+
+    Use Summary /api/nectar/usage/summary/?type=instance instead
 
     """
     url_regex = r'nectar/usage/summary/(?P<resource_type>[^/]+)/$'
 
     @rest_utils.ajax()
     def get(self, request, resource_type):
-        """List load balancers for current project.
-
-        The listing result is an object with property "items".
+        """List summary with resource_type filter
         """
         detailed = request.GET.get('detailed', False)
-        return usage.get_summary(request, resource_type, detailed=detailed)
+        filters = {'type': resource_type}
+        return usage.get_summary(request, filters=filters, detailed=detailed)
 
 
 @urls.register

@@ -25,20 +25,25 @@ def get_begin_end(request):
     return begin, end
 
 
-def get_summary(request, resource_type, groupby=None, begin=None, end=None,
-                detailed=False):
+def get_summary(request, resource_type=None, groupby=None, begin=None,
+                end=None, detailed=False, filters={}):
+    """resource_type arg is deprecated, use filters['type']
+    """
     client = api.cloudkittyclient(request, version='2')
     if begin is None:
         begin, end = get_begin_end(request)
 
+    filters['project_id'] = request.user.project_id
+
     groupby = request.GET.get('groupby', groupby)
     kwargs = {'begin': begin,
               'end': end,
-              'filters': {'type': resource_type,
-                          'project_id': request.user.project_id},
+              'filters': filters,
               'response_format': 'object',
               'limit': 1000,
               }
+    if resource_type:
+        kwargs['filters']['type'] = resource_type
     if groupby:
         kwargs['groupby'] = groupby
     usage_data = client.summary.get_summary(**kwargs).get('results')
