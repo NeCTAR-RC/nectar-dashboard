@@ -50,6 +50,11 @@ a:focus {
   outline-offset: 0;
 }
 
+.alert-info a {
+  color: darken($brand-info, 20%);
+  text-decoration: underline;
+}
+
 input {
   &:focus,
   &.focus,

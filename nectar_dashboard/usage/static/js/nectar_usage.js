@@ -6,6 +6,10 @@ var usageTrend = (function() {
   var instance_table = {};
   var begin_date = "";
   var end_date = "";
+  var allocation_start = "";
+  var allocation_end = "";
+  var usage_budget = 0;
+  var usage_rate_guide = 0;
 
   function getInstanceData() {
     var api_url = "/api/nectar/usage/most-used/instance/?begin=" + begin_date + "&end=" + end_date;
@@ -53,6 +57,62 @@ var usageTrend = (function() {
     });
   }
 
+  /* Private function to get the project usage budget from api request */
+  function getUsageBudget() {
+    $.ajax({
+      url: "/api/nectar/allocation/quota/rating.budget/",
+      type: 'GET',
+      async: false,
+      success: function(data) {
+        if(data) {
+          //console.log("Got budget! " + data);
+          usage_budget = data;
+          return true;
+        }
+        return false;
+      },
+      error: function (xhr, ajaxOptions, thrownError){
+        console.error(url + " " + xhr.status + " " + thrownError);
+        return false;
+      }
+    });
+  }
+
+  /* Private function to get the project allocation period from api request */
+  function getAllocationPeriod() {
+    $.ajax({
+      url: "/api/nectar/allocation/usage/",
+      type: 'GET',
+      async: false,
+      success: function(data) {
+        if(data) {
+          //console.log("Got allocation period! ", data);
+          allocation_start = data[0].begin;
+          allocation_end = data[0].end;
+          return true;
+        }
+        return false;
+      },
+      error: function (xhr, ajaxOptions, thrownError){
+        console.error(url + " " + xhr.status + " " + thrownError);
+        return false;
+      }
+    });
+  }
+
+  function getAllocationUsage() {
+    $.when({
+      has_usage_budget: getUsageBudget(),
+      has_allocation: getAllocationPeriod()
+    })
+    .then(function(resp) {
+      if(usage_budget && usage_budget > 0) { // check if the budget exists and is more than 0
+        var length_of_allocation = moment(allocation_end).diff(moment(allocation_start), 'days')
+        usage_rate_guide = Math.round(usage_budget / length_of_allocation);
+      }
+    });
+  }
+
   /* Private function to format the instance pie chart data to expects chartjs format */
   function formatPieChartData(object_data) {
 
@@ -80,7 +140,6 @@ var usageTrend = (function() {
 
   /* Private function to format the trend line chart data to expects chartjs format */
   function formatLineChartData(object_data) {
-
     let new_format = {
       datasets: [{
         label: 'Service Unit Daily Usage',
@@ -113,7 +172,7 @@ var usageTrend = (function() {
   }
 
   function removeData(chart) {
-    chart.data.datasets.pop();
+    chart.data.datasets = [];
     chart.data.labels = [];
     chart.update();
   }
@@ -121,6 +180,26 @@ var usageTrend = (function() {
   function updateChart(chart, labels, dataset, count = null) {
     removeData(chart);
     addData(chart, labels, dataset, count);
+  }
+
+  function addGuideLine(){
+    var guide_data = {
+      label: 'Service Unit Daily Guide',
+      borderColor: 'rgb(150, 150, 150)',
+      borderDash: [10,5],
+      data: [
+        {
+          begin: moment.utc(begin_date).format(), //Format 2022-01-01T00:00:00+00:00
+          rate: usage_rate_guide
+        },
+        {
+          begin: moment.utc(end_date).format(),
+          rate: usage_rate_guide
+        },
+      ],
+    }
+    trend_chart.data.datasets.push(guide_data);
+    trend_chart.update();
   }
 
   function createTrendChart(trend_data) {
@@ -185,7 +264,7 @@ var usageTrend = (function() {
             display: true,
             text: 'There were ' + instance_total + ' instances running',
             font: {
-              size: "16px"
+              size: "14px"
             }
           },
           legend: {
@@ -270,14 +349,21 @@ var usageTrend = (function() {
         if(trend_chart instanceof Chart) {
           console.log("Updating trend chart...");
           const line_chart_data = formatLineChartData(data.data);
-          const new_dataset = line_chart_data.datasets[0];
+          const new_dataset = line_chart_data.datasets[0]; // Extract the second dataset from the new formatted data
           const new_labels = line_chart_data.labels;
           const su_total = data.sum;
           updateChart(trend_chart, new_labels, new_dataset);
+          if(usage_rate_guide) {
+            addGuideLine();
+          }
           updateTotal(su_total);
         }
         else {
+          getAllocationUsage();
           createTrendChart(data);
+          if(usage_rate_guide) {
+            addGuideLine();
+          }
         }
         $(".usage-error").hide();
         $(".usage-chart").show();
@@ -290,6 +376,7 @@ var usageTrend = (function() {
         }
       });
   }
+
 
   function updateInstanceTable(url) {
     instance_table.ajax.url(url).load();
@@ -350,6 +437,7 @@ var usageTrend = (function() {
     begin_date = begin;
     end_date = end;
 
+    //displayUsageComparison();
     displayUsageTable();
     displayTrendChart();
     displayInstanceChart();

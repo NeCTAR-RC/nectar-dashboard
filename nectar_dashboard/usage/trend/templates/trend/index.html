@@ -59,15 +59,16 @@
           <p>Each renewed or new allocation will have a Service Unit budget. This is the number of Service Units that can be used by the project for its allocation period; i.e. from the start date to the end date. Your allocation’s Service Unit budget is requested on the allocation request form, and is subject to review and approval by the allocation approvers. Next time you fill in the allocation request form, you need to estimate how many SUs you will require and use that as your requested budget. Please refer to the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units">Service Unit support page</a> for help on how to do this.</p>
         </div>
         <div class="panel-footer">
-	  <a href="{% url 'horizon:allocation:user_requests:index' %}" class="btn btn-primary btn-sm">My allocation requests</a>
+	        <a href="{% url 'horizon:allocation:user_requests:index' %}" class="btn btn-primary btn-sm">My allocation requests</a>
           <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units" class="btn btn-default btn-sm">Learn more about usage</a>
         </div>
       </div>
     </div>
     <div class="col-xs-12 col-sm-6 col-lg-6">
       <div class="panel panel-default shadow">
-        <div class="panel-heading">Usage by Instance</div>
+        <div class="panel-heading">Usage by Compute Service</div>
         <div class="panel-body">
+          <h4>Top Instance Usage</h4>
           <div class="alert alert-warning text-center usage-error">There is no usage data recorded for the selected date range because there weren't any instances running.</div>
           <div class="w-75 m-auto">
             <canvas class="usage-chart" id="instance_chart"></canvas>

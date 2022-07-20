@@ -170,11 +170,11 @@ $btn-danger-border:              $btn-danger-bg !default;
 //## Define colors for form feedback states and, by default, alerts.
 
 $state-success-text:             darken($brand-success, 20%) !default;
-$state-success-bg:               lighten($brand-success, 50%) !default;
+$state-success-bg:               lighten($brand-success, 55%) !default;
 $state-success-border:           $brand-success !default;
 
 $state-info-text:                darken($brand-info, 20%) !default;
-$state-info-bg:                  lighten($brand-info, 50%) !default;
+$state-info-bg:                  lighten($brand-info, 55%) !default;
 $state-info-border:              $brand-info !default;
 
 $state-warning-text:             darken($brand-warning, 25%) !default;
@@ -182,7 +182,7 @@ $state-warning-bg:               lighten($brand-warning, 45%) !default;
 $state-warning-border:           $brand-warning !default;
 
 $state-danger-text:              darken($brand-danger, 20%) !default;
-$state-danger-bg:                lighten($brand-danger, 50%) !default;
+$state-danger-bg:                lighten($brand-danger, 55%) !default;
 $state-danger-border:            $brand-danger !default;
 
 //== Forms
