@@ -102,6 +102,11 @@ input {
   }
 }
 
+.progress-bar > span {
+  font-weight: 700;
+  cursor: default;
+}
+
 .panel {
   .panel-heading {
     font-weight: bold;
