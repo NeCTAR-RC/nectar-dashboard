@@ -35,7 +35,7 @@ var usageTrend = (function() {
   }
 
   function getTrendData() {
-    var api_url = "/api/nectar/usage/summary/instance/?begin=" + begin_date + "&end=" + end_date + "&groupby=time-1d&detailed=True";
+    var api_url = "/api/nectar/usage/summary/?type=instance&begin=" + begin_date + "&end=" + end_date + "&groupby=time-1d&detailed=True";
 
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -474,7 +474,7 @@ var usageOverview = (function() {
   }
 
   function getUsageData() {
-    var api_url = "/api/nectar/usage/summary/instance/?begin=" + begin_date + "&end=" + end_date + "&groupby=time-1d&detailed=True";
+    var api_url = "/api/nectar/usage/summary/?type=instance&begin=" + begin_date + "&end=" + end_date + "&groupby=time-1d&detailed=True";
 
     return new Promise((resolve, reject) => {
       $.ajax({
