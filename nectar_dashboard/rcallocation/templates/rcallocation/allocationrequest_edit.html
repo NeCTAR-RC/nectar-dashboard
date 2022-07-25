@@ -209,11 +209,12 @@
               <label>{{ field.label }}</label>
             {% endif %}
             {% if field.errors %}
-            <div class="form-group has-error">
+              <div class="form-group has-error">
               {{ field }}
               {% for error in field.errors %}
                 <span class="help-block">{{ error }}</span>
               {% endfor %}
+              </div>
             {% else %}
               {{ field }}
             {% endif %}
