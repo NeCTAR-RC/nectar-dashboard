@@ -8,6 +8,16 @@ from nectar_dashboard.rcallocation import tables
 from nectar_dashboard.rcallocation import utils
 
 
+DANGER = 'Danger'
+ARCHIVED = 'Archived'
+STOPPED = 'Stopped'
+EXPIRED = 'Expired'
+OVERDUE = 'Overdue'
+WARNING = 'Warning'
+ATTENTION = 'Attention'
+NEW = 'New'
+
+
 @memoized.memoized
 def get_ardc_site():
     return models.Site.objects.get(name='ardc')
@@ -20,13 +30,13 @@ def _dummy(dummy):
 def get_highlight_attribute(data):
     if data[0] == '(':
         return {}
-    if data == 'Danger':
+    if data == DANGER:
         css_class = 'pending_warn_level_4'
-    elif data in ('Stopped', 'Archived', 'Expired', 'Overdue'):
+    elif data in (STOPPED, ARCHIVED, EXPIRED, OVERDUE):
         css_class = 'pending_warn_level_3'
-    elif data == 'Warning':
+    elif data == WARNING:
         css_class = 'pending_warn_level_2'
-    elif data == 'Attention':
+    elif data == OVERDUE:
         css_class = 'pending_warn_level_1'
     else:
         css_class = 'pending_warn_level_0'
@@ -53,24 +63,24 @@ class UrgencyColumn(horizon_tables.Column):
             # of history records.
             if mod_date + datetime.timedelta(days=30 * 5) < today:
                 # At risk of automatic decline, restarting expiry
-                urgency = "Danger"
+                urgency = DANGER
             elif allocation.end_date + datetime.timedelta(days=28) < today:
-                urgency = "Archived"
+                urgency = ARCHIVED
             elif allocation.end_date + datetime.timedelta(days=14) < today:
-                urgency = "Stopped"
+                urgency = STOPPED
             else:
-                urgency = "Expiring"
+                urgency = EXPIRED
         elif mod_date + datetime.timedelta(days=21) < today:
             # Approval SLA is 2 to 3 weeks.  Past 3 weeks
-            urgency = "Overdue"
+            urgency = OVERDUE
         elif mod_date + datetime.timedelta(days=14) < today:
             # Approval SLA is 2 to 3 weeks.  In that range
-            urgency = "Warning"
+            urgency = WARNING
         elif mod_date + datetime.timedelta(days=7) < today:
             # Getting warm ...
-            urgency = "Attention"
+            urgency = ATTENTION
         else:
-            urgency = "New"
+            urgency = NEW
         if urgency:
             # Determine (heuristically) if this request is relevant
             # to the approver.  Did their site approve it last time?
