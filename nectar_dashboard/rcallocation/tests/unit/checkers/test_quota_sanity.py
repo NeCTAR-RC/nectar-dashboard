@@ -416,35 +416,35 @@ class QuotaSanityChecksTest(helpers.TestCase):
 
     def test_reservation_check(self):
         quotas = [build_quota('nectar-reservation', 'days', 0),
-                  build_quota('nectar-reservation', 'reservations', 0)]
+                  build_quota('nectar-reservation', 'reservation', 0)]
         checker = build_checker(quotas)
         self.assertFalse(checkers.reservation_check(checker))
 
         quotas = [build_quota('nectar-reservation', 'days', 1),
-                  build_quota('nectar-reservation', 'reservations', 1)]
+                  build_quota('nectar-reservation', 'reservation', 1)]
         checker = build_checker(quotas)
         self.assertFalse(checkers.reservation_check(checker))
 
         quotas = [build_quota('nectar-reservation', 'days', 1),
-                  build_quota('nectar-reservation', 'reservations', 0)]
+                  build_quota('nectar-reservation', 'reservation', 0)]
         checker = build_checker(quotas)
         self.assertEqual(checkers.ZERO_RESERVATIONS,
                          checkers.reservation_check(checker)[0][0])
 
         quotas = [build_quota('nectar-reservation', 'days', 0),
-                  build_quota('nectar-reservation', 'reservations', 1)]
+                  build_quota('nectar-reservation', 'reservation', 1)]
         checker = build_checker(quotas)
         self.assertEqual(checkers.ZERO_DURATION,
                          checkers.reservation_check(checker)[0][0])
 
         quotas = [build_quota('nectar-reservation', 'days', 0),
-                  build_quota('nectar-reservation', 'reservations', 0),
+                  build_quota('nectar-reservation', 'reservation', 0),
                   build_quota('nectar-reservation', 'flavor:GPU', 1)]
         checker = build_checker(quotas)
 
         self.assertEqual(2, len(checkers.reservation_check(checker)))
         quotas = [build_quota('nectar-reservation', 'days', 0),
-                  build_quota('nectar-reservation', 'reservations', 0),
+                  build_quota('nectar-reservation', 'reservation', 0),
                   build_quota('nectar-reservation', 'flavor:Huge RAM', 1)]
         checker = build_checker(quotas)
         self.assertEqual(2, len(checkers.reservation_check(checker)))

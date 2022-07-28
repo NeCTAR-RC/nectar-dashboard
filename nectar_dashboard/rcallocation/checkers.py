@@ -253,7 +253,7 @@ def flavor_check(context):
 
 def reservation_check(context):
     days = context.get_quota('nectar-reservation.days')
-    reservations = context.get_quota('nectar-reservation.reservations')
+    reservations = context.get_quota('nectar-reservation.reservation')
     gpu = context.get_quota('nectar-reservation.flavor:GPU')
     huge = context.get_quota('nectar-reservation.flavor:Huge RAM')
     if not reservations and not days and not gpu and not huge:
