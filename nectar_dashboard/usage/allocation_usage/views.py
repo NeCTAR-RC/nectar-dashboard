@@ -34,8 +34,8 @@ class IndexView(horizon_views.HorizonTemplateView):
 
         begin = allocation.start_date.strftime('%Y-%m-%d')
         end = allocation.end_date.strftime('%Y-%m-%d')
-        usage_data = usage.get_summary(self.request, resource_type='instance',
-                                       groupby='time-1d', begin=begin, end=end)
+        usage_data = usage.get_summary(self.request, groupby='time-1d',
+                                       begin=begin, end=end)
 
         cumulative = []
         total_rate = 0

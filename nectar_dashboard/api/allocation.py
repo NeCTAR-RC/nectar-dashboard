@@ -36,7 +36,6 @@ def get_usage(request):
 
     begin = allocation.start_date.strftime('%Y-%m-%d')
     end = allocation.end_date.strftime('%Y-%m-%d')
-    usage_data = usage.get_summary(request, resource_type='instance',
-                                   begin=begin, end=end)
+    usage_data = usage.get_summary(request, begin=begin, end=end)
 
     return usage_data
