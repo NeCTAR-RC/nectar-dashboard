@@ -55,6 +55,8 @@ APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 NO_VALID_GRANTS = 'NO_VALID_GRANTS'
 NO_BUDGET = 'NO_BUDGET'
+ZERO_RESERVATIONS = 'ZERO_RESERVATIONS'
+ZERO_DURATION = 'ZERO_DURATION'
 REENTER_FOR_CODES = 'REENTER_FOR_CODES'
 
 
@@ -249,6 +251,24 @@ def flavor_check(context):
     return None
 
 
+def reservation_check(context):
+    days = context.get_quota('nectar-reservation.days')
+    reservations = context.get_quota('nectar-reservation.reservations')
+    gpu = context.get_quota('nectar-reservation.flavor:GPU')
+    huge = context.get_quota('nectar-reservation.flavor:Huge RAM')
+    if not reservations and not days and not gpu and not huge:
+        return None
+
+    res = []
+    if days == 0:
+        res.append((ZERO_DURATION,
+                    'The combined reservation duration should be > 0'))
+    if reservations == 0:
+        res.append((ZERO_RESERVATIONS,
+                    'The number of reservations should be > 0'))
+    return res
+
+
 def approver_checks(context):
     if context.user is None or not context.approving:
         return None
@@ -311,6 +331,7 @@ STD_CHECKS = [no_budget_check,
               flavor_check,
               approver_checks,
               grant_checks,
+              reservation_check,
 ]
 
 
