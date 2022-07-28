@@ -185,6 +185,23 @@ $state-danger-text:              darken($brand-danger, 20%) !default;
 $state-danger-bg:                lighten($brand-danger, 55%) !default;
 $state-danger-border:            $brand-danger !default;
 
+//== Tooltips
+//
+//##
+
+//** Tooltip max width
+$tooltip-max-width:           200px !default;
+//** Tooltip text color
+$tooltip-color:               #fff !default;
+//** Tooltip background color
+$tooltip-bg:                  #000 !default;
+$tooltip-opacity:             .8 !default;
+
+//** Tooltip arrow width
+$tooltip-arrow-width:         5px !default;
+//** Tooltip arrow color
+$tooltip-arrow-color:         $tooltip-bg !default;
+
 //== Forms
 //
 //##

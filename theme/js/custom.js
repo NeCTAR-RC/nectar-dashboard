@@ -8,4 +8,6 @@ $(document).ready(function() {
   $('.dropdown').on('hide.bs.dropdown', function() {
     $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
   });
+  // Activate Bootstrap 3 tooltips
+  $('[data-toggle="tooltip"]').tooltip();
 });
