@@ -78,6 +78,27 @@ var usageTrend = (function() {
     });
   }
 
+  /* Private function to get the project usage budget from api request */
+  function getUsageByService() {
+    $.ajax({
+      url: "/api/nectar/usage/summary/?groupby=type&begin=" + begin_date + "&end=" + end_date,
+      type: 'GET',
+      async: true,
+      success: function(data) {
+        if(data) {
+          console.log("Got service usage! ", data);
+          showServiceUsage(data);
+          return true;
+        }
+        return false;
+      },
+      error: function (xhr, ajaxOptions, thrownError){
+        console.error(url + " " + xhr.status + " " + thrownError);
+        return false;
+      }
+    });
+  }
+
   /* Private function to get the project allocation period from api request */
   function getAllocationPeriod() {
     $.ajax({
@@ -207,6 +228,7 @@ var usageTrend = (function() {
     const chart_data = formatLineChartData(trend_data.data);
     const su_total = trend_data.sum;
     updateTotal(su_total);
+    console.log(chart_data);
 
     const chart_config = {
       type: 'line',
@@ -238,8 +260,8 @@ var usageTrend = (function() {
         parsing: {
           xAxisKey: 'begin',
           yAxisKey: 'rate'
-        }
-      }
+        },
+      },
     };
 
     // Display the chart
@@ -431,6 +453,24 @@ var usageTrend = (function() {
     }
   }
 
+  function showServiceUsage(object_arr) {
+    let sum = 0;
+    const colours = ["#00A2C4", "#E51875", "#F8B20E", "#8E489B", "#969696", "#666666"];
+    object_arr.forEach(obj => {
+      sum += Math.floor(obj.rate);
+    });
+    object_arr.forEach((obj, i) => {
+      var service_percerntage = (Math.floor(obj.rate) * 100 / sum).toFixed(2);
+      var service_rate = (obj.rate).toFixed(2);
+      var progress_html = `<div id="${obj.type}_progressbar" class="progress-bar progress-bar-warning" role="progressbar" title="${service_rate} SU" data-toggle="tooltip" aria-valuenow="${service_percerntage}" aria-valuemin="0" aria-valuemax="100" style="width: ${service_percerntage}%; background-color: ${colours[i]}">
+              <span class="percentage-used">${service_percerntage}%</span>
+            </div>`;
+      $("#service_comparison").append(progress_html);
+      $("#" + obj.type + "_progressbar").tooltip();
+      $("#service_legend").append('<span class="fa fa-square" style="color:' + colours[i] + '"></span> ' + obj.type + 's ');
+    });
+  }
+
   /* Public function to get data and display charts for date range */
   usage.showDataWithRange = function(begin, end) {
 
@@ -441,6 +481,7 @@ var usageTrend = (function() {
     displayUsageTable();
     displayTrendChart();
     displayInstanceChart();
+    getUsageByService();
   }
   // Return public functions
   return usage;
