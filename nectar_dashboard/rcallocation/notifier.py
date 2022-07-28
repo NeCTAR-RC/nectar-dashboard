@@ -36,7 +36,7 @@ class NotifierBase(object):
 class SMTPNotifier(NotifierBase):
     def __init__(self, allocation):
         super().__init__(allocation)
-        self.cc_emails = settings.ALLOCATION_EMAIL_RECIPIENTS
+        self.cc_emails = settings.ALLOCATION_EMAIL_CC_RECIPIENTS
         self.bcc_emails = settings.ALLOCATION_EMAIL_BCC_RECIPIENTS
         self.from_email = settings.ALLOCATION_EMAIL_FROM
         self.reply_to = [settings.ALLOCATION_EMAIL_REPLY_TO]
@@ -61,7 +61,7 @@ class FreshdeskNotifier(NotifierBase):
         self.email_config_id = int(settings.FRESHDESK_EMAIL_CONFIG_ID)
         self.allocation = allocation
         self.api = API(settings.FRESHDESK_DOMAIN, settings.FRESHDESK_KEY)
-        self.cc_emails = settings.ALLOCATION_EMAIL_RECIPIENTS
+        self.cc_emails = settings.ALLOCATION_EMAIL_CC_RECIPIENTS
         self.bcc_emails = settings.ALLOCATION_EMAIL_BCC_RECIPIENTS
 
     def send_email(self, email, subject, body) -> str:

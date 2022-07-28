@@ -356,7 +356,7 @@ FRESHDESK_EMAIL_CONFIG_ID = '123'
 
 # These are extra addressees (CC and BCC) for notification emails.
 # They should are iterables
-ALLOCATION_EMAIL_RECIPIENTS = ("someone@gmail.com",)
+ALLOCATION_EMAIL_CC_RECIPIENTS = ("someone@example.com",)
 ALLOCATION_EMAIL_BCC_RECIPIENTS = ()
 
 # Additional parameters for SMTP-based email envelopes

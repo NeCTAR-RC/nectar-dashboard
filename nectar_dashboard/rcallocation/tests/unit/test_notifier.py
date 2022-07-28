@@ -1,11 +1,12 @@
 from unittest import mock
 
+from django.conf import settings
 from openstack_dashboard.test import helpers
 
+from nectar_dashboard.rcallocation import notifier
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 
-from nectar_dashboard.rcallocation import notifier
 
 FAKE_FD_API = mock.MagicMock()
 FAKE_FD_API_CLASS = mock.MagicMock(return_value=FAKE_FD_API)
@@ -40,7 +41,7 @@ class NotifierTests(helpers.TestCase):
         FAKE_SETTINGS = FakeSettings(
             ALLOCATION_EMAIL_FROM="someone@somewhere",
             ALLOCATION_EMAIL_REPLY_TO=("noone@somewhere",),
-            ALLOCATION_EMAIL_RECIPIENTS=[],
+            ALLOCATION_EMAIL_CC_RECIPIENTS=[],
             ALLOCATION_EMAIL_BCC_RECIPIENTS=[])
         with mock.patch('nectar_dashboard.rcallocation.notifier.settings',
                          new=FAKE_SETTINGS):
@@ -51,7 +52,7 @@ class NotifierTests(helpers.TestCase):
             ALLOCATION_NOTIFIER='smtp',
             ALLOCATION_EMAIL_FROM="someone@somewhere",
             ALLOCATION_EMAIL_REPLY_TO=("noone@somewhere",),
-            ALLOCATION_EMAIL_RECIPIENTS=[],
+            ALLOCATION_EMAIL_CC_RECIPIENTS=[],
             ALLOCATION_EMAIL_BCC_RECIPIENTS=[])
         with mock.patch('nectar_dashboard.rcallocation.notifier.settings',
                          new=FAKE_SETTINGS):
@@ -64,7 +65,7 @@ class NotifierTests(helpers.TestCase):
             FRESHDESK_EMAIL_CONFIG_ID='3',
             FRESHDESK_DOMAIN='dhd@somewhere',
             FRESHDESK_KEY='secret',
-            ALLOCATION_EMAIL_RECIPIENTS=[],
+            ALLOCATION_EMAIL_CC_RECIPIENTS=[],
             ALLOCATION_EMAIL_BCC_RECIPIENTS=[])
         with mock.patch('nectar_dashboard.rcallocation.notifier.settings',
                          new=FAKE_SETTINGS):
@@ -86,7 +87,7 @@ class NotifierTests(helpers.TestCase):
         self.assertEqual(FAKE_FD_API, n.api)
         self.assertEqual(self.allocation, n.allocation)
         self.assertEqual(1, n.group_id)
-        self.assertEqual(('someone@gmail.com', ), n.cc_emails)
+        self.assertEqual(settings.ALLOCATION_EMAIL_CC_RECIPIENTS, n.cc_emails)
         self.assertEqual((), n.bcc_emails)
         self.assertEqual(123, n.email_config_id)
 
@@ -96,7 +97,7 @@ class NotifierTests(helpers.TestCase):
         self.assertEqual(self.allocation, n.allocation)
         self.assertEqual('allocations@nectar.org.au', n.from_email)
         self.assertEqual(['noreply@nectar.org.au'], n.reply_to)
-        self.assertEqual(('someone@gmail.com', ), n.cc_emails)
+        self.assertEqual(settings.ALLOCATION_EMAIL_CC_RECIPIENTS, n.cc_emails)
         self.assertEqual((), n.bcc_emails)
 
     def test_send_email_freshdesk(self):
@@ -108,7 +109,8 @@ class NotifierTests(helpers.TestCase):
         FAKE_FD_API.tickets.create_outbound_email.assert_called_once_with(
             subject='testing', description='123',
             email='someone@example.com', email_config_id=123,
-            group_id=1, cc_emails=('someone@gmail.com', ), bcc_emails=(),
+            group_id=1, cc_emails=settings.ALLOCATION_EMAIL_CC_RECIPIENTS,
+            bcc_emails=(),
             tags=[f"allocation-{self.allocation.id}"])
 
     def test_send_email_smtp(self):
@@ -119,6 +121,6 @@ class NotifierTests(helpers.TestCase):
         FAKE_EMAIL_MESSAGE_CLASS.assert_called_once_with(
             to=('someone@example.com',),
             from_email='allocations@nectar.org.au',
-            cc=('someone@gmail.com',), bcc=(),
+            cc=settings.ALLOCATION_EMAIL_CC_RECIPIENTS, bcc=(),
             reply_to=['noreply@nectar.org.au'],
             subject='testing', body='123')
