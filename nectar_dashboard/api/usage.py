@@ -33,8 +33,6 @@ def get_summary(request, resource_type=None, groupby=None, begin=None,
     if begin is None:
         begin, end = get_begin_end(request)
 
-    filters['project_id'] = request.user.project_id
-
     groupby = request.GET.get('groupby', groupby)
     kwargs = {'begin': begin,
               'end': end,
@@ -64,8 +62,8 @@ def most_used_resources(request, resource_type, begin=None, end=None):
     if resource_type == 'instance':
         data = instance_data(request)
     else:
-        data = get_summary(request, resource_type, groupby='id',
-                           begin=begin, end=end)
+        data = get_summary(request, filters={'type': resource_type},
+                           groupby='id', begin=begin, end=end)
 
     data = sorted(data, key=itemgetter('rate'), reverse=True)
     count = 0
@@ -100,7 +98,7 @@ def instance_data(request):
     )
     gnocchi_map = {i.get('id'): i for i in g_instances}
 
-    instance_data = get_summary(request, resource_type='instance',
+    instance_data = get_summary(request, filters={'type': 'instance'},
                                 groupby='id')
 
     instance_attrs = ['display_name', 'availability_zone', 'flavor_name',

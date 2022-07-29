@@ -43,7 +43,7 @@ class ApiTest(helpers.APIMockTestCase):
 
         client.summary.get_summary.assert_called_once_with(
             begin='2021-12-16', end='2022-03-16',
-            filters={'type': 'instance', 'project_id': '1'},
+            filters={'type': 'instance'},
             response_format='object', limit=1000)
 
         self.assertEqual(
@@ -59,7 +59,7 @@ class ApiTest(helpers.APIMockTestCase):
 
         client.summary.get_summary.assert_called_once_with(
             begin='2000-01-01', end='2000-02-01',
-            filters={'type': 'instance', 'project_id': '1'},
+            filters={'type': 'instance'},
             response_format='object', limit=1000)
 
         self.assertEqual(
@@ -78,7 +78,7 @@ class ApiTest(helpers.APIMockTestCase):
 
         client.summary.get_summary.assert_called_once_with(
             begin='2021-12-16', end='2022-03-16',
-            filters={'type': 'instance', 'project_id': '1'},
+            filters={'type': 'instance'},
             response_format='object', limit=1000)
 
         expected = {'sum': 21.96, 'data': self.fake_results}

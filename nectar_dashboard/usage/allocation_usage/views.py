@@ -35,7 +35,7 @@ class IndexView(horizon_views.HorizonTemplateView):
         begin = allocation.start_date.strftime('%Y-%m-%d')
         end = allocation.end_date.strftime('%Y-%m-%d')
         usage_data = usage.get_summary(self.request, groupby='time-1d',
-                                       begin=begin, end=end)
+                                       begin=begin, end=end, filters={})
 
         cumulative = []
         total_rate = 0
@@ -57,7 +57,8 @@ class IndexView(horizon_views.HorizonTemplateView):
                           {'begin': end, 'rate': su_budget}]
         context['on_target_data'] = on_target_data
 
-        summary_data = usage.get_summary(self.request, begin=begin, end=end)
+        summary_data = usage.get_summary(self.request, begin=begin, end=end,
+                                         filters={})
         if summary_data:
             context['su_used'] = summary_data[0].get('rate')
             context['total_hours'] = summary_data[0].get('qty')
