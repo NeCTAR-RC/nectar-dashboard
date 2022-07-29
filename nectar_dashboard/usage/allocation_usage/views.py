@@ -57,8 +57,7 @@ class IndexView(horizon_views.HorizonTemplateView):
                           {'begin': end, 'rate': su_budget}]
         context['on_target_data'] = on_target_data
 
-        summary_data = usage.get_summary(
-            self.request, resource_type='instance', begin=begin, end=end)
+        summary_data = usage.get_summary(self.request, begin=begin, end=end)
         if summary_data:
             context['su_used'] = summary_data[0].get('rate')
             context['total_hours'] = summary_data[0].get('qty')
