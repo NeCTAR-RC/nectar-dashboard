@@ -350,7 +350,7 @@ input {
 /*
  * Sidebar
  */
-#sidebar {
+ #sidebar {
   font-weight: bold;
   width: 240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
   @media (max-width: 991px) {
@@ -378,6 +378,9 @@ input {
     .list-group-item.active:hover,
     .list-group-item.active:focus {
       color: #000;
+      > .badge {
+        color: #fff;
+      }
     }
   }
   .nav > li > a {
@@ -404,6 +407,9 @@ input {
       content: "";
       display: inline-block;
       width: 30px;
+    }
+    &.list-group-item > .badge {
+      float: none;
     }
   }
 }
