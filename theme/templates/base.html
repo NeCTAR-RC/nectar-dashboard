@@ -51,7 +51,6 @@
                     {% breadcrumb_nav %}
                   {% endblock %}
                 </div>
-
                 {% block page_header %}
                   {% include "horizon/common/_page_header.html" with title=page_title %}
                 {% endblock %}
@@ -70,6 +69,19 @@
     {% block js %}
       {% include "horizon/_scripts.html" %}
     {% endblock %}
+    <script>
+      window.fwSettings={
+      'widget_id':6000000536
+      };
+      !function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}() 
+    </script>
+    <script type='text/javascript' src='https://widget.freshworks.com/widgets/6000000536.js' async defer></script>
+    <script type='text/javascript'>
+      var user_email = "{{ request.user.username }}";
+      FreshworksWidget('prefill', 'ticketForm', {
+        email: user_email,
+      });
+    </script>
     <script type="text/javascript" src="{% themable_asset 'js/custom.js' %}"></script>
     <div id="modal_wrapper"></div>
   </body>

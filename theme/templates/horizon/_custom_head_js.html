@@ -1,23 +1,6 @@
-<script type="text/javascript" src="https://s3.amazonaws.com/assets.freshdesk.com/widget/freshwidget.js"></script>
-<script type="text/javascript">
-	FreshWidget.init("", {"queryString": "&widgetType=popup&helpdesk_ticket[requester]={{request.user.username}}", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "", "buttonColor": "white", "buttonBg": "#FFFFFF", "alignment": "2", "offset": "-1000px", "formHeight": "500px", "url": "https://support.nectar.org.au"} );
-</script>
-
 <script>
   // waitUntilExists from https://gist.github.com/PizzaBrandon/5709010
   (function(e,f){var b={},g=function(a){b[a]&&(f.clearInterval(b[a]),b[a]=null)};e.fn.waitUntilExists=function(a,h,j){var c=this.selector,d=e(c),k=d.not(function(){return e(this).data("waitUntilExists.found")});"remove"===a?g(c):(k.each(a).data("waitUntilExists.found",!0),h&&d.length?g(c):j||(b[c]=f.setInterval(function(){d.waitUntilExists(a,h,!0)},100)));return d}})(jQuery,window);
-
-  $(document).ready(function() {
-    // Assign on-click to support ticket header button
-    $('.launch-support-ticket').on('click', function(ev){
-      ev.preventDefault();
-      window.FreshWidget.show();
-    });
-    // Remove old button
-    $("#freshwidget-button").waitUntilExists(function(){
-       $("#freshwidget-button").remove();
-    });
-  });
 </script>
 
 {% if HORIZON_CONFIG.google_analytics_key %}
