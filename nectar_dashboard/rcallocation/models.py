@@ -411,6 +411,10 @@ class AllocationRequest(models.Model):
 
     class Meta:
         ordering = ['-modified_time']
+        indexes = [
+            models.Index(fields=['project_id']),
+            models.Index(fields=['status']),
+        ]
 
     @property
     def allocation_home(self):
