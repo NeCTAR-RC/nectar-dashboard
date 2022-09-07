@@ -1,16 +1,15 @@
-{% extends "rcallocation/email_alert.html" %}
+{% extends "rcallocation/email_alert_base.html" %}
 {% block preamble %}
 <p>Thank you for submitting your allocation request for the {{ allocation.project_description }} project.
 </p>
-</br/>
+<br>
 <p>Your request has been reviewed, and in this case your request has been declined for the following reason:<p>
 <blockquote>
 {{ allocation.status_explanation }}
 </blockquote>
-<p>If indicated, please use 
-<a href="{{ base_url }}{% url 'horizon:allocation:user_requests:edit_request' pk=allocation.pk %}">this link</a> to revise the request in the Nectar Dashboard. 
+<p>If indicated, please use
+  <a href="{{ base_url }}{% url 'horizon:allocation:user_requests:edit_request' pk=allocation.pk %}">this link</a>
+  to revise the request in the Nectar Dashboard.
 </p>
-</br>
-{% include "rcallocation/email_more_info.html" %}
+<br>
 {% endblock %}
-{% block allocation_details %}{% endblock %}

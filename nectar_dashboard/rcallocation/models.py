@@ -550,10 +550,7 @@ class AllocationRequest(models.Model):
 
     def send_notifications(self, extra_context={}):
         if self.status in [self.NEW, self.SUBMITTED, self.UPDATE_PENDING]:
-            if self.status == self.NEW:
-                template = 'alert_acknowledge'
-            else:
-                template = 'alert'
+            template = 'alert_acknowledge'
             self.send_email_notification(template, extra_context=extra_context)
             if self.status == self.NEW:
                 # N is a special state showing that the

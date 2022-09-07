@@ -1,5 +1,10 @@
+{% block subject %}Allocation request [{{ allocation.project_description }}]{% endblock %}
+
+<html>
+<body>
+{% block preamble %}{% endblock %}
 <p>If you have further questions you may reply to this email.</p>
-<br/>
+<br>
 <p>More information on the allocation request process is available from the following pages:</p>
 <ul>
   <li>
@@ -12,3 +17,14 @@
     <a href="https://support.ehelp.edu.au/support/solutions/articles/6000191233">Research Cloud National Allocation Scheme (RC-NAS) Policy</a>
   </li>
 </ul>
+{% block summary %}{% endblock %}
+{% block allocation_details %}{% endblock %}
+<br>
+<br>
+<p>
+  Kind Regards,
+  <br>
+  The Nectar Research Cloud Team.
+</p>
+</body>
+</html>
