@@ -11,8 +11,12 @@
 #   under the License.
 #
 
-import datetime
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
 from unittest import mock
+
+from django.utils import timezone
 
 from rest_framework import status
 
@@ -284,8 +288,8 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_update_allocation_dates(self):
         self.client.force_authenticate(user=self.admin_user)
-        start_date = datetime.date(2019, 4, 2)
-        end_date = datetime.date(2019, 5, 2)
+        start_date = date(2019, 4, 2)
+        end_date = date(2019, 5, 2)
         response = self.client.patch(
             '/rest_api/allocations/1/',
             {'start_date': start_date.strftime('%Y-%m-%d'),
@@ -298,8 +302,8 @@ class AllocationTests(base.AllocationAPITest):
 
     def test_update_allocation_dates_user(self):
         self.client.force_authenticate(user=self.user)
-        start_date = datetime.date(2019, 4, 3)
-        end_date = datetime.date(2019, 5, 3)
+        start_date = date(2019, 4, 3)
+        end_date = date(2019, 5, 3)
         response = self.client.patch(
             '/rest_api/allocations/1/',
             {'start_date': start_date.strftime('%Y-%m-%d'),
@@ -403,6 +407,36 @@ class AllocationTests(base.AllocationAPITest):
                                      {'notes': 'test-notes'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual('test-notes', response.data['notes'])
+
+    def test_approver_info(self):
+        self.client.force_authenticate(user=self.admin_user)
+        allocation = factories.AllocationFactory.create(
+            status='A', contact_email='other@example.com',
+            end_date=(datetime.now(timezone.utc).date() - timedelta(days=2)))
+        response = self.client.get('/rest_api/allocations/2/approver_info/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual({'approval_urgency': 'N/A',
+                          'expiry_state': 'Unknown',
+                          'concerned_sites': [
+                              allocation.associated_site.name]},
+                         response.data)
+
+        allocation.status = 'N'
+        allocation.save()
+        response = self.client.get('/rest_api/allocations/2/approver_info/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual({'approval_urgency': 'New',
+                          'expiry_state': 'Unknown',
+                          'concerned_sites': [
+                              allocation.associated_site.name]},
+                         response.data)
+
+    def test_approver_info_as_user(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create(
+            status='A', contact_email='other@example.com')
+        response = self.client.get('/rest_api/allocations/2/approver_info/')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def _make_data(self,
                    project_name='test-project',

@@ -4,7 +4,6 @@ from horizon.utils import memoized
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import tables
 from nectar_dashboard.rcallocation import urgency
-from nectar_dashboard.rcallocation import utils
 
 
 @memoized.memoized
@@ -54,13 +53,12 @@ class UrgencyColumn(horizon_tables.Column):
         # their site?  If neither ... are they an ARDC approver?
         username = self.table.request.user.username
         approver_sites = models.Site.objects.get_by_approver(username)
-        if allocation.associated_site:
-            alloc_sites = [allocation.associated_site]
-        else:
-            alloc_sites = utils.sites_from_email(allocation.contact_email)
-            if len(alloc_sites) == 0:
-                alloc_sites = [get_ardc_site()]
-        common_sites = [s for s in alloc_sites if s in approver_sites]
+        interested_sites = allocation.get_interested_sites()
+        if len(interested_sites) == 0:
+            # If an allocation's related sites cannot be determined,
+            # its for ARDC to triage.
+            interested_sites = [get_ardc_site()]
+        common_sites = [s for s in interested_sites if s in approver_sites]
         if len(common_sites) == 0:
             # Indicate "not relevant" with parentheses.  Note that the
             # parentheses are used when selecting the CSS class above.
