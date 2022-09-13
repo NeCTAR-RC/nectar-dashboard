@@ -165,12 +165,24 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     nectar_support = 'nectar supporting'
 
     @classmethod
-    def create(cls, create_quotas=True, quota_value=0, **kwargs):
+    def create(cls, create_quotas=True, quota_value=0,
+               modified_time=None, submit_date=None, **kwargs):
         usage_types = kwargs.pop('usage_types', None)
         ncris_facilities = kwargs.pop('ncris_facilities', [])
         ardc_support = kwargs.pop('ardc_support', [])
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
+
+        # Override the effects of the 'auto_*' updates on date / timestamps
+        manager = models.AllocationRequest.objects
+        if modified_time is not None:
+            manager.filter(id=allocation.id) \
+                   .update(modified_time=modified_time)
+            allocation.modified_time = modified_time
+        if submit_date is not None:
+            manager.filter(id=allocation.id) \
+                   .update(submit_date=submit_date)
+            allocation.submit_date = submit_date
 
         if usage_types is None:
             for u in get_active_usage_types():
