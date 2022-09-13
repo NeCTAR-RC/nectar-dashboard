@@ -8,7 +8,7 @@ from openstack_dashboard.test import helpers
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 
-from nectar_dashboard.rcallocation.allocation import tables
+from nectar_dashboard.rcallocation import urgency
 
 
 class UrgencyTests(helpers.TestCase):
@@ -33,7 +33,7 @@ class UrgencyTests(helpers.TestCase):
             parent_request=allocation,
             contact_email='other@example.com')
 
-        res = tables.get_clockstop_amendment(allocation)
+        res = urgency.get_clockstop_amendment(allocation)
         self.assertEqual(res.id, allocation.id)
 
         # Now add an earlier 'X' record
@@ -41,7 +41,7 @@ class UrgencyTests(helpers.TestCase):
             status='X', modified_time=now - timedelta(days=1),
             parent_request=allocation,
             contact_email='other@example.com')
-        res = tables.get_clockstop_amendment(allocation)
+        res = urgency.get_clockstop_amendment(allocation)
         self.assertEqual(res.id, first.id)
 
         # Now add an 'X' record before the last 'A' record
@@ -49,57 +49,56 @@ class UrgencyTests(helpers.TestCase):
             status='X', modified_time=now - timedelta(days=4),
             parent_request=allocation,
             contact_email='other@example.com')
-        res = tables.get_clockstop_amendment(allocation)
+        res = urgency.get_clockstop_amendment(allocation)
         self.assertEqual(res.id, first.id)
 
-    @patch('nectar_dashboard.rcallocation.allocation'
-           '.tables.get_clockstop_amendment')
+    @patch('nectar_dashboard.rcallocation.urgency.get_clockstop_amendment')
     def test_get_urgency(self, mock_clockstop):
         now = datetime.now(timezone.utc)
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=now)
-        self.assertEqual(tables.NEW, tables.get_urgency(allocation))
+        self.assertEqual(urgency.NEW, urgency.get_urgency(allocation))
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=(now - timedelta(days=8)))
-        self.assertEqual(tables.ATTENTION, tables.get_urgency(allocation))
+        self.assertEqual(urgency.ATTENTION, urgency.get_urgency(allocation))
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=(now - timedelta(days=15)))
-        self.assertEqual(tables.WARNING, tables.get_urgency(allocation))
+        self.assertEqual(urgency.WARNING, urgency.get_urgency(allocation))
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=(now - timedelta(days=22)))
-        self.assertEqual(tables.OVERDUE, tables.get_urgency(allocation))
+        self.assertEqual(urgency.OVERDUE, urgency.get_urgency(allocation))
         mock_clockstop.assert_not_called()
 
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=(now - timedelta(days=22)),
             end_date=now.date())
-        self.assertEqual(tables.OVERDUE, tables.get_urgency(allocation))
+        self.assertEqual(urgency.OVERDUE, urgency.get_urgency(allocation))
         mock_clockstop.assert_not_called()
 
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=now,
             end_date=(now.date() - timedelta(days=1)))
         mock_clockstop.return_value = allocation
-        self.assertEqual(tables.EXPIRED, tables.get_urgency(allocation))
+        self.assertEqual(urgency.EXPIRED, urgency.get_urgency(allocation))
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=now,
             end_date=(now.date() - timedelta(days=15)))
         mock_clockstop.return_value = allocation
-        self.assertEqual(tables.STOPPED, tables.get_urgency(allocation))
+        self.assertEqual(urgency.STOPPED, urgency.get_urgency(allocation))
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=now,
             end_date=(now.date() - timedelta(days=29)))
         mock_clockstop.return_value = allocation
-        self.assertEqual(tables.ARCHIVED, tables.get_urgency(allocation))
+        self.assertEqual(urgency.ARCHIVED, urgency.get_urgency(allocation))
 
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=(now - timedelta(days=151)),
             end_date=(now.date() - timedelta(days=1)))
         mock_clockstop.return_value = allocation
-        self.assertEqual(tables.DANGER, tables.get_urgency(allocation))
+        self.assertEqual(urgency.DANGER, urgency.get_urgency(allocation))
 
         allocation = factories.AllocationFactory.create(
             status='X', modified_time=(now - timedelta(days=151)),
             end_date=(now.date() - timedelta(days=1)))
         mock_clockstop.return_value = None
-        self.assertEqual(tables.UNKNOWN, tables.get_urgency(allocation))
+        self.assertEqual(urgency.UNKNOWN, urgency.get_urgency(allocation))
