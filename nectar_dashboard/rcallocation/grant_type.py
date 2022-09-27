@@ -44,6 +44,7 @@ GRANT_SUBTYPES = (
     ("nhmrc-equipment", "NHMRC Equipment grant"),
     ("nhmrc-ctcs", "NHMRC Clinical Trial and Cohort Studies grant"),
     ("nhmrc-ics", "NHMRC International Collaborations (various)"),
+    ("nhmrc-mrff", "NHMRC Medical Research Future Fund"),
     ("nhmrc-pc", "NHMRC Partnership Centre"),
     ("nhmrc-pp", "NHMRC Partnership project"),
     ("nhmrc-tcr", "NHMRC Targeted Calls for Research"),
