@@ -18,6 +18,7 @@
 </p>
 {% endblock %}
 {% block allocation_details %}
+<hr>
 <h4>Allocation Request Summary</h4>
 {% autoescape on %}
 <p>Project name: {{ allocation.project_description }}</p>
@@ -45,7 +46,6 @@
 <p>{{ allocation.get_field_of_research_3_display }} ({{ allocation.for_percentage_3 }}%)</p>
 {% endif %}
 {% endif %}
-<br>
 <br>
 <table style="border:1px solid black;border-collapse:collapse;padding:5px 5px 5px 5px;">
   <tbody>
