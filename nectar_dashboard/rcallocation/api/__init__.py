@@ -26,6 +26,7 @@ from rest_framework import status
 from rest_framework import viewsets
 
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import urgency
 from nectar_dashboard.rcallocation import utils
 from nectar_dashboard import rest_auth
 
@@ -592,6 +593,8 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
             permission_classes.append(rest_auth.CanAmend)
         elif self.action == 'approve':
             permission_classes.append(rest_auth.CanApprove)
+        elif self.action == 'approver_info':
+            permission_classes.append(rest_auth.IsAdminOrApprover)
         elif self.action in ('list', 'retrieve'):
             permission_classes = []
         return [permission() for permission in permission_classes]
@@ -638,6 +641,30 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
 
     def destroy(self, request, *args, **kwargs):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @detail_route_decorator(methods=['get'])
+    def approver_info(self, request, pk=None):
+        """Get the approver info for this allocation, comprising the
+        approval urgency, the inferred expiry state and the list of
+        sites that are inferred to be 'concerned' with the allocation.
+        If the allocation is not pending, we will return 'N/A' as the
+        urgency.  This is all derived info, and the derivation process is
+        heuristic and subject to tweaking.
+        """
+        allocation = self.get_object()
+        if allocation.parent_request:
+            return response.Response(
+                {'error': "The allocation cannot be a history record"},
+                status=status.HTTP_400_BAD_REQUEST)
+        u, e = urgency.get_urgency_info(allocation)
+        if allocation.status not in [
+                models.AllocationRequest.NEW,
+                models.AllocationRequest.SUBMITTED,
+                models.AllocationRequest.UPDATE_PENDING]:
+            u = "N/A"
+        sites = [s.name for s in allocation.get_interested_sites()]
+        return response.Response({'approval_urgency': u, 'expiry_state': e,
+                                  'concerned_sites': sites})
 
 
 class AllocationRelatedSerializer(serializers.ModelSerializer):

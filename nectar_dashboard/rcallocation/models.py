@@ -16,6 +16,7 @@ from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import grant_type as nectar_grant_type
 from nectar_dashboard.rcallocation import output_type_choices
 from nectar_dashboard.rcallocation import project_duration_choices
+from nectar_dashboard.rcallocation import utils
 
 from nectar_dashboard.rcallocation.notifier import create_notifier
 
@@ -517,6 +518,16 @@ class AllocationRequest(models.Model):
                            'quota': quota.quota,
                            'requested_quota': quota.requested_quota})
         return quotas
+
+    def get_interested_sites(self):
+        """Get the list of Nectar sites for whom this request is
+        relevant.  (This is a heuristic ... and may be refined)
+        """
+
+        if self.associated_site:
+            return [self.associated_site]
+        else:
+            return utils.sites_from_email(self.contact_email)
 
     def send_email_notification(self, template, extra_context={}):
         if not self.notifications:

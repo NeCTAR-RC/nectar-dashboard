@@ -10,6 +10,7 @@ DANGER = 'Danger'      # getting close to auto-decline
 ARCHIVED = 'Archived'
 STOPPED = 'Stopped'
 EXPIRED = 'Expired'
+NONE = 'None'          # not expiring
 UNKNOWN = 'Unknown'    # can't figure out when the expiry clock stopped.
 
 # These represent the waiting time for non-expiring allocations
@@ -52,8 +53,8 @@ def get_clockstop_amendment(allocation):
                                    .first()
 
 
-def get_urgency(allocation):
-    '''Derive the urgency for the urgency field from the modification
+def get_urgency_info(allocation):
+    '''Derive the urgency info for the urgency field from the modification
     date for the current allocation request and the project's inferred
     expiration state ... if the allocation past its end date.  This does not
     take account of ticket holds.  (That would require a Keystone "project
@@ -62,7 +63,6 @@ def get_urgency(allocation):
 
     today = datetime.date.today()
     mod_date = allocation.modified_time.date()
-    urgency = None
     if allocation.end_date and allocation.end_date < datetime.date.today():
         # Allocations that are expiring.  The urgency corresponds to
         # the expiry state at the point that we infer that the expiry
@@ -72,27 +72,39 @@ def get_urgency(allocation):
             expiry_clock = clockstop.modified_time.date()
             if expiry_clock + datetime.timedelta(days=30 * 5) < today:
                 # At risk of automatic decline, restarting expiry
-                urgency = DANGER
+                expiry = DANGER
             elif expiry_clock > allocation.end_date + datetime.timedelta(
                     days=28):
-                urgency = ARCHIVED
+                expiry = ARCHIVED
             elif expiry_clock > allocation.end_date + datetime.timedelta(
                     days=14):
-                urgency = STOPPED
+                expiry = STOPPED
             elif expiry_clock > allocation.end_date:
-                urgency = EXPIRED
+                expiry = EXPIRED
+            else:
+                expiry = NONE
         else:
-            urgency = UNKNOWN
-    if urgency is None:
-        if mod_date + datetime.timedelta(days=21) < today:
-            # Approval SLA is 2 to 3 weeks.  Past 3 weeks
-            urgency = OVERDUE
-        elif mod_date + datetime.timedelta(days=14) < today:
-            # Approval SLA is 2 to 3 weeks.  In that range
-            urgency = WARNING
-        elif mod_date + datetime.timedelta(days=7) < today:
-            # Getting warm ...
-            urgency = ATTENTION
-        else:
-            urgency = NEW
-    return urgency
+            expiry = UNKNOWN
+    else:
+        expiry = NONE
+    if mod_date + datetime.timedelta(days=21) < today:
+        # Approval SLA is 2 to 3 weeks.  Past 3 weeks
+        urgency = OVERDUE
+    elif mod_date + datetime.timedelta(days=14) < today:
+        # Approval SLA is 2 to 3 weeks.  In that range
+        urgency = WARNING
+    elif mod_date + datetime.timedelta(days=7) < today:
+        # Getting warm ...
+        urgency = ATTENTION
+    else:
+        urgency = NEW
+    return (urgency, expiry)
+
+
+def get_urgency(allocation):
+    '''Combined urgency for display on the form.  An active expiry
+    takes precedence.
+    '''
+
+    urgency, expiry = get_urgency_info(allocation)
+    return expiry if expiry != NONE else urgency
