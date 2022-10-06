@@ -147,13 +147,14 @@ class AllocationTests(base.AllocationAPITest):
     def test_get_allocation_unauthenticated(self):
         response = self.client.get('/rest_api/allocations/1/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        public_fields = ['id', 'project_name', 'project_description',
-                         'modified_time', 'submit_date', 'start_date',
-                         'end_date', 'field_of_research_1',
-                         'field_of_research_2', 'field_of_research_3',
-                         'for_percentage_1', 'for_percentage_2',
-                         'for_percentage_3', 'quotas']
-        self.assertEqual(public_fields, list(response.data.keys()))
+        public_fields = set(['id', 'project_name', 'project_description',
+                             'modified_time', 'submit_date', 'start_date',
+                             'end_date', 'field_of_research_1',
+                             'field_of_research_2', 'field_of_research_3',
+                             'for_percentage_1', 'for_percentage_2',
+                             'for_percentage_3', 'supported_organisations',
+                             'quotas'])
+        self.assertEqual(public_fields, set(response.data.keys()))
 
     def test_get_allocation_negative(self):
         self.client.force_authenticate(user=self.user)
@@ -380,6 +381,131 @@ class AllocationTests(base.AllocationAPITest):
             {'ncris_facilities': ['fish']})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_update_allocation_organizations(self):
+        self.assertEqual(1, len(self.allocation.supported_organisations.all()))
+
+        self.client.force_authenticate(user=self.approver_user)
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['qcif', 'monash']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id)
+        self.assertEqual(2, len(allocation.supported_organisations.all()))
+
+        response = self.client.patch(
+            f'/rest_api/allocations/{allocation.id}/',
+            {'supported_organisations': [
+                'Monash University',
+                'Queensland Cyber Infrastructure Foundation']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id)
+        self.assertEqual(2, len(allocation.supported_organisations.all()))
+
+        response = self.client.patch(
+            f'/rest_api/allocations/{allocation.id}/',
+            {'supported_organisations': [
+                'https://ror.org/12345678',
+                'https://ror.org/23456789']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id)
+        self.assertEqual(2, len(allocation.supported_organisations.all()))
+
+        # Check that we can see the organizations in a GET
+        response = self.client.get(
+            f'/rest_api/allocations/{self.allocation.id}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['supported_organisations'],
+                         ['https://ror.org/23456789',
+                          'https://ror.org/12345678'])
+
+    def test_update_allocation_organisations_disabled(self):
+        self.client.force_authenticate(user=self.approver_user)
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['UWW']})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_allocation_organisations_ambiguous(self):
+        models.Organisation.objects.get_or_create(
+            short_name='UZ',
+            full_name='Zumba University',
+            ror_id='https://ror.org/1111', country='AU')
+        models.Organisation.objects.get_or_create(
+            short_name='UZ',
+            full_name='Zombie University',
+            ror_id='https://ror.org/2222', country='AU')
+
+        self.client.force_authenticate(user=self.approver_user)
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['Zombie University']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['Zumba University']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # The short name is ambiguous
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['UZ']})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_allocation_organisations_bad(self):
+        self.client.force_authenticate(user=self.approver_user)
+
+        # Fish is unknown
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['fish']})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # 'Unknown' is known but not allowed
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['unknown']})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # 'All' is known and allowed
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['all']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # 'All' cannot be used with other orgs
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['all', 'qcif']})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_allocation_transition(self):
+        # Check transitional behavior; i.e. that changes to the
+        # supported_organisations are reflected in the (legacy) institutions
+        self.client.force_authenticate(user=self.approver_user)
+
+        # Check that we can see the original organization / institution
+        # via a GET and/or the database
+        response = self.client.get(
+            f'/rest_api/allocations/{self.allocation.id}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['supported_organisations'],
+                         ['https://ror.org/23456789'])
+        self.assertEqual("Monash University",
+                         self.allocation.institutions.first().name)
+
+        # Update ...
+        response = self.client.patch(
+            f'/rest_api/allocations/{self.allocation.id}/',
+            {'supported_organisations': ['qcif']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['supported_organisations'],
+                         ['https://ror.org/12345678'])
+        self.assertEqual(1, self.allocation.institutions.count())
+        self.assertEqual("Queensland Cyber Infrastructure Foundation",
+                         self.allocation.institutions.first().name)
+
     def test_update_allocation_unauthenticated(self):
         response = self.client.patch('/rest_api/allocations/1/',
                                      {'use_case': 'test-update'})
@@ -443,12 +569,14 @@ class AllocationTests(base.AllocationAPITest):
                    project_description='project for testing',
                    start_date='2000-01-01',
                    use_case='for testing',
+                   supported_organisations=['https://ror.org/12345678'],
                    usage_types=['Other'], **kwargs):
         data = {'project_name': project_name,
                 'project_description': project_description,
                 'start_date': start_date,
                 'use_case': use_case,
                 'usage_types': usage_types,
+                'supported_organisations': supported_organisations,
                 'ncris_facilities': ['ALA']
         }
         data.update(kwargs)
@@ -686,6 +814,60 @@ class AllocationTests(base.AllocationAPITest):
         data = self._make_data(usage_types=[])
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_organisations(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = self._make_data(supported_organisations=['QCIF', 'Monash'])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Transitional check: organisations mirrored as institutions
+        allocation = models.AllocationRequest.objects.get(
+            pk=response.data['id'])
+        self.assertEqual(2, allocation.institutions.count())
+        self.assertEqual({"Queensland Cyber Infrastructure Foundation",
+                          "Monash University"},
+                         {i.name for i in allocation.institutions.all()})
+
+    def test_create_all_organisations(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = self._make_data(supported_organisations=['all'])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    # # Disabled for now.  Organisations are optional via the API
+    # # ... until UoM get up to speed.
+    #
+    # def test_create_no_organisations(self):
+    #     self.client.force_authenticate(user=self.user)
+    #     factories.AllocationFactory.create()
+    #     data = self._make_data(supported_organisations=[])
+    #     response = self.client.post('/rest_api/allocations/', data)
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_dup_organisations(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = self._make_data(supported_organisations=["QCIF", "QCIF"])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_bad_organisations(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create()
+        data = self._make_data(supported_organisations=["Unknown"])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        data = self._make_data(supported_organisations=["all", "QCIF"])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        data = self._make_data(supported_organisations=["fish"])
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_unauthenticated(self):
         data = self._make_data()

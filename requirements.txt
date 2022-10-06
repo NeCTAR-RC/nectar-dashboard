@@ -8,3 +8,4 @@ gnocchiclient
 django-mathfilters
 git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms
 langstrothclient
+django-countries<7.5

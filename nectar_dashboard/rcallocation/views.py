@@ -183,9 +183,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         if self.formset_investigator_class:
             formsets['investigator_formset'] = self.get_formset(
                 self.formset_investigator_class)
-        if self.formset_institution_class:
-            formsets['institution_formset'] = self.get_formset(
-                self.formset_institution_class)
         if self.formset_publication_class:
             formsets['publication_formset'] = self.get_formset(
                 self.formset_publication_class)
@@ -619,8 +616,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
             if group.quota_set.count() < 1:
                 group.delete()
 
-        formsets = [investigator_formset, institution_formset,
-                    publication_formset, grant_formset]
+        formsets = [investigator_formset, publication_formset, grant_formset]
 
         for formset in formsets:
             if formset:
@@ -631,10 +627,32 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                 for instance in formset.deleted_objects:
                     instance.delete()
 
+        self._transitional_hack()
+
         # Send notification email
         self.object.send_notifications(extra_context={'request': self.request})
 
         return HttpResponseRedirect(self.get_success_url())
+
+    def _transitional_hack(self):
+        # Temporary: during the Institution string -> Organization transition
+        # and updates made to an Allocation or CIs organizations are mirrored
+        # in the corresponding (legacy) institution fields and relations
+        models.Institution.objects.filter(allocation=self.object).delete()
+        for org in list(self.object.supported_organisations.all()):
+            if org.short_name == models.ORG_UNKNOWN_SHORT_NAME:
+                continue
+            name = ("all" if org.short_name == models.ORG_ALL_SHORT_NAME
+                    else org.full_name)
+            inst = models.Institution.objects.create(
+                allocation=self.object, name=name)
+            inst.save()
+        try:
+            ci = models.ChiefInvestigator.objects.get(allocation=self.object)
+            ci.institution = ci.primary_organisation.full_name
+            ci.save()
+        except models.ChiefInvestigator.DoesNotExist:
+            pass
 
     def form_invalid(self, form, warnings=[], **formsets):
         """If the form is invalid, re-render the context data with the

@@ -1,4 +1,3 @@
-
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -17,6 +16,7 @@ from openstack_dashboard.test import helpers
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation.grant_type import GRANT_SUBTYPES
 from nectar_dashboard.rcallocation.grant_type import GRANT_TYPES
+from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import output_type_choices
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
@@ -30,7 +30,8 @@ DUMMY_ALLOC_DATA = {'project_description': 'dummy',
                     'for_percentage_1': 0,
                     'for_percentage_2': 0,
                     'for_percentage_3': 0,
-                    'usage_types': ['Other']
+                    'usage_types': ['Other'],
+                    'supported_organisations': [1]
 }
 
 
@@ -49,7 +50,8 @@ class FormsTestCase(helpers.TestCase):
                            'estimated_project_duration',
                            'use_case', 'estimated_number_users',
                            'for_percentage_1', 'for_percentage_2',
-                           'for_percentage_3', 'usage_types']
+                           'for_percentage_3', 'usage_types',
+                           'supported_organisations']
         self.assertEqual(len(required_fields), len(form.errors))
         for field in required_fields:
             if field == 'usage_types':
@@ -206,6 +208,52 @@ class FormsTestCase(helpers.TestCase):
         self.assertEqual(['Select a valid choice. Disabled is '
                           'not one of the available choices.'],
                          form.errors['usage_types'])
+
+    def test_validating_ci_form_missing(self):
+        form = forms.ChiefInvestigatorForm(data={})
+        self.assertFalse(form.is_valid())
+        required_fields = ['allocation', 'title', 'primary_organisation',
+                           'surname', 'email', 'given_name',
+        ]
+        self.assertEqual(len(required_fields), len(form.errors))
+        for field in required_fields:
+            self.assertEqual(['This field is required.'], form.errors[field])
+
+    def test_validating_ci_form(self):
+        form = forms.ChiefInvestigatorForm(data={
+            'allocation': 1, 'title': 'demigod',
+            'primary_organisation': 1,
+            'surname': 'McYadda',
+            'email': 'yadda@yadda.com',
+            'given_name': 'Yadda'})
+        self.assertTrue(form.is_valid())
+
+    def test_validating_ci_form_disabled_org(self):
+        disabled = factories.OrganisationFactory.create(enabled=False)
+        form = forms.ChiefInvestigatorForm(data={
+            'allocation': 1, 'title': 'demigod',
+            'primary_organisation': disabled.id,
+            'surname': 'McYadda',
+            'email': 'yadda@yadda.com',
+            'given_name': 'Yadda'})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(1, len(form.errors))
+        self.assertRegex(str(form.errors['primary_organisation']),
+                         ".+not.+valid.+")
+
+    def test_validating_ci_form_all_org(self):
+        all = models.Organisation.objects.get(
+            full_name=models.ORG_ALL_FULL_NAME)
+        form = forms.ChiefInvestigatorForm(data={
+            'allocation': 1, 'title': 'demigod',
+            'primary_organisation': all.id,
+            'surname': 'McYadda',
+            'email': 'yadda@yadda.com',
+            'given_name': 'Yadda'})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(1, len(form.errors))
+        self.assertRegex(str(form.errors['primary_organisation']),
+                         ".+not.+meaningful.+")
 
     def test_validating_grant_form(self):
         form = forms.GrantForm(data={})

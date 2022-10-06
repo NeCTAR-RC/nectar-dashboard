@@ -11,6 +11,8 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django_countries import fields as country_fields
+from select2 import fields as select2_fields
 
 from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import grant_type as nectar_grant_type
@@ -160,6 +162,7 @@ class AllocationRequest(models.Model):
         help_text="A brief explanation of the reason the request has been "
                   "sent back to the user for changes")
 
+    # This is a keystone user id
     created_by = models.CharField(max_length=100)
 
     submit_date = models.DateTimeField('Submission Date',
@@ -410,6 +413,19 @@ class AllocationRequest(models.Model):
 
     usage_types = models.ManyToManyField(UsageType)
 
+    # FIX: after transition remove 'blank=True'
+    supported_organisations = select2_fields.ManyToManyField(
+        'Organisation',
+        ajax=True,
+        search_field=lambda q: (
+            (models.Q(short_name__icontains=q)
+             | models.Q(full_name__icontains=q))
+            & models.Q(enabled=True)),
+        js_options={'ajax_url': '/allocation/fetch_organisations/',
+                    'ajax_init_url': '/allocation/init_organisations/'},
+        overlay="Enter one or more organisation names or acronyms...",
+        blank=True)
+
     class Meta:
         ordering = ['-modified_time']
         indexes = [
@@ -608,25 +624,7 @@ class AllocationRequest(models.Model):
         return fields
 
     def save_without_updating_timestamps(self):
-        """Saves this AllocationRequest without auto-updating the timestamps.
-        Note that if you do this when the 'submit_date' is None, you may get
-        DB constraint violation, 'cos there is currently a not null constraint
-        on the field.
-        """
-        manager = AllocationRequest.objects
-        saved_modified_time = self.modified_time
-        saved_submit_date = self.submit_date
-
-        # Save does the 'auto_*' updates
-        self.save()
-
-        # Reverse the effect of the 'auto_*' updates in the DB
-        manager.filter(id=self.id).update(modified_time=saved_modified_time)
-        manager.filter(id=self.id).update(submit_date=saved_submit_date)
-
-        # ... and reset the values in 'self'
-        self.modified_time = saved_modified_time
-        self.submit_date = saved_submit_date
+        utils.save_allocation_without_updating_timestamps(self)
 
     def __str__(self):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
@@ -852,13 +850,28 @@ class ChiefInvestigator(models.Model):
             organisation for accountability."""
     )
 
+    # Legacy field.  Remove after transition
     institution = models.CharField(
-        'Institution',
+        'Institution (legacy)',
         max_length=200,
         help_text="""The name of the institution or university of
                     the chief investigator including the schools,
                     faculty and/or department."""
     )
+
+    # Remove null=True & blank=True after transition
+    primary_organisation = select2_fields.ForeignKey(
+        'Organisation',
+        ajax=True,
+        search_field=lambda q: (
+            (models.Q(short_name__icontains=q)
+             | models.Q(full_name__icontains=q))
+            & models.Q(enabled=True)),
+        js_options={'ajax_url': '/allocation/fetch_organisations/',
+                    'ajax_init_url': '/allocation/init_organisations/'},
+        overlay="Enter an organisation name or acronym...",
+        null=True, blank=True, on_delete=models.PROTECT,
+        help_text="""The chief investigator's primary organisation.""")
 
     additional_researchers = models.TextField(
         'Please list all other primary investigators, partner investigators '
@@ -874,6 +887,7 @@ class ChiefInvestigator(models.Model):
         return '{0} {1} {2}'.format(self.title, self.given_name, self.surname)
 
 
+# Fix: this is being replaced by the Organisation class.
 class Institution(models.Model):
     name = models.CharField(
         'Supported institutions',
@@ -885,7 +899,6 @@ class Institution(models.Model):
                     public web service list the Australian research
                     institutions and universities that
                     you think will benefit most.""")
-
     allocation = models.ForeignKey(AllocationRequest,
                                    related_name='institutions',
                                    on_delete=models.CASCADE)
@@ -893,8 +906,113 @@ class Institution(models.Model):
     class Meta:
         unique_together = ("allocation", "name")
 
+
+ORG_ALL_FULL_NAME = "All Organisations"
+ORG_ALL_SHORT_NAME = "all"
+ORG_UNKNOWN_FULL_NAME = "Unspecified Organisation"
+ORG_UNKNOWN_SHORT_NAME = "unknown"
+
+
+class Organisation(models.Model):
+    """This represents an Organisation related to a project and / or
+    its researchers.  Where possible, we will use organisation that
+    has a Research Organization Registry (ROR) id and record, and we
+    will treat that as a source of truth.  However, there many examples
+    of organisations that don't have ROR ids.  We cater for these by
+    allowing the user to type in a new organisation, subject to vetting
+    by the approver who approves the allocation or amendment.
+
+    Note that none of the fields is unique, so therefore we need to
+    use an implicit autogenerated 'id' as the primary key.
+
+    When populating from the ROR data dump, we will filter out records
+    marked as inactive or withdrawn.
+    """
+
+    ror_id = models.CharField(
+        "Research Organization Registry id",
+        max_length=32, blank=True,
+        help_text="""This will be blank for organisations that don't
+        (yet) have an ROR id.""")
+
+    full_name = models.CharField(
+        "Official name", max_length=200, blank=False,
+        help_text="""The official full name for the organisation.  This
+        should be taken from the ROR record when available.
+        For example: 'The University of Queensland'""")
+
+    short_name = models.CharField(
+        "Short name", max_length=16, blank=True,
+        help_text="""An optional short name or acronym for the organisation.
+        This should be taken from the ROR record when available.
+        For example; 'UQ'""")
+
+    url = models.CharField(
+        "Organisation website",
+        max_length=64, blank=True,
+        help_text="Organisational website URL for disambiguation purposes.")
+
+    country = country_fields.CountryField(
+        "Country (ISO 2 letter)",
+        blank=False,
+        help_text="""Two character ISO country code for the organisation.
+        See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2""")
+
+    parent = models.ForeignKey(
+        'Organisation',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='children',
+        help_text="""If not null, this denotes this organisation's
+        parent organisation.""")
+
+    precedes = models.ManyToManyField(
+        'Organisation',
+        related_name='supercedes',
+        help_text="""This denotes this organisation was precede (or in the
+        reverse superceded) by these organisations.""")
+
+    # Note: the ROR data dump uses a tri-state for this; 'active', 'inactive'
+    # or 'withdrawn'.
+    enabled = models.BooleanField(
+        default=True,
+        help_text="""If false, this organisation should no longer be used;
+        e.g. because the research organisation no longer exists.""")
+
+    proposed_by = models.CharField(max_length=64,
+        blank=True,
+        help_text="""The keystone id of the person who proposed this
+                     ('type in') organisation.""")
+
+    # Note: currently, Organisation records can only be vetted by the subset
+    # of approvers who are also allocation admins.  We may relax this.
+    vetted_by = models.ForeignKey(
+        'Approver',
+        null=True,
+        on_delete=models.PROTECT,
+        help_text="""The approver who vetted this organisation record.
+        Vetting only applies to organisations without a ROR id.  The approver
+        should validate that 1) the organisation is acceptable; i.e. it
+        meets ROR and local criteria, 2) the full and short name are in the
+        standard form, correctly spelled, etc, 3) the ISO country code
+        is correct, and 4) the organisation hasn't already been recorded
+        here with a different name.""")
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['full_name', ]),
+            models.Index(fields=['short_name', ]),
+            models.Index(fields=['ror_id', ]),
+            models.Index(fields=['country', ]),
+        ]
+        constraints = [
+            models.UniqueConstraint(fields=['full_name', 'ror_id', 'url', ],
+                                    name='unique_organisation')
+        ]
+        ordering = ["full_name"]
+
     def __str__(self):
-        return self.name
+        return self.full_name
 
 
 DOI_PATTERN = re.compile("^10.\\d{4,9}/[^\x00-\x1f\x7f-\x9f\\s]+$")

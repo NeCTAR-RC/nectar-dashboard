@@ -53,6 +53,8 @@ CLUSTER_WITHOUT_ROUTER = 'CLUSTER_WITHOUT_ROUTER'
 FLAVORS_NOT_JUSTIFIED = 'FLAVORS_NOT_JUSTIFIED'
 APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
+APPROVER_DISABLED_ORGANISATION = 'APPROVER_DISABLED_ORGANISATION'
+APPROVER_UNVETTED_ORGANISATION = 'APPROVER_UNVETTED_ORGANISATION'
 NO_VALID_GRANTS = 'NO_VALID_GRANTS'
 NO_BUDGET = 'NO_BUDGET'
 LOW_BUDGET = 'LOW_BUDGET'
@@ -329,6 +331,35 @@ def grant_checks(context):
              "Either approve it as Local, or add a Special approval reason.")]
 
 
+def organisation_checks(context):
+    if not context.approving:
+        # These are approver-only checks.
+        return None
+
+    res = []
+
+    def _check(org):
+        if not org.enabled:
+            res.append((APPROVER_DISABLED_ORGANISATION,
+                        "This allocation request is using an Organisation "
+                        f"({org.full_name}) that has been disabled. Please"
+                        "get the user to resubmit with another Organisation."))
+        elif org.proposed_by and not org.vetted_by:
+            res.append((APPROVER_UNVETTED_ORGANISATION,
+                        "This allocation request is using an Organisation "
+                        f"({org.full_name}) that has been proposed "
+                        f"(by {org.proposed_by}) but not vetted. "
+                        "Please get an Allocations Admin to vet it before "
+                        "approving this request or amendment."))
+
+    for o in context.allocation.supported_organisations.all():
+        _check(o)
+    for ci in context.allocation.investigators.all():
+        _check(ci.primary_organisation)
+
+    return res or None
+
+
 STD_CHECKS = [budget_check,
               instance_vcpu_check,
               no_vcpu_check,
@@ -345,6 +376,7 @@ STD_CHECKS = [budget_check,
               magnum_neutron_checks,
               flavor_check,
               approver_checks,
+              organisation_checks,
               grant_checks,
               reservation_check,
 ]

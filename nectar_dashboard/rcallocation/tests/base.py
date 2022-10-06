@@ -36,7 +36,112 @@ class BaseTestCase(helpers.TestCase):
         super().setUp()
         common.sites_setup()
         common.approvers_setup()
+        common.organisations_setup()
         common.factory_setup()
+        self.maxDiff = None
+
+    def assert_allocation(self, model, quotas=[], supported_organisations=[],
+                          institutions=[], publications=[],
+                          grants=[], investigators=[],
+                          usage_types=[], **attributes):
+        """Check that 'model' AllocationRequest and its dependents
+        match the expected state as given by the keyword args.
+        """
+
+        for field, value in attributes.items():
+            self.assertEqual(getattr(model, field), value,
+                             "field that didn't match: %s" % field)
+        self.assertEqual(set(usage_types), set(model.usage_types.all()))
+        self.assertEqual(model.contact_email, self.user.name)
+
+        self.assertEqual(set(model.supported_organisations.all()),
+                         set(supported_organisations))
+
+        quotas_l = models.Quota.objects.filter(group__allocation=model)
+        # (For ... reasons ... there may be zero-valued quotas in the list)
+        quotas = [q for q in quotas if q['quota'] > 0
+                  or q['requested_quota'] > 0]
+
+        # For debugging purposes ....
+        if quotas_l.count() != len(quotas):
+            print(f"expected quotas - {quotas}")
+            print("actual quotas")
+            for qm in quotas_l:
+                print(f"resource {qm.resource.id}, "
+                      f"({qm.resource.quota_name}), "
+                      f"zone {qm.group.zone.name},"
+                      f"requested quota {qm.requested_quota}, "
+                      f"quota {qm.quota}")
+
+        self.assertEqual(quotas_l.count(), len(quotas))
+        # (The order of the quotas don't need to match ...)
+        for qm in quotas_l:
+            matched = [q for q in quotas if q['resource'] == qm.resource.id
+                       and q['zone'] == qm.group.zone.name]
+            self.assertEqual(len(matched), 1)
+            self.assertEqual(qm.group.zone.name, matched[0]['zone'])
+            self.assertEqual(qm.requested_quota,
+                             matched[0]['requested_quota'])
+            self.assertEqual(qm.quota, matched[0]['quota'])
+
+        institutions_l = model.institutions.all()
+        for i, institution_model in enumerate(institutions_l):
+            self.assertEqual(institution_model.name, institutions[i]['name'])
+
+        publications_l = model.publications.all()
+        for i, pub_model in enumerate(publications_l):
+            self.assertEqual(pub_model.publication,
+                             publications[i]['publication'])
+
+        grants_l = model.grants.all()
+        for i, g_model in enumerate(grants_l):
+            self.assertEqual(g_model.grant_type, grants[i]['grant_type'])
+            self.assertEqual(g_model.funding_body_scheme, grants[i][
+                'funding_body_scheme'])
+            self.assertEqual(g_model.grant_id, grants[i]['grant_id'])
+            self.assertEqual(g_model.first_year_funded,
+                             grants[i]['first_year_funded'])
+            self.assertEqual(g_model.last_year_funded,
+                             grants[i]['last_year_funded'])
+            self.assertEqual(g_model.total_funding, grants[i]['total_funding'])
+
+        investigators_l = model.investigators.all()
+        for i, inv_m in enumerate(investigators_l):
+            self.assertEqual(inv_m.title, investigators[i]['title'])
+            self.assertEqual(inv_m.given_name, investigators[i]['given_name'])
+            self.assertEqual(inv_m.surname, investigators[i]['surname'])
+            self.assertEqual(inv_m.email, investigators[i]['email'])
+            self.assertEqual(inv_m.institution,
+                             investigators[i]['institution'])
+            self.assertEqual(inv_m.additional_researchers, investigators[i][
+                'additional_researchers'])
+
+    def assert_history(self, model, initial_state, initial_mod):
+        # check historical allocation model
+        old_model = (models.AllocationRequest.objects.get(
+            parent_request_id=model.id))
+        old_state = common.allocation_to_dict(old_model)
+
+        # check modification dates
+        self.assertEqual(initial_mod, old_model.modified_time)
+        self.assertTrue(initial_mod < model.modified_time)
+
+        # some fields are changed during the archive process, these
+        # fields should not be compared.
+        for invalid_field in ['id', 'parent_request']:
+            del old_state[invalid_field]
+            del initial_state[invalid_field]
+
+        for inst in old_state['institution'] + initial_state['institution']:
+            del inst['id']
+            del inst['allocation']
+
+        for pub in old_state['publication'] + initial_state['publication']:
+            del pub['id']
+            del pub['allocation']
+
+        self.assertEqual(old_state, initial_state,
+                         msg="allocation fields changed unexpectedly")
 
 
 class BaseApproverTestCase(helpers.BaseAdminViewTests):
@@ -49,6 +154,7 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
         super().setUp()
         common.sites_setup()
         common.approvers_setup()
+        common.organisations_setup()
         common.factory_setup()
 
     def setActiveUser(self, *args, **kwargs):

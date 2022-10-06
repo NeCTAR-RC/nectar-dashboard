@@ -24,66 +24,6 @@ from nectar_dashboard.rcallocation.tests import common
             new=base.FAKE_FD_NOTIFIER_CLASS)
 class RequestTestCase(base.BaseTestCase):
 
-    def assert_allocation(self, model, quotas=[],
-                          institutions=[], publications=[],
-                          grants=[], investigators=[],
-                          surveys=[], **attributes):
-
-        for field, value in attributes.items():
-            if field not in ['quotas', 'institutions', 'publications',
-                             'grants', 'investigators', 'usage_types']:
-                self.assertEqual(getattr(model, field), value,
-                                 "field that didn't match: %s" % field)
-        self.assertEqual(list(attributes['usage_types']),
-                         list(model.usage_types.all()))
-        self.assertEqual(model.contact_email, self.user.name)
-        quotas_l = models.Quota.objects.filter(group__allocation=model)
-        # (For ... reasons ... there may be zero-valued quotas in the list)
-        quotas = [q for q in quotas if q['quota'] > 0
-                  or q['requested_quota'] > 0]
-        self.assertEqual(quotas_l.count(), len(quotas))
-        # (The order of the quotas don't need to match ...)
-        for qm in quotas_l:
-            matched = [q for q in quotas if q['resource'] == qm.resource.id
-                       and q['zone'] == qm.group.zone.name]
-            self.assertEqual(len(matched), 1)
-            self.assertEqual(qm.group.zone.name, matched[0]['zone'])
-            self.assertEqual(qm.requested_quota,
-                             matched[0]['requested_quota'])
-            self.assertEqual(qm.quota, matched[0]['quota'])
-
-        institutions_l = model.institutions.all()
-        for i, institution_model in enumerate(institutions_l):
-            self.assertEqual(institution_model.name, institutions[i]['name'])
-
-        publications_l = model.publications.all()
-        for i, pub_model in enumerate(publications_l):
-            self.assertEqual(pub_model.publication,
-                             publications[i]['publication'])
-
-        grants_l = model.grants.all()
-        for i, g_model in enumerate(grants_l):
-            self.assertEqual(g_model.grant_type, grants[i]['grant_type'])
-            self.assertEqual(g_model.funding_body_scheme, grants[i][
-                'funding_body_scheme'])
-            self.assertEqual(g_model.grant_id, grants[i]['grant_id'])
-            self.assertEqual(g_model.first_year_funded,
-                             grants[i]['first_year_funded'])
-            self.assertEqual(g_model.last_year_funded,
-                             grants[i]['last_year_funded'])
-            self.assertEqual(g_model.total_funding, grants[i]['total_funding'])
-
-        investigators_l = model.investigators.all()
-        for i, inv_m in enumerate(investigators_l):
-            self.assertEqual(inv_m.title, investigators[i]['title'])
-            self.assertEqual(inv_m.given_name, investigators[i]['given_name'])
-            self.assertEqual(inv_m.surname, investigators[i]['surname'])
-            self.assertEqual(inv_m.email, investigators[i]['email'])
-            self.assertEqual(inv_m.institution,
-                             investigators[i]['institution'])
-            self.assertEqual(inv_m.additional_researchers, investigators[i][
-                'additional_researchers'])
-
     def test_request_allocation(self):
         base.FAKE_FD_NOTIFIER.send_email.reset_mock()
 
@@ -100,12 +40,7 @@ class RequestTestCase(base.BaseTestCase):
             reverse('horizon:allocation:request:request'),
             form)
 
-        # Check to make sure we were redirected back to the index of
-        # our requests.
-        self.assertStatusCode(response, 302)
-        self.assertTrue(response.get('location').endswith(
-            reverse('horizon:allocation:user_requests:index')),
-            msg="incorrect redirect location")
+        self._assert_success(response)
         model = (models.AllocationRequest.objects
                  .get(project_description=form['project_description'],
                       parent_request_id=None))
@@ -120,40 +55,7 @@ class RequestTestCase(base.BaseTestCase):
             call_kwargs['subject'])
         # Not checking the expansion of the template body.
 
-    def _test_allocation(self, form_errors={},
-                         **kwargs):
-        response = self.client.get(
-            reverse('horizon:allocation:request:request'))
-        expected_model, form = common.request_allocation(user=self.user)
-        backup_values = {}
-
-        for field, value in kwargs.items():
-            self.assertIn(field, form)
-            backup_values[field] = form[field]
-            form[field] = value
-
-        # Tells the server to skip the sanity checks.  (The request
-        # has fuzz'd quota values which tyically won't pass muster.)
-        form['ignore_warnings'] = True
-
-        response = self.client.post(
-            reverse('horizon:allocation:request:request'),
-            form)
-
-        if form_errors:
-            # No redirect invalid fields
-            self.assertStatusCode(response, 200)
-            self.assertEqual(response.context['form'].errors, form_errors)
-
-            for field, value in backup_values.items():
-                form[field] = backup_values[field]
-            response = self.client.post(
-                reverse('horizon:allocation:request:request'),
-                form)
-        else:
-            for field, value in kwargs.items():
-                expected_model[field] = value
-
+    def _assert_success(self, response):
         # Check to make sure we were redirected back to the index of
         # our requests.
         self.assertStatusCode(response, 302)
@@ -161,21 +63,61 @@ class RequestTestCase(base.BaseTestCase):
             reverse('horizon:allocation:user_requests:index')),
             msg="incorrect redirect location")
 
-        model = (models.AllocationRequest.objects
-                 .get(project_description=form['project_description'],
-                      parent_request_id=None))
+    def _test_allocation(self, errors={}, override_form=True,
+                         **kwargs):
+        # The 'override_form' hack deals with the problem that the
+        # 'common.request_factory' method (currently) has limited ability
+        # to handle keyword args.
+        response = self.client.get(
+            reverse('horizon:allocation:request:request'))
+        expected_model, form = (
+            common.request_allocation(user=self.user) if override_form
+            else common.request_allocation(user=self.user, **kwargs))
+
+        if override_form:
+            for field, value in kwargs.items():
+                form[field] = value
+
+        # Tells the server to skip the sanity checks.  (The request
+        # typically has fuzz'd quota values which won't pass muster.)
+        form['ignore_warnings'] = True
+
+        response = self.client.post(
+            reverse('horizon:allocation:request:request'),
+            form)
+
+        if errors:
+            # No redirect invalid fields
+            self.assertStatusCode(response, 200)
+            for e_form, e_errors in errors.items():
+                self.assertEqual(response.context[e_form].errors, e_errors)
+
+            return
+
+        self._assert_success(response)
+
+        # Finally check that the expected changes have been made to
+        # the model.
+        if override_form:
+            for field, value in kwargs.items():
+                expected_model[field] = value
+
+        model = models.AllocationRequest.objects.get(
+            project_description=form['project_description'],
+            parent_request_id=None)
         self.assert_allocation(model, **expected_model)
 
     def test_blank_project_name(self):
         self._test_allocation(
             project_name='',
-            form_errors={'project_name': [u'This field is required.']}
+            errors={'form': {'project_name': [u'This field is required.']}}
         )
 
     def test_blank_project_description(self):
         self._test_allocation(
             project_description='',
-            form_errors={'project_description': [u'This field is required.']}
+            errors={'form': {'project_description':
+                             [u'This field is required.']}}
         )
 
     def test_blank_geographic_requirements(self):
@@ -186,7 +128,48 @@ class RequestTestCase(base.BaseTestCase):
     def test_blank_use_case(self):
         self._test_allocation(
             use_case='',
-            form_errors={'use_case': [u'This field is required.']}
+            errors={'form': {'use_case': [u'This field is required.']}}
+        )
+
+    def test_inconsistent_supported_orgs(self):
+        self._test_allocation(
+            override_form=False,
+            supported_organisations=[
+                models.Organisation.objects.get(short_name='Monash'),
+                models.Organisation.objects.get(short_name='all')],
+            errors={'form': {'supported_organisations': [
+                "'All Organisations' should not be used "
+                "with any other organisation"]}}
+        )
+
+    def test_supported_org_unknown(self):
+        self._test_allocation(
+            override_form=False,
+            supported_organisations=[
+                models.Organisation.objects.get(short_name='unknown')],
+            errors={'form': {'supported_organisations': [
+                "'Unspecified Organisation' should not be used "
+                "in this context"]}}
+        )
+
+    def test_all_ci_all_organisations(self):
+        self._test_allocation(
+            override_form=False,
+            investigators=[{
+                'id': '',
+                'title': 'Prof.',
+                'given_name': 'Bradley',
+                'surname': 'Awl',
+                'email': 'brad@somewhere.edu.au',
+                'institution': 'USome',
+                'primary_organisation':
+                    models.Organisation.objects.get(short_name='all'),
+                'additional_researchers': 'None'
+            }],
+            errors={'investigator_formset': [{
+                'primary_organisation': [
+                    f"'{models.ORG_ALL_FULL_NAME}' is not meaningful "
+                    "in this context"]}]}
         )
 
     def test_request_quotas_ok(self):
@@ -205,12 +188,7 @@ class RequestTestCase(base.BaseTestCase):
             reverse('horizon:allocation:request:request'),
             form)
 
-        # If there are no warnings, we are redirected back to the index
-        # of our requests.
-        self.assertStatusCode(response, 302)
-        self.assertTrue(response.get('location').endswith(
-            reverse('horizon:allocation:user_requests:index')),
-            msg="incorrect redirect location")
+        self._assert_success(response)
         model = (models.AllocationRequest.objects
                  .get(project_description=form['project_description'],
                       parent_request_id=None))
@@ -239,12 +217,89 @@ class RequestTestCase(base.BaseTestCase):
             reverse('horizon:allocation:request:request'),
             form)
 
-        # redirect means success; see above
-        self.assertStatusCode(response, 302)
-        self.assertTrue(response.get('location').endswith(
-            reverse('horizon:allocation:user_requests:index')),
-            msg="incorrect redirect location")
+        self._assert_success(response)
         model = (models.AllocationRequest.objects
                  .get(project_description=form['project_description'],
                       parent_request_id=None))
         self.assert_allocation(model, **expected_model)
+
+    def test_request_organization_transition(self):
+        # Checking the organisation -> institution backfill logic
+        # When we submit a form with organizations, the corresponding
+        # (legacy) institutions should be populated.
+        response = self.client.get(
+            reverse('horizon:allocation:request:request'))
+        self.assertStatusCode(response, 200)
+        quota_specs = [
+            common.quota_spec('compute', 'instances', requested_quota=1),
+            common.quota_spec('compute', 'cores', requested_quota=2),
+            common.quota_spec('rating', 'budget', requested_quota=1000),
+        ]
+        organisations = [
+          #  models.Organisation.objects.get(short_name='all'),
+            models.Organisation.objects.get(short_name='Monash'),
+          #  models.Organisation.objects.get(short_name='unknown')
+        ]
+        expected_model, form = common.request_allocation(
+            user=self.user, institutions=[],
+            supported_organisations=organisations,
+            quota_specs=quota_specs)
+        response = self.client.post(
+            reverse('horizon:allocation:request:request'),
+            form)
+
+        self._assert_success(response)
+        model = (models.AllocationRequest.objects
+                 .get(project_description=form['project_description'],
+                      parent_request_id=None))
+
+        # Note: self.assert_allocation will fail because the number of
+        # institutions has (correctly) changed.
+        self.assertEqual({"Monash"},
+                         {o.short_name for o in
+                          list(model.supported_organisations.all())})
+        insts = models.Institution.objects.filter(allocation=model.id)
+        self.assertEqual({"Monash University"},
+                         {i.name for i in list(insts)})
+
+    def test_request_organization_transition_2(self):
+        # Checking the CI org -> institution backfill logic
+        # When we submit a form with a CI organization, the (legacy) CI
+        # institution field should be populated with the full org name
+        response = self.client.get(
+            reverse('horizon:allocation:request:request'))
+        self.assertStatusCode(response, 200)
+        ci = [{
+            'id': '',
+            'title': 'Dr.',
+            'given_name': 'Mycroft',
+            'surname': 'Eyes',
+            'email': 'my.eyes@monash.edu',
+            'institution': 'Jackson Brown Uni',
+            'primary_organisation':
+            models.Organisation.objects.get(short_name='Monash'),
+            'additional_researchers': 'None'
+        }]
+        quota_specs = [
+            common.quota_spec('compute', 'instances', requested_quota=1),
+            common.quota_spec('compute', 'cores', requested_quota=2),
+            common.quota_spec('rating', 'budget', requested_quota=1000),
+        ]
+        expected_model, form = common.request_allocation(
+            user=self.user, investigators=ci,
+            quota_specs=quota_specs)
+        response = self.client.post(
+            reverse('horizon:allocation:request:request'),
+            form)
+
+        self._assert_success(response)
+        model = (models.AllocationRequest.objects
+                 .get(project_description=form['project_description'],
+                      parent_request_id=None))
+
+        # Note: self.assert_allocation will fail because the number of
+        # CI's institution has (correctly) changed.
+        ci = models.ChiefInvestigator.objects \
+                                     .filter(allocation=model.id) \
+                                     .first()
+        self.assertEqual("Monash University", ci.institution)

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load publication_extras %}
+{% load organisation_extras %}
 
 {% block title %}View allocation request{% endblock title %}
 
@@ -223,16 +224,16 @@
 
       <div class="row">
         <div class="col-md-8">
-          <h3>Supported Institutions</h3>
-          {% if allocation.institutions.all %}
+          <h3>Supported Organisations</h3>
+          {% if allocation.supported_organisations.all %}
                 <table class="table table-hover">
-                  {% for inst in allocation.institutions.all %}
+                  {% for org in allocation.supported_organisations.all %}
                       <tr>
                       {% if forloop.first %}
-                          <th width="200" rowspan="{{ allocation.institutions.all|length}}">Institutions</th>
+                          <th width="200" rowspan="{{ allocation.supported_organisations.all|length}}">Organisations</th>
                       {% endif %}
                           <td>
-                              {{ inst.name }}
+                              {{ org.full_name }} {{ org|org_status }}
                           </td>
                       </tr>
                   {% endfor %}
@@ -257,8 +258,8 @@
                         <td>{{ invest.email }} </td>
                     </tr>
                     <tr>
-                        <th>Institution</th>
-                        <td>{{ invest.institution }}</td>
+                        <th>Primary Organisation</th>
+                        <td>{{ invest.primary_organisation.full_name }}</td>
                     </tr>
                     <tr>
                         <th>Other primary investigators, partner investigators

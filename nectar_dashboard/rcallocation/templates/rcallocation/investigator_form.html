@@ -28,7 +28,7 @@
                 {% include "rcallocation/field.html" with field=investigator_form.email %}
             </div>
             <div class="col-md-6">
-                {% include "rcallocation/field.html" with field=investigator_form.institution %}
+                {% include "rcallocation/organisation_field.html" with field=investigator_form.primary_organisation field_marker="investigators-0-primary_organisation" %}
             </div>
             <div class="col-md-12">
                 {% include "rcallocation/field.html" with field=investigator_form.additional_researchers %}

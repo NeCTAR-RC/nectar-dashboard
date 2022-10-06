@@ -1,0 +1,14 @@
+{% extends "rcallocation/medium_field.html" %}
+{% block field %}
+{{ field }}
+<div id="id_{{ field_marker }}_filter">
+  <input type="checkbox" name="anz" checked id="id_{{ field_marker }}_anz"/>
+  <label for="anz">Show only Australia and New Zealand organisations</label>
+</div>
+<div>
+  <p>If the Organisation you are trying to enter is not listed, you can
+    propose it for addition to our database.</p>
+  <input class="btn btn-default submit-form-button" type="button"
+         onClick="show_propose()" value="Propose an Organisation">
+</div>
+{% endblock %}

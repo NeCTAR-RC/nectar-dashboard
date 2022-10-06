@@ -342,7 +342,7 @@ $(function(){
   }
 });
 
-// Organizations formset
+// Organisations formset
 (function($) {
 
     function create_form_row(formset, opts) {
@@ -1379,6 +1379,66 @@ function reject_doi(e) {
 $('.doi-close').click(reject_doi);
 $('#doi-reject').click(reject_doi);
 $('#doi-accept').click(accept_doi);
+
+var propose_in_progress = false;
+
+function propose_organisation(e) {
+    e.preventDefault();
+    if (propose_in_progress) {
+        return;
+    }
+
+    function set_error(name, value) {
+        $('#id-prop-' + name + '-err').html(value);
+    }
+
+    var form = $('#propose-form');
+    $('#propose-message').html('');
+    ['full_name', 'short_name', 'country', 'url'].forEach(
+        function(c) { set_error(c, ''); });
+
+    $.ajax({
+        url: "/rest_api/organisations/",
+        method: "POST",
+        data: {
+            full_name: form.find('input[name=full-name]').val(),
+            short_name: form.find('input[name=short-name]').val(),
+            country: form.find('select[name=country] option:selected').val(),
+            url: form.find('input[name=url]').val()
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        beforeSend : function(jxqr, settings) {
+            propose_in_progress = true;
+        }
+    }).done(function(jsonString, text, jqxhr) {
+        propose_in_progress = false;
+        $('#propose-message').html(
+            "Organisation provisionally accepted.  You can now use it in " +
+                "your Allocation Requests pending vetting.");
+        $('#propose-message').removeClass("alert alert-danger");
+        $('#propose-message').addClass("alert alert-warning");
+
+    }).fail(function(jqxhr, text, errorThrown) {
+        propose_in_progress = false;
+        var response_data = $.parseJSON(jqxhr.responseText)
+        if (jqxhr.status == 400) {
+            for (var key in response_data) {
+                set_error(key, response_data[key].join('; '));
+            }
+            $('#propose-message').html('Organisation not accepted.');
+            $('#propose-message').removeClass("alert alert-warning");
+            $('#propose-message').addClass("alert alert-danger");
+        } else {
+            $('#propose-message').html('Something went wrong');
+            $('#propose-message').removeClass("alert alert-warning");
+            $('#propose-message').addClass("alert alert-danger");
+        }
+    });
+};
+
+$('#propose-organisation').click(propose_organisation);
 
 $(function() {
     //date picker
