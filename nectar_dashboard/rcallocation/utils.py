@@ -14,6 +14,8 @@
 
 from copy import deepcopy
 import logging
+import os
+import urllib
 
 from django.conf import settings
 from django.db.models import F
@@ -48,15 +50,18 @@ def copy_allocation(allocation):
     manager = models.AllocationRequest.objects
     old_object = manager.get(id=allocation.id)
     old_object.parent_request = allocation
+
     quota_groups = deepcopy(old_object.quotas.all())
     investigators = deepcopy(old_object.investigators.all())
     institutions = deepcopy(old_object.institutions.all())
     publications = deepcopy(old_object.publications.all())
     grants = deepcopy(old_object.grants.all())
     usage_types = deepcopy(old_object.usage_types.all())
+    supported_organisations = deepcopy(
+        old_object.supported_organisations.all())
 
     old_object.id = None
-    old_object.save_without_updating_timestamps()
+    save_allocation_without_updating_timestamps(old_object)
 
     for quota_group in quota_groups:
         old_quota_group_id = quota_group.id
@@ -92,7 +97,33 @@ def copy_allocation(allocation):
     for usage_type in usage_types:
         old_object.usage_types.add(usage_type)
 
+    for org in supported_organisations:
+        old_object.supported_organisations.add(org)
+
     return old_object
+
+
+def save_allocation_without_updating_timestamps(allocation):
+    """Saves AllocationRequest without auto-updating the timestamps.
+    Note that if you do this when the 'submit_date' is None, you
+    may get DB constraint violation, because there is a not-null
+    constraint on the field.
+    """
+
+    manager = models.AllocationRequest.objects
+    saved_modified_time = allocation.modified_time
+    saved_submit_date = allocation.submit_date
+
+    # Save does the 'auto_*' updates
+    allocation.save()
+
+    # Reverse the effect of the 'auto_*' updates in the DB
+    manager.filter(id=allocation.id).update(modified_time=saved_modified_time)
+    manager.filter(id=allocation.id).update(submit_date=saved_submit_date)
+
+    # ... and reset the values in 'self'
+    allocation.modified_time = saved_modified_time
+    allocation.submit_date = saved_submit_date
 
 
 # The following are the domain "normalization" methods written
@@ -170,3 +201,25 @@ def get_member_map():
 def sites_from_email(contact_email):
     domain = institution_from_email(contact_email)
     return get_member_map().get(domain, [])
+
+
+def open_config_file(uri):
+    """Open a config file.  If the uri is relative, treat it as a local
+    pathname.  If it is a URL, download and cache the file locally in
+    the current directory with a filename given by the URL's last path
+    component.  Returns an opened file which the caller should close.
+    """
+
+    parsed = urllib.parse.urlparse(uri)
+    if parsed.scheme != "":
+        filename = parsed.path.split("/")[-1]
+        if not os.path.exists(filename):
+            LOG.info(f"Downloading config file from {uri}")
+            urllib.request.urlretrieve(uri, filename)
+        else:
+            LOG.info(f"Using cached config file: {filename}")
+    else:
+        filename = uri
+        LOG.info(f"Using builtin config file: {filename}")
+
+    return open(filename, mode='r')

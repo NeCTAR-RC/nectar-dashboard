@@ -11,10 +11,11 @@
 #   under the License.
 #
 
-
 from functools import partial
+import logging
 
 from django.conf import settings
+from django.core import validators
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework import decorators
@@ -29,6 +30,8 @@ from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import urgency
 from nectar_dashboard.rcallocation import utils
 from nectar_dashboard import rest_auth
+
+LOG = logging.getLogger(__name__)
 
 
 try:
@@ -141,6 +144,147 @@ class SiteSerializer(serializers.ModelSerializer):
 class SiteViewSet(NoDestroyViewSet):
     queryset = models.Site.objects.all()
     serializer_class = SiteSerializer
+
+
+class AdminOrganisationSerializer(serializers.ModelSerializer):
+    precedes = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=models.Organisation.objects.all())
+
+    class Meta:
+        model = models.Organisation
+        fields = '__all__'
+
+
+class OrganisationSerializer(serializers.ModelSerializer):
+    precedes = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=models.Organisation.objects.all())
+
+    class Meta:
+        model = models.Organisation
+        exclude = ['vetted_by', 'proposed_by']
+
+
+class ProposedOrganisationSerializer(serializers.ModelSerializer):
+    precedes = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=models.Organisation.objects.all())
+    short_name = serializers.CharField(
+        required=True, allow_blank=False, max_length=16)
+    url = serializers.CharField(
+        required=True, allow_blank=False, max_length=64,
+        validators=[validators.URLValidator(schemes=['http', 'https'])])
+
+    class Meta:
+        model = models.Organisation
+        read_only_fields = ['precedes', 'parent', 'ror_id', 'enabled']
+        exclude = ['vetted_by', 'proposed_by']
+
+
+class OrganisationViewSet(PermissionMixin, NoDestroyViewSet):
+    queryset = models.Organisation.objects.all()
+    serializer_class = OrganisationSerializer
+
+    def get_serializer_class(self):
+        if self.is_read_admin():
+            return AdminOrganisationSerializer
+        elif self.action == 'create':
+            return ProposedOrganisationSerializer
+        else:
+            return OrganisationSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            permission_classes = []
+        elif self.action in ['create']:
+            permission_classes = [permissions.IsAuthenticated]
+        else:
+            permission_classes = [rest_auth.IsAdmin]
+        return [permission() for permission in permission_classes]
+
+    @detail_route_decorator(methods=['post'])
+    def approve(self, request, pk=None):
+        return self._vet(request, pk=pk, enable=True)
+
+    @detail_route_decorator(methods=['post'])
+    def decline(self, request, pk=None):
+        return self._vet(request, pk=pk, enable=False)
+
+    def _vet(self, request, pk=None, enable=True):
+        organisation = self.get_object()
+        if organisation.ror_id:
+            raise serializers.ValidationError({
+                'ror_id': [
+                    "An Organisation from the ROR should not be vetted."
+                ]})
+        try:
+            approver = models.Approver.objects.get(
+                username=request.user.username)
+        except models.Approver.DoesNotExist:
+            approver = models.Approver.objects.get(username='system')
+        organisation.vetted_by = approver
+        organisation.enabled = enable
+        organisation.save()
+        return response.Response(
+            AdminOrganisationSerializer(organisation).data)
+
+    def _check_unique_proposal(self, serializer):
+        data = serializer.validated_data
+        full_name = data.get('full_name', None)
+        if full_name:
+            existing = models.Organisation.objects \
+                            .filter(full_name__iexact=full_name) \
+                            .first()
+            if existing:
+                raise serializers.ValidationError({
+                    'full_name': [
+                        "An Organisation with this full name already exists."
+                        if existing.enabled
+                        else "An Organisation with this full name has "
+                        "already been rejected."
+                    ]})
+        url = data.get('url', None)
+        if url:
+            existing = models.Organisation.objects \
+                            .filter(url__iexact=url) \
+                            .first()
+            if existing:
+                raise exceptions.ValidationError({
+                    'url': [
+                        "An Organisation with this url already exists."
+                        if existing.enabled
+                        else "An Organisation with this url has "
+                        "already been rejected."
+                    ]})
+
+    def perform_create(self, serializer):
+        if self.is_write_admin():
+            if serializer.validated_data.get('ror_id', '') \
+               or serializer.validated_data.get('vetted_by', None) \
+               or serializer.validated_data.get('proposed_by', ''):
+                # This is assumed to be a classic 'create' since the
+                # "propose organization" form doesn't supply any of
+                # these fields.
+                return serializer.save()
+
+            # Otherwise, this is a propose + vet, so we want to fill
+            # in the proposer + vetter + enable
+            try:
+                approver = models.Approver.objects.get(
+                    username=self.request.user.username)
+            except models.Approver.DoesNotExist:
+                approver = models.Approver.objects.get(username='system')
+            kwargs = {'vetted_by': approver,
+                      'proposed_by': self.request.user.keystone_user_id,
+                      'enabled': True}
+        else:
+            # This is a proposal that will require vetting
+            kwargs = {'vetted_by': None,
+                      'proposed_by': self.request.user.keystone_user_id,
+                      'enabled': True}
+        self._check_unique_proposal(serializer)
+        return serializer.save(**kwargs)
 
 
 class ARDCSupportSerializer(serializers.ModelSerializer):
@@ -383,6 +527,54 @@ class UsageTypesField(serializers.RelatedField):
                 "'%s' is not a known UsageType" % data)
 
 
+class OrganisationField(serializers.RelatedField):
+    """Serialize as a ROR id (if available) or the native id.
+    Deserialization also allows an organisation's short or full name ...
+    provided that the name supplied is unambiguous.
+    """
+
+    def to_representation(self, value):
+        return value.ror_id or value.id
+
+    def to_internal_value(self, data):
+        try:
+            if data.isdigit():
+                organisation = models.Organisation.objects.get(id=int(data))
+            else:
+                try:
+                    organisation = models.Organisation.objects.get(ror_id=data)
+                except models.Organisation.DoesNotExist:
+                    organisation = models.Organisation.objects.get(
+                        Q(full_name__iexact=data)
+                        | Q(short_name__iexact=data))
+            if not organisation.enabled:
+                raise serializers.ValidationError(
+                    "Organisation '%s' is disabled" % data)
+            if organisation.full_name == models.ORG_UNKNOWN_FULL_NAME:
+                raise serializers.ValidationError(
+                    "'Unknown Organisation' may not be used")
+            return organisation
+
+        except models.Organisation.DoesNotExist:
+            raise serializers.ValidationError(
+                "'%s' doesn't match a known Organisation" % data)
+        except models.Organisation.MultipleObjectsReturned:
+            raise serializers.ValidationError(
+                "'%s' is an ambiguous Organisation name" % data)
+
+
+class PrimaryOrganisationField(OrganisationField):
+    def to_representation(self, value):
+        return value.ror_id or value.id
+
+    def to_internal_value(self, data):
+        organisation = super().to_internal_value(data)
+        if organisation.full_name == models.ORG_UNKNOWN_FULL_NAME:
+            raise serializers.ValidationError(
+                "'All Organisations' may not be used here")
+        return organisation
+
+
 class NCRISFacilitiesField(serializers.RelatedField):
     def to_representation(self, value):
         return value.short_name
@@ -422,6 +614,8 @@ class AllocationSerializer(serializers.ModelSerializer):
         many=True, queryset=models.ARDCSupport.objects.all())
     ncris_facilities = NCRISFacilitiesField(
         many=True, queryset=models.NCRISFacility.objects.all())
+    supported_organisations = OrganisationField(
+        many=True, queryset=models.Organisation.objects.all())
 
     class Meta:
         model = models.AllocationRequest
@@ -456,6 +650,22 @@ class AllocationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Project name already exists")
         return value
 
+    def validate_supported_organisations(self, value):
+        # # Only enable this check when UoM are populating the
+        # # supported_organisations
+        #
+        # if not value:
+        #     raise serializers.ValidationError(
+        #         "One or more supported organizations are required")
+        if len(value) > 1:
+            for org in value:
+                if org.full_name == models.ORG_ALL_FULL_NAME:
+                    raise serializers.ValidationError(
+                        "'All Organisations' cannot be used in this context")
+            if len(set(value)) != len(value):
+                raise serializers.ValidationError("Duplicate organisations")
+        return value
+
 
 class PublicAllocationSerializer(AllocationSerializer):
     class Meta:
@@ -464,7 +674,8 @@ class PublicAllocationSerializer(AllocationSerializer):
                   'submit_date', 'start_date', 'end_date',
                   'field_of_research_1', 'field_of_research_2',
                   'field_of_research_3', 'for_percentage_1',
-                  'for_percentage_2', 'for_percentage_3', 'quotas')
+                  'for_percentage_2', 'for_percentage_3',
+                  'supported_organisations', 'quotas')
         read_only_fields = fields
 
 
@@ -528,7 +739,8 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     queryset = models.AllocationRequest.objects.prefetch_related(
         'quotas', 'quotas__quota_set', 'quotas__zone',
         'quotas__quota_set__resource__service_type',
-        'quotas__quota_set__resource', 'investigators', 'associated_site',
+        'quotas__quota_set__resource', 'investigators',
+        'supported_organisations', 'associated_site',
         'ncris_facilities', 'usage_types', 'ardc_support')
 
     filterset_class = AllocationFilter
@@ -544,7 +756,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
                 'quotas__quota_set__resource__service_type',
                 'quotas__quota_set__resource', 'investigators',
                 'associated_site', 'ncris_facilities', 'usage_types',
-                'ardc_support')
+                'ardc_support', 'supported_organisations')
 
     def _perform_create_or_update(self, serializer, kwargs):
         data = serializer.validated_data
@@ -562,7 +774,19 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
                     + "'associated_site'")
             kwargs.update(compat_info)
             data.pop('allocation_home')
-        return serializer.save(**kwargs)
+
+        organisations = (kwargs.get('supported_organisations')
+                         or data.get('supported_organisations'))
+        allocation = serializer.save(**kwargs)
+
+        # Transitional handling: mirror organisation names as institutions
+        if organisations is not None:
+            models.Institution.objects.filter(allocation=allocation).delete()
+            for org in organisations:
+                institution = models.Institution.objects.create(
+                    allocation=allocation, name=org.full_name)
+                institution.save()
+        return allocation
 
     def perform_create(self, serializer):
         kwargs = {'created_by': self.request.user.token.project['id']}
@@ -711,14 +935,43 @@ class AllocationRelatedViewSet(viewsets.ModelViewSet, PermissionMixin):
 
 
 class ChiefInvestigatorSerializer(AllocationRelatedSerializer):
+    primary_organisation = PrimaryOrganisationField(
+        many=False, queryset=models.Organisation.objects.all())
+
     class Meta:
         model = models.ChiefInvestigator
-        fields = '__all__'
+        exclude = ('institution',)
 
 
 class ChiefInvestigatorViewSet(AllocationRelatedViewSet):
     queryset = models.ChiefInvestigator.objects.all()
     serializer_class = ChiefInvestigatorSerializer
+
+    def perform_create(self, serializer):
+        # Transitional handling: mirror primary organisation as institution
+        org = serializer.validated_data.get('primary_organisation')
+        if org is None or org.full_name == models.ORG_UNKNOWN_FULL_NAME:
+            kwargs = {'institution': None}
+        elif org.full_name == models.ORG_ALL_FULL_NAME:
+            raise serializers.ValidationError(
+                "'All Organisations' cannot be used in this context")
+        else:
+            kwargs = {'institution': org.full_name}
+        serializer.save(**kwargs)
+
+    def perform_update(self, serializer):
+        # Transitional handling: mirror primary organisation as institution
+        org = serializer.validated_data.get('primary_organisation')
+        if org is None:
+            kwargs = {}
+        elif org.full_name == models.ORG_UNKNOWN_FULL_NAME:
+            kwargs = {'institution': None}
+        elif org.full_name == models.ORG_ALL_FULL_NAME:
+            raise serializers.ValidationError(
+                "'All Organisations' cannot be used in this context")
+        else:
+            kwargs = {'institution': org.full_name}
+        serializer.save(**kwargs)
 
 
 class InstitutionSerializer(AllocationRelatedSerializer):

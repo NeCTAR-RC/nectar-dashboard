@@ -1,3 +1,5 @@
+import os
+
 from openstack_dashboard.test import helpers
 
 from nectar_dashboard.rcallocation.tests import common
@@ -21,6 +23,9 @@ class UtilsTest(helpers.TestCase):
         def _discard_different_attrs(a):
             a.pop('id')
             a.pop('parent_request')
+            for i in a.get('institution', []):
+                i.pop('id')
+                i.pop('allocation')
             return a
 
         allocation_dict = _discard_different_attrs(
@@ -63,3 +68,33 @@ class UtilsTest(helpers.TestCase):
                          len(utils.sites_from_email("ab.cd@csiro.au")))
         self.assertEqual(0,
                          len(utils.sites_from_email("ab.cd@gmail.com")))
+
+    def test_open_config_file(self):
+        file_name = f"testing-{os.getpid()}.txt"
+        try:
+            with self.assertRaises(FileNotFoundError):
+                utils.open_config_file(file_name)
+
+            with open(f"/tmp/{file_name}", mode="w") as o:
+                print("Jello world", file=o)
+
+            i = utils.open_config_file(f"/tmp/{file_name}")
+            self.assertIsNotNone(i)
+            i.close()
+
+            i = utils.open_config_file(f"file:///tmp/{file_name}")
+            self.assertIsNotNone(i)
+            i.close()
+
+            i = utils.open_config_file(file_name)
+            self.assertIsNotNone(i)
+            i.close()
+        finally:
+            try:
+                os.remove(f"/tmp/{file_name}")
+            except FileNotFoundError:
+                pass
+            try:
+                os.remove(file_name)
+            except FileNotFoundError:
+                pass

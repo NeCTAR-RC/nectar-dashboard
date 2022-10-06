@@ -97,6 +97,18 @@ class InstitutionFactory(factory.django.DjangoModelFactory):
     name = 'Monash'
 
 
+class OrganisationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.Organisation'
+    short_name = fuzzy.FuzzyText()
+    full_name = fuzzy.FuzzyText()
+    enabled = True
+    ror_id = ''
+    vetted_by = None
+    proposed_by = ''
+    country = 'AU'
+
+
 class PublicationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Publication'
@@ -136,11 +148,13 @@ class NCRISFacilityFactory(factory.django.DjangoModelFactory):
 class InvestigatorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.ChiefInvestigator'
+
+    # The allocation and primary_organization cannot be defaulted.
+
     title = 'Prof.'
     given_name = 'MeRC'
     surname = 'Monash'
     email = 'merc.monash@monash.edu'
-    institution = 'Monash University'
     additional_researchers = 'None'
 
 
@@ -165,11 +179,15 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     nectar_support = 'nectar supporting'
 
     @classmethod
-    def create(cls, create_quotas=True, quota_value=0,
+    def create(cls, create_quotas=True, only_requestable=True, quota_value=0,
                modified_time=None, submit_date=None, **kwargs):
         usage_types = kwargs.pop('usage_types', None)
         ncris_facilities = kwargs.pop('ncris_facilities', [])
         ardc_support = kwargs.pop('ardc_support', [])
+        supported_organisations = kwargs.pop(
+            'supported_organisations', ['Monash'])
+        institutions = kwargs.pop(
+            'institutions', ['Monash University'])
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
 
@@ -191,6 +209,13 @@ class AllocationFactory(factory.django.DjangoModelFactory):
             for name in usage_types:
                 u = models.UsageType.objects.get(name=name)
                 allocation.usage_types.add(u)
+
+        for name in supported_organisations:
+            o = models.Organisation.objects.get(short_name=name)
+            allocation.supported_organisations.add(o)
+
+        for name in institutions:
+            InstitutionFactory.create(name=name, allocation=allocation)
 
         for name in ncris_facilities:
             f = models.NCRISFacility.objects.get(short_name=name)
@@ -260,8 +285,9 @@ class AllocationFactory(factory.django.DjangoModelFactory):
                          quota=quota_value)
             QuotaFactory(group=group_compute, resource=instances,
                          quota=quota_value)
-            QuotaFactory(group=group_compute, resource=ram,
-                         quota=quota_value)
+            if not only_requestable:
+                QuotaFactory(group=group_compute, resource=ram,
+                             quota=quota_value)
             QuotaFactory(group=group_rating, resource=budget,
                          quota=quota_value)
             QuotaFactory(group=group_network, resource=router,

@@ -90,6 +90,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.messages',
     'django.contrib.humanize',
+    'django_countries',
     'openstack_auth',
     'compressor',
     'horizon',
@@ -408,6 +409,19 @@ SITE_MEMBERS_MAPPING = {
 # names are defined in forcodes.py file.
 ALLOCATION_FOR_CODE_SERIES = "ANZSRC_2020"
 
+# URI for the ROR dump file for the 0070 / 0071 migrations that load the
+# Organisations table, load local additions, and convert institution
+# strings to organisation refs.  It the URI is a URL, it will be fetched
+# locally and cached in the current directory.  If it is a relative URI
+# (i.e. no protocol) it is interpreted as a local pathname.  If it is None,
+# these migrations are no-ops.
+ORGANISATION_MIGRATION_ROR_DUMP_URI = None
+
+# If the following setting is True, any unmappable institution strings
+# will cause the 0071 migration to fail.  If False, they will be quietly
+# mapped to "Unknown Organization"
+ORGANISATION_MIGRATION_STRICT = False
+
 HORIZON_CONFIG['WARNING_INFO_URL'] = \
     "https://support.ehelp.edu.au/support/home"
 HORIZON_CONFIG['FRESHDECK_SEARCH_URL'] = (
@@ -430,25 +444,56 @@ REST_FRAMEWORK = {
 }
 
 REST_VIEW_SETS = (
-    ('allocations', 'nectar_dashboard.rcallocation.api.AllocationViewSet', None),
-    ('quotas', 'nectar_dashboard.rcallocation.api.QuotaViewSet', None),
-    ('chiefinvestigators', 'nectar_dashboard.rcallocation.api.ChiefInvestigatorViewSet', None),
-    ('institutions', 'nectar_dashboard.rcallocation.api.InstitutionViewSet', None),
-    ('publications', 'nectar_dashboard.rcallocation.api.PublicationViewSet', None),
-    ('grants', 'nectar_dashboard.rcallocation.api.GrantViewSet', None),
-    ('resources', 'nectar_dashboard.rcallocation.api.ResourceViewSet', None),
-    ('zones', 'nectar_dashboard.rcallocation.api.ZoneViewSet', None),
-    ('service-types', 'nectar_dashboard.rcallocation.api.ServiceTypeViewSet', None),
-    ('for-codes', 'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet', 'for-codes'),
-    ('for-codes-2008', 'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet', 'for-codes-2008'),
-    ('for-codes-2020', 'nectar_dashboard.rcallocation.api.for.FOR2020ViewSet', 'for-codes-2020'),
-    ('for-codes-all', 'nectar_dashboard.rcallocation.api.for.FORAllViewSet', 'for-codes-all'),
-    ('for-tree', 'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet', 'for-tree'),
-    ('for-tree-2008', 'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet', 'for-tree-2008'),
-    ('for-tree-2020', 'nectar_dashboard.rcallocation.api.for.AllocationTree2020ViewSet', 'for-tree-2020'),
-    ('for-tree-all', 'nectar_dashboard.rcallocation.api.for.AllocationTreeAllViewSet', 'for-tree-all'),
-    ('ncris-facilities', 'nectar_dashboard.rcallocation.api.NCRISFacilityViewSet', None),
-    ('ardc-projects', 'nectar_dashboard.rcallocation.api.ARDCSupportViewSet', None),
-    ('sites', 'nectar_dashboard.rcallocation.api.SiteViewSet', None),
-    ('approvers', 'nectar_dashboard.rcallocation.api.ApproverViewSet', None),
+    ('allocations',
+     'nectar_dashboard.rcallocation.api.AllocationViewSet', None),
+    ('quotas',
+     'nectar_dashboard.rcallocation.api.QuotaViewSet', None),
+    ('chiefinvestigators',
+     'nectar_dashboard.rcallocation.api.ChiefInvestigatorViewSet', None),
+    ('institutions',
+     'nectar_dashboard.rcallocation.api.InstitutionViewSet', None),
+    ('organisations',
+     'nectar_dashboard.rcallocation.api.OrganisationViewSet', None),
+    ('publications',
+     'nectar_dashboard.rcallocation.api.PublicationViewSet', None),
+    ('grants',
+     'nectar_dashboard.rcallocation.api.GrantViewSet', None),
+    ('resources',
+     'nectar_dashboard.rcallocation.api.ResourceViewSet', None),
+    ('zones',
+     'nectar_dashboard.rcallocation.api.ZoneViewSet', None),
+    ('service-types',
+     'nectar_dashboard.rcallocation.api.ServiceTypeViewSet', None),
+    ('ncris-facilities',
+     'nectar_dashboard.rcallocation.api.NCRISFacilityViewSet', None),
+    ('ardc-projects',
+     'nectar_dashboard.rcallocation.api.ARDCSupportViewSet', None),
+    ('sites',
+     'nectar_dashboard.rcallocation.api.SiteViewSet', None),
+    ('approvers',
+     'nectar_dashboard.rcallocation.api.ApproverViewSet', None),
+    ('for-codes',
+     'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet',
+     'for-codes'),
+    ('for-codes-2008',
+     'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet',
+     'for-codes-2008'),
+    ('for-codes-2020',
+     'nectar_dashboard.rcallocation.api.for.FOR2020ViewSet',
+     'for-codes-2020'),
+    ('for-codes-all',
+     'nectar_dashboard.rcallocation.api.for.FORAllViewSet',
+     'for-codes-all'),
+    ('for-tree',
+     'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet',
+     'for-tree'),
+    ('for-tree-2008',
+     'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet',
+     'for-tree-2008'),
+    ('for-tree-2020',
+     'nectar_dashboard.rcallocation.api.for.AllocationTree2020ViewSet',
+     'for-tree-2020'),
+    ('for-tree-all',
+     'nectar_dashboard.rcallocation.api.for.AllocationTreeAllViewSet',
+     'for-tree-all'),
 )

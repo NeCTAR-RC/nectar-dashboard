@@ -117,7 +117,7 @@ class BaseAllocationForm(forms.ModelForm):
         name='ardc_support',
         model=models.ARDCSupport,
         label="ARDC program or project supporting this request",
-        help_text="""ARDC and its predecessor organizations have provided
+        help_text="""ARDC and its predecessor organisations have provided
                      direct funding for a number of projects under various
                      programs.  If this allocation request supports one of
                      these ARDC funded projects or an ARDC-internal project,
@@ -151,7 +151,7 @@ class BaseAllocationForm(forms.ModelForm):
         model = models.AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
-                   'associated_site', 'special_approval',
+                   'associated_site', 'special_approval', 'institutions',
                    'provisioned', 'managed',
                    'project_id', 'notes', 'notifications', 'ncris_support',
                    'nectar_support'
@@ -233,6 +233,21 @@ class BaseAllocationForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Project names cannot start with 'pt-'")
         return data
+
+    def clean_supported_organisations(self):
+        orgs = self.cleaned_data['supported_organisations']
+        names = [o.full_name for o in orgs]
+        if len(orgs) == 0:
+            raise forms.ValidationError("This field is required.")
+        if len(orgs) > 1 and models.ORG_ALL_FULL_NAME in names:
+            raise forms.ValidationError(
+                f"'{models.ORG_ALL_FULL_NAME}' should not be used "
+                "with any other organisation")
+        if models.ORG_UNKNOWN_FULL_NAME in names:
+            raise forms.ValidationError(
+                f"'{models.ORG_UNKNOWN_FULL_NAME}' should not be used "
+                "in this context")
+        return orgs
 
     def clean(self):
         cleaned_data = super().clean()
@@ -470,9 +485,22 @@ class NectarBaseModelForm(forms.ModelForm):
 class ChiefInvestigatorForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.ChiefInvestigator
+        exclude = ('institution',)
         widgets = {
             'additional_researchers': forms.Textarea(),
         }
+
+    def clean_primary_organisation(self):
+        data = self.cleaned_data['primary_organisation']
+        if not data:
+            raise ValidationError("This field is required.")
+        if not data.enabled:
+            raise ValidationError("This organisation is not (or no longer) "
+                                  "valid: select an alternate one.")
+        if data.full_name == models.ORG_ALL_FULL_NAME:
+            raise ValidationError(f"'{models.ORG_ALL_FULL_NAME}' is not "
+                                  "meaningful in this context")
+        return data
 
 
 class InstitutionForm(NectarBaseModelForm):

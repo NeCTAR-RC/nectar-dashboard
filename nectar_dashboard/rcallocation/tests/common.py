@@ -37,20 +37,23 @@ def allocation_to_dict(model):
             quotas.append(quota_dict)
     allocation['quota'] = quotas
 
-    allocation['institution'] = [model_to_dict(institution)
-                                 for institution in model.institutions.all()]
+    allocation['institution'] = [
+        model_to_dict(inst) for inst in model.institutions.all()]
 
-    allocation['publication'] = [model_to_dict(publication)
-                                 for publication in model.publications.all()]
+    allocation['organisation'] = [
+        model_to_dict(org) for org in model.supported_organisations.all()]
 
-    allocation['grant'] = [model_to_dict(grant)
-                           for grant in model.grants.all()]
+    allocation['publication'] = [
+        model_to_dict(pub) for pub in model.publications.all()]
 
-    allocation['usage'] = [usage.name
-                           for usage in model.usage_types.all()]
+    allocation['grant'] = [
+        model_to_dict(grant) for grant in model.grants.all()]
 
-    allocation['investigator'] = [model_to_dict(inv)
-                                  for inv in model.investigators.all()]
+    allocation['usage'] = [
+        usage.name for usage in model.usage_types.all()]
+
+    allocation['investigator'] = [
+        model_to_dict(inv) for inv in model.investigators.all()]
     return allocation
 
 
@@ -68,6 +71,7 @@ def get_site(name):
 
 def factory_setup():
     sites_setup()
+    organisations_setup()
     melbourne = factories.ZoneFactory(name='melbourne')
     monash = factories.ZoneFactory(name='monash')
     tas = factories.ZoneFactory(name='tas')
@@ -100,15 +104,38 @@ def factory_setup():
     factories.ResourceFactory(quota_name='floatingip', service_type=network_st)
 
 
+def organisations_setup():
+    models.Organisation.objects.get_or_create(
+        short_name='QCIF',
+        full_name='Queensland Cyber Infrastructure Foundation',
+        ror_id='https://ror.org/12345678', country='AU')
+    models.Organisation.objects.get_or_create(
+        short_name='Monash',
+        full_name='Monash University',
+        ror_id='https://ror.org/23456789', country='AU')
+    models.Organisation.objects.get_or_create(
+        short_name='UWW',
+        full_name='University of Woop Woop',
+        ror_id='', country='AU', enabled=False)
+    models.Organisation.objects.get_or_create(
+        short_name=models.ORG_ALL_SHORT_NAME,
+        full_name=models.ORG_ALL_FULL_NAME,
+        ror_id='', country='AU')
+    models.Organisation.objects.get_or_create(
+        short_name=models.ORG_UNKNOWN_SHORT_NAME,
+        full_name=models.ORG_UNKNOWN_FULL_NAME,
+        ror_id='', country='AU')
+
+
 def approvers_setup():
     qcif = models.Site.objects.get(name="qcif")
     melbourne = models.Site.objects.get(name="uom")
-    test_user = models.Approver.objects.create(username="test_user",
-                                               display_name="One")
-    test_user2 = models.Approver.objects.create(username="test_user2",
-                                                display_name="Two")
-    models.Approver.objects.create(username="test_user3",
-                                   display_name="Three")
+    (test_user, _) = models.Approver.objects.get_or_create(
+        username="test_user", display_name="One")
+    (test_user2, _) = models.Approver.objects.get_or_create(
+        username="test_user2", display_name="Two")
+    models.Approver.objects.get_or_create(
+        username="test_user3", display_name="Three")
     test_user.sites.add(qcif)
     test_user2.sites.add(melbourne)
 
@@ -248,6 +275,7 @@ def next_char(c):
 
 
 def request_allocation(user, model=None, quota_specs=None,
+                       supported_organisations=None,
                        institutions=None, publications=None, grants=None,
                        usage_types=None, investigators=None):
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
@@ -309,11 +337,14 @@ def request_allocation(user, model=None, quota_specs=None,
                           'surname': inv.surname,
                           'email': inv.email,
                           'institution': inv.institution,
+                          'primary_organisation': inv.primary_organisation,
                           'additional_researchers': inv.additional_researchers
                          }
                          for inv in model.investigators.all()]
 
         usage_types = model.usage_types.all()
+
+        supported_organisations = model.supported_organisations.all()
 
     else:
         if quota_specs is None:
@@ -323,12 +354,12 @@ def request_allocation(user, model=None, quota_specs=None,
         else:
             groups = quota_specs_to_groups(quota_specs)
 
-        if not institutions:
+        if institutions is None:
             institutions = [
                 {'id': '',
-                 'name': 'Monash'}]
+                 'name': 'Monash University'}]
 
-        if not publications:
+        if publications is None:
             publications = [
                 {'id': '',
                  'publication': 'publication testing',
@@ -336,7 +367,7 @@ def request_allocation(user, model=None, quota_specs=None,
                  'doi': '',
                  'crossref_metadata': ''}]
 
-        if not grants:
+        if grants is None:
             grants = [{
                 'id': '',
                 'grant_type': 'arc',
@@ -348,7 +379,7 @@ def request_allocation(user, model=None, quota_specs=None,
                 'total_funding': quota.fuzz()
             }]
 
-        if not investigators:
+        if investigators is None:
             investigators = [{
                 'id': '',
                 'title': 'Prof.',
@@ -356,11 +387,17 @@ def request_allocation(user, model=None, quota_specs=None,
                 'surname': 'Monash',
                 'email': 'merc.monash@monash.edu',
                 'institution': 'Monash University',
+                'primary_organisation':
+                    models.Organisation.objects.get(short_name='Monash'),
                 'additional_researchers': 'None'
             }]
 
-        if not usage_types:
+        if usage_types is None:
             usage_types = factories.get_active_usage_types()
+
+        if supported_organisations is None:
+            supported_organisations = [
+                models.Organisation.objects.get(short_name='Monash')]
 
     form = model_dict.copy()
     all_quotas = []
@@ -368,13 +405,14 @@ def request_allocation(user, model=None, quota_specs=None,
     prefix_start = 'b' if model else 'a'
     for name, group_list in groups.items():
         add_quota_forms(form, all_quotas, name, group_list, prefix_start)
-    form['institutions-INITIAL_FORMS'] = model.institutions.count() \
-        if model else 0
+
+    form['institutions-INITIAL_FORMS'] = \
+        model.institutions.count() if model else 0
     form['institutions-TOTAL_FORMS'] = len(institutions)
     form['institutions-MAX_NUM_FORMS'] = 1000
 
-    form['publications-INITIAL_FORMS'] = model.publications.count() \
-        if model else 0
+    form['publications-INITIAL_FORMS'] = \
+        model.publications.count() if model else 0
     form['publications-TOTAL_FORMS'] = len(publications)
     form['publications-MAX_NUM_FORMS'] = 1000
 
@@ -382,8 +420,8 @@ def request_allocation(user, model=None, quota_specs=None,
     form['grants-TOTAL_FORMS'] = len(grants)
     form['grants-MAX_NUM_FORMS'] = 1000
 
-    form['investigators-INITIAL_FORMS'] = model.investigators.count() \
-        if model else 0
+    form['investigators-INITIAL_FORMS'] = \
+        model.investigators.count() if model else 0
     form['investigators-TOTAL_FORMS'] = len(investigators)
     form['investigators-MAX_NUM_FORMS'] = 1000
 
@@ -401,13 +439,16 @@ def request_allocation(user, model=None, quota_specs=None,
 
     for i, inv in enumerate(investigators):
         for k, v in inv.items():
-            form['investigators-%s-%s' % (i, k)] = v
+            form['investigators-%s-%s' % (i, k)] = (
+                v.id if k == 'primary_organisation' else v)
 
     form['usage_types'] = [usage.name for usage in usage_types]
+    form['supported_organisations'] = ','.join([
+        str(org.id) for org in supported_organisations])
     form['associated_site'] = site or ''
-
     model_dict['quotas'] = all_quotas
     model_dict['institutions'] = institutions
+    model_dict['supported_organisations'] = supported_organisations
     model_dict['publications'] = publications
     model_dict['grants'] = grants
     model_dict['investigators'] = investigators

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load publication_extras %}
+{% load countries %}
 
 {% block title %}Allocation Request{% endblock title %}
 
@@ -66,7 +67,7 @@
       </blockquote>
       {% if warnings|length > 0 %}
         {% include "rcallocation/warnings.html" %}
-      {% elif form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
+      {% elif form.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
         <div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Please fix the errors highlighted below and resubmit.</div>
       {% endif %}
         {% if nags|length > 0 %}
@@ -335,24 +336,19 @@
       <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelFive">5. Supported Institutions</a>
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelFive">5. Supported Organisations</a>
             </h4>
         </div>
         <div id="panelFive" class="request-collapse panel-collapse collapse">
             <div class="panel-body">
               <div class="row">
-                <div class="institution_formset">
-                  <div class="col-xs-12">
-                    <span class="label label-info">Note:</span>
-                    Specify which universities or research institutions will
-                    be supported by the application or specify 'all'.
-                    <br/>
-                    <br/>
-                    {{ institution_formset.management_form }}
-                    {% if institution_formset.forms %}
-                    {% include "rcallocation/institution_form.html" with field=institution_formset.forms.0.name %}
-                    {% endif %}
-                  </div>
+                <div class="col-xs-12">
+                  <span class="label label-info">Note:</span>
+                  Specify the Universities and other Research Organisations that will
+                  be supported by the allocation.  Alternatively you can select 'All Organisations'.
+                  <br/>
+                  <br/>
+                  {% include "rcallocation/organisation_field.html" with field=form.supported_organisations field_marker="supported_organisations" %}
                 </div>
               </div>
               <div class="row step-nav">
@@ -726,8 +722,100 @@
         </div>
       </div>
     </div>
+    {% endif %}
+
+  <!-- Organisation proposer modal dialog -->
+  <script>
+    function show_propose() {
+        $('#modal-propose').modal('show');
+    }
+  </script>
+  <div id="modal-propose" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Propose a new Organisation</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            To propose an Organisation that is not currently listed, fill in
+            all of the fields below and click the "Propose" button.  Your
+            proposed Organisation will be vetted by ARDC staff.  In the
+            meantime, you can use it in your allocation request form.
+          </p>
+          <div class="container-fluid" id="propose-form">
+            <div class="row">
+              <div class="col-md-6">
+                <div id="prop_full_name-group" class="form-group">
+                  <label for="id_prop_full_name">
+                    Full name
+                  </label>
+                  <div class="controls">
+                    <input id="id_prop_full_name" class="form-control" type="text" required="" name="full-name" value="">
+                    <span class="help-text" id="id-prop-full_name-err"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div id="prop_full_name-group" class="form-group">
+                  <label for="id_prop_short_name">
+                    Short name
+                  </label>
+                  <div class="controls">
+                    <input id="id_prop_short_name" class="form-control" type="text" required="" name="short-name" value="">
+                    <span class="help-text" id="id-prop-short_name-err"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div id="prop_country-group" class="form-group">
+                  <label for="id_prop_country">
+                    Country
+                  </label>
+                  <div class="controls">
+                    <select name="country" class="form-control">
+                      <option value="AU">Australia</option>
+                      <option value="NZ">New Zealand</option>
+                      {% get_countries as countries %}
+                      {% for country in countries %}
+                      <option value="{{ country.code }}">{{ country.name }}</option>
+                      {% endfor %}
+                    </select>
+                    <span class="help-text" id="id-prop-country-err"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div id="prop_url-group" class="form-group">
+                  <label for="id_prop_url">
+                    Website URL
+                  </label>
+                  <div class="controls">
+                    <input id="id_prop_url" class="form-control" type="url" required="" name="url" value="">
+                    <span class="help-text" id="id-prop-url-err"></span>
+                  </div>
+               </div>
+              </div>
+            </div>
+            <div class="form-actions text-center">
+              <div id="propose-message"></div>
+              <button type="button" class="btn btn-sm btn-default"
+                      data-dismiss="modal">Close</button>
+              <input type="button" class="btn btn-sm btn-success"
+                     value="Propose" id="propose-organisation">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  {% endif %}
 
   <!-- DOI checker modal dialog -->
   <div id="modal-doi-checker" class="modal modal-bordered" tabindex="-1"
@@ -822,14 +910,6 @@
         service_types: {{ service_types|safe }},
         resources: {{ resources|safe }},
         zones: {{ zones|safe }},
-      });
-    });
-
-    $(document).ready(function() {
-      $('div.institution_formset').mformset({
-        prefix: 'institutions',
-        formset_class_id: 'institution_formset',
-        field_name: 'name'
       });
     });
 
