@@ -625,6 +625,9 @@ input {
     text-align: center;
   }
 }
+.paused {
+  animation-play-state: paused !important;
+}
 /*
  * CSS Functions
  */
