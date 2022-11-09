@@ -20,15 +20,19 @@
 {% endblock %}
 
 {% block breadcrumb_nav %}
-{% if object %}
-<ol class="breadcrumb">
-  <li class="breadcrumb-item-truncate">Allocations</li>
-  <li class="breadcrumb-item-truncate"><a href="/allocation/user_requests/">My Requests</a></li>
-  <li class="breadcrumb-item-truncate active">{{ object.project_name }}</li>
-</ol>
-{% else %}
-<ol class="breadcrumb"><li class="breadcrumb-item-truncate active">New Request</li></ol>
-{% endif %}
+  {% if object %}
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item-truncate">Allocations</li>
+    <li class="breadcrumb-item-truncate"><a href="/allocation/user_requests/">My Requests</a></li>
+    <li class="breadcrumb-item-truncate active">{{ object.project_name }}</li>
+  </ol>
+  {% else %}
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item-truncate">Allocations</li>
+    <li class="breadcrumb-item-truncate"><a href="/allocation/user_requests/">My Requests</a></li>
+    <li class="breadcrumb-item-truncate active">New Request</li>
+  </ol>
+  {% endif %}
 {% endblock %}
 
 {% block js %}
@@ -43,34 +47,52 @@
 
 {% block main %}
 <div class="dash_block">
-  <div>
-    {% block form_intro %}
-    <br/>
-    <p>
-      This form allows you to request a project specific
-      allocation on the Nectar Research Cloud.
-    <br/>
-    Allocations take up to 3 weeks to process. If you have any questions please email <a href="mailto:support@nectar.org.au">support@nectar.org.au</a>
-    </p>
-    <p>
-      <span class="label label-info">Note:</span>
-      If you would like to request an extension or amendment of an existing allocation, please
-      use the <i>Amend/Extend allocation</i> action on the existing allocation request on the
-      <a href="{% url 'horizon:allocation:user_requests:index' %}">My Requests</a> page.
-    </p>
-      {% endblock %}
+  <div class="block-title d-md-flex align-items-center justify-content-between mb-2">
+    <h3>New Allocation Request</h3>
+    <div class="d-inline-block">
+      <a class="btn btn-default" href="{% url 'horizon:allocation:user_requests:index' %}">All My Requests</a>
+    </div>
   </div>
-  <hr/>
-  <blockquote>
-    <strong>Info:</strong>
-    Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-secondary"></span>
-    sign.
-  </blockquote>
-  {% if warnings|length > 0 %}
-  {% include "rcallocation/warnings.html" %}
-  {% elif form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
-  <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit</div>
-  {% endif %}
+  
+  <div class="row">
+    <div class="col-md-6">
+      {% block form_intro %}
+        <p>This form allows you to request a project specific allocation on the Nectar Research Cloud.</p>
+        <p>Allocations take up to 3 weeks to process. If you have any questions please email <a href="mailto:support@nectar.org.au">support@nectar.org.au</a>.</p>
+        <p>
+          <span class="label label-info">Note:</span>
+          If you would like to request an extension or amendment of an existing allocation, please
+          use the <i>Amend/Extend allocation</i> action on the existing allocation request on the
+          <a href="{% url 'horizon:allocation:user_requests:index' %}">My Requests</a> page.
+        </p>
+      {% endblock %}
+      <blockquote>
+        <p><strong>INFO:</strong>
+        Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-secondary"></span>
+        sign.</p>
+      </blockquote>
+      {% if warnings|length > 0 %}
+        {% include "rcallocation/warnings.html" %}
+      {% elif form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
+        <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit</div>
+      {% endif %}
+    </div>
+    <div class="col-md-6">
+      <div class="panel panel-info shadow">
+        <div class="panel-body">
+          <h4>You will need...</h4>
+          <p>Before you begin this form, please have the following information ready.</p>
+          <ul>
+            <li>Project information.</li>
+            <li>Chief Investigator details and contact.</li>
+            <li>Research Grant information.</li>
+            <li>FoR code to describe research.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <form id="new-allocation"
         action="{% block form_action %}{% url 'horizon:allocation:request:request' %}{% endblock %}"
         method="post" novalidate="novalidate">
