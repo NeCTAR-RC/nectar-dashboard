@@ -9,8 +9,19 @@
   {% endwith %}
 {% endblock %}
 
+{% block breadcrumb_nav %}
+  {{ block.super }}
+{% endblock %}
+
 {% block main %}
   <div class="dash_block">
+    {% if 'history' in request.META.HTTP_REFERER %}
+      <a href="{% url 'horizon:allocation:requests:allocation_history' allocation.pk %}" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back to History</a>
+    {% elif 'approved_requests' in request.META.HTTP_REFERER %}
+      <a href="/allocation/approved_requests/" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back to Approved Requests</a>
+    {% elif 'user_requests' in request.META.HTTP_REFERER %}
+      <a href="/allocation/user_requests/" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back to My Requests</a>
+    {% endif %}
     <div class="allocation">
       <h2>{{ allocation.project_description }}</h2>
       <br/>
@@ -20,22 +31,28 @@
             <tr>
               <th width="200">Contact email</th>
               <td>{{ allocation.contact_email|urlize }}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Submit date</th>
               <td>{{ allocation.submit_date }}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Last updated</th>
               <td>{{ allocation.modified_time }}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Start date</th>
               <td>{{ allocation.start_date }}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>End date</th>
               <td>{{ allocation.end_date }}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Estimated project duration</th>
               <td>{{ allocation.estimated_project_duration }} month(s)</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Convert trial?</th>
               <td>{{ allocation.convert_trial_project|yesno|title }}</td>
             </tr>
@@ -44,38 +61,38 @@
         <div class="col-md-4">
           <table class="table table-hover">
             <tbody>
-                <tr {% if allocation.status == 'A' %} class="success" {% else %} class="danger" {% endif %}>
-              <th>State</th>
-              <td>{{ allocation.get_status_display }}</td>
+              <tr {% if allocation.status == 'A' %} class="success" {% else %} class="danger" {% endif %}>
+                <th>State</th>
+                <td>{{ allocation.get_status_display }}</td>
+              </tr>
+              {% if allocation.approver_email %}
+                <tr>
+                  <th width="200">Approver</th>
+                  <td>{{ allocation.approver_email }}</td>
+                </tr>
+              {% endif %}
+                {% if allocation.status == 'A' or allocation.status == 'X' or allocation.project_name %}
+                  <tr>
+                    <th width="200">Project Identifier</th>
+                    <td>{{ allocation.project_name|default:"(Project not linked)" }}</td>
                   </tr>
-                  {% if allocation.approver_email %}
-                    <tr>
-                      <th width="200">Approver</th>
-                      <td>{{ allocation.approver_email }}</td>
-                    </tr>
-                  {% endif %}
-                  {% if allocation.status == 'A' or allocation.status == 'X' or allocation.project_name %}
-                    <tr>
-                      <th width="200">Project Identifier</th>
-                      <td>{{ allocation.project_name|default:"(Project not linked)" }}</td>
-                    </tr>
-                    <tr>
-                      <th>Project ID</th>
-                      <td>{{ allocation.project_id|default:"(Project not linked)" }}</td>
-                    </tr>
-                    <tr>
-                      <th>Associated Site</th>
-                      <td>{{ allocation.associated_site }}</td>
-                    </tr>
-                    <tr>
-                      <th>National funded</th>
-                      <td>{{ allocation.national|yesno }}</td>
-                    </tr>
-                    <tr>
-                      <th>Provisioned</th>
-                      <td>{{ allocation.provisioned|yesno }}</td>
-                    </tr>
-                  {% endif %}
+                  <tr>
+                    <th>Project ID</th>
+                    <td>{{ allocation.project_id|default:"(Project not linked)" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Associated Site</th>
+                    <td>{{ allocation.associated_site }}</td>
+                  </tr>
+                  <tr>
+                    <th>National funded</th>
+                    <td>{{ allocation.national|yesno }}</td>
+                  </tr>
+                  <tr>
+                    <th>Provisioned</th>
+                    <td>{{ allocation.provisioned|yesno }}</td>
+                  </tr>
+                {% endif %}
             </tbody>
           </table>
         </div>
@@ -109,24 +126,24 @@
             {% endif %}
           </h3>
           <table class="table table-hover">
-          {% if approved_allocation %}
-            {% for quotagroup in approved_allocation.quotas.all %}
-            {% for quota in quotagroup.quota_set.all %}
-              <tr>
-                <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
-                {% if quota.resource.resource_type == 'boolean' %}
-                <td>Enabled</td>
-                {% else %}
-                <td>{{ quota.quota }} {{ quota.resource.unit }}</td>
-                {% endif %}
-              </tr>
-            {% endfor %}
-            {% endfor %}
-          {% else %}
+            {% if approved_allocation %}
+              {% for quotagroup in approved_allocation.quotas.all %}
+                {% for quota in quotagroup.quota_set.all %}
+                  <tr>
+                    <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
+                    {% if quota.resource.resource_type == 'boolean' %}
+                    <td>Enabled</td>
+                    {% else %}
+                    <td>{{ quota.quota }} {{ quota.resource.unit }}</td>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+              {% endfor %}
+            {% else %}
               <tr>
                   <td colspan="2">No allocation.</td>
               </tr>
-          {% endif %}
+            {% endif %}
           </table>
         </div>
       </div>
@@ -181,7 +198,7 @@
       <div class="row">
         <div class="col-md-8">
           <h3>Fields of Research (FOR)</h3>
-           <table class="table table-hover">
+          <table class="table table-hover">
               {% if allocation.field_of_research_1 %}
               <tr>
                 <th width="200">FOR 1</th>
@@ -200,29 +217,29 @@
                 <td>{{ allocation.get_field_of_research_3_display}} ({{allocation.for_percentage_3}}%)</td>
               </tr>
             {% endif %}
-           </table>
+          </table>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-8">
           <h3>Supported Institutions</h3>
-            {% if allocation.institutions.all %}
-                 <table class="table table-hover">
-                    {% for inst in allocation.institutions.all %}
-                        <tr>
-                        {% if forloop.first %}
-                            <th width="200" rowspan="{{ allocation.institutions.all|length}}">Institutions</th>
-                        {% endif %}
-                            <td>
-                                {{ inst.name }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-             <p><span class="label label-warning">No Submission</span></p>
-            {% endif %}
+          {% if allocation.institutions.all %}
+                <table class="table table-hover">
+                  {% for inst in allocation.institutions.all %}
+                      <tr>
+                      {% if forloop.first %}
+                          <th width="200" rowspan="{{ allocation.institutions.all|length}}">Institutions</th>
+                      {% endif %}
+                          <td>
+                              {{ inst.name }}
+                          </td>
+                      </tr>
+                  {% endfor %}
+              </table>
+          {% else %}
+            <p><span class="label label-warning">No Submission</span></p>
+          {% endif %}
         </div>
       </div>
       <div class="row">

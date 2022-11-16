@@ -20,19 +20,7 @@
 {% endblock %}
 
 {% block breadcrumb_nav %}
-  {% if object %}
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item-truncate">Allocations</li>
-    <li class="breadcrumb-item-truncate"><a href="/allocation/user_requests/">My Requests</a></li>
-    <li class="breadcrumb-item-truncate active">{{ object.project_name }}</li>
-  </ol>
-  {% else %}
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item-truncate">Allocations</li>
-    <li class="breadcrumb-item-truncate"><a href="/allocation/user_requests/">My Requests</a></li>
-    <li class="breadcrumb-item-truncate active">New Request</li>
-  </ol>
-  {% endif %}
+    {{ block.super }}
 {% endblock %}
 
 {% block js %}
@@ -48,14 +36,18 @@
 {% block main %}
 <div class="dash_block">
   <div class="block-title d-md-flex align-items-center justify-content-between mb-2">
-    <h3>New Allocation Request</h3>
-    <div class="d-inline-block">
-      <a class="btn btn-default" href="{% url 'horizon:allocation:user_requests:index' %}">All My Requests</a>
-    </div>
+    {% if object %}
+      <h3>Edit Allocation Request</h3>
+    {% else %}
+      <h3>New Allocation Request</h3>
+      <div class="d-inline-block">
+        <a class="btn btn-default" href="{% url 'horizon:allocation:user_requests:index' %}">All My Requests</a>
+      </div>
+    {% endif %}
   </div>
   
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6 col-lg-8">
       {% block form_intro %}
         <p>This form allows you to request a project specific allocation on the Nectar Research Cloud.</p>
         <p>Allocations take up to 3 weeks to process. If you have any questions please email <a href="mailto:support@nectar.org.au">support@nectar.org.au</a>.</p>
@@ -66,6 +58,7 @@
           <a href="{% url 'horizon:allocation:user_requests:index' %}">My Requests</a> page.
         </p>
       {% endblock %}
+      <br/>
       <blockquote>
         <p><strong>INFO:</strong>
         Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-secondary"></span>
@@ -77,7 +70,7 @@
         <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit</div>
       {% endif %}
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 col-lg-4">
       <div class="panel panel-info shadow">
         <div class="panel-body">
           <h4>You will need...</h4>
