@@ -1,31 +1,37 @@
 {% load i18n %}
 {% load themes %}
 
-<li class="user-menu">
-  <a href="https://desktop.rc.nectar.org.au/" role="button">
-    Desktop Service
+<li class="dropdown nectar-menu">
+  <a data-toggle="dropdown" href="#" class="dropdown-toggle" role="button" aria-expanded="false">
+    Services
+    <span class="fa fa-caret-down"></span>
   </a>
+  <ul class="dropdown-menu">
+    <li>
+      <a href="https://desktop.rc.nectar.org.au/" role="button">
+        Virtual Desktop Service
+      </a>
+    </li>
+    <li>
+      <a href="https://jupyterhub.rc.nectar.org.au/" role="button">
+        Jupyter Notebook Service
+      </a>
+    </li>
+  </ul>
 </li>
-{% if HORIZON_CONFIG.help_url %}
-  <li class="user-menu">
-    <a href="{{ HORIZON_CONFIG.help_url }}" role="button">
-      Support Centre
-    </a>
-  </li>
-{% endif %}
-<li class="user-menu">
+<li class="nectar-menu">
   <a href="https://tutorials.rc.nectar.org.au/" role="button">
     Tutorials
   </a>
 </li>
-<li class="user-menu">
+<li class="nectar-menu">
   <a href="#" role="button" onclick="FreshworksWidget('open');">
     <span class="fa fa-life-ring"></span>
     Request Help
   </a>
 </li>
 
-<li class="dropdown user-menu">
+<li class="dropdown nectar-menu user-menu">
   <a data-toggle="dropdown" href="#" class="dropdown-toggle" role="button" aria-expanded="false">
     <span class="fa fa-user"></span>
     <span class="user-name">{{ request.user.username }}</span>
