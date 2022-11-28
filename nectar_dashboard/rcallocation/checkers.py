@@ -514,6 +514,9 @@ def for_check(checker):
 NAG_CHECKS = [new_budget_check, survey_check, ncris_check, ardc_check,
               grant_check, output_checks, for_check]
 
+SUBMITTED = models.AllocationRequest.SUBMITTED
+UPDATE_PENDING = models.AllocationRequest.UPDATE_PENDING
+
 
 class NagChecker(Checker):
 
@@ -521,11 +524,12 @@ class NagChecker(Checker):
         super().__init__(form=None, user=user,
                          checks=checks, allocation=allocation)
 
-    def get_quota(self, quota_name, zone='nectar', requested=False):
+    def get_quota(self, quota_name, zone='nectar'):
         '''Fetch the quota value from the allocation object.'''
 
         if self.allocation is None:
             return 0
+        requested = self.allocation.status in [SUBMITTED, UPDATE_PENDING]
         service_name, resource_name = quota_name.split('.')
         try:
             resource = models.Resource.objects.get(

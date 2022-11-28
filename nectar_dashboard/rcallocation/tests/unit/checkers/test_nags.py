@@ -40,7 +40,8 @@ class NagCheckerTest(helpers.TestCase):
         self.assertTrue(len(checker.checks) > 0)
 
     def test_get_quota(self):
-        allocation = factories.AllocationFactory.create()
+        allocation = factories.AllocationFactory.create(
+            status=models.AllocationRequest.APPROVED)
         checker = checkers.NagChecker(allocation=allocation)
         self.assertEqual(0, checker.get_quota('rating.budget'))
         quota = models.Quota.objects.get(
@@ -50,8 +51,9 @@ class NagCheckerTest(helpers.TestCase):
         quota.requested_quota = 2000
         quota.save()
         self.assertEqual(1000, checker.get_quota('rating.budget'))
-        self.assertEqual(2000, checker.get_quota('rating.budget',
-                                                 requested=True))
+
+        allocation.status = models.AllocationRequest.SUBMITTED
+        self.assertEqual(2000, checker.get_quota('rating.budget'))
 
         # Transitional states.  When a new resource or service type
         # is added, pre-existing allocations won't have the matching
