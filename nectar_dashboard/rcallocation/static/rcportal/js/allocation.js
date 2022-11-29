@@ -1,5 +1,45 @@
 (function($) {
 
+    $('#request_accordion a[data-toggle="collapse"]').click(function(event) {
+        // Stop accordion collapse link from adding has to URL
+        event.preventDefault();
+    });
+
+    // Does the page have errors?
+    if($('#request_accordion .has-error')[0]) {
+        // Open the first panel with an error
+        $(".has-error:first").closest(".request-collapse").addClass("in");
+    }
+    else {
+        // Otherwise, open the first panel
+        $("#panelOne").collapse('show');
+    }
+
+    // Highlight the active panel on page load
+    $('#request_accordion > .panel:has(.request-collapse.in)').removeClass("panel-default").addClass('panel-primary');
+
+    // Highlight error panels on page load
+    $('#request_accordion > .panel:has(div.has-error)').removeClass("panel-default").addClass('panel-danger');
+
+    // Highlight active panel on collapse show event
+    $('#request_accordion > .panel').on('show.bs.collapse', function () {
+        if(!$(this).hasClass('panel-danger')) {
+            $(this).removeClass("panel-default");
+            $(this).addClass('panel-primary');
+        }
+    });
+
+    // Remove highlight when not active
+    $('#request_accordion > .panel').on('hidden.bs.collapse', function () {
+        if($(this).hasClass('panel-danger')) {
+            $(this).removeClass("panel-danger");
+        }
+        else {
+            $(this).removeClass("panel-primary");
+        }
+        $(this).addClass('panel-default');
+    });
+
     function renumber_forms(forms) {
       var match = new RegExp('-\\d+-', 'g');
       forms.each(function (i, item) {

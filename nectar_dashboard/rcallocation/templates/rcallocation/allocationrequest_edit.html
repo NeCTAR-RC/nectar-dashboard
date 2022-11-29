@@ -67,7 +67,7 @@
       {% if warnings|length > 0 %}
         {% include "rcallocation/warnings.html" %}
       {% elif form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
-        <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit</div>
+        <div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Please fix the errors highlighted below and resubmit.</div>
       {% endif %}
         {% if nags|length > 0 %}
         <div class="alert alert-warning" role="alert">
@@ -101,416 +101,602 @@
     {% for hidden in form.hidden_fields %}
       {{ hidden }}
     {% endfor %}
-    <div class="row">
-      <div class="col-md-6">
-        {% include "rcallocation/field.html" with field=form.project_name %}
-      </div>
-      <div class="col-md-6">
-        {% include "rcallocation/field.html" with field=form.contact_email %}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          {% include "rcallocation/field.html" with field=form.project_description %}
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>
-            Generated project DNS zone name
-            <img class="help-popover" src="/static/rcportal/img/help.png" data-content="This will be the Nectar DNS zone name that will be created for your project. This is based on the project identifer value. See our <a href='https://support.ehelp.edu.au/support/solutions/articles/6000201311' target='_blank'>support documentation</a> for more information." data-original-title="Generated project DNS zone name" data-html="true">
-          </label>
-          <div class="controls">
-            <input id="id_dns_domain" disabled class="form-control" readonly="readonly" type="text">
+    <div class="panel-group" id="request_accordion">
+      <div class="panel panel-default">
+          <div class="panel-heading">
+              <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#request_accordion" href="#panelOne">1. Project Details</a>
+              </h4>
           </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        {% include "rcallocation/field.html" with field=form.estimated_project_duration %}
-      </div>
-      <div class="col-md-6">
-        {% block convert_trial_project %}
-        {% include "rcallocation/field.html" with field=form.convert_trial_project %}
-        {% endblock %}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-12">
-        <h2>Cloud Resources</h2>
-        <p>Specify the maximum infrastructure that your project will need access to.
-          This quota can be extended at a later date if more resources are required.
-          The overall availability of resources may vary over time and at different locations.
-          Resource may not always be available.</p>
-        <div id="quota_formset">
-          {% for service_type, form_tuple in quota_formsets %}
-          <div id="panel-quota-{{ service_type.catalog_name }}">
-            <div class="panel panel-default">
-              <div class="panel-heading" style="display:flex; align-items: center;">
-                <div style="flex: 1;">
-                  <h4 class="list-group-item-heading">{{ service_type.name }}</h4>
-                  <p class="list-group-item-text">{{ service_type.description|safe }}</p>
+          <div id="panelOne" class="request-collapse panel-collapse collapse">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    {% include "rcallocation/field.html" with field=form.project_name %}
+                  </div>
+                  <div class="col-md-6">
+                    {% include "rcallocation/field.html" with field=form.contact_email %}
+                  </div>
                 </div>
-                <div style="margin-left: 15px;">
-                  <input id="check-{{ service_type.catalog_name }}" class="toggle-quota" type="checkbox" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
-                </div>
-                <div style="clear: both;"></div>
-              </div>
-              <div class="panel-collapse collapse in">
-                <div id="panel-{{ service_type.catalog_name }}" class="panel-body panel-quota">
-                  <div id="empty-quotas-{{ service_type.catalog_name }}" style="display: none;">
-                    <div class="quota-group">
-                      {% include "rcallocation/quota_template_form.html" %}
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {% include "rcallocation/field.html" with field=form.project_description %}
                     </div>
                   </div>
-                  <div id="quotas-{{ service_type.catalog_name }}" class="quotas">
-                    <div class="quota-group">
-			              {% for group_form, formset in form_tuple %}
-    	                {% if formset.non_form_errors %}
-        	              <div class="has-error">
-                            <span class="help-block">{{ formset.non_form_errors }}</span>
-            	          </div>
-	                    {% endif %}
-    	                {{ formset.management_form }}
-                        {% if service_type.notes %}
-                          <p><span class="label label-info">Note:</span> {{ service_type.notes|safe }}</p>
-                        {% endif %}
-        	            {% include "rcallocation/quota_forms.html" %}
-            	      {% endfor %}
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>
+                        Generated project DNS zone name
+                        <img class="help-popover" src="/static/rcportal/img/help.png" data-content="This will be the Nectar DNS zone name that will be created for your project. This is based on the project identifer value. See our <a href='https://support.ehelp.edu.au/support/solutions/articles/6000201311' target='_blank'>support documentation</a> for more information." data-original-title="Generated project DNS zone name" data-html="true">
+                      </label>
+                      <div class="controls">
+                        <input id="id_dns_domain" disabled class="form-control" readonly="readonly" type="text">
+                      </div>
                     </div>
                   </div>
-                  <div class="form-actions">
-                    <input id="add-quota-{{ service_type.catalog_name }}" type="button" value="Add more" class="btn btn-default"/>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    {% include "rcallocation/field.html" with field=form.estimated_project_duration %}
+                  </div>
+                  <div class="col-md-6">
+                    {% block convert_trial_project %}
+                    {% include "rcallocation/field.html" with field=form.convert_trial_project %}
+                    {% endblock %}
+                  </div>
+                </div>
+                <div class="row step-nav">
+                  <div class="col-xs-12 text-center">
+                    <p>Step 1 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                    <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelTwo">Next <i class="fa fa-chevron-right"></i></a>
                   </div>
                 </div>
               </div>
-            </div>
           </div>
-          {% endfor %}
-        </div> <!-- quota_formset -->
-      </div> <!-- col-xs-12 -->
-    </div> <!-- row -->
-    <div class="row">
-      <div class="col-xs-12">
-        <h2>Usage Information</h2>
-        <hr/>
-        <div class="row">
-          <div class="col-md-6">
-            {% include "rcallocation/field.html" with field=form.use_case %}
-          </div>
-          <div class="col-md-6">
-            {% include "rcallocation/field.html" with field=form.usage_patterns %}
-          </div>
-          <div class="col-md-6">
-            {% include "rcallocation/field.html" with field=form.geographic_requirements %}
-          </div>
-          <div class="col-md-6">
-            {% include "rcallocation/field.html" with field=form.estimated_number_users %}
-          </div>
-          <div class="col-xs-12">
-            {% include "rcallocation/field.html" with field=form.usage_types %}
-          </div>
-        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <h2>Fields of Research (FOR)</h2>
-        <hr/>
-        <span class="label label-info">Note:</span>
-        Please enter at least 1 and up to 3 {{for_series}} Field of Research (FoR)
-        codes for the area(s) of research supported by this allocation
-        request, and set percentages adding up to a total of 100%.  Please see
-        <a href="https://support.ehelp.edu.au/support/solutions/articles/6000241729">
-          How to use FoR codes in the Nectar Allocation request form</a>
-        for more details.  Please provide FoR codes for your research areas,
-        not your research methodologies.
-        <br/>
-        <br/>
-        {% for error in form.get_for_errors %}
-        <div class="has-error">
-          <span class="help-block">{{error}}</span>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelTwo">2. Cloud Resources</a>
+            </h4>
         </div>
-        {% endfor %}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6 col-lg-4">
-        {% for group in form.grouped_fields %}
-        <div class="form-group">
-          {% for field in group %}
-            {% if forloop.first %}
-              <label>{{ field.label }}</label>
-            {% endif %}
-            <div class="controls">
-              {% if field.errors %}
-                <div class="has-error">
-                {{ field }}
-                {% for error in field.errors %}
-                  <span class="help-block">{{ error }}</span>
-                {% endfor %}
+        <div id="panelTwo" class="request-collapse panel-collapse collapse">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12">
+                  <p>Specify the maximum infrastructure that your project will need access to.
+                    This quota can be extended at a later date if more resources are required.
+                    The overall availability of resources may vary over time and at different locations.
+                    Resource may not always be available.</p>
+                  <div class="panel-group" id="quota_formset">
+                    {% for service_type, form_tuple in quota_formsets %}
+                    <div id="panel-quota-{{ service_type.catalog_name }}">
+                      <div class="panel panel-default">
+                        <div class="panel-heading" style="display:flex; align-items: center;">
+                          <div style="flex: 1;">
+                            <h4 class="list-group-item-heading">{{ service_type.name }}</h4>
+                            <p class="list-group-item-text">{{ service_type.description|safe }}</p>
+                          </div>
+                          <div style="margin-left: 15px;">
+                            <input id="check-{{ service_type.catalog_name }}" class="toggle-quota" type="checkbox" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+                          </div>
+                          <div style="clear: both;"></div>
+                        </div>
+                        <div class="panel-collapse collapse in">
+                          <div id="panel-{{ service_type.catalog_name }}" class="panel-body panel-quota">
+                            <div id="empty-quotas-{{ service_type.catalog_name }}" style="display: none;">
+                              <div class="quota-group">
+                                {% include "rcallocation/quota_template_form.html" %}
+                              </div>
+                            </div>
+                            <div id="quotas-{{ service_type.catalog_name }}" class="quotas">
+                              <div class="quota-group">
+                              {% for group_form, formset in form_tuple %}
+                                {% if formset.non_form_errors %}
+                                  <div class="has-error">
+                                      <span class="help-block">{{ formset.non_form_errors }}</span>
+                                  </div>
+                                {% endif %}
+                                {{ formset.management_form }}
+                                  {% if service_type.notes %}
+                                    <p><span class="label label-info">Note:</span> {{ service_type.notes|safe }}</p>
+                                  {% endif %}
+                                {% include "rcallocation/quota_forms.html" %}
+                              {% endfor %}
+                              </div>
+                            </div>
+                            <div class="form-actions">
+                              <input id="add-quota-{{ service_type.catalog_name }}" type="button" value="Add more" class="btn btn-default"/>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div> <!-- quota_formset -->
+                </div> <!-- col-xs-12 -->
+              </div> <!-- row -->
+              <div class="row step-nav">
+                <div class="col-xs-12 text-center">
+                  <p>Step 2 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                  <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelOne"><i class="fa fa-chevron-left"></i> Previous</a>
+                  <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelThree">Next <i class="fa fa-chevron-right"></i></a>
                 </div>
-              {% else %}
-                {{ field }}
-              {% endif %}
-            </div>
-          {% endfor %}
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-    <div class="row">
-      <div class="institution_formset">
-        <div class="col-xs-12">
-          <h2>Supported Institutions</h2>
-          <hr/>
-          <span class="label label-info">Note:</span>
-          Specify which universities or research institutions will
-          be supported by the application or specify 'all'.
-          <br/>
-          <br/>
-          {{ institution_formset.management_form }}
-          {% if institution_formset.forms %}
-          {% include "rcallocation/institution_form.html" with field=institution_formset.forms.0.name %}
-          {% endif %}
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div id="investigator_formset">
-        {{ investigator_formset.management_form }}
-        {% for investigator_form in investigator_formset.forms %}
-        {% include "rcallocation/investigator_form.html" %}
-        {% endfor %}
-      </div>
-    </div>
-
-    <div class="row{% if not object or not object.can_have_publications %} hidden{% endif %}">
-      <div class="publication_formset">
-        <div class="col-xs-12">
-          <h2>Publication/Output</h2>
-          <hr/>
-          <span class="label label-info">Note:</span>
-          List any publications or other research outputs from work on this project
-          that has been supported by use of the Nectar cloud.
-          <br/>
-          <br/>
-          {{ publication_formset.management_form }}
-          {% include "rcallocation/publication_form.html"%}
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-12">
-        <h2>Project Support</h2>
-        <hr/>
-        {% include "rcallocation/medium_field.html" with field=form.ardc_support %}
-        {% include "rcallocation/medium_field.html" with field=form.ardc_explanation %}
-        {% if not form.ardc_support.value and object and object.nectar_support %}
-	      <div class="alert alert-warning" role="alert">
-          <p>Please reenter the following information in the ARDC Support and explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.</p>
-          <p>Old Nectar Support information: "{{ object.nectar_support }}"</p>
-        </div>
-        {% endif %}
-        {% include "rcallocation/medium_field.html" with field=form.ncris_facilities %}
-        {% include "rcallocation/medium_field.html" with field=form.ncris_explanation %}
-        {% if not form.ncris_facilities.value and object and object.ncris_support %}
-        <div class="alert alert-warning" role="alert">
-          <p>Please reenter the following information in the NCRIS Facilities and NCRIS Support explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.</p>
-          <p>Old NCRIS Support information: "{{ object.ncris_support }}"</p>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-12">
-        <h2>Research Grant Information</h2>
-        <hr/>
-        {% if grant_formset.non_form_errors %}
-          <div class="alert alert-danger" role="alert">
-            {{ grant_formset.non_form_errors }}
-          </div>
-        {% endif %}
-        <p><span class="label label-info">Note:</span> Research grant information aids in the assessment of research allocations and indicates the scale of the research supported. You must put at least one grant, or specify you have no grants for the project</p>
-        <p>A National project allocation request can only be approved if the project is:</p>
-        <ul>
-          <li>funded through a <a href="https://docs.education.gov.au/system/files/doc/other/2018_acgr_listing_final.pdf">national competitive research grant</a></li>
-          <li>funded by, or supports, a <a href="https://www.education.gov.au/funded-research-infrastructure-projects">National Collaborative Research Infrastructure Strategy</a> (NCRIS) capability, including ARDC, Nectar, ANDS or RDS (e.g. a Virtual Laboratory)</li>
-          <li>approved by the Nectar Allocation Committee (as per the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000191233-research-cloud-national-allocation-scheme-rc-nas-policy-">RC-NAS Policy</a>).
-        </ul>
-        <p>Note that if a project meets the above criteria, it is not automatically entitled to a national allocation. In some cases it may be more suited to a local allocation.</p>
-        <p>If your project is not eligible for a national allocation it may receive a local (node-prioritised) allocation at a particular node.</p>
-        <p>If your project is supported by NCRIS or ARDC, record that information in the separate fields at the end of this form.  Please do not record it as a research grant.</p>
-        <br/>
-        <div class="grant_formset">
-          {{ grant_formset.management_form }}
-          {% include "rcallocation/grant_form.html" %}
-        </div>
-      </div>
-    </div>
-    <div class="form-actions">
-      <input class="btn btn-success submit-form-button" type="submit" value="Submit">
-      {% if warnings|length > 0 %}
-      <input class="btn btn-success submit-form-button" type="button"
-             onClick="submit_ignore()" value="Submit ignoring warnings">
-      {% endif %}
-    </div>
-
-    <!-- Usage Budget Modal -->
-    <div id="usage_budget_modal" class="modal modal-bordered" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title text-center">Service Unit Budget Guide</h4>
-          </div>
-          <div class="modal-body">
-            <div class="text-center">
-              <h2>How to Estimate your Budget</h2>
-              <p>All new and renewed allocations will have a budget in <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units" target="_blank">service units</a> (SUs). Only compute instances on the Nectar Cloud will consume service units. This budget helps Nectar manage usage to provide more flexible resources and will enable new services in the future.</p>
-              <p>It's important to understand how much budget your allocation requires. You need to estimate your budget when requesting an allocation, but don't worry if you get it wrong, you can always request more later.</p>
-              <p class="lead">Here are 4 different methods to help you determine how much budget you need...</p>
-            </div>
-            <div class="row equal align-items-center my-5 mx-3">
-              <div class="col-xs-12 col-md-6">
-                <h4 class="text-uppercase underline-short">Method 1</h4>
-                <h3 class="mt-0">Recommended Budgets for Common use-cases.</h3>
-                <p>If you are new to Nectar, the simplest approach may be to specify a "recommended" SU budget for corresponding to one of the following common use-cases:</p>
-                <p><strong>"Like my laptop"</strong><br />A typical researcher laptop has 4 cores and 8GB of RAM. That is equivalent to an instance with an m3.medium flavor. The SU cost for an m3.medium for one year is 1,000 SU.</p>
-                <p><strong>"A bigger laptop"</strong><br />A high end researcher laptop might have 8 cores and 16GB of RAM. That is equivalent to an instance with an m3.large flavor. The SU cost for an m3.large for one year is 2,000 SU.</p>
-                <p><strong>"I just want to run a website"</strong><br />A typical website to host some web pages, some small web applications, or some datasets needs 2 cores and 4GB of RAM. That is equivalent to an instance with an m3.small flavor. The SU cost for an m3.small for one year is 500 SU.</p>
-              </div>
-              <div class="col-xs-12 col-md-6">
-                <table class="table table-borderless text-center">
-                  <thead style="border-bottom: 2px solid #000;">
-                    <tr>
-                      <th colspan="3" class="text-center">Use-case For Allocation</th>
-                      <th class="text-center text-secondary">SU Budget Estimate<br />(one year)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>I want compute power like my laptop.</td>
-                      <td>=</td>
-                      <td>m3.medium</td>
-                      <td class="text-secondary">1,000</td>
-                    </tr>
-                    <tr>
-                      <td>I want a bigger, more powerful laptop.</td>
-                      <td>=</td>
-                      <td>m3.large</td>
-                      <td class="text-secondary">2,000</td>
-                    </tr>
-                    <tr>
-                      <td>I just want to run a website.</td>
-                      <td>=</td>
-                      <td>m3.small</td>
-                      <td class="text-secondary">500</td>
-                    </tr>
-                  </tbody>
-                </table>
               </div>
             </div>
-            <div class="row equal align-items-center my-5 mx-3">
-              <div class="col-xs-12 col-md-6">
-                <h4 class="text-uppercase underline-short">Method 2</h4>
-                <h3 class="mt-0">Estimating based on Flavors.</h3>
-                <p>If you have a good idea of what kind of Nectar resources you are likely to need, you can do your own estimate calculations based on the flavors.</p>
-                <ol>
-                  <li>Look at the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000205341" target="_blank">Nectar Flavors</a> page and work out which one(s) best fit your needs.</li>
-                  <li>Take the SU cost per hour (or year) for a chosen flavor and multiply that by the time you intend to run the instance during the allocation period.</li>
-                  <li>Sum over all of the instances to get the total budget.</li>
-                </ol>
-              </div>
-              <div class="col-xs-12 col-md-6">
-                <table class="table table-borderless text-center">
-                  <thead style="border-bottom: 2px solid #000;">
-                    <tr>
-                      <th colspan="3" class="text-center">Example Flavor Calculation</th>
-                      <th class="text-center text-secondary">SU Budget Estimate <br />(one year)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>2 x m3.large instance for 6 months<br />+<br />m3.small instance for 12 months</td>
-                      <td>=</td>
-                      <td>2 x 2,000 SU x 0.5 years<br />+<br />500 SU x 1 year</td>
-                      <td class="text-secondary">2,500</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="row equal align-items-center my-5 mx-3">
-              <div class="col-xs-12 col-md-6">
-                <h4 class="text-uppercase underline-short">Method 3</h4>
-                <h3 class="mt-0">Estimating based on previous usage patterns.</h3>
-                <p>If you have been using compute resources (e.g. instances) on the Nectar Cloud for a while, you can view your project usage in the Dashboard.</p>
-                <ol>
-                  <li>Check out the <a href="{% url 'horizon:project:usage-trend:index' %}" target="_blank">Usage Trend</a> page to get an idea of how many service units your selected project has used over time. (Please note, this page will show data for the current project selected, not necessarily the project you are requesting allocation for.)</li>
-                  <li>When the page loads, it will show you data for the past 3 months by default. You can change the date range to a more relevant period if you like.</li>
-                  <li>On this page you can see which instances were running, including the flavor, to help you understand the usage breakdown.</li>
-                </ol>
-              </div>
-              <div class="col-xs-12 col-md-6">
-                <img src="/static/rcportal/img/usage-breakdown.jpg" alt="Usage Breakdown" class="img-responsive" />
-              </div>
-            </div>
-            <div class="row equal align-items-center my-5 mx-3">
-              <div class="col-xs-12 col-md-6">
-                <h4 class="text-uppercase underline-short">Method 4</h4>
-                <h3 class="mt-0">Same as last time.</h3>
-                <p>If you're renewing an allocation, you could simply request the same budget that was approved in the last period. However, in this case it's a good idea to checkout the Allocation Usage page to make sure your previous budget was appropriate. (Please note, the Allocation Usage page is only accessible in projects that already have a budget.)</p>
-              </div>
-              <div class="col-xs-12 col-md-6">
-                <img src="/static/rcportal/img/usage-allocation.jpg" alt="Allocation Usage" class="img-responsive" />
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer text-center">
-            <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units" target="_blank" class="btn btn-warning">Learn more</a>
-            <button type="button" class="btn btn-success" data-dismiss="modal">OK, Got it!</button>
-          </div>
         </div>
       </div>
-    </div>
     
-    <!-- MRC dashboard modal dialog -->
-    <div id="modal-uom-dashboard" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Notice for University of Melbourne users</h4>
-          </div>
-          <div class="modal-body">
-            <p>It is University of Melbourne procedure that new requests for local cloud allocations should be made through the Melbourne Research Cloud dashboard.</p>
-            <p>If you are applying for a Nectar national cloud allocation under the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000226889">National Allocation policy</a>, please click "Close" and proceed.</p>
-            <p>If you are applying for a University of Melbourne local cloud allocation, please visit <a href="https://dashboard.cloud.unimelb.edu.au/allocation">https://dashboard.cloud.unimelb.edu.au</a> and submit your request there.</p>
-            <p>If you are having trouble with a Melbourne Research Cloud request, or if you need advice on whether to applying for a "national" or "local" allocation, please submit a request here: <a href="https://unimelb.service-now.com/research">https://unimelb.service-now.com/research</a>.</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelThree">3. Usage Information</a>
+            </h4>
+        </div>
+        <div id="panelThree" class="request-collapse panel-collapse collapse">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="row">
+                    <div class="col-md-6">
+                      {% include "rcallocation/field.html" with field=form.use_case %}
+                    </div>
+                    <div class="col-md-6">
+                      {% include "rcallocation/field.html" with field=form.usage_patterns %}
+                    </div>
+                    <div class="col-md-6">
+                      {% include "rcallocation/field.html" with field=form.geographic_requirements %}
+                    </div>
+                    <div class="col-md-6">
+                      {% include "rcallocation/field.html" with field=form.estimated_number_users %}
+                    </div>
+                    <div class="col-xs-12">
+                      {% include "rcallocation/field.html" with field=form.usage_types %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row step-nav">
+                <div class="col-xs-12 text-center">
+                  <p>Step 3 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                  <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelTwo"><i class="fa fa-chevron-left"></i> Previous</a>
+                  <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelFour">Next <i class="fa fa-chevron-right"></i></a>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelFour">4. Fields of Research (FOR)</a>
+            </h4>
+        </div>
+        <div id="panelFour" class="request-collapse panel-collapse collapse">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12">
+                  <span class="label label-info">Note:</span>
+                  Please enter at least 1 and up to 3 {{for_series}} Field of Research (FoR)
+                  codes for the area(s) of research supported by this allocation
+                  request, and set percentages adding up to a total of 100%.  Please see
+                  <a href="https://support.ehelp.edu.au/support/solutions/articles/6000241729">
+                    How to use FoR codes in the Nectar Allocation request form</a>
+                  for more details.  Please provide FoR codes for your research areas,
+                  not your research methodologies.
+                  <br/>
+                  <br/>
+                  {% for error in form.get_for_errors %}
+                  <div class="has-error">
+                    <span class="help-block">{{error}}</span>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-lg-4">
+                  {% for group in form.grouped_fields %}
+                  <div class="form-group">
+                    {% for field in group %}
+                      {% if forloop.first %}
+                        <label>{{ field.label }}</label>
+                      {% endif %}
+                      <div class="controls">
+                        {% if field.errors %}
+                          <div class="has-error">
+                          {{ field }}
+                          {% for error in field.errors %}
+                            <span class="help-block">{{ error }}</span>
+                          {% endfor %}
+                          </div>
+                        {% else %}
+                          {{ field }}
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="row step-nav">
+                <div class="col-xs-12 text-center">
+                  <p>Step 4 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                  <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelThree"><i class="fa fa-chevron-left"></i> Previous</a>
+                  <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelFive">Next <i class="fa fa-chevron-right"></i></a>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelFive">5. Supported Institutions</a>
+            </h4>
+        </div>
+        <div id="panelFive" class="request-collapse panel-collapse collapse">
+            <div class="panel-body">
+              <div class="row">
+                <div class="institution_formset">
+                  <div class="col-xs-12">
+                    <span class="label label-info">Note:</span>
+                    Specify which universities or research institutions will
+                    be supported by the application or specify 'all'.
+                    <br/>
+                    <br/>
+                    {{ institution_formset.management_form }}
+                    {% if institution_formset.forms %}
+                    {% include "rcallocation/institution_form.html" with field=institution_formset.forms.0.name %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="row step-nav">
+                <div class="col-xs-12 text-center">
+                  <p>Step 5 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                  <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelFour"><i class="fa fa-chevron-left"></i> Previous</a>
+                  <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelSix">Next <i class="fa fa-chevron-right"></i></a>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelSix">6. Investigator</a>
+            </h4>
+        </div>
+        <div id="panelSix" class="request-collapse panel-collapse collapse">
+            <div class="panel-body">
+              <div class="row">
+                <div id="investigator_formset">
+                  {{ investigator_formset.management_form }}
+                  {% for investigator_form in investigator_formset.forms %}
+                  {% include "rcallocation/investigator_form.html" %}
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="row step-nav">
+                <div class="col-xs-12 text-center">
+                  <p>Step 6 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                  <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelFive"><i class="fa fa-chevron-left"></i> Previous</a>
+                  <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelSeven">Next <i class="fa fa-chevron-right"></i></a>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+  
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelSeven">7. Project Support</a>
+            </h4>
+        </div>
+        <div id="panelSeven" class="request-collapse panel-collapse collapse">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12">
+                  {% include "rcallocation/medium_field.html" with field=form.ardc_support %}
+                  {% include "rcallocation/medium_field.html" with field=form.ardc_explanation %}
+                  {% if not form.ardc_support.value and object and object.nectar_support %}
+                  <div class="alert alert-warning" role="alert">
+                    <p>Please reenter the following information in the ARDC Support and explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.</p>
+                    <p>Old Nectar Support information: "{{ object.nectar_support }}"</p>
+                  </div>
+                  {% endif %}
+                  {% include "rcallocation/medium_field.html" with field=form.ncris_facilities %}
+                  {% include "rcallocation/medium_field.html" with field=form.ncris_explanation %}
+                  {% if not form.ncris_facilities.value and object and object.ncris_support %}
+                  <div class="alert alert-warning" role="alert">
+                    <p>Please reenter the following information in the NCRIS Facilities and NCRIS Support explanation fields above.  If the info is erroneous or redundant, please raise a Nectar support request asking for it to be manually removed from the allocation system.</p>
+                    <p>Old NCRIS Support information: "{{ object.ncris_support }}"</p>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="row step-nav">
+                <div class="col-xs-12 text-center">
+                  <p>Step 7 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                  <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelSix"><i class="fa fa-chevron-left"></i> Previous</a>
+                  <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelEight">Next <i class="fa fa-chevron-right"></i></a>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelEight">8. Research Grant Information</a>
+            </h4>
+        </div>
+        <div id="panelEight" class="request-collapse panel-collapse collapse">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12">
+                  {% if grant_formset.non_form_errors %}
+                    <div class="alert alert-danger" role="alert">
+                      {{ grant_formset.non_form_errors }}
+                    </div>
+                  {% endif %}
+                  <p><span class="label label-info">Note:</span> Research grant information aids in the assessment of research allocations and indicates the scale of the research supported. You must put at least one grant, or specify you have no grants for the project</p>
+                  <p>A National project allocation request can only be approved if the project is:</p>
+                  <ul>
+                    <li>funded through a <a href="https://docs.education.gov.au/system/files/doc/other/2018_acgr_listing_final.pdf">national competitive research grant</a></li>
+                    <li>funded by, or supports, a <a href="https://www.education.gov.au/funded-research-infrastructure-projects">National Collaborative Research Infrastructure Strategy</a> (NCRIS) capability, including ARDC, Nectar, ANDS or RDS (e.g. a Virtual Laboratory)</li>
+                    <li>approved by the Nectar Allocation Committee (as per the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000191233-research-cloud-national-allocation-scheme-rc-nas-policy-">RC-NAS Policy</a>).
+                  </ul>
+                  <p>Note that if a project meets the above criteria, it is not automatically entitled to a national allocation. In some cases it may be more suited to a local allocation.</p>
+                  <p>If your project is not eligible for a national allocation it may receive a local (node-prioritised) allocation at a particular node.</p>
+                  <p>If your project is supported by NCRIS or ARDC, record that information in the separate fields at the end of this form.  Please do not record it as a research grant.</p>
+                  <br/>
+                  <div class="grant_formset">
+                    {{ grant_formset.management_form }}
+                    {% include "rcallocation/grant_form.html" %}
+                  </div>
+                </div>
+              </div>
+              <div class="row step-nav">
+                <div class="col-xs-12 text-center">
+                  <p>Step 8 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                  <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelSeven"><i class="fa fa-chevron-left"></i> Previous</a>
+                  <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelNine">Next <i class="fa fa-chevron-right"></i></a>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default {% if not object or not object.can_have_publications %}hidden{% endif %}">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelNine">9. Publication/Output</a>
+            </h4>
+        </div>
+        <div {% if object.can_have_publications %}id="panelNine"{%endif%} class="request-collapse panel-collapse collapse">
+            <div class="panel-body">
+              <div class="row">
+                <div class="publication_formset">
+                  <div class="col-xs-12">
+                    <span class="label label-info">Note:</span>
+                    List any publications or other research outputs from work on this project
+                    that has been supported by use of the Nectar cloud.
+                    <br/>
+                    <br/>
+                    {{ publication_formset.management_form }}
+                    {% include "rcallocation/publication_form.html"%}
+                  </div>
+                </div>
+              </div>
+              <div class="row step-nav">
+                <div class="col-xs-12 text-center">
+                  <p>Step 9 out of 10</p>
+                  <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelEight"><i class="fa fa-chevron-left"></i> Previous</a>
+                  <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelTen">Next <i class="fa fa-chevron-right"></i></a>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+              {% if not object or not object.can_have_publications %}
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelNine">9. Submit</a>
+              {% else %}
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelTen">10. Submit</a>
+              {% endif %}
+            </h4>
+        </div>
+        <div id="{% if not object or not object.can_have_publications %}panelNine{% else %}panelTen{% endif %}" class="request-collapse panel-collapse collapse">
+            <div class="panel-body text-center pb-5">
+              <div class="row step-nav">
+                <div class="col-xs-12 text-center">
+                  {% if not object or not object.can_have_publications %}
+                    <p>Step 9 out of 9</p>
+                  {% else %}
+                    <p>Step 10 out of 10</p>
+                  {% endif %}
+                  <h3>Are you ready to submit your allocation request?</h3>
+                  <div class="form-actions">
+                    {% if not object or not object.can_have_publications %}
+                      <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelEight"><i class="fa fa-chevron-left"></i> Previous</a>
+                    {% else %}
+                      <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelNine"><i class="fa fa-chevron-left"></i> Previous</a>
+                    {% endif %}
+
+                    <input class="btn btn-sm btn-success submit-form-button" type="submit" value="Submit">
+                    {% if warnings|length > 0 %}
+                    <input class="btn btn-sm btn-success submit-form-button" type="button"
+                          onClick="submit_ignore()" value="Submit ignoring warnings">
+                    {% endif %}
+                  </div>
+                  </div>
+              </div>
+            </div>
         </div>
       </div>
     </div>
+  </form>
+    
+  <!-- Usage Budget Modal -->
+  <div id="usage_budget_modal" class="modal modal-bordered" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title text-center">Service Unit Budget Guide</h4>
+        </div>
+        <div class="modal-body">
+          <div class="text-center">
+            <h2>How to Estimate your Budget</h2>
+            <p>All new and renewed allocations will have a budget in <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units" target="_blank">service units</a> (SUs). Only compute instances on the Nectar Cloud will consume service units. This budget helps Nectar manage usage to provide more flexible resources and will enable new services in the future.</p>
+            <p>It's important to understand how much budget your allocation requires. You need to estimate your budget when requesting an allocation, but don't worry if you get it wrong, you can always request more later.</p>
+            <p class="lead">Here are 4 different methods to help you determine how much budget you need...</p>
+          </div>
+          <div class="row equal align-items-center my-5 mx-3">
+            <div class="col-xs-12 col-md-6">
+              <h4 class="text-uppercase underline-short">Method 1</h4>
+              <h3 class="mt-0">Recommended Budgets for Common use-cases.</h3>
+              <p>If you are new to Nectar, the simplest approach may be to specify a "recommended" SU budget for corresponding to one of the following common use-cases:</p>
+              <p><strong>"Like my laptop"</strong><br />A typical researcher laptop has 4 cores and 8GB of RAM. That is equivalent to an instance with an m3.medium flavor. The SU cost for an m3.medium for one year is 1,000 SU.</p>
+              <p><strong>"A bigger laptop"</strong><br />A high end researcher laptop might have 8 cores and 16GB of RAM. That is equivalent to an instance with an m3.large flavor. The SU cost for an m3.large for one year is 2,000 SU.</p>
+              <p><strong>"I just want to run a website"</strong><br />A typical website to host some web pages, some small web applications, or some datasets needs 2 cores and 4GB of RAM. That is equivalent to an instance with an m3.small flavor. The SU cost for an m3.small for one year is 500 SU.</p>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <table class="table table-borderless text-center">
+                <thead style="border-bottom: 2px solid #000;">
+                  <tr>
+                    <th colspan="3" class="text-center">Use-case For Allocation</th>
+                    <th class="text-center text-secondary">SU Budget Estimate<br />(one year)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>I want compute power like my laptop.</td>
+                    <td>=</td>
+                    <td>m3.medium</td>
+                    <td class="text-secondary">1,000</td>
+                  </tr>
+                  <tr>
+                    <td>I want a bigger, more powerful laptop.</td>
+                    <td>=</td>
+                    <td>m3.large</td>
+                    <td class="text-secondary">2,000</td>
+                  </tr>
+                  <tr>
+                    <td>I just want to run a website.</td>
+                    <td>=</td>
+                    <td>m3.small</td>
+                    <td class="text-secondary">500</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row equal align-items-center my-5 mx-3">
+            <div class="col-xs-12 col-md-6">
+              <h4 class="text-uppercase underline-short">Method 2</h4>
+              <h3 class="mt-0">Estimating based on Flavors.</h3>
+              <p>If you have a good idea of what kind of Nectar resources you are likely to need, you can do your own estimate calculations based on the flavors.</p>
+              <ol>
+                <li>Look at the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000205341" target="_blank">Nectar Flavors</a> page and work out which one(s) best fit your needs.</li>
+                <li>Take the SU cost per hour (or year) for a chosen flavor and multiply that by the time you intend to run the instance during the allocation period.</li>
+                <li>Sum over all of the instances to get the total budget.</li>
+              </ol>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <table class="table table-borderless text-center">
+                <thead style="border-bottom: 2px solid #000;">
+                  <tr>
+                    <th colspan="3" class="text-center">Example Flavor Calculation</th>
+                    <th class="text-center text-secondary">SU Budget Estimate <br />(one year)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2 x m3.large instance for 6 months<br />+<br />m3.small instance for 12 months</td>
+                    <td>=</td>
+                    <td>2 x 2,000 SU x 0.5 years<br />+<br />500 SU x 1 year</td>
+                    <td class="text-secondary">2,500</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row equal align-items-center my-5 mx-3">
+            <div class="col-xs-12 col-md-6">
+              <h4 class="text-uppercase underline-short">Method 3</h4>
+              <h3 class="mt-0">Estimating based on previous usage patterns.</h3>
+              <p>If you have been using compute resources (e.g. instances) on the Nectar Cloud for a while, you can view your project usage in the Dashboard.</p>
+              <ol>
+                <li>Check out the <a href="{% url 'horizon:project:usage-trend:index' %}" target="_blank">Usage Trend</a> page to get an idea of how many service units your selected project has used over time. (Please note, this page will show data for the current project selected, not necessarily the project you are requesting allocation for.)</li>
+                <li>When the page loads, it will show you data for the past 3 months by default. You can change the date range to a more relevant period if you like.</li>
+                <li>On this page you can see which instances were running, including the flavor, to help you understand the usage breakdown.</li>
+              </ol>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <img src="/static/rcportal/img/usage-breakdown.jpg" alt="Usage Breakdown" class="img-responsive" />
+            </div>
+          </div>
+          <div class="row equal align-items-center my-5 mx-3">
+            <div class="col-xs-12 col-md-6">
+              <h4 class="text-uppercase underline-short">Method 4</h4>
+              <h3 class="mt-0">Same as last time.</h3>
+              <p>If you're renewing an allocation, you could simply request the same budget that was approved in the last period. However, in this case it's a good idea to checkout the Allocation Usage page to make sure your previous budget was appropriate. (Please note, the Allocation Usage page is only accessible in projects that already have a budget.)</p>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <img src="/static/rcportal/img/usage-allocation.jpg" alt="Allocation Usage" class="img-responsive" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023-service-units" target="_blank" class="btn btn-warning">Learn more</a>
+          <button type="button" class="btn btn-success" data-dismiss="modal">OK, Got it!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MRC dashboard modal dialog -->
+  <div id="modal-uom-dashboard" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Notice for University of Melbourne users</h4>
+        </div>
+        <div class="modal-body">
+          <p>It is University of Melbourne procedure that new requests for local cloud allocations should be made through the Melbourne Research Cloud dashboard.</p>
+          <p>If you are applying for a Nectar national cloud allocation under the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000226889">National Allocation policy</a>, please click "Close" and proceed.</p>
+          <p>If you are applying for a University of Melbourne local cloud allocation, please visit <a href="https://dashboard.cloud.unimelb.edu.au/allocation">https://dashboard.cloud.unimelb.edu.au</a> and submit your request there.</p>
+          <p>If you are having trouble with a Melbourne Research Cloud request, or if you need advice on whether to applying for a "national" or "local" allocation, please submit a request here: <a href="https://unimelb.service-now.com/research">https://unimelb.service-now.com/research</a>.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    {% if nags|length > 0 %}
+  {% if nags|length > 0 %}
     <script>
       function show_nags() {
           $('#modal-nags').modal('show');
       }
       $(window).on('load',
                    function() {
-                     var delayMs = 1000;
-                     setTimeout(show_nags, delayMs);
+                       var delayMs = 1000;
+                       setTimeout(show_nags, delayMs);
                    });
     </script>
     <!-- Nags modal dialog -->
@@ -540,132 +726,131 @@
         </div>
       </div>
     </div>
-    {% endif %}
+  {% endif %}
 
-    <!-- DOI checker modal dialog -->
-    <div id="modal-doi-checker" class="modal" tabindex="-1"
-         role="dialog" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">DOI Checker</h4>
+  <!-- DOI checker modal dialog -->
+  <div id="modal-doi-checker" class="modal" tabindex="-1"
+        role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">DOI Checker</h4>
+        </div>
+        <div class="modal-body">
+          <div id="doi-checking" class="alert alert-primary" hidden>
+            Looking up the DOI ...
           </div>
-          <div class="modal-body">
-            <div id="doi-checking" class="alert alert-primary" hidden>
-              Looking up the DOI ...
-            </div>
-            <div id="doi-failed" class="alert alert-danger" hidden>
-              DOI lookup failure.  There is a problem with the CrossRef
-              DOI service.  Either try again, or skip validation for this
-              DOI.
-            </div>
-            <div id="doi-not-found" class="alert alert-warning" hidden>
-              DOI not found.  Either you have mis-entered the DOI,
-              or this is a valid DOI that the CrossRef DOI service does
-              not know about.  Please check the place that you got the
-              DOI from.  (You could also try visiting the CrossRef site
-              and searching for the correct DOI there.)
-            </div>
-           <div id="doi-found" class="alert alert-success" hidden>
-              DOI found.  Please the details below and confirm that
-              this is the correct DOI for the Research Output that
-              you are adding to the Allocation Request Form.
-            </div>
-            <input id="doi-checker-state" value="" hidden>
-            <input id="doi-row" value="" hidden>
-            <input id="doi-crossref" value="" hidden>
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col-md-3">DOI</div>
-                <div class="col-md-9">
-                  <input id="doi-doi" style="width: 100%" value="" readonly>
-                </div>
+          <div id="doi-failed" class="alert alert-danger" hidden>
+            DOI lookup failure.  There is a problem with the CrossRef
+            DOI service.  Either try again, or skip validation for this
+            DOI.
+          </div>
+          <div id="doi-not-found" class="alert alert-warning" hidden>
+            DOI not found.  Either you have mis-entered the DOI,
+            or this is a valid DOI that the CrossRef DOI service does
+            not know about.  Please check the place that you got the
+            DOI from.  (You could also try visiting the CrossRef site
+            and searching for the correct DOI there.)
+          </div>
+          <div id="doi-found" class="alert alert-success" hidden>
+            DOI found.  Please the details below and confirm that
+            this is the correct DOI for the Research Output that
+            you are adding to the Allocation Request Form.
+          </div>
+          <input id="doi-checker-state" value="" hidden>
+          <input id="doi-row" value="" hidden>
+          <input id="doi-crossref" value="" hidden>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-3">DOI</div>
+              <div class="col-md-9">
+                <input id="doi-doi" style="width: 100%" value="" readonly>
               </div>
-              <div class="row">
-                <div class="col-md-3">Title</div>
-                <div class="col-md-9">
-                  <input id="doi-title" style="width: 100%" value=""  readonly>
-                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">Title</div>
+              <div class="col-md-9">
+                <input id="doi-title" style="width: 100%" value=""  readonly>
               </div>
-              <div class="row">
-                <div class="col-md-3">Authors</div>
-                <div class="col-md-9">
-                  <input id="doi-authors" style="width: 100%" value="" readonly>
-                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">Authors</div>
+              <div class="col-md-9">
+                <input id="doi-authors" style="width: 100%" value="" readonly>
               </div>
-              <div class="row">
-                <div class="col-md-3">Publication</div>
-                <div class="col-md-9">
-                  <input id="doi-publication" style="width: 100%" value=""  readonly>
-                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">Publication</div>
+              <div class="col-md-9">
+                <input id="doi-publication" style="width: 100%" value=""  readonly>
               </div>
-              <div class="row">
-                <div class="col-md-3">Year</div>
-                <div class="col-md-9">
-                  <input id="doi-year" style="width: 100%" value="" readonly>
-                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">Year</div>
+              <div class="col-md-9">
+                <input id="doi-year" style="width: 100%" value="" readonly>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" id="doi-accept" class="btn btn-default"
-                    data-dismiss="modal">
-              Reference details are correct.
-            </button>
-            <button type="button" id="doi-reject" class="btn btn-default"
-                    data-dismiss="modal">
-              Reference details are incorrect.
-            </button>
-            <button type="button" id="doi-close" class="btn btn-default"
-                    data-dismiss="modal">
-              Close
-            </button>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="doi-accept" class="btn btn-default"
+                  data-dismiss="modal">
+            Reference details are correct.
+          </button>
+          <button type="button" id="doi-reject" class="btn btn-default"
+                  data-dismiss="modal">
+            Reference details are incorrect.
+          </button>
+          <button type="button" id="doi-close" class="btn btn-default"
+                  data-dismiss="modal">
+            Close
+          </button>
         </div>
       </div>
     </div>
+  </div>
 
-    <script>
-      /* For browsers that don't recognize the autofocus attribute... */
-      if (!("autofocus" in document.createElement("input"))) {
-        document.getElementById("id_project_description").focus();
-      }
+  <script>
+    /* For browsers that don't recognize the autofocus attribute... */
+    if (!("autofocus" in document.createElement("input"))) {
+      document.getElementById("id_project_description").focus();
+    }
 
-      $(document).ready(function() {
-        $('div#quota_formset').formset({
-          prefix: 'quotas',
-          service_types: {{ service_types|safe }},
-          resources: {{ resources|safe }},
-          zones: {{ zones|safe }},
-        });
+    $(document).ready(function() {
+      $('div#quota_formset').formset({
+        prefix: 'quotas',
+        service_types: {{ service_types|safe }},
+        resources: {{ resources|safe }},
+        zones: {{ zones|safe }},
       });
+    });
 
-      $(document).ready(function() {
-        $('div.institution_formset').mformset({
-          prefix: 'institutions',
-          formset_class_id: 'institution_formset',
-          field_name: 'name'
-        });
+    $(document).ready(function() {
+      $('div.institution_formset').mformset({
+        prefix: 'institutions',
+        formset_class_id: 'institution_formset',
+        field_name: 'name'
       });
+    });
 
-      $(document).ready(function() {
-        $('div.publication_formset').pformset({
-          prefix: 'publications',
-          formset_class_id: 'publication_formset',
-          field_name: 'publication',
-          input_style_css:'medium_width',
-          show_label:true
-        });
+    $(document).ready(function() {
+      $('div.publication_formset').pformset({
+        prefix: 'publications',
+        formset_class_id: 'publication_formset',
+        field_name: 'publication',
+        input_style_css:'medium_width',
+        show_label:true
       });
+    });
 
-      $(document).ready(function() {
-        $('div.grant_formset').gformset({
-          prefix: 'grants',
-          formset_class_id: 'grant_formset'
-        });
+    $(document).ready(function() {
+      $('div.grant_formset').gformset({
+        prefix: 'grants',
+        formset_class_id: 'grant_formset'
       });
-    </script>
-  </form>
+    });
+  </script>
 </div>
 {% endblock %}
 

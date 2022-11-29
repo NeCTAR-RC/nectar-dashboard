@@ -35,9 +35,9 @@
     sign.
   </blockquote>
   {% if warnings|length > 0 %}
-  {% include "rcallocation/warnings.html" %}
+    {% include "rcallocation/warnings.html" %}
   {% elif form.errors %}
-  <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit</div>
+    <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit.</div>
   {% endif %}
   <form id="new-allocation"
         action="{% block form_action %}{% endblock %}"
