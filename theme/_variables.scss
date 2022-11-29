@@ -24,7 +24,7 @@ $gray:                   $ardc-grey;
 $gray-light:             #b5b5b5 !default;
 $gray-lighter:           #fcfcfc !default;
 
-$brand-primary:         $ardc-orange;
+$brand-primary:         $ardc-purple;
 $brand-success:         #62C400 !default;
 $brand-info:            $ardc-blue;
 $brand-warning:         $ardc-orange;
@@ -146,7 +146,7 @@ $btn-default-bg:                 #fff !default;
 $btn-default-border:             #ccc !default;
 
 $btn-primary-color:              #000 !default;
-$btn-primary-bg:                 lighten($brand-primary, 5%) !default;
+$btn-primary-bg:                 lighten($brand-primary, 10%) !default;
 $btn-primary-border:             $btn-primary-bg !default;
 
 $btn-success-color:              #000 !default;

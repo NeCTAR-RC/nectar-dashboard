@@ -102,6 +102,13 @@ input {
   }
 }
 
+.btn-dismiss {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(10px, -50%);
+}
+
 .progress-bar > span {
   font-weight: 700;
   cursor: default;
@@ -376,11 +383,30 @@ input {
       }
     }
   }
+  #project_info {
+    p, h4 {
+      margin: 6px 0;
+    }
+    a {
+      display: inline-block;
+    }
+  }
   #sidebar-accordion {
     width: 240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
+    .home-dashboard a.active,
+    .home-dashboard a.active:hover,
+    .home-dashboard a.active:focus {
+      border-radius: 0;
+      background-color: $brand-warning;
+      color: #000;
+      > .badge {
+        color: #fff;
+      }
+    }
     .list-group-item.active,
     .list-group-item.active:hover,
     .list-group-item.active:focus {
+      background-color: $brand-warning;
       color: #000;
       > .badge {
         color: #fff;

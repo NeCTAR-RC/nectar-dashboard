@@ -6,6 +6,8 @@ recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 
 recursive-include nectar_dashboard/local_settings.d/ *
+recursive-include nectar_dashboard/dashboard_home/templates *
+recursive-include nectar_dashboard/dashboard_home/static *
 recursive-include nectar_dashboard/rcallocation/templates *
 recursive-include nectar_dashboard/rcallocation/static *
 recursive-include nectar_dashboard/reset_password/templates *

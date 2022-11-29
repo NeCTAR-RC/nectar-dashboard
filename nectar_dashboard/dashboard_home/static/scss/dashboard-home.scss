@@ -1,0 +1,99 @@
+@import "slick-theme";
+
+.panel-bg-image {
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+#welcome {
+  display: none;
+}
+
+#home_featured_banner {
+  .banner-text {
+    @media(min-width: 1200px) {
+      padding-top: 10rem;
+      padding-bottom: 10rem;
+    }
+  }
+  .banner-title,
+  .banner-subtitle,
+  .banner-info {
+    color: #fff;
+    margin: 15px 0;
+    a {
+      &:link,
+      &:visited {
+        color: #fff;
+        text-decoration: underline;
+      }
+      &:hover {
+        color: #fff;
+        text-decoration: none;
+      }
+    }
+    .banner-btn {
+      margin: 15px 0;
+    }
+  }
+}
+#ardc_news {
+  .news-slide {
+    a {
+      text-decoration: none;
+      display: block;
+      position: relative;
+      margin: 10px;
+      border: 1px solid #e5e5e5;
+      display: block;
+      background: #fff;
+      .news-thumbnail img {
+        transition: transform 500ms ease-in-out;
+      }
+      &:hover {
+        .news-thumbnail img {
+          transform: scale(1.1);
+        }
+        .btn-link {
+          color: #003944;
+        }
+      }
+    }
+    .news-thumbnail {
+      position: relative;
+      overflow: hidden;
+      display: block;
+      img {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        object-fit: cover;
+        aspect-ratio: 1.75 / 1;
+      }
+    }
+    .news-content {
+      padding: 20px;
+      height: 180px;
+      .news-meta {
+        color: #333333;
+      }
+      .news-title {
+        font-size: 19px;
+        line-height: 19px;
+        color: #111111;
+        overflow: hidden;
+        -webkit-line-clamp: 5;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        margin-top: 0;
+      }
+    }
+    .news-link {
+      padding: 20px;
+    }
+  }
+}

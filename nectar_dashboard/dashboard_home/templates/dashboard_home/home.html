@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans "Home" %}{% endblock %}
+
+{% block custom_head_js %}
+{{ block.super }}
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script type="text/javascript" src="{% static 'js/dashboard-home.js'%}"></script>
+{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+{% endblock %}
+
+{% block breadcrumb_nav %}
+{% endblock %}
+
+{% block main %}
+  <div class="row">
+    <div class="col-xs-12">
+      {{ request.user.name }}
+      <h1 id="home_greeting">Hello and Welcome!</h1>
+      <div id="welcome" class="panel panel-primary shadow position-relative">
+        <div class="panel-body p-5 text-center">
+          <h2>Welcome to the Dashboard!</h2>
+          <p class="lead"><em>The Dashboard</em> is your web interface to the <strong>The ARDC Nectar Research Cloud</strong> - Australia's national research cloud, providing computing infrastructure to researchers, giving you access to powerful computing resources without the need to purchase or host your own hardware.</p>
+          <p>New to Nectar? Don't worry, we've got loads of support arcticles and tutorials to help you along the way. You can learn all about the Nectar Research Cloud and The Dashboard on the Nectar Support Site and if you need help, you can simply contact our Support team by creating a help request.</p>
+          <div id="welcome_buttons">
+            <a href="https://support.ehelp.edu.au/" target="_blank" class="btn btn-warning">Support Centre</a>
+            <a href="https://tutorials.rc.nectar.org.au/" target="_blank" class="btn btn-info">Tutorials</a>
+            <a href="https://support.ehelp.edu.au/support/solutions/articles/6000156761-learning-and-training-resources/" target="_blank" class="btn btn-primary">Live Training</a>
+          </div>
+          <h3>To get started with the Nectar Cloud, we recommend following the <a href="" target="_blank">Cloud Starter Series</a> of tutorials.</h3>
+        </div>
+        <button class="btn btn-sm btn-default btn-dismiss" id="welcome_dismiss"><i class="fa fa-close"></i> Dismiss</button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div id="home_featured_banner" class="col-xs-12">
+      <div class="panel panel-default shadow panel-bg-image" style="background-image: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0, 0, 0, 0)), url({% static 'img/home-landing-banner.jpg'%});">
+        <div class="panel-body py-5">
+          <div class="row">
+            <div class="col-xs-6 banner-text">
+              <h2 class="banner-title h1">A new place to land.</h2>
+              <h4 class="banner-subtitle">Welcome to the new Dashboard landing page. We have created this space to give you fast access to Dashboard actions, stats, support resources &amp; to share important announcements with you.</h4>
+              <h5 class="banner-info">This page is ever evolving, so keep an eye out for new sections and features whenever you log into the Dashboard.</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-md-8">
+      <div class="panel panel-default shadow">
+        <div class="panel-heading text-uppercase">Quick Links</div>
+        <div class="panel-body">
+          <h4>Here are some ways to get started:</h4>
+          <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <h3>Learn</h3>
+              <ul class="list-unstyled">
+                <li><a href="https://tutorials.rc.nectar.org.au/cloud-starter/01-overview">Tutorial: Cloud Starter Series</a></li>
+                <li><a href="https://support.ehelp.edu.au/support/solutions/articles/6000171494-project-allocation-expiry-and-renewal">Learn about allocations</a></li>
+                <li><a href="https://support.ehelp.edu.au/support/solutions/articles/6000156761-learning-and-training-resources">Register for live training</a></li>
+              </ul>
+            </div>
+            <div class="col-xs-6 col-md-3">
+              <h3>Actions</h3>
+              <ul class="list-unstyled">
+                <li><a href="{% url 'horizon:project:instances:index' %}">Launch an instance</a></li>
+                <li><a href="{% url 'horizon:project:reservations:index' %}">Create a reservation</a></li>
+                <li><a href="https://dashboard.rc.nectar.org.au/app-catalog/catalog/">Deploy an application</a></li>
+                <li><a href="{% url 'horizon:allocation:user_requests:index' %}">Request an allocation</a></li>
+              </ul>
+            </div>
+            <div class="col-xs-6 col-md-3">
+              <h3>View</h3>
+              <ul class="list-unstyled">
+                <li><a href="{% url 'horizon:project:usage-trend:index' %}">Usage Trend</a></li>
+                {% if request.user.project_name|slice:":3" != "pt-" %}
+                  <li><a href="{% url 'horizon:project:allocation-usage:index' %}">Allocation Usage</a></li>
+                {% endif %}
+                <li><a href="{% url 'horizon:identity:members:index' %}">Project Members</a></li>
+              </ul>
+            </div>
+            <div class="col-xs-6 col-md-3">
+              <h3>Support</h3>
+              <ul class="list-unstyled">
+                <li><a href="http://support.nectar.org.au/">Nectar Support Centre</a></li>
+                <li><a href="https://tutorials.rc.nectar.org.au/">Browse Tutorials</a></li>
+                <li><a href="https://status.rc.nectar.org.au/">Nectar System Status</a></li>
+                <li><a href="#" role="button" onclick="FreshworksWidget('open');">Request Help</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-4">
+      <div class="panel panel-default shadow">
+        <div class="panel-heading text-uppercase">Usage</div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="text-center">
+                <p class="h5">You have used</p>
+                <p id="su_total" class="h1 my-4">0</p>
+                <p class="h5">Service Units in the past 3 months.</p>
+                <p>To view more usage data, visit the Usage Trend page.</p>
+                <a href="{% url 'horizon:project:usage-trend:index' %}" class="btn btn-primary">Usage Trend</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default shadow">
+        <div class="panel-heading text-uppercase d-md-flex align-items-center justify-content-between">
+          ARDC News
+          <a class="btn btn-sm btn-default" href="https://ardc.edu.au/news-and-events/news/" target="_blank">View All News <i class="fa fa-external-link"></i></a>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <div id="ardc_news">
+                <div id="news_loader">
+                  <div class="loader-inline"><span class="loader fa fa-spinner fa-spin fa-4x text-center"></span><div class="loader-caption h4 text-center">Getting ARDC News&hellip;</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    dashboardHome.checkWelcomeStatus();
+    dashboardHome.showUsage();
+    dashboardHome.showNews();
+    dashboardHome.showGreeting(""); // Change this to first name
+  </script>
+{% endblock %}

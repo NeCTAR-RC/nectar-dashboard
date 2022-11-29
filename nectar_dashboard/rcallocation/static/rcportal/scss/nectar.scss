@@ -175,11 +175,11 @@ body {
         text-decoration: none;
       }
     }
-    &.panel-primary,
+    &.panel-warning,
     &.panel-danger {
       position: relative;
     }
-    &.panel-primary > .panel-heading {
+    &.panel-warning > .panel-heading {
       color: #000;
       background-color: lighten(#F8B20E, 15%);
     }

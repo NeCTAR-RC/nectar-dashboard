@@ -16,7 +16,7 @@
     }
 
     // Highlight the active panel on page load
-    $('#request_accordion > .panel:has(.request-collapse.in)').removeClass("panel-default").addClass('panel-primary');
+    $('#request_accordion > .panel:has(.request-collapse.in)').removeClass("panel-default").addClass('panel-warning');
 
     // Highlight error panels on page load
     $('#request_accordion > .panel:has(div.has-error)').removeClass("panel-default").addClass('panel-danger');
@@ -25,7 +25,7 @@
     $('#request_accordion > .panel').on('show.bs.collapse', function () {
         if(!$(this).hasClass('panel-danger')) {
             $(this).removeClass("panel-default");
-            $(this).addClass('panel-primary');
+            $(this).addClass('panel-warning');
         }
     });
 
@@ -35,7 +35,7 @@
             $(this).removeClass("panel-danger");
         }
         else {
-            $(this).removeClass("panel-primary");
+            $(this).removeClass("panel-warning");
         }
         $(this).addClass('panel-default');
     });
