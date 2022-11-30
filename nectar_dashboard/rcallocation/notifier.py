@@ -21,8 +21,6 @@ def create_notifier(allocation):
 
 
 class NotifierBase(object):
-    expects_html = False
-
     def __init__(self, allocation):
         self.allocation = allocation
 
@@ -49,11 +47,11 @@ class SMTPNotifier(NotifierBase):
                              reply_to=self.reply_to,
                              subject=subject,
                              body=body)
+        email.content_subtype = 'html'
         email.send()
 
 
 class FreshdeskNotifier(NotifierBase):
-    expects_html = True
 
     def __init__(self, allocation):
         super().__init__(allocation)

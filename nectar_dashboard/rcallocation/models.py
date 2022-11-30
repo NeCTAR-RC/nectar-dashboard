@@ -536,8 +536,7 @@ class AllocationRequest(models.Model):
         notifier = create_notifier(self)
 
         # Select the template
-        format = 'html' if notifier.expects_html else 'txt'
-        template_name = f"rcallocation/email_{template}.{format}"
+        template_name = f"rcallocation/email_{template}.html"
 
         # Prepare context for template rendering
         context = extra_context.copy()
