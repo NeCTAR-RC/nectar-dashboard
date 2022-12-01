@@ -325,8 +325,8 @@ input {
   }
   .navbar-nav {
     margin: 0;
-    .user-menu {
-      &:not(.dropdown) {
+    .nectar-menu {
+      &:not(.user-menu) {
         text-transform: uppercase;
       }
       > a {
