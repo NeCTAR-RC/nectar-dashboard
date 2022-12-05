@@ -69,6 +69,14 @@
       {% elif form.errors or institution_formset.errors or investigator_formset.errors or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
         <div class="alert alert-danger" role="alert">Please fix the errors highlighted below and resubmit</div>
       {% endif %}
+        {% if nags|length > 0 %}
+        <div class="alert alert-warning" role="alert">
+          <h4><span class="fa fa-warning"></span> Attention</h4>
+          <p class="pb-4">There are items that require your attention before you submit this form.</p>
+          <input class="btn btn-default submit-form-button" type="button"
+                 onClick="show_nags()" value="Review Reminders">
+        </div>
+      {% endif %}
     </div>
     <div class="col-md-6 col-lg-4">
       <div class="panel panel-info shadow">
@@ -496,12 +504,13 @@
 
     {% if nags|length > 0 %}
     <script>
+      function show_nags() {
+          $('#modal-nags').modal('show');
+      }
       $(window).on('load',
                    function() {
                      var delayMs = 1000;
-                     setTimeout(function() {
-                                  $('#modal-nags').modal('show');
-                                }, delayMs);
+                     setTimeout(show_nags, delayMs);
                    });
     </script>
     <!-- Nags modal dialog -->
