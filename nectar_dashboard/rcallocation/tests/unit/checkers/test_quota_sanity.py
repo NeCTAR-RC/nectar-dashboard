@@ -82,24 +82,29 @@ class QuotaSanityCheckerTest(helpers.TestCase):
 
     def test_do_checks(self):
         quotas = [build_quota('compute', 'instances', 0),
-                  build_quota('compute', 'cores', 0),
-                  build_quota('rating', 'budget', 0)]
+                  build_quota('compute', 'cores', 0)]
         checker = build_checker(quotas)
         res = checker.do_checks()
-        self.assertEqual(3, len(res))
-        self.assertEqual(checkers.NO_BUDGET, res[0][0])
-        self.assertEqual(checkers.NO_VCPU, res[1][0])
-        self.assertEqual(checkers.NO_INSTANCE, res[2][0])
+        self.assertEqual(2, len(res))
+        self.assertEqual(checkers.NO_VCPU, res[0][0])
+        self.assertEqual(checkers.NO_INSTANCE, res[1][0])
 
 
 class QuotaSanityChecksTest(helpers.TestCase):
     def test_budget_checks(self):
-        quotas = [build_quota('rating', 'budget', 0)]
+        quotas = [build_quota('rating', 'budget', 0),
+                  build_quota('compute', 'instances', 1),
+                  build_quota('compute', 'cores', 100)]
         checker = build_checker(quotas)
         self.assertEqual(checkers.NO_BUDGET,
                          checkers.no_budget_check(checker)[0])
 
     def test_budget_checks2(self):
+        quotas = [build_quota('rating', 'budget', 0)]
+        checker = build_checker(quotas)
+        self.assertIsNone(checkers.no_budget_check(checker))
+
+    def test_budget_checks3(self):
         quotas = [build_quota('rating', 'budget', 1000)]
         checker = checkers.QuotaSanityChecker(quotas=quotas)
         self.assertIsNone(checkers.no_budget_check(checker))
