@@ -497,8 +497,9 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                 name = form.cleaned_data.get('project_name', '???')
                 person = 'approver' if approving else 'user'
                 if ignore_warnings:
-                    LOG.info(f"The {person} ignored warnings {tags} "
-                             f"for allocation '{name}'")
+                    if not self.IGNORE_WARNINGS:
+                        LOG.info(f"The {person} ignored warnings {tags} "
+                                 f"for allocation '{name}'")
                     return self.form_valid(**form_dict)
                 else:
                     form_dict['warnings'] = warnings
