@@ -69,7 +69,9 @@ def storage_zone_to_home(zone):
 
 def no_budget_check(context):
     budget = context.get_quota('rating.budget')
-    if budget <= 0:
+    if (budget <= 0
+        and context.get_quota('compute.cores') > 0
+        and context.get_quota('compute.instances') > 0):
         return (NO_BUDGET,
                 'No Service Unit Budget has been entered')
     return None
