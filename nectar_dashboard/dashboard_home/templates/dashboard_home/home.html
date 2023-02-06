@@ -73,7 +73,7 @@
               <ul class="list-unstyled">
                 <li><a href="{% url 'horizon:project:instances:index' %}">Launch an instance</a></li>
                 <li><a href="{% url 'horizon:project:reservations:index' %}">Create a reservation</a></li>
-                <li><a href="https://dashboard.rc.nectar.org.au/app-catalog/catalog/">Deploy an application</a></li>
+                <li><a href="{% url 'horizon:app-catalog:catalog:index' %}">Deploy an application</a></li>
                 <li><a href="{% url 'horizon:allocation:user_requests:index' %}">Request an allocation</a></li>
               </ul>
             </div>
