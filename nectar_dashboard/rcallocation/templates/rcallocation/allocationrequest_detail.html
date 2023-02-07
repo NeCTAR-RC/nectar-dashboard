@@ -74,7 +74,7 @@
     </a>
   {% endif %}
     <a href="{% url 'horizon:allocation:requests:allocation_history' allocation.pk %}" class="btn btn-default btn-lg">View History</a>
-    <a href="{{HORIZON_CONFIG.FRESHDESK_SEARCH_URL}}&q[]=tags%3A%5B%22allocation-{{ allocation.id }}%22%5D"
+    <a href="{{HORIZON_CONFIG.FRESHDESK_SEARCH_URL}}&q[]=tags%3A%5B%22allocation-{{ allocation.primary_id }}%22%5D"
        target="_blank" class="btn btn-info btn-lg" id="allocation_tickets">
       See related tickets
     </a>

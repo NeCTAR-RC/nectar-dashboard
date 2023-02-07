@@ -435,6 +435,10 @@ class AllocationRequest(models.Model):
         else:
             return self.associated_site.display_name
 
+    @property
+    def primary_id(self):
+        return self.parent_request.id if self.parent_request else self.id
+
     def get_absolute_url(self):
         return reverse('horizon:allocation:requests:allocation_view',
                        args=[str(self.id)])
