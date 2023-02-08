@@ -991,65 +991,6 @@ $(function(){
         total_forms_input.val(total_rows);
     };
 
-    function check_doi(span){
-        var current_tr = span.closest('tr');
-        var doi_input = current_tr.find('input[id$=-doi]');
-        var doi = doi_input.val();
-        if (! doi) {
-            // Treat this as a mis-click
-            return;
-        }
-        if (! doi.match(/^10\.[0-9]+\//)) {
-            // DOI is not in standard format
-            var match = doi.match(/^https?:[a-z0-9./_\\]+?\/(10\..+)$/i);
-            if (!match) {
-                match = doi.match(/^doi:\/*(10\..+)$/i);
-            }
-            if (match) {
-                // Fix it if we can
-                doi = match[1];
-                doi_input.val(doi);
-                alert("Converted the DOI to the required format: " + doi);
-            } else {
-                // There is no point validating this DOI ...
-                alert("This DOI is not recogizable: please refer to the help text");
-                return;
-            }
-        }
-        var row_no = doi_input.attr('id').match(/.*-([0-9]+)-doi$/)[1];
-        $('#doi-row').val(row_no);
-        $('#doi-doi').val(doi);
-        $('#doi-checker-state').val('checking');
-        $('#doi-title').val('');
-        $('#doi-publication').val('');
-        $('#doi-authors').val('');
-        $('#doi-year').val('')
-        $('#doi-crossref').val('');
-        $('#modal-doi-checker').modal('show');
-        $.ajax({
-            url: "https://api.crossref.org/works/" + doi,
-            dataType: "text"    // we need to parse the JSON ourselves
-        }).done(function(jsonString, text, jqxhr) {
-            var data = JSON.parse(jsonString);
-            $('#modal-doi-checker').modal('toggle');
-            $('#doi-checker-state').val('found');
-            var msg = data.message;
-            $('#doi-title').val(format_title(msg));
-            $('#doi-publication').val(format_publication(msg));
-            $('#doi-authors').val(format_authors(msg));
-            $('#doi-year').val(format_pub_date(msg));
-            $('#doi-crossref').val(jsonString);
-            $('#modal-doi-checker').modal('toggle');
-        }).fail(function(jqxhr, text, errorThrown) {
-            $('#modal-doi-checker').modal('toggle');
-            if (jqxhr.status == 404) {
-                $('#doi-checker-state').val('not-found');
-            } else {
-                $('#doi-checker-state').val('failed');
-            }
-            $('#modal-doi-checker').modal('toggle');
-        });
-    };
 
     function resort_form_rows(formset, opts){
         var match = new RegExp(opts.prefix + '-\\d+-', 'g');
@@ -1303,6 +1244,77 @@ function render_crossref_metadata(json) {
     }
 };
 
+var check_doi_in_progress = false;
+
+function check_doi(span) {
+    if (check_doi_in_progress) {
+        return;
+    }
+    var current_tr = span.closest('tr');
+    var doi_input = current_tr.find('input[id$=-doi]');
+    var doi = doi_input.val();
+    if (! doi) {
+        // Treat this as a mis-click
+        return;
+    }
+    if (! doi.match(/^10\.[0-9]+\//)) {
+        // DOI is not in standard format
+        var match = doi.match(/^https?:[a-z0-9./_\\]+?\/(10\..+)$/i);
+        if (!match) {
+            match = doi.match(/^doi:\/*(10\..+)$/i);
+        }
+        if (match) {
+            // Fix it if we can
+            doi = match[1];
+            doi_input.val(doi);
+            alert("Converted the DOI to the required format: " + doi);
+        } else {
+            // There is no point validating this DOI ...
+            alert("This DOI is not recogizable: please refer to the " +
+                  "help text on the request form.");
+            return;
+        }
+    }
+    var row_no = doi_input.attr('id').match(/.*-([0-9]+)-doi$/)[1];
+    $('#doi-row').val(row_no);
+    $('#doi-doi').val(doi);
+    $('#doi-checker-state').val('checking');
+    $('#doi-title').val('');
+    $('#doi-publication').val('');
+    $('#doi-authors').val('');
+    $('#doi-year').val('')
+    $('#doi-crossref').val('');
+    $('#modal-doi-checker').modal('show');
+    $.ajax({
+        url: "https://api.crossref.org/works/" + doi,
+        dataType: "text",    // we need to parse the JSON ourselves
+        beforeSend: function(jxhr, settings) {
+            check_doi_in_progress = true;
+        }
+    }).done(function(jsonString, text, jqxhr) {
+        check_doi_in_progress = false;
+        var data = JSON.parse(jsonString);
+        $('#modal-doi-checker').modal('toggle');
+        $('#doi-checker-state').val('found');
+        var msg = data.message;
+        $('#doi-title').val(format_title(msg));
+        $('#doi-publication').val(format_publication(msg));
+        $('#doi-authors').val(format_authors(msg));
+        $('#doi-year').val(format_pub_date(msg));
+        $('#doi-crossref').val(jsonString);
+        $('#modal-doi-checker').modal('toggle');
+    }).fail(function(jqxhr, text, errorThrown) {
+        check_doi_in_progress = false;
+        $('#modal-doi-checker').modal('toggle');
+        if (jqxhr.status == 404) {
+            $('#doi-checker-state').val('not-found');
+        } else {
+            $('#doi-checker-state').val('failed');
+        }
+        $('#modal-doi-checker').modal('toggle');
+    });
+};
+
 function accept_doi(e) {
     e.preventDefault();
     var row_no = $('#doi-row').val();
@@ -1354,3 +1366,4 @@ function submit_ignore() {
     document.getElementById("id_ignore_warnings").value = '1';
     document.getElementById("new-allocation").submit();   // sic
 }
+
