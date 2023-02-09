@@ -159,23 +159,11 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
     # grant
     formset_grant_class = inlineformset_factory(
         models.AllocationRequest, models.Grant, form=forms.GrantForm,
-        min_num=1, extra=0)
+        extra=0)
 
     # The attribute used to record who did the edit.  this should
     # either be approver_email or contact_email
     editor_attr = 'approver_email'
-
-    def get_formset_investigator_class(self):
-        return self.formset_investigator_class
-
-    def get_formset_institution_class(self):
-        return self.formset_institution_class
-
-    def get_formset_publication_class(self):
-        return self.formset_publication_class
-
-    def get_formset_grant_class(self):
-        return self.formset_grant_class
 
     def get_formset(self, formset_class, queryset=None, prefix=None,
                     initial=None, **kwargs):
@@ -192,21 +180,18 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
 
     def get_nonquota_formsets(self):
         formsets = {}
-        formset_investigator_class = self.get_formset_investigator_class()
-        if formset_investigator_class:
+        if self.formset_investigator_class:
             formsets['investigator_formset'] = self.get_formset(
-                formset_investigator_class)
-        formset_institution_class = self.get_formset_institution_class()
-        if formset_institution_class:
+                self.formset_investigator_class)
+        if self.formset_institution_class:
             formsets['institution_formset'] = self.get_formset(
-                formset_institution_class)
-        formset_publication_class = self.get_formset_publication_class()
-        if formset_publication_class:
+                self.formset_institution_class)
+        if self.formset_publication_class:
             formsets['publication_formset'] = self.get_formset(
-                formset_publication_class)
-        formset_grant_class = self.get_formset_grant_class()
-        if formset_grant_class:
-            formsets['grant_formset'] = self.get_formset(formset_grant_class)
+                self.formset_publication_class)
+        if self.formset_grant_class:
+            formsets['grant_formset'] = self.get_formset(
+                self.formset_grant_class)
         return formsets
 
     def get_quota_formsets(self):
@@ -392,7 +377,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                     form=forms.ChiefInvestigatorForm, extra=1)
 
             institutions = self.object.institutions.all()
-
             if not institutions:
                 self.formset_institution_class = inlineformset_factory(
                     models.AllocationRequest, models.Institution,
@@ -400,6 +384,20 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                     extra=1)
         else:
             kwargs['object'] = None
+
+        # If this is not already an "edit in progress" make sure
+        # that there is at least one Grant in the grant formset to
+        # "encourage" the user to either fill it out or click the
+        # "I have no grants" button to remove it.
+        if self.formset_grant_class \
+           and (not self.object
+                or self.object.status not in [
+                    models.AllocationRequest.SUBMITTED,
+                    models.AllocationRequest.UPDATE_PENDING]):
+            self.formset_grant_class = inlineformset_factory(
+                models.AllocationRequest, models.Grant,
+                form=forms.GrantForm,
+                min_num=1, extra=0)
 
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -558,7 +556,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         setattr(object, self.editor_attr, self.request.user.username)
         object.provisioned = False
 
-        # Force update of submit_date if this a request / ammendment
+        # Force update of submit_date if this a request / amendment
         # submission or resubmission
         if object.status in [models.AllocationRequest.NEW,
                              models.AllocationRequest.SUBMITTED,
