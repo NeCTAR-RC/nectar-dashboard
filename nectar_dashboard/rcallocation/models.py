@@ -98,6 +98,25 @@ class ARDCSupport(models.Model):
         return self.short_name
 
 
+class Bundle(models.Model):
+    """A Bundle is a collection of BundleQuotas
+
+    Each Bundle can have one or more BundleQuotas and a Bundle can
+    be associated with an AllocationRequest to assign these resource
+    quotas.
+
+    zone : The zone associated with all BundleQuotas
+    order : The order of bundles when listed for display.
+    """
+    name = models.CharField(max_length=64, unique=True)
+    description = models.CharField(max_length=255)
+    zone = models.ForeignKey('Zone', on_delete=models.PROTECT)
+    order = models.IntegerField()
+
+    class Meta:
+        ordering = ['order']
+
+
 class AllocationRequest(models.Model):
     """An AllocationRequest represents a point in time in the history of
     a Nectar allocation.  The history is represented by the parent request
@@ -424,6 +443,9 @@ class AllocationRequest(models.Model):
                     'ajax_init_url': '/allocation/init_organisations/'},
         overlay="Enter one or more organisation names or acronyms...",
         blank=False)
+
+    bundle = models.ForeignKey(Bundle, null=True, blank=True,
+                               on_delete=models.PROTECT)
 
     class Meta:
         ordering = ['-modified_time']
@@ -764,6 +786,17 @@ class QuotaGroup(models.Model):
     def __str__(self):
         return '{0} {1} {2}'.format(self.allocation.id,
                                     self.service_type, self.zone)
+
+
+class BundleQuota(models.Model):
+    """Defines a limit for a resource of a Bundle"""
+    bundle = models.ForeignKey(Bundle, on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    quota = models.IntegerField(default=0,
+                                validators=[MinValueValidator(-1)])
+
+    class Meta:
+        unique_together = ("bundle", "resource")
 
 
 class Quota(models.Model):
