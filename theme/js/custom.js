@@ -1,6 +1,4 @@
-$(document).ready(function() {
-
-  /* Function to convert string to number with 2 decimal places */
+/* Function to convert string to number with 2 decimal places */
 function convertToFloat(str_num) {
   return Math.round(Number(str_num) * 100) / 100;
 }
@@ -45,6 +43,8 @@ function getUsageBudget() {
     }
   });
 }
+
+$(document).ready(function() {
 
   // Add slideDown animation to Bootstrap dropdown when expanding.
   $('.dropdown').on('show.bs.dropdown', function() {
