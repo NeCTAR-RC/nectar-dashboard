@@ -21,8 +21,11 @@ def get_quota(request, resource_code):
         return None
 
     resource = models.Resource.objects.get_by_codename(resource_code)
-    quota = models.Quota.objects.get(group__allocation=allocation,
-                                     resource=resource)
+    try:
+        quota = models.Quota.objects.get(group__allocation=allocation,
+                                         resource=resource)
+    except models.Quota.DoesNotExist:
+        quota = None
 
     if quota:
         return quota.quota
