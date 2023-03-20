@@ -38,21 +38,8 @@
       </div>
     </div>
   </div>
-  <div class="row">
-    <div id="home_featured_banner" class="col-xs-12">
-      <div class="panel panel-default shadow panel-bg-image" style="background-image: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0, 0, 0, 0)), url({% static 'img/home-landing-banner.jpg'%});">
-        <div class="panel-body py-5">
-          <div class="row">
-            <div class="col-xs-6 banner-text">
-              <h2 class="banner-title h1">A new place to land.</h2>
-              <h4 class="banner-subtitle">Welcome to the new Dashboard landing page. We have created this space to give you fast access to Dashboard actions, stats, support resources &amp; to share important announcements with you.</h4>
-              <h5 class="banner-info">This page is ever evolving, so keep an eye out for new sections and features whenever you log into the Dashboard.</h5>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <section id="banner">
+  </section>
   <div class="row">
     <div class="col-sm-12 col-md-8">
       <div class="panel panel-default shadow">
@@ -145,6 +132,7 @@
     dashboardHome.checkWelcomeStatus();
     dashboardHome.showUsage();
     dashboardHome.showNews();
-    dashboardHome.showGreeting("{{ first_name }}"); 
+    dashboardHome.showGreeting("{{ first_name }}");
+    dashboardHome.showBanner();
   </script>
 {% endblock %}

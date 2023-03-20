@@ -17,6 +17,28 @@ var dashboardHome = (function() {
     $("#welcome").fadeOut();
   }
 
+  /* Private function to get return the bootstrap button class for the associated ardc colour */
+  function getButtonClass(ardc_color) {
+    let button_class = "";
+    switch(ardc_color) {
+      case "blue":
+        button_class = "btn-info";
+        break;
+      case "pink":
+        button_class = "btn-danger";
+        break;
+      case "orange":
+        button_class = "btn-warning";
+        break;
+      case "purple":
+        button_class = "btn-primary";
+        break;
+      default:
+        button_class = "btn-default";
+    }
+    return button_class;
+  }
+
   /* Private function to get the project usage to date from api request */
   function getUsageTotal() {
     var api_url = "/api/nectar/usage/summary/?detailed=True";
@@ -36,6 +58,27 @@ var dashboardHome = (function() {
       error: function (error) {
         console.error(error);
       },
+    });
+  }
+
+  function getBannerData() {
+    const BANNER_URL = "https://object-store.rc.nectar.org.au/v1/AUTH_2f6f7e75fc0f453d9c127b490b02e9e3/dashboard-featured-banner/banner.json";
+
+    return new Promise((resolve, reject) => {
+      $.getJSON(BANNER_URL)
+        .done(function(json_data) {
+          // Is json object empty?
+          if(json_data[0]) {
+            // Return the first item banner data
+            resolve(json_data[0]);
+          }
+          else {
+            reject("Data empty!");
+          }
+        })
+        .fail(function(jqxhr, textStatus, error) {
+          reject(textStatus + ", " + error);
+      });
     });
   }
 
@@ -86,7 +129,6 @@ var dashboardHome = (function() {
 
   home.checkWelcomeStatus = function() {
     if(!localStorage.welcomeDismissed) {
-      //console.log("Welcome not dismissed");
       showWelcome();
       addWelcomeEvent();
     }
@@ -150,6 +192,46 @@ var dashboardHome = (function() {
     });
   };
 
+  /* Public function to get ARDC news */
+  home.showBanner = function() {
+    getBannerData().then((result) => {
+      let bannerDiv = $(`<div class="row">
+        <div class="col-xs-12">
+          <div id="home_featured_banner" class="panel panel-default shadow panel-bg-image" style="background-image: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0, 0, 0, 0)), url(${result.bg_image});">
+            <div class="panel-body py-5">
+              <div class="row">
+                <div class="col-xs-6 banner-text">
+                  <h2 class="banner-title h1">${result.title}</h2>
+                  <h4 class="banner-subtitle">${result.subtitle}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`);
+
+      if(result.info) {
+        var infoHtml = `<h5 class="banner-info">${result.info}</h5>`;
+        bannerDiv.find(".banner-text").append($(infoHtml));
+      }
+      if(result.button1) {
+        var color = getButtonClass(result.button1.color);
+        var buttonHtml = `<a class="banner-btn btn ${color} btn-lg" href="${result.button1.link}">${result.button1.text}</a>`;
+        bannerDiv.find(".banner-text").append($(buttonHtml));
+      }
+      if(result.button2) {
+        var color = getButtonClass(result.button2.color);
+        var buttonHtml = `<a class="banner-btn btn ${color} btn-lg" href="${result.button1.link}">${result.button1.text}</a>`;
+        bannerDiv.find(".banner-text").append($(buttonHtml));
+      }
+      $("#banner").append(bannerDiv);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  };
+
+  /* Public function to get usage for display in panel */
   home.showUsage = function() {
     if($("#project_info")) {
       getUsageTotal();
