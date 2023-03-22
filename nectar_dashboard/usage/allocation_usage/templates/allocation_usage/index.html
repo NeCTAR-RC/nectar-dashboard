@@ -2,10 +2,10 @@
 {% load i18n %}
 {% load static %}
 {% load mathfilters %}
-{% block title %}{% trans "Usage Trend" %}{% endblock %}
+{% block title %}{% trans "Allocation Usage" %}{% endblock %}
 
 {% block page_header %}
-  {% include "horizon/common/_page_header.html" with title=_("Usage Trend") %}
+  {% include "horizon/common/_page_header.html" with title=_("Allocation Usage") %}
 {% endblock page_header %}
 
 {% block custom_head_js %}
@@ -25,7 +25,11 @@
     <div class="d-inline-block">
       <h4 class="text-muted text-uppercase"><small>Allocation usage budget:</small> {{ su_budget }} SU</h4>
     </div>
-    <a class="btn btn-primary" href="{% url 'horizon:allocation:user_requests:edit_change_request' allocation.id %}">Request More Budget</a>
+    {% for role in request.user.roles %}
+      {% if role.name == "TenantManager" %}
+        <a class="btn btn-primary" href="{% url 'horizon:allocation:user_requests:edit_change_request' allocation.id %}">Request More Budget</a>
+      {% endif %}
+    {% endfor %}
   </div>
   <div class="row equal">
     <div class="col-sx-12 col-sm-12 col-md-4 mb-3">
@@ -71,7 +75,12 @@
             <div class="alert alert-warning d-flex align-items-center" role="alert">
               <i class="fa fa-exclamation-triangle fa-lg mr-4" aria-hidden="true"></i>
               <div>
-                <strong>This project is at risk of running out of budget!</strong><br/>Your service unit usage is tracking higher than expected at this time in the project's current allocation period. Do you need to <a href="{% url 'horizon:allocation:user_requests:edit_change_request' allocation.id %}">request more budget</a>?
+                <strong>This project is at risk of running out of budget!</strong><br/>Your service unit usage is tracking higher than expected at this time in the project's current allocation period. Do you need to request more budget?
+                {% for role in request.user.roles %}
+                  {% if role.name == "TenantManager" %}
+                    &nbsp;&nbsp;<a class="btn btn-warning btn-sm" href="{% url 'horizon:allocation:user_requests:edit_change_request' allocation.id %}">Request More Budget</a>
+                  {% endif %}
+                {% endfor %}
               </div>
             </div>
           {% endif %}
