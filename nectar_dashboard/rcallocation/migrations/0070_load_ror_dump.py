@@ -3,8 +3,8 @@
 from django.conf import settings
 from django.db import migrations
 
-from nectar_dashboard.rcallocation.management import catalogs
 from nectar_dashboard.rcallocation.management import org_loading
+from nectar_dashboard.rcallocation.migrations.orgs import catalogs
 
 
 class Migration(migrations.Migration):
@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
 
     def clear_organisations(apps, schema_editor):
         catalog = catalogs.make_migration_catalog(apps)
-        catalog.Organisation.objects.all().delete()        
+        catalog.Organisation.objects.all().delete()
 
     dependencies = [
         ('rcallocation', '0069_add_organisations'),

@@ -8,27 +8,6 @@ class Catalog(object):
             setattr(self, k, v)
 
 
-def make_current_catalog():
-    try:
-        organisation = models.Organisation
-    except NameError:
-        organisation = None
-    try:
-        institution = models.Institution
-    except NameError:
-        institution = None
-
-    return Catalog(ORG_ALL_SHORT_NAME=models.ORG_ALL_SHORT_NAME,
-                   ORG_ALL_FULL_NAME=models.ORG_ALL_FULL_NAME,
-                   ORG_UNKNOWN_SHORT_NAME=models.ORG_UNKNOWN_SHORT_NAME,
-                   ORG_UNKNOWN_FULL_NAME=models.ORG_UNKNOWN_FULL_NAME,
-                   AllocationRequest=models.AllocationRequest,
-                   Organisation=organisation,
-                   Institution=institution,
-                   ChiefInvestigator=models.ChiefInvestigator,
-                   Approver=models.Approver)
-
-
 def make_migration_catalog(apps):
     def _get_model(name):
         try:

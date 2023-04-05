@@ -3,7 +3,7 @@ import logging
 from django.core import exceptions
 from django.core.management.base import BaseCommand
 
-from nectar_dashboard.rcallocation.management import catalogs
+from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import utils
 
 LOG = logging.getLogger(__name__)
@@ -30,7 +30,6 @@ class Command(BaseCommand):
                             "records affected")
 
     def handle(self, original, replacement, **options):
-        self.catalog = catalogs.make_current_catalog()
         original_org = self.lookup_org(original)
         replacement_org = self.lookup_org(replacement)
         if not original_org or not replacement_org:
@@ -63,11 +62,11 @@ class Command(BaseCommand):
     def lookup_org(self, key):
         try:
             if key.isdigit():
-                return self.catalog.Organisation.objects.get(id=int(key))
+                return models.Organisation.objects.get(id=int(key))
             elif key.startswith("https://"):
-                return self.catalog.Organisation.objects.get(ror_id=key)
+                return models.Organisation.objects.get(ror_id=key)
             else:
-                return self.catalog.Organisation.objects.get(
+                return models.Organisation.objects.get(
                     short_name=key, ror_id='')
         except exceptions.DoesNotExist:
             print(f"Can't find an Organisation with id {key}")
@@ -75,7 +74,7 @@ class Command(BaseCommand):
 
     def replace_organisations(self, original_org, replacement_org,
                               no_dry_run=False):
-        for a in self.catalog.AllocationRequest.objects.filter(
+        for a in models.AllocationRequest.objects.filter(
                 supported_organisations=original_org):
             if no_dry_run:
                 a.supported_organisations.add(replacement_org)
@@ -86,7 +85,7 @@ class Command(BaseCommand):
             else:
                 print(f"Would change Organisation for allocation {a.id}")
 
-        for ci in self.catalog.ChiefInvestigator.objects.filter(
+        for ci in models.ChiefInvestigator.objects.filter(
                 primary_organisation=original_org):
             if no_dry_run:
                 ci.primary_organisation = replacement_org

@@ -480,32 +480,6 @@ class AllocationTests(base.AllocationAPITest):
             {'supported_organisations': ['all', 'qcif']})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_update_allocation_transition(self):
-        # Check transitional behavior; i.e. that changes to the
-        # supported_organisations are reflected in the (legacy) institutions
-        self.client.force_authenticate(user=self.approver_user)
-
-        # Check that we can see the original organization / institution
-        # via a GET and/or the database
-        response = self.client.get(
-            f'/rest_api/allocations/{self.allocation.id}/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['supported_organisations'],
-                         ['https://ror.org/23456789'])
-        self.assertEqual("Monash University",
-                         self.allocation.institutions.first().name)
-
-        # Update ...
-        response = self.client.patch(
-            f'/rest_api/allocations/{self.allocation.id}/',
-            {'supported_organisations': ['qcif']})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['supported_organisations'],
-                         ['https://ror.org/12345678'])
-        self.assertEqual(1, self.allocation.institutions.count())
-        self.assertEqual("Queensland Cyber Infrastructure Foundation",
-                         self.allocation.institutions.first().name)
-
     def test_update_allocation_unauthenticated(self):
         response = self.client.patch('/rest_api/allocations/1/',
                                      {'use_case': 'test-update'})
@@ -821,14 +795,6 @@ class AllocationTests(base.AllocationAPITest):
         data = self._make_data(supported_organisations=['QCIF', 'Monash'])
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        # Transitional check: organisations mirrored as institutions
-        allocation = models.AllocationRequest.objects.get(
-            pk=response.data['id'])
-        self.assertEqual(2, allocation.institutions.count())
-        self.assertEqual({"Queensland Cyber Infrastructure Foundation",
-                          "Monash University"},
-                         {i.name for i in allocation.institutions.all()})
 
     def test_create_all_organisations(self):
         self.client.force_authenticate(user=self.user)

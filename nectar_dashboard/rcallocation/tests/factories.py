@@ -91,12 +91,6 @@ class QuotaFactory(factory.django.DjangoModelFactory):
     quota = 0
 
 
-class InstitutionFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = 'rcallocation.Institution'
-    name = 'Monash'
-
-
 class OrganisationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Organisation'
@@ -186,8 +180,6 @@ class AllocationFactory(factory.django.DjangoModelFactory):
         ardc_support = kwargs.pop('ardc_support', [])
         supported_organisations = kwargs.pop(
             'supported_organisations', ['Monash'])
-        institutions = kwargs.pop(
-            'institutions', ['Monash University'])
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
 
@@ -213,9 +205,6 @@ class AllocationFactory(factory.django.DjangoModelFactory):
         for name in supported_organisations:
             o = models.Organisation.objects.get(short_name=name)
             allocation.supported_organisations.add(o)
-
-        for name in institutions:
-            InstitutionFactory.create(name=name, allocation=allocation)
 
         for name in ncris_facilities:
             f = models.NCRISFacility.objects.get(short_name=name)

@@ -151,10 +151,9 @@ class BaseAllocationForm(forms.ModelForm):
         model = models.AllocationRequest
         exclude = ('status', 'created_by', 'submit_date', 'approver_email',
                    'start_date', 'end_date', 'modified_time', 'parent_request',
-                   'associated_site', 'special_approval', 'institutions',
-                   'provisioned', 'managed',
-                   'project_id', 'notes', 'notifications', 'ncris_support',
-                   'nectar_support'
+                   'associated_site', 'special_approval', 'provisioned',
+                   'managed', 'project_id', 'notes', 'notifications',
+                   'ncris_support', 'nectar_support'
         )
 
         widgets = {
@@ -237,8 +236,6 @@ class BaseAllocationForm(forms.ModelForm):
     def clean_supported_organisations(self):
         orgs = self.cleaned_data['supported_organisations']
         names = [o.full_name for o in orgs]
-        if len(orgs) == 0:
-            raise forms.ValidationError("This field is required.")
         if len(orgs) > 1 and models.ORG_ALL_FULL_NAME in names:
             raise forms.ValidationError(
                 f"'{models.ORG_ALL_FULL_NAME}' should not be used "
@@ -485,7 +482,7 @@ class NectarBaseModelForm(forms.ModelForm):
 class ChiefInvestigatorForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.ChiefInvestigator
-        exclude = ('institution',)
+        fields = '__all__'
         widgets = {
             'additional_researchers': forms.Textarea(),
         }
@@ -501,11 +498,6 @@ class ChiefInvestigatorForm(NectarBaseModelForm):
             raise ValidationError(f"'{models.ORG_ALL_FULL_NAME}' is not "
                                   "meaningful in this context")
         return data
-
-
-class InstitutionForm(NectarBaseModelForm):
-    class Meta(NectarBaseModelForm.Meta):
-        model = models.Institution
 
 
 DOI_PROTOCOL_PATTERN = re.compile("(?i)^doi:(.+)$")

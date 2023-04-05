@@ -3,7 +3,8 @@ import logging
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
-from nectar_dashboard.rcallocation.management import catalogs
+from nectar_dashboard.rcallocation import models
+
 
 LOG = logging.getLogger(__name__)
 
@@ -18,11 +19,10 @@ class Command(BaseCommand):
         pass
 
     def handle(self, **options):
-        catalog = catalogs.make_current_catalog()
         verbose = options['verbosity'] > 1
-        for o in catalog.Organisation.objects.filter(
+        for o in models.Organisation.objects.filter(
                 ror_id="", enabled=True):
-            candidates = catalog.Organisation.objects \
+            candidates = models.Organisation.objects \
                                 .exclude(ror_id="") \
                                 .filter(country=o.country) \
                                 .filter(Q(short_name__iexact=o.short_name)
