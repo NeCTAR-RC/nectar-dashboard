@@ -3,8 +3,8 @@
 from django.conf import settings
 from django.db import migrations
 
-from nectar_dashboard.rcallocation.management import catalogs
-from nectar_dashboard.rcallocation.management import org_matching
+from nectar_dashboard.rcallocation.migrations.orgs import catalogs
+from nectar_dashboard.rcallocation.migrations.orgs import org_matching
 
 
 class Migration(migrations.Migration):

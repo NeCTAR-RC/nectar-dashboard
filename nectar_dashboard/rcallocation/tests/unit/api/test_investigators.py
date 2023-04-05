@@ -91,21 +91,6 @@ class InvestigatorTests(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual('Cholmondely', response.data['given_name'])
 
-    def test_update_transitional(self):
-        self.client.force_authenticate(user=self.user)
-        response = self.client.patch('/rest_api/chiefinvestigators/%s/' %
-                                     self.ci.id,
-                                     {'primary_organisation': 'QCIF'})
-        org = models.Organisation.objects.get(short_name='QCIF')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(org.ror_id, response.data['primary_organisation'])
-        # Check that we don't return the 'institution'
-        self.assertNotIn('institution', response.data)
-        ci = models.ChiefInvestigator.objects.get(id=self.ci.id)
-        # Check that the 'primary_organisation' has been mirrored
-        self.assertEqual("Queensland Cyber Infrastructure Foundation",
-                         ci.institution)
-
     def test_update_wrong_state(self):
         self.client.force_authenticate(user=self.user)
         self.allocation.status = models.AllocationRequest.APPROVED
@@ -144,7 +129,6 @@ class InvestigatorTests(base.AllocationAPITest):
             'email': 'joe@monash.edu',
             'primary_organisation': models.Organisation.objects.get(
                 short_name='Monash'),
-            'institution': 'Monash'
         }
 
     def test_create(self):
@@ -166,20 +150,6 @@ class InvestigatorTests(base.AllocationAPITest):
         data = self._make_data()
         response = self.client.post('/rest_api/chiefinvestigators/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_transitional(self):
-        self.client.force_authenticate(user=self.user)
-        data = self._make_data()
-        data['institution'] = "Checkbook University"
-        response = self.client.post('/rest_api/chiefinvestigators/', data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        ci = models.ChiefInvestigator.objects.get(id=response.data['id'])
-        self.assertEqual('Bloggs', ci.surname)
-        self.assertEqual(self.allocation, ci.allocation)
-        # Check that the 'primary_organisation' was mirrored in 'institution'
-        self.assertEqual('Monash University', ci.institution)
-        # Check that 'institution' was not returned
-        self.assertNotIn('institution', response.data)
 
     def test_create_unauthenticated(self):
         data = self._make_data()

@@ -161,7 +161,6 @@ class RequestTestCase(base.BaseTestCase):
                 'given_name': 'Bradley',
                 'surname': 'Awl',
                 'email': 'brad@somewhere.edu.au',
-                'institution': 'USome',
                 'primary_organisation':
                     models.Organisation.objects.get(short_name='all'),
                 'additional_researchers': 'None'
@@ -222,84 +221,3 @@ class RequestTestCase(base.BaseTestCase):
                  .get(project_description=form['project_description'],
                       parent_request_id=None))
         self.assert_allocation(model, **expected_model)
-
-    def test_request_organization_transition(self):
-        # Checking the organisation -> institution backfill logic
-        # When we submit a form with organizations, the corresponding
-        # (legacy) institutions should be populated.
-        response = self.client.get(
-            reverse('horizon:allocation:request:request'))
-        self.assertStatusCode(response, 200)
-        quota_specs = [
-            common.quota_spec('compute', 'instances', requested_quota=1),
-            common.quota_spec('compute', 'cores', requested_quota=2),
-            common.quota_spec('rating', 'budget', requested_quota=1000),
-        ]
-        organisations = [
-          #  models.Organisation.objects.get(short_name='all'),
-            models.Organisation.objects.get(short_name='Monash'),
-          #  models.Organisation.objects.get(short_name='unknown')
-        ]
-        expected_model, form = common.request_allocation(
-            user=self.user, institutions=[],
-            supported_organisations=organisations,
-            quota_specs=quota_specs)
-        response = self.client.post(
-            reverse('horizon:allocation:request:request'),
-            form)
-
-        self._assert_success(response)
-        model = (models.AllocationRequest.objects
-                 .get(project_description=form['project_description'],
-                      parent_request_id=None))
-
-        # Note: self.assert_allocation will fail because the number of
-        # institutions has (correctly) changed.
-        self.assertEqual({"Monash"},
-                         {o.short_name for o in
-                          list(model.supported_organisations.all())})
-        insts = models.Institution.objects.filter(allocation=model.id)
-        self.assertEqual({"Monash University"},
-                         {i.name for i in list(insts)})
-
-    def test_request_organization_transition_2(self):
-        # Checking the CI org -> institution backfill logic
-        # When we submit a form with a CI organization, the (legacy) CI
-        # institution field should be populated with the full org name
-        response = self.client.get(
-            reverse('horizon:allocation:request:request'))
-        self.assertStatusCode(response, 200)
-        ci = [{
-            'id': '',
-            'title': 'Dr.',
-            'given_name': 'Mycroft',
-            'surname': 'Eyes',
-            'email': 'my.eyes@monash.edu',
-            'institution': 'Jackson Brown Uni',
-            'primary_organisation':
-            models.Organisation.objects.get(short_name='Monash'),
-            'additional_researchers': 'None'
-        }]
-        quota_specs = [
-            common.quota_spec('compute', 'instances', requested_quota=1),
-            common.quota_spec('compute', 'cores', requested_quota=2),
-            common.quota_spec('rating', 'budget', requested_quota=1000),
-        ]
-        expected_model, form = common.request_allocation(
-            user=self.user, investigators=ci,
-            quota_specs=quota_specs)
-        response = self.client.post(
-            reverse('horizon:allocation:request:request'),
-            form)
-
-        self._assert_success(response)
-        model = (models.AllocationRequest.objects
-                 .get(project_description=form['project_description'],
-                      parent_request_id=None))
-
-        # Note: self.assert_allocation will fail because the number of
-        # CI's institution has (correctly) changed.
-        ci = models.ChiefInvestigator.objects \
-                                     .filter(allocation=model.id) \
-                                     .first()
-        self.assertEqual("Monash University", ci.institution)

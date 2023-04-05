@@ -37,9 +37,6 @@ def allocation_to_dict(model):
             quotas.append(quota_dict)
     allocation['quota'] = quotas
 
-    allocation['institution'] = [
-        model_to_dict(inst) for inst in model.institutions.all()]
-
     allocation['organisation'] = [
         model_to_dict(org) for org in model.supported_organisations.all()]
 
@@ -276,7 +273,7 @@ def next_char(c):
 
 def request_allocation(user, model=None, quota_specs=None,
                        supported_organisations=None,
-                       institutions=None, publications=None, grants=None,
+                       publications=None, grants=None,
                        usage_types=None, investigators=None):
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
@@ -308,10 +305,6 @@ def request_allocation(user, model=None, quota_specs=None,
         for name in GROUP_NAMES:
             groups[name] = get_groups(name, model)
 
-        institutions = [{'id': ins.id,
-                         'name': ins.name}
-                        for ins in model.institutions.all()]
-
         publications = [{'id': pub.id,
                          'publication': pub.publication,
                          'output_type': pub.output_type,
@@ -336,7 +329,6 @@ def request_allocation(user, model=None, quota_specs=None,
                           'given_name': inv.given_name,
                           'surname': inv.surname,
                           'email': inv.email,
-                          'institution': inv.institution,
                           'primary_organisation': inv.primary_organisation,
                           'additional_researchers': inv.additional_researchers
                          }
@@ -353,11 +345,6 @@ def request_allocation(user, model=None, quota_specs=None,
                 groups[name] = get_groups(name)
         else:
             groups = quota_specs_to_groups(quota_specs)
-
-        if institutions is None:
-            institutions = [
-                {'id': '',
-                 'name': 'Monash University'}]
 
         if publications is None:
             publications = [
@@ -386,7 +373,6 @@ def request_allocation(user, model=None, quota_specs=None,
                 'given_name': 'MeRC',
                 'surname': 'Monash',
                 'email': 'merc.monash@monash.edu',
-                'institution': 'Monash University',
                 'primary_organisation':
                     models.Organisation.objects.get(short_name='Monash'),
                 'additional_researchers': 'None'
@@ -406,11 +392,6 @@ def request_allocation(user, model=None, quota_specs=None,
     for name, group_list in groups.items():
         add_quota_forms(form, all_quotas, name, group_list, prefix_start)
 
-    form['institutions-INITIAL_FORMS'] = \
-        model.institutions.count() if model else 0
-    form['institutions-TOTAL_FORMS'] = len(institutions)
-    form['institutions-MAX_NUM_FORMS'] = 1000
-
     form['publications-INITIAL_FORMS'] = \
         model.publications.count() if model else 0
     form['publications-TOTAL_FORMS'] = len(publications)
@@ -424,10 +405,6 @@ def request_allocation(user, model=None, quota_specs=None,
         model.investigators.count() if model else 0
     form['investigators-TOTAL_FORMS'] = len(investigators)
     form['investigators-MAX_NUM_FORMS'] = 1000
-
-    for i, ins in enumerate(institutions):
-        for k, v in ins.items():
-            form['institutions-%s-%s' % (i, k)] = v
 
     for i, pub in enumerate(publications):
         for k, v in pub.items():
@@ -447,7 +424,6 @@ def request_allocation(user, model=None, quota_specs=None,
         str(org.id) for org in supported_organisations])
     form['associated_site'] = site or ''
     model_dict['quotas'] = all_quotas
-    model_dict['institutions'] = institutions
     model_dict['supported_organisations'] = supported_organisations
     model_dict['publications'] = publications
     model_dict['grants'] = grants

@@ -74,10 +74,6 @@ class AllocationCreateView(views.BaseAllocationView):
         models.AllocationRequest, models.ChiefInvestigator,
         form=forms.ChiefInvestigatorForm, extra=1)
 
-    formset_institution_class = inlineformset_factory(
-        models.AllocationRequest, models.Institution,
-        form=forms.InstitutionForm, extra=1)
-
     def get_object(self):
         return None
 
