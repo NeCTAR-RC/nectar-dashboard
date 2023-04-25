@@ -114,6 +114,9 @@ class AllocationHistoryTable(tables.DataTable):
     project = tables.Column("project_description", verbose_name="Project name",
                             link="horizon:allocation:requests:allocation_view")
     approver = tables.Column("approver_email", verbose_name="Approver")
+    service_units = tables.Column(
+        get_quota_by_resource("rating", "budget"),
+        verbose_name="SUs")
     cores = tables.Column(
         get_quota_by_resource("compute", "cores"),
         verbose_name="Cores")
