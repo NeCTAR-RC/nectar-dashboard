@@ -91,23 +91,49 @@ class QuotaSanityCheckerTest(helpers.TestCase):
 
 
 class QuotaSanityChecksTest(helpers.TestCase):
+
+    def setUp(self):
+        super().setUp()
+        common.factory_setup()
+        common.sites_setup()
+
     def test_budget_checks(self):
+        allocation = factories.AllocationFactory.create(
+            estimated_project_duration=12)
         quotas = [build_quota('rating', 'budget', 0),
                   build_quota('compute', 'instances', 1),
                   build_quota('compute', 'cores', 100)]
-        checker = build_checker(quotas)
+        checker = build_checker(quotas, allocation=allocation)
         self.assertEqual(checkers.NO_BUDGET,
-                         checkers.no_budget_check(checker)[0])
+                         checkers.budget_check(checker)[0])
 
-    def test_budget_checks2(self):
         quotas = [build_quota('rating', 'budget', 0)]
-        checker = build_checker(quotas)
-        self.assertIsNone(checkers.no_budget_check(checker))
+        checker = build_checker(quotas, allocation=allocation)
+        self.assertIsNone(checkers.budget_check(checker))
 
-    def test_budget_checks3(self):
         quotas = [build_quota('rating', 'budget', 1000)]
-        checker = checkers.QuotaSanityChecker(quotas=quotas)
-        self.assertIsNone(checkers.no_budget_check(checker))
+        checker = build_checker(quotas, allocation=allocation)
+        self.assertIsNone(checkers.budget_check(checker))
+
+        quotas = [build_quota('compute', 'instances', 1),
+                  build_quota('compute', 'cores', 1),
+                  build_quota('rating', 'budget', 100)]
+        checker = build_checker(quotas, allocation=allocation)
+        self.assertEqual(checkers.LOW_BUDGET,
+                         checkers.budget_check(checker)[0])
+
+        quotas = [build_quota('compute', 'instances', 10),
+                  build_quota('compute', 'cores', 20),
+                  build_quota('rating', 'budget', 999)]
+        checker = build_checker(quotas, allocation=allocation)
+        self.assertEqual(checkers.LOW_BUDGET,
+                         checkers.budget_check(checker)[0])
+
+        quotas = [build_quota('compute', 'instances', 10),
+                  build_quota('compute', 'cores', 20),
+                  build_quota('rating', 'budget', 1000)]
+        checker = build_checker(quotas, allocation=allocation)
+        self.assertIsNone(checkers.budget_check(checker))
 
     def test_compute_checks(self):
         quotas = [build_quota('compute', 'instances', 0),

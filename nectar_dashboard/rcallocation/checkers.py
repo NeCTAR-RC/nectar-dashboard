@@ -55,6 +55,7 @@ APPROVER_PROBLEM = 'APPROVER_PROBLEM'
 APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 NO_VALID_GRANTS = 'NO_VALID_GRANTS'
 NO_BUDGET = 'NO_BUDGET'
+LOW_BUDGET = 'LOW_BUDGET'
 ZERO_RESERVATIONS = 'ZERO_RESERVATIONS'
 ZERO_DURATION = 'ZERO_DURATION'
 REENTER_FOR_CODES = 'REENTER_FOR_CODES'
@@ -67,13 +68,25 @@ def storage_zone_to_home(zone):
     return None
 
 
-def no_budget_check(context):
+def budget_check(context):
     budget = context.get_quota('rating.budget')
-    if (budget <= 0
-        and context.get_quota('compute.cores') > 0
-        and context.get_quota('compute.instances') > 0):
-        return (NO_BUDGET,
-                'No Service Unit Budget has been entered')
+    cores = context.get_quota('compute.cores')
+    instances = context.get_quota('compute.instances')
+    if cores > 0 and instances > 0:
+        if budget <= 0:
+            return (NO_BUDGET,
+                    'No Service Unit Budget has been entered')
+        # This is a "best guess" projection of the SUs required.
+        # Unfortunately, the quota are not a reliable indicator
+        # of the user's intended usage.
+        assumed_cores = 4 if cores == 20 else cores
+        duration = context.get_field('estimated_project_duration')  # in months
+        sus_per_m3_vcpu_year = 250                                  # in SUs
+        projected_budget = assumed_cores * sus_per_m3_vcpu_year * duration / 12
+        if budget < projected_budget:
+            return (LOW_BUDGET,
+                    f"Your Service Unit Budget ({budget}) seems too low. "
+                    "Please review your SU Budget calculations.")
     return None
 
 
@@ -316,7 +329,7 @@ def grant_checks(context):
              "Either approve it as Local, or add a Special approval reason.")]
 
 
-STD_CHECKS = [no_budget_check,
+STD_CHECKS = [budget_check,
               instance_vcpu_check,
               no_vcpu_check,
               no_instance_check,
