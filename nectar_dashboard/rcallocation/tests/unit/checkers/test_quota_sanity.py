@@ -588,6 +588,16 @@ class QuotaSanityApproverChecksTest(helpers.TestCase):
         self.assertEqual(checkers.APPROVER_NOT_AUTHORIZED,
                          checkers.approver_checks(checker)[0][0])
 
+    def test_approver_not_authorized_zero(self):
+        quotas = [build_quota('volume', 'gigabytes', 0, 'QRIScloud')]
+        checker = build_checker(quotas, approver="test_user2")
+        self.assertEqual([], checkers.approver_checks(checker))
+
+    def test_approver_not_authorized_blank(self):
+        quotas = [build_quota('volume', 'gigabytes', '', 'QRIScloud')]
+        checker = build_checker(quotas, approver="test_user2")
+        self.assertEqual([], checkers.approver_checks(checker))
+
     def test_no_grants_not_approving(self):
         checker = build_checker([])
         self.assertIsNone(checkers.grant_checks(checker))

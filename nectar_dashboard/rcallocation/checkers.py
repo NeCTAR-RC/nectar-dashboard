@@ -298,7 +298,7 @@ def approver_checks(context):
         approver_zones.extend(mappings.get(s.name, []))
     other_zones = set()
     for q in context.all_quotas.values():
-        if q['value'] > 0 and q['zone'] != 'nectar':
+        if q['value'] and q['zone'] != 'nectar':
             if not q['zone'] in approver_zones:
                 other_zones.add(q['zone'])
 
