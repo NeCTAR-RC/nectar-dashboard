@@ -1,70 +1,66 @@
 {% load publication_extras %}
-<table class="more_fields_tab">
-    <tbody>
+<div class="more_fields_tab">
+  <div class="field_rows">
     {% for publication_form in publication_formset.forms %}
-        <tr>
-            {% if publication_form.non_field_errors %}
-                <div class="alert alert-danger" role="alert">{{ publication_form.non_field_errors }}</div>
-            {% endif %}
-            <td>
+          <fieldset>
                 {{ publication_form.id }}
                 {{ publication_form.DELETE.as_hidden }}
                 {{ publication_form.crossref_metadata }}
-            </td>
-            <td>
               <div class="publication_div">
+                {% if publication_form.non_field_errors %}
+                  <div class="alert alert-danger has-error" role="alert">{{ publication_form.non_field_errors }}</div>
+                {% endif %}
                 {% if publication_form.instance.id %}
-                {% include "rcallocation/_field.html" with field=publication_form.output_type hide=True button="" %}
-                {% include "rcallocation/_field.html" with field=publication_form.doi hide=True button="" %}
-                {% include "rcallocation/_field.html" with field=publication_form.publication hide=True button="" %}
-                <div name="description-text">
-                  {% autoescape off %}
-                  {{ publication_form.instance|pub_summary }}
-                  {% endautoescape %}
-                </div>
-                {% else %}
-                {% include "rcallocation/field.html" with field=publication_form.output_type %}
-                <div name="prompts-group">
-                  <div>
-                    All recently published books and papers should have a
-                    Digital Object Identifier (DOI) issued by the publisher.
-                    We need you to find and provide us with that DOI, if it
-                    exists.
-                  </div>
-                  <button type="button" name="have-doi"
-                          class="btn btn-default">I have a DOI to enter
-                  </button>
-                  <button type="button" name="no-doi"
-                          class="btn btn-default">I have no DOI
-                  </button>
-                </div>
-                {% include "rcallocation/_field.html" with field=publication_form.doi hide="" button="check-doi" button_text="Validate DOI" %}
-                {% include "rcallocation/field.html" with field=publication_form.publication %}
-                <div name='details-group' {% if publication_form.crossref_metadata|length == 0 %} hidden {% endif %} >
-                  <label>Publication details (from crossref)</label>
-                  <div name='details-text'>
+                  {% include "rcallocation/_field.html" with field=publication_form.output_type hide=True button="" %}
+                  {% include "rcallocation/_field.html" with field=publication_form.doi hide=True button="" %}
+                  {% include "rcallocation/_field.html" with field=publication_form.publication hide=True button="" %}
+                  <div class="description-text mt-4">
                     {% autoescape off %}
-                    {{ publication_form.crossref_metadata.value|crossref_summary }}
+                    {{ publication_form.instance|pub_summary }}
                     {% endautoescape %}
                   </div>
-                </div>
+                {% else %}
+                  {% include "rcallocation/field.html" with field=publication_form.output_type %}
+                  <div class="prompts-group" {% if publication_form.crossref_metadata|length == 0 %} hidden {% endif %}>
+                    <p>
+                      All recently published books and papers should have a
+                      Digital Object Identifier (DOI) issued by the publisher.
+                      We need you to find and provide us with that DOI, if it
+                      exists.
+                    </p>
+                    <button type="button" name="have-doi"
+                            class="btn btn-default btn-sm">I have a DOI to enter
+                    </button>&nbsp;
+                    <button type="button" name="no-doi"
+                            class="btn btn-default btn-sm">I have no DOI
+                    </button>
+                  </div>
+                  {% include "rcallocation/_field.html" with field=publication_form.doi hide="" button="check-doi" button_text="Validate DOI" %}
+                  {% if publication_form.crossref_metadata|length == 0 %}
+                    {% include "rcallocation/field.html" with field=publication_form.publication %}
+                  {% else %}
+                    {% include "rcallocation/field.html" with field=publication_form.publication hide=True %}
+                  {% endif %}
+                  <div id='details-group' {% if publication_form.crossref_metadata|length == 0 %} hidden {% endif %} >
+                    <label>Publication details (from crossref)</label>
+                    <div id='details-text'>
+                      {% autoescape off %}
+                      {{ publication_form.crossref_metadata.value|crossref_summary }}
+                      {% endautoescape %}
+                    </div>
+                  </div>
                 {% endif %}
               </div>
-            </td>
-            <td>
-              <button class="pull-right btn btn-default"
-                      id="delete-publication" type="button">
-                Delete
+              <button type='button' id='delete-publication' class='btn btn-danger field-delete-btn'>
+                <i class='fa fa-close'></i> Delete
               </button>
-            </td>
-        </tr>
+            </fieldset>
     {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-            <td></td>
-            <td class="add_another_row"><input type="button" class="btn btn-default" value="Add publication" id="add_another"></td>
-            <td></td>
-        </tr>
-    </tfoot>
-</table>
+  </div>
+  <div class="add_another_row">
+      <button class="btn btn-default" value="Add publication" id="add_another" type="button">
+          <i class="fa fa-plus"></i> Add publication
+      </button>
+  </div>
+</div>
+<br/>

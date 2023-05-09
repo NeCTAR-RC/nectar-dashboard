@@ -11,16 +11,21 @@
       {% endif %}
     </label>
     <div class="controls">
+      {% if button %}
+        <div class="form-inline">
+          <div class="form-group">
+      {% endif %}
         {% block field %}
           {{ field }}
         {% endblock %}
-        {% if button %}
-        &nbsp;
-        <button type='button' id='{{ button }}'
-                class='pull-right btn btn-default'>
-          {{ button_text }}
-        </button>
-        {% endif %}
+      {% if button %}
+            &nbsp;
+            <button type='button' id='{{ button }}' class='btn btn-default'>
+            {{ button_text }}
+            </button>
+          </div>
+        </div>
+      {% endif %}
 
       {% for error in field.errors %}
         <span class="help-block">{{ error }}</span>

@@ -21,7 +21,7 @@
       <input type="hidden" class="form-control" id="id_{{ service_type.catalog_name }}___prefix__-zone" name="{{ service_type.catalog_name }}___prefix__-zone" value="nectar" />
       {% else %}
       <select class="form-control" id="id_{{ service_type.catalog_name }}___prefix__-zone" name="{{ service_type.catalog_name }}___prefix__-zone">
-        <option value="" selected="selected">---------</option>
+        <option value="" selected="selected">Select zone...</option>
         {% for zone in service_type.zones.all %}
           {% if zone.enabled %}
             <option value="{{ zone.name }}">{{ zone.display_name }}</option>

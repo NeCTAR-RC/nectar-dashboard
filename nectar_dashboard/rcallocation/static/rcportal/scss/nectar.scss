@@ -101,6 +101,13 @@ body {
     max-width: 600px;
 }
 
+.alert {
+  margin-top: 20px;
+  .errorlist {
+    list-style: none;
+  }
+}
+
 .grant_div {
     padding: 10px;
     border: 1px solid #ccc;
@@ -110,7 +117,7 @@ body {
     margin-bottom: 10px;
 }
 
-.publication_div{
+.publication_div {
     padding: 10px;
     border: 1px solid #ccc;
     -moz-border-radius: 5px;
