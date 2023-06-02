@@ -386,24 +386,22 @@ $(function(){
     };
 
     function resort_form_rows(formset, opts){
-        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').each(function() {
-            var current_index = this.rowIndex;
-
+        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').each(function(index) {
             //reindex the id input field
             var id_input = $(this).find('input[id$=-id]');
-            id_input.attr('id','id_' + opts.prefix + '-' + current_index + '-id' );
-            id_input.attr('name', opts.prefix + '-' + current_index + '-id');
+            id_input.attr('id','id_' + opts.prefix + '-' + index + '-id' );
+            id_input.attr('name', opts.prefix + '-' + index + '-id');
 
             //reindex the delete input field
             var id_input = $(this).find('input[id$=-DELETE]');
-            id_input.attr('id','id_' + opts.prefix + '-' + current_index + '-DELETE' );
-            id_input.attr('name', opts.prefix + '-' + current_index + '-DELETE');
+            id_input.attr('id','id_' + opts.prefix + '-' + index + '-DELETE' );
+            id_input.attr('name', opts.prefix + '-' + index + '-DELETE');
 
             //reindex the name input field
             var name_input = $(this).find('input[id$=-' + opts.field_name + ']');
-            var new_id = 'id_' + opts.prefix + '-' + current_index + '-' + opts.field_name;
+            var new_id = 'id_' + opts.prefix + '-' + index + '-' + opts.field_name;
             name_input.attr('id', new_id);
-            name_input.attr('name', opts.prefix + '-' + current_index + '-' + opts.field_name);
+            name_input.attr('name', opts.prefix + '-' + index + '-' + opts.field_name);
 
             //reindex the span
             var span_del = $(this).find('span[id$=-' + opts.field_name +']');
@@ -672,35 +670,35 @@ $(function(){
     function resort_form_rows(formset, opts){
         var match = new RegExp(opts.prefix + '-\\d+-', 'g');
 
-        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').each(function() {
-            var current_index = this.rowIndex;
+        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').each(function(index) {
             //reindex the id input field
             var id_input = $(this).find('input[id$=-id]');
-            id_input.attr('id', 'id_' + opts.prefix + '-' + current_index + '-id');
-            id_input.attr('name', opts.prefix + '-' + current_index + '-id');
+            id_input.attr('id', 'id_' + opts.prefix + '-' + index + '-id');
+            id_input.attr('name', opts.prefix + '-' + index + '-id');
+            
             //reindex the delete input field
             var id_input = $(this).find('input[id$=-DELETE]');
-            id_input.attr('id', 'id_' + opts.prefix + '-' + current_index + '-DELETE');
-            id_input.attr('name', opts.prefix + '-' + current_index + '-DELETE');
+            id_input.attr('id', 'id_' + opts.prefix + '-' + index + '-DELETE');
+            id_input.attr('name', opts.prefix + '-' + index + '-DELETE');
 
-            //reindex the label for
+            //reindex the label fors
             $(this).find("label[for^='id_" + opts.prefix + "-']").each(function(){
-                var labelFor = $(this).attr('for').replace(match, opts.prefix +'-' + current_index + '-');
+                var labelFor = $(this).attr('for').replace(match, opts.prefix +'-' + index + '-');
                 $(this).attr('for', labelFor);
             });
 
             //reindex select id and name
             $(this).find("select.form-control").each(function(){
-                var selectId = $(this).attr('id').replace(match, opts.prefix + '-' + current_index + '-');
-                var selectName = $(this).attr('name').replace(match, opts.prefix + '-' + current_index + '-');
+                var selectId = $(this).attr('id').replace(match, opts.prefix + '-' + index + '-');
+                var selectName = $(this).attr('name').replace(match, opts.prefix + '-' + index + '-');
                 $(this).attr('id', selectId);
                 $(this).attr('name', selectName);
             });
 
             //reindex the input id and name
             $(this).find("input.form-control").each(function(){
-                var inputId = $(this).attr('id').replace(match, opts.prefix + '-' + current_index + '-');
-                var inputName = $(this).attr('name').replace(match, opts.prefix + '-' + current_index + '-');
+                var inputId = $(this).attr('id').replace(match, opts.prefix + '-' + index + '-');
+                var inputName = $(this).attr('name').replace(match, opts.prefix + '-' + index + '-');
                 $(this).attr('id', inputId);
                 $(this).attr('name', inputName);
             });
@@ -1045,35 +1043,54 @@ $(function(){
     function resort_form_rows(formset, opts){
         var match = new RegExp(opts.prefix + '-\\d+-', 'g');
 
-        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').each(function() {
-            var current_index = this.rowIndex;
+        $('div.'+ opts.formset_class_id + ' div.more_fields_tab > div:first fieldset').each(function(index) {
             //reindex the id input field
             var id_input = $(this).find('input[id$=-id]');
-            id_input.attr('id', 'id_' + opts.prefix + '-' + current_index + '-id');
-            id_input.attr('name', opts.prefix + '-' + current_index + '-id');
+            id_input.attr('id', 'id_' + opts.prefix + '-' + index + '-id');
+            id_input.attr('name', opts.prefix + '-' + index + '-id');
+
             //reindex the delete input field
             var id_input = $(this).find('input[id$=-DELETE]');
-            id_input.attr('id', 'id_' + opts.prefix + '-' + current_index + '-DELETE');
-            id_input.attr('name', opts.prefix + '-' + current_index + '-DELETE');
+            id_input.attr('id', 'id_' + opts.prefix + '-' + index + '-DELETE');
+            id_input.attr('name', opts.prefix + '-' + index + '-DELETE');
 
-            //reindex the label for
+            //reindex the crossref input field
+            var id_input = $(this).find('input[id$=-crossref_metadata]');
+            id_input.attr('id', 'id_' + opts.prefix + '-' + index + '-crossref_metadata');
+            id_input.attr('name', opts.prefix + '-' + index + '-crossref_metadata');
+
+            //reindex the label fors
             $(this).find("label[for^='id_" + opts.prefix + "-']").each(function(){
-                var labelFor = $(this).attr('for').replace(match, opts.prefix +'-' + current_index + '-');
+                var labelFor = $(this).attr('for').replace(match, opts.prefix +'-' + index + '-');
                 $(this).attr('for', labelFor);
+            });
+
+            //reindex the divs
+            $(this).find("div[id^='id_" + opts.prefix + "-']").each(function(){
+                var divId = $(this).attr('id').replace(match, opts.prefix +'-' + index + '-');
+                $(this).attr('id', divId);
             });
 
             //reindex select id and name
             $(this).find("select.form-control").each(function(){
-                var selectId = $(this).attr('id').replace(match, opts.prefix + '-' + current_index + '-');
-                var selectName = $(this).attr('name').replace(match, opts.prefix + '-' + current_index + '-');
+                var selectId = $(this).attr('id').replace(match, opts.prefix + '-' + index + '-');
+                var selectName = $(this).attr('name').replace(match, opts.prefix + '-' + index + '-');
                 $(this).attr('id', selectId);
                 $(this).attr('name', selectName);
             });
 
+            //reindex textarea id and name
+            $(this).find("textarea.form-control").each(function(){
+                var textId = $(this).attr('id').replace(match, opts.prefix + '-' + index + '-');
+                var textName = $(this).attr('name').replace(match, opts.prefix + '-' + index + '-');
+                $(this).attr('id', textId);
+                $(this).attr('name', textName);
+            });
+
             //reindex the input id and name
             $(this).find("input.form-control").each(function(){
-                var inputId = $(this).attr('id').replace(match, opts.prefix + '-' + current_index + '-');
-                var inputName = $(this).attr('name').replace(match, opts.prefix + '-' + current_index + '-');
+                var inputId = $(this).attr('id').replace(match, opts.prefix + '-' + index + '-');
+                var inputName = $(this).attr('name').replace(match, opts.prefix + '-' + index + '-');
                 $(this).attr('id', inputId);
                 $(this).attr('name', inputName);
             });

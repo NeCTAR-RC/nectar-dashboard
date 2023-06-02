@@ -2,7 +2,7 @@
 <div class="more_fields_tab">
   <div class="field_rows">
     {% for publication_form in publication_formset.forms %}
-          <fieldset>
+          <fieldset {% if publication_form.DELETE.value %} hidden {% endif %}>
                 {{ publication_form.id }}
                 {{ publication_form.DELETE.as_hidden }}
                 {{ publication_form.crossref_metadata }}

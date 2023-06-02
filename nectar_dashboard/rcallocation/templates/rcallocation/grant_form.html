@@ -1,7 +1,7 @@
 <div class="more_fields_tab">
     <div class="field_rows">
         {% for grant_form in grant_formset.forms %}
-            <fieldset>
+            <fieldset {% if grant_form.DELETE.value %} hidden {% endif %}>
                 {% if grant_form.non_field_errors %}
                     <div class="alert alert-danger" role="alert">{{ grant_form.non_field_errors }}</div>
                 {% endif %}
