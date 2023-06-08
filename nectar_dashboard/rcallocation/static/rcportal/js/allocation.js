@@ -1,7 +1,39 @@
 (function($) {
 
+    var warning_timeout;
+    var leaving = false;
+
+    function leaveWarning(event) {
+        if($.browser.mozilla) { event.preventDefault(); }
+        warning_timeout = setTimeout(function() {
+            if(leaving === false) { hideLoadingModal() };
+        }, 3000);
+        return (event.returnValue = "");
+    }
+    
+    function noTimeout() {
+        leaving = true;
+        clearTimeout(warning_timeout);
+    } 
+
+    // Hides the horizon page loader which is displayed when the user clicks a link.
+    function hideLoadingModal() {
+        $("#modal_wrapper > .modal.loading").remove();
+        $(".modal-backdrop.in").remove();
+        $("body").removeClass("modal-open");
+    }
+
+    if($("#allocationrequest_edit").length) {
+        // Set a leave alert warning on the allocation form page
+        $(window).bind('beforeunload', leaveWarning);
+        $(window).bind('unload', noTimeout);
+        $('form .submit-form-button').click(function() {
+            $(window).unbind('beforeunload');
+        });
+    }
+
     $('#request_accordion a[data-toggle="collapse"]').click(function(event) {
-        // Stop accordion collapse link from adding has to URL
+        // Stop accordion collapse link from adding hash to URL
         event.preventDefault();
     });
 
