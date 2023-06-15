@@ -65,8 +65,12 @@ var dashboardHome = (function() {
     const BANNER_URL = "https://object-store.rc.nectar.org.au/v1/AUTH_2f6f7e75fc0f453d9c127b490b02e9e3/dashboard-featured-banner/banner.json";
 
     return new Promise((resolve, reject) => {
-      $.getJSON(BANNER_URL)
-        .done(function(json_data) {
+      $.ajax({
+        url: BANNER_URL,
+        type: 'GET',
+        dataType: 'JSON',
+        cache: false,
+        success: function(json_data) {
           // Is json object empty?
           if(json_data[0]) {
             // Return the first item banner data
@@ -75,9 +79,10 @@ var dashboardHome = (function() {
           else {
             reject("Data empty!");
           }
-        })
-        .fail(function(jqxhr, textStatus, error) {
-          reject(textStatus + ", " + error);
+        },
+        error: function(error) {
+          reject(error);
+        },
       });
     });
   }
@@ -221,7 +226,7 @@ var dashboardHome = (function() {
       }
       if(result.button2) {
         var color = getButtonClass(result.button2.color);
-        var buttonHtml = `<a class="banner-btn btn ${color} btn-lg" href="${result.button1.link}">${result.button1.text}</a>`;
+        var buttonHtml = `<a class="banner-btn btn ${color} btn-lg ml-1" href="${result.button2.link}">${result.button2.text}</a>`;
         bannerDiv.find(".banner-text").append($(buttonHtml));
       }
       $("#banner").append(bannerDiv);
