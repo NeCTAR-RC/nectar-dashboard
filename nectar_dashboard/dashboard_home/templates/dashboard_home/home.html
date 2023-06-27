@@ -20,13 +20,22 @@
 {% block main %}
   <div class="row">
     <div class="col-xs-12">
-      {{ request.user.name }}
       <h1 id="home_greeting">Hello and Welcome!</h1>
+      {% if outages|length > 0 %}
+        {% for outage in outages %}
+          {% if outage.severity == 3 and outage.end_ts is None %}
+            <div class="alert alert-danger fade in">
+              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+              <i class="fa fa-exclamation-circle fa-2x" style="vertical-align: middle;"></i>&nbsp;&nbsp;{{ outage.title }} <a href="{{ HORIZON_CONFIG.OUTAGE_BASE_URL }}{{ outage.id }}" target="_blank" class="alert-link">View Announcement <i class="fa fa-external-link"></i></a>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
       <div id="welcome" class="panel panel-primary shadow position-relative">
         <div class="panel-body p-5 text-center">
           <h2>Welcome to the Dashboard!</h2>
-          <p class="lead"><em>The Dashboard</em> is your web interface to the <strong>The ARDC Nectar Research Cloud</strong> - Australia's national research cloud, providing computing infrastructure to researchers, giving you access to powerful computing resources without the need to purchase or host your own hardware.</p>
-          <p>New to Nectar? Don't worry, we've got loads of support arcticles and tutorials to help you along the way. You can learn all about the Nectar Cloud and The Dashboard on the Nectar Support Site and if you need help, you can simply contact our Support team by creating a help request.</p>
+          <p class="lead"><em>The Dashboard</em> is your web interface to the <strong>ARDC Nectar Research Cloud</strong> - Australia&apos;s national research cloud, providing computing infrastructure to researchers, giving you access to powerful computing resources without the need to purchase or host your own hardware.</p>
+          <p>New to Nectar? Don&apos;t worry, we&apos;ve got loads of support arcticles and tutorials to help you along the way. You can learn all about the Nectar Cloud and The Dashboard on the Nectar Support Site and if you need help, you can simply contact our Support team by creating a help request.</p>
           <div id="welcome_buttons">
             <a href="https://support.ehelp.edu.au/" target="_blank" class="btn btn-warning">Support Centre</a>
             <a href="https://tutorials.rc.nectar.org.au/" target="_blank" class="btn btn-info">Tutorials</a>
@@ -108,7 +117,53 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-12">
+    {% if outages|length > 0 %}
+      <div class="col-xs-12 col-sm-6">
+        <div class="panel panel-default shadow">
+          <div class="panel-heading text-uppercase d-md-flex align-items-center justify-content-between">
+            Service Announcements
+            <a class="btn btn-sm btn-default" href="https://status.rc.nectar.org.au/" target="_blank">Nectar System Status <i class="fa fa-external-link"></i></a>
+          </div>
+          <div class="panel-body p-5">
+            <ul id="announcements" class="list-unstyled">
+              {% for outage in outages %}
+              <li class="d-flex py-4">
+                <div class="announcement-severity">
+                  <img class="severity-dial" src='{% static "img/severity" %}{{ outage.severity }}.svg' />
+                </div>
+                <div class="announcement-details pl-4">
+                  <h5 class="text-uppercase">
+                    {% if outage.status_display == "Resolved" %}(Resolved)&nbsp;{% elif outage.status_display == "Completed" %}(Completed)&nbsp;{% endif %}
+                    {{ outage.scheduled_display }} Outage
+                  </h5>
+                  <h4>
+                    {{ outage.title }}
+                  </h4>
+                  <p>
+                    <strong>Status:</strong> {{ outage.status_display }}
+                    {% if outage.start %}
+                      <strong>Start:</strong> {{ outage.start }}
+                    {% elif outage.scheduled and outage.schedule_start %}
+                      <strong>Start:</strong> {{ outage.schedule_start }} (scheduled)
+                    {% endif %}
+                    {% if outage.end %}
+                      <strong>End:</strong> {{ outage.end }}
+                    {% elif outage.scheduled and outage.schedule_end %}
+                      <strong>End:</strong> {{ outage.schedule_end }} (scheduled).</p>
+                    {% endif %}
+                  </p>
+                  <a href="{{ HORIZON_CONFIG.OUTAGE_BASE_URL }}{{ outage.id }}" target="_blank">View Announcement <i class="fa fa-external-link"></i></a>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6">
+    {% else %}
+      <div class="col-xs-12">
+    {% endif %}
       <div class="panel panel-default shadow">
         <div class="panel-heading text-uppercase d-md-flex align-items-center justify-content-between">
           ARDC News

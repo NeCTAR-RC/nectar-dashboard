@@ -39,6 +39,12 @@
     }
   }
 }
+#announcements {
+  .severity-dial {
+    width: 100%;
+    max-width: 40px;
+  }
+}
 #ardc_news {
   .news-slide {
     a {

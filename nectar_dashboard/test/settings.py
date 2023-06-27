@@ -411,6 +411,7 @@ HORIZON_CONFIG['WARNING_INFO_URL'] = \
 HORIZON_CONFIG['FRESHDECK_SEARCH_URL'] = (
     "https://support.ehelp.edu.au/a/tickets/filters/search"
     "?orderBy=updated_at&orderType=desc&ref=_created")
+HORIZON_CONFIG['OUTAGE_BASE_URL'] = "https://status.rc.nectar.org.au/outages/"
 
 
 REST_FRAMEWORK = {

@@ -7,3 +7,4 @@ manukaclient>=0.7.0
 gnocchiclient
 django-mathfilters
 git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms
+git+https://github.com/NeCTAR-RC/python-langstrothclient@master#egg=langstrothclient
