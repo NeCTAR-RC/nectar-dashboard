@@ -5,11 +5,11 @@
             {{ field }}
           </div>
         {% endblock %}
-        {% for error in field.errors %}
-        <span class="help-block">{{ error }}</span>
-        {% endfor %}
         {% block remove_button %}
             <span title="remove" id="id_{{ field.html_name }}" class="delete-icon-sp text-danger"> &nbsp; &nbsp;<i class="fa fa-times"></i> &nbsp; &nbsp; </span>
         {% endblock %}
+        {% for error in field.errors %}
+          <span class="help-block">{{ error }}</span>
+        {% endfor %}
     </div>
 {% endif %}

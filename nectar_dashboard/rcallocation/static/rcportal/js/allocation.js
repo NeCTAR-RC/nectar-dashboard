@@ -8,7 +8,7 @@
     // Does the page have errors?
     if($('#request_accordion .has-error')[0]) {
         // Open the first panel with an error
-        $(".has-error:first").closest(".request-collapse").addClass("in");
+        $(".has-error:first").closest(".request-collapse").addClass('in');
     }
     else {
         // Otherwise, open the first panel
@@ -22,22 +22,21 @@
     $('#request_accordion > .panel:has(div.has-error)').removeClass("panel-default").addClass('panel-danger');
 
     // Highlight active panel on collapse show event
-    $('#request_accordion > .panel').on('show.bs.collapse', function () {
-        if(!$(this).hasClass('panel-danger')) {
+    $('#request_accordion > .panel').on('show.bs.collapse', function() {
+        if($(this).hasClass('panel-default')) {
             $(this).removeClass("panel-default");
             $(this).addClass('panel-warning');
         }
-    });
-
-    // Remove highlight when not active
-    $('#request_accordion > .panel').on('hidden.bs.collapse', function () {
-        if($(this).hasClass('panel-danger')) {
-            $(this).removeClass("panel-danger");
-        }
-        else {
-            $(this).removeClass("panel-warning");
-        }
-        $(this).addClass('panel-default');
+        // Remove highlight when not active
+        $('#request_accordion > .panel').on('hide.bs.collapse', function() {
+            if($(this).hasClass('panel-danger')) {
+                $(this).removeClass("panel-danger");
+            }
+            else {
+                $(this).removeClass("panel-warning");
+            }
+            $(this).addClass('panel-default');
+        });
     });
 
     function renumber_forms(forms) {

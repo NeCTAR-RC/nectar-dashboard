@@ -27,11 +27,6 @@
           {% for hidden in group_form.hidden_fields %}
             {{ hidden }}
           {% endfor %}
-          {% if group_form.non_field_errors %}
-            <div class="has-error">
-              <span class="help-block">{{ group_form.non_field_errors }}</span>
-            </div>
-          {% endif %}
           {% if group_form.zone.errors %}
             <div class="has-error">
               {{ group_form.zone }}
@@ -44,6 +39,11 @@
         <button class="btn btn-link btn-xs quota-resource-delete" type="button" name="action" value="delete" style="display: none;">
           <i class="fa fa-times text-danger"></i>
         </button>
+        {% if group_form.non_field_errors %}
+          <div class="alert alert-danger has-error">
+            {{ group_form.non_field_errors }}
+          </div>
+        {% endif %}
       </div>
     </div>
   {% endfor %}
