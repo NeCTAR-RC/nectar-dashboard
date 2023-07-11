@@ -31,10 +31,23 @@ body {
   }
 }
 
-table,
-.table,
-.table_wrapper {
+.table_actions {
+  float: none;
   width: 100%;
+  @media (min-width: 992px) {
+    text-align: right;
+  }
+  .form-group {
+    margin-bottom: 0;
+  }
+  .btn, .form-control {
+    margin-bottom: 5px;
+  }
+  .dropdown-menu-right {
+    @media (max-width: 991px) {
+      right: auto;
+    }
+  }
 }
 
 button, select, html, textarea, input {
@@ -523,19 +536,6 @@ input {
     display: block;
     .hz-magic-search-bar {
       padding-right: 0;
-    }
-  }
-}
-
-.table_actions {
-  float: none;
-  width: 100%;
-  @media (min-width: 992px) {
-    text-align: right;
-  }
-  .btn, .form-control {
-    @media (max-width: 991px) {
-      margin-bottom: 5px;
     }
   }
 }
