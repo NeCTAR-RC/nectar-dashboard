@@ -292,6 +292,10 @@ img.help-popover {
 }
 
 .table_wrapper {
+  overflow: visible;
+}
+
+.table_inner {
   overflow-x: scroll;
   margin-bottom: 30px;
 }
