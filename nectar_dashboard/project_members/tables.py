@@ -39,8 +39,6 @@ class UserFilterAction(tables.FilterAction):
 
 class RemoveMembers(tables.DeleteAction):
     name = "removeProjectMember"
-    action_present = _("Remove")
-    action_past = _("Removed")
     data_type_singular = _("User")
     data_type_plural = _("Users")
 
