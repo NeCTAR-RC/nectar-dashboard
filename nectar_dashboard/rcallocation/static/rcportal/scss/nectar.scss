@@ -290,35 +290,3 @@ img.help-popover {
 .select2-drop-active {
   border: 1px solid $brand-info !important;
 }
-
-.table_wrapper {
-  overflow: visible;
-}
-
-.table_inner {
-  overflow-x: scroll;
-  margin-bottom: 30px;
-}
-
-.table_actions button, 
-.table_actions input,
-.table_actions a {
-  margin-bottom: 3px;
-}
-
-.table > tbody > tr > td.sortable {
-  min-width: 100px;
-}
-
-@media (min-width: 768px) {
-  .form-inline .form-group,
-  .table_actions .form-group {
-    margin-bottom: 5px;
-    min-width: 160px;
-  }
-  .form-inline .control-label,
-  .table_actions .control-label {
-
-    min-width: 160px;
-  }
-}

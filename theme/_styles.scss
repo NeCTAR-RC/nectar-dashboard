@@ -32,6 +32,18 @@ body {
   }
 }
 
+.table_wrapper {
+  overflow: visible;
+  margin-bottom: 30px;
+}
+
+.table_inner {
+  overflow-x: scroll;
+  /* Hack to show row actions dropdown without scroll */
+  padding-bottom: 520px;
+  margin-bottom: -520px;
+}
+
 .table_actions {
   float: none;
   width: 100%;
@@ -48,6 +60,29 @@ body {
     @media (max-width: 991px) {
       right: auto;
     }
+  }
+}
+
+.table_actions button, 
+.table_actions input,
+.table_actions a {
+  margin-bottom: 3px;
+}
+
+.table > tbody > tr > td.sortable {
+  min-width: 100px;
+}
+
+@media (min-width: 768px) {
+  .form-inline .form-group,
+  .table_actions .form-group {
+    margin-bottom: 5px;
+    min-width: 160px;
+  }
+  .form-inline .control-label,
+  .table_actions .control-label {
+
+    min-width: 160px;
   }
 }
 
@@ -299,6 +334,7 @@ input {
 #main_content {
   height: 100%;
   #sidebar {
+    position: relative;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
@@ -307,14 +343,17 @@ input {
   }
   #content_body {
     height: 100%;
+    background-color: #000000;
     overflow-y: scroll;
     padding-left: 0 !important;  // Reset Horizon theme left padding for screens > 768px
     padding-top: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; // Push footer to bottom
-    .container-fluid {
+    // justify-content: space-between; // Push footer to bottom
+    > .container-fluid {
       width: 100%; // Fix narrow width caused by parent flex property
+      flex-grow: 1; // Make element height fill empty space in window
+      background-color: $body-bg;
       padding-right: 30px;
       padding-left: 30px;
     }
@@ -378,7 +417,8 @@ input {
  #sidebar {
   font-weight: bold;
   width: 240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
-  @media (max-width: 991px) {
+  @media (max-width: 767px) {
+    position: absolute !important;
     left: -240px; // Change horizon sidebar width from 220px to allow scroll bar to fit
     padding-bottom: 64px;
   }
