@@ -882,13 +882,15 @@ $(function(){
         //doi prompts
         new_row += "<div class='prompts-group'>";
         new_row += "<p>";
-        new_row += "Recently published books and peer reviewed papers have a ";
-        new_row += "Digital Object Identifier (DOI) issued by the publisher. ";
-        new_row += "We need you to enter that DOI (if it exists) and ";
-        new_row += "validate it. If you do not have the DOI to hand, you ";
-        new_row += "should be able to find it by doing a <a href='https://search.crossref.org/ target='_blank'>Crossref Metadata Search</a>. ";
-        new_row += "In the event that there is no validatable DOI, you ";
-        new_row += "will need to (re-)enter the citation details by hand.";
+        new_row += "All recently published books, articles and papers should ";
+        new_row += "have a Digital Object Identifier (DOI) issued by the ";
+        new_row += "publisher.  You will need to locate and provide that ";
+        new_row += "DOI, if it exists.<br>Note that valid DOIs are ";
+        new_row += "mandatory for peer reviewed journal articles.<br>";
+        new_row += "If you do not have the DOI to hand, you can use ";
+        new_row += "<a href='https://search.crossref.org/' target='_blank'>Crossref Metadata Search</a> ";
+        new_row += "to try to find it. If no valid DOI exists, you will ";
+        new_row += "need to enter the publication's citation details by hand.";
         new_row += "</p>";
         new_row += "<button type='button' name='have-doi' class='btn btn-default btn-sm'>";
         new_row += "I have a DOI to enter";
@@ -896,7 +898,6 @@ $(function(){
         new_row += "<button type='button' name='no-doi' class='btn btn-default btn-sm'>";
         new_row += "This publication has no DOI";
         new_row += "</button>&nbsp;";
-        new_row += "<p class='mt-3'><a href='https://search.crossref.org/' target='_blank'>Search for my DOI</a> on crossref.org.</p>";
         new_row += "</div>";
         //doi
         new_row += create_field_div(opts, 'doi', row_index, 'hidden');
@@ -911,6 +912,7 @@ $(function(){
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
+        new_row += "<p class='mt-3'><a href='https://search.crossref.org/' target='_blank'>Search for my DOI</a> on crossref.org.</p>";
         new_row += "</div>";
         //publication
         new_row += create_field_div(opts, 'publication', row_index, 'hidden');
@@ -1152,9 +1154,8 @@ $(function(){
                  var tr = $(this);
                  var output_group = tr.find('div[id*=-output_type-group]');
                  if (!output_group.attr('hidden')) {
-                     var output_type = tr.find('select[id*=-output_type]');
                      apply_pub_handlers(tr);
-                     init_pub_form_visibility(tr, output_type.val(), false);
+                     init_pub_form_visibility(tr, false);
                  }
              });
          });
@@ -1175,7 +1176,7 @@ function escapeText(value) {
         .replace(/'/g, '&apos;');
 }
 
-function init_pub_form_visibility(tr, output_type, type_changed) {
+function init_pub_form_visibility(tr, type_changed) {
     var prompts_group = tr.find('div[class=prompts-group]');
     var doi_group = tr.find('div[id*=-doi-group]');
     var doi_input = tr.find('input[id*=-doi]');
@@ -1183,9 +1184,11 @@ function init_pub_form_visibility(tr, output_type, type_changed) {
     var meta_input = tr.find('input[id*=-crossref_metadata]');
     var pub_group = tr.find('div[id*=-publication-group]');
     var pub_input = tr.find('input[id*=-publication]');
+    var output_type = tr.find('select[id*=-output_type]').val();
+
     if (output_type == 'AJ' || output_type == 'AP' ||
         output_type == 'AN' || output_type == 'B') {
-        if (!doi_input.val()) {
+        if (!doi_input.val() && output_type != 'AJ') {
             doi_group.hide();
             prompts_group.show();
             details_group.hide();
@@ -1201,7 +1204,7 @@ function init_pub_form_visibility(tr, output_type, type_changed) {
         if (type_changed) {
             pub_input.val('');
             pub_group.hide();
-        } else if (meta_input.val()) {
+        } else if (meta_input.val() || output_type == 'AJ') {
             pub_group.hide();
         } else {
             pub_group.show();
@@ -1223,9 +1226,7 @@ function init_pub_form_visibility(tr, output_type, type_changed) {
 function apply_pub_handlers(tr) {
     tr.off('change', 'select[id*=-output_type]');
     tr.on('change', 'select[id*=-output_type]', function(e) {
-        var output_type = $(this).val();
-        var current_tr = tr;
-        init_pub_form_visibility(current_tr, output_type, true);
+        init_pub_form_visibility(tr, true);
     });
     tr.off('change', 'input[name*=-doi]');
     tr.on('change', 'input[name*=-doi]', function(e) {
@@ -1244,10 +1245,16 @@ function apply_pub_handlers(tr) {
     tr.off('click', 'button[name=no-doi]');
     tr.on('click', 'button[name=no-doi]', function(e) {
         var current_tr = tr;
-        current_tr.find('div[class=prompts-group]').hide();
-        current_tr.find('div[id*=-doi-group]').hide();
-        current_tr.find('div[id=details-group]').hide()
-        current_tr.find('div[id*=-publication-group]').show();
+        var output_type = current_tr.find('select[id*=-output_type]');
+        if (output_type.val() == "AJ") {
+            output_type.val("");
+            init_pub_form_visibility(current_tr, true);
+        } else {
+            current_tr.find('div[class=prompts-group]').hide();
+            current_tr.find('div[id*=-doi-group]').hide();
+            current_tr.find('div[id=details-group]').hide()
+            current_tr.find('div[id*=-publication-group]').show();
+        }
     });
 }
 
@@ -1354,8 +1361,7 @@ function accept_doi(e) {
     var metadata = $('#doi-crossref').val();
     crossref_input.val(metadata);
     details.html(render_crossref_metadata(metadata));
-    tr.find('div[id$=-publication-group]').hide();
-    tr.find('div[id=details-group]').show();
+    init_pub_form_visibility(tr, false)
 };
 
 function reject_doi(e) {
@@ -1367,8 +1373,7 @@ function reject_doi(e) {
     var details = tr.find('div[id=details-text]');
     crossref_input.val('');
     details.html("No information available for DOI " + doi);
-    tr.find('div[id$=-publication-group]').show();
-    tr.find('div[id=details-group]').hide();
+    init_pub_form_visibility(tr, false)
 };
 
 $('.doi-close').click(reject_doi);

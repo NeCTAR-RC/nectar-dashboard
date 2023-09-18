@@ -323,8 +323,8 @@ class FormsTestCase(helpers.TestCase):
             self.assertEqual(['This field is required.'], form.errors[field])
 
         self.assertEqual(['No details about this research output have been '
-                          'provided. Provide either a DOI or other details, '
-                          'as appropriate.'],
+                          'provided. Provide either a DOI or citation '
+                          'details, as appropriate.'],
                          form.non_field_errors())
 
         pub_data = {'allocation': 1,
@@ -334,29 +334,41 @@ class FormsTestCase(helpers.TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(1, len(form.errors))
         self.assertEqual(['Since the DOI you provided has not been validated, '
-                          'other publication details must be entered '
-                          'by hand.'],
+                          'citation details must be entered by hand.'],
                          form.errors['publication'])
 
         pub_data['crossref_metadata'] = 'gerbils'
         form = forms.PublicationForm(data=pub_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(1, len(form.errors))
-        self.assertEqual(['Crossref_metadata not JSON'],
+        self.assertEqual(['Crossref_metadata not JSON. '
+                          'Please report this to Nectar support.'],
                          form.non_field_errors())
 
         pub_data['crossref_metadata'] = '["gerbils"]'
         form = forms.PublicationForm(data=pub_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(1, len(form.errors))
-        self.assertEqual(['Crossref_metadata not a proper Crossref response'],
+        self.assertEqual(['Crossref_metadata not a valid Crossref response. '
+                          'Please report this to Nectar support.'],
                          form.non_field_errors())
 
         pub_data['crossref_metadata'] = '{"gerbils": "OK!"}'
         form = forms.PublicationForm(data=pub_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(1, len(form.errors))
-        self.assertEqual(['Crossref_metadata not a proper Crossref response'],
+        self.assertEqual(['Crossref_metadata not a valid Crossref response. '
+                          'Please report this to Nectar support.'],
+                         form.non_field_errors())
+
+        pub_data['crossref_metadata'] = ''
+        pub_data['output_type'] = \
+            output_type_choices.PEER_REVIEWED_JOURNAL_ARTICLE
+        form = forms.PublicationForm(data=pub_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(1, len(form.errors))
+        self.assertEqual(['A validated DOI is required for a peer '
+                          'reviewed journal article.'],
                          form.non_field_errors())
 
     def test_validating_doi(self):

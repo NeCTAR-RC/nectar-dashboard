@@ -15,8 +15,8 @@ from select2 import forms as select2_forms
 
 from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation import output_type_choices
 from nectar_dashboard.rcallocation import utils
-
 
 LOG = logging.getLogger(__name__)
 
@@ -513,31 +513,41 @@ class PublicationForm(NectarBaseModelForm):
         doi = cleaned_data.get('doi', '')
         publication = cleaned_data.get('publication', '')
         crossref_metadata = cleaned_data.get('crossref_metadata', '')
-        if not doi and not publication:
+        output_type = cleaned_data.get('output_type', '')
+        if output_type == output_type_choices.PEER_REVIEWED_JOURNAL_ARTICLE \
+           and not crossref_metadata:
+            self.add_error(None,
+                           ValidationError('A validated DOI is required for '
+                                           'a peer reviewed journal article.'))
+        elif not doi and not publication:
             self.add_error(None,
                            ValidationError('No details about this research '
                                            'output have been provided. '
-                                           'Provide either a DOI or other '
+                                           'Provide either a DOI or citation '
                                            'details, as appropriate.'))
-        if doi and not crossref_metadata and not publication:
+        elif doi and not crossref_metadata and not publication:
             self.add_error('publication',
                            ValidationError('Since the DOI you provided has '
-                                           'not been validated, other '
-                                           'publication details must be '
-                                           'entered by hand.'))
+                                           'not been validated, citation '
+                                           'details must be entered by hand.'))
         if crossref_metadata:
             # The field may hidden, but we still don't want it to be populated
             # with garbage, deliberately or by accident.  Make the errors
             # non-field errors so that they get displayed by the template.
+            # These *should have* been picked up by the DOI wizard ...
             try:
                 data = json.loads(crossref_metadata)
                 if not isinstance(data, dict) or not data.get('message'):
                     self.add_error(None,
                                    ValidationError('Crossref_metadata not a '
-                                                   'proper Crossref response'))
+                                                   'valid Crossref response. '
+                                                   'Please report this to '
+                                                   'Nectar support.'))
             except json.JSONDecodeError:
                 self.add_error(None,
-                               ValidationError('Crossref_metadata not JSON'))
+                               ValidationError('Crossref_metadata not JSON. '
+                                               'Please report this to Nectar '
+                                               'support.'))
 
 
 class GrantForm(NectarBaseModelForm):

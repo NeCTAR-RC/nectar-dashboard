@@ -23,10 +23,12 @@
                   {% include "rcallocation/field.html" with field=publication_form.output_type %}
                   <div class="prompts-group" {% if publication_form.crossref_metadata|length == 0 %} hidden {% endif %}>
                     <p>
-                      All recently published books and papers should have a
-                      Digital Object Identifier (DOI) issued by the publisher.
-                      We need you to find and provide us with that DOI, if it
-                      exists.
+                      All recently published books, articles and papers should
+                      have a Digital Object Identifier (DOI) issued by the
+                      publisher.  You will need to locate and provide that
+                      DOI, if it exists.  Note that valid DOIs are
+                      <b>Mandatory</b> for Journal aricles.  In other cases
+                      it is permitted to enter the citation details by hand.
                     </p>
                     <button type="button" name="have-doi"
                             class="btn btn-default btn-sm">I have a DOI to enter
