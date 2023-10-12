@@ -466,16 +466,19 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         for service_type, form_tuple in quota_formsets:
             selected_zones = []
             for group_form, formset in form_tuple:
-                if not formset.is_valid():
-                    quota_valid = False
-                if not group_form.is_valid():
+                if not formset.is_valid() or not group_form.is_valid():
                     quota_valid = False
                 else:
-                    if group_form.cleaned_data['zone'] in selected_zones:
-                        group_form.add_error(None, "Zones must be unique")
-                        quota_valid = False
-                    else:
-                        selected_zones.append(group_form.cleaned_data['zone'])
+                    zone = group_form.cleaned_data['zone']
+                    if zone and self._has_quotas(formset):
+                        if zone in selected_zones:
+                            group_form.add_error(
+                                None, "A single non-zero quota is allowed for "
+                                f"storage zone '{zone.display_name}'. Set the "
+                                "other quota(s) for this zone to zero.")
+                            quota_valid = False
+                        else:
+                            selected_zones.append(zone)
                 if form.is_valid() and quota_valid and not ignore_warnings:
                     quotas_to_check = self._prep_quotas(form, group_form,
                                                         formset)
@@ -506,6 +509,14 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                     return self.form_invalid(**form_dict)
         else:
             return self.form_invalid(**form_dict)
+
+    def _has_quotas(self, formset):
+        for quota_data in formset.cleaned_data:
+            quota = quota_data.get('quota', 0)
+            requested_quota = quota_data.get('requested_quota', 0)
+            if quota or requested_quota:
+                return True
+        return False
 
     def _prep_quotas(self, form, group_form, formset):
         # Connect up the quotas, groups and allocation so that the
