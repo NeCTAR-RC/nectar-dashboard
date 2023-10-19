@@ -27,7 +27,7 @@ setuptools.setup(
                       "gnocchiclient",
                       "django-mathfilters",
                       "django-select2-forms @ git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms",
-                      "langstrothclient @ git+https://github.com/NeCTAR-RC/python-langstrothclient@master#egg=langstrothclient"
+                      "langstrothclient"
                       ],
     license="GPLv3+",
     zip_safe=False,
