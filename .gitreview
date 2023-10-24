@@ -2,4 +2,4 @@
 host=review.rc.nectar.org.au
 port=29418
 project=NeCTAR-RC/nectar-dashboard.git
-defaultbranch=nectar/wallaby
+defaultbranch=nectar/2023.2

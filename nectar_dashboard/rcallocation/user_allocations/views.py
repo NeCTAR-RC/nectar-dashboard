@@ -67,11 +67,11 @@ class UserAllocationsListView(views.BaseAllocationsListView):
     def get_data(self):
         contact_email = self.request.user.username
         managed_projects = get_managed_projects(self.request)
-        return (models.AllocationRequest.objects.all()
-                .filter(parent_request=None)
-                .filter(Q(project_id__in=managed_projects)
-                        | Q(contact_email__exact=contact_email))
-                .order_by('status'))
+        return models.AllocationRequest.objects.filter(
+            parent_request=None).filter(
+                Q(project_id__in=list(managed_projects))
+                | Q(contact_email__exact=contact_email)
+            ).order_by('status')
 
     def test_func(self):
         # Any user is allowed to list allocations.  The filter should

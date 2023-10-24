@@ -1,7 +1,7 @@
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from .views import credentials
 
 urlpatterns = [
-    url(r'^$', credentials, name='index',),
+    re_path(r'^$', credentials, name='index',),
 ]

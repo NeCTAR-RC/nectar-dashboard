@@ -1,7 +1,7 @@
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from nectar_dashboard.usage.allocation_usage import views
 
 urlpatterns = [
-    url(r'^$', views.IndexView.as_view(), name='index'),
+    re_path(r'^$', views.IndexView.as_view(), name='index'),
 ]

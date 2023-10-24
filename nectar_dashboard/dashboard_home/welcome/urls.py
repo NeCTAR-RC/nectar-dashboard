@@ -1,9 +1,9 @@
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from nectar_dashboard.dashboard_home.welcome import views
 
 
 urlpatterns = [
-    url(r'^$', views.HomeView.as_view(), name='welcome'),
-    url(r'^feed$', views.get_ardc_news, name='feed'),
+    re_path(r'^$', views.HomeView.as_view(), name='welcome'),
+    re_path(r'^feed$', views.get_ardc_news, name='feed'),
 ]

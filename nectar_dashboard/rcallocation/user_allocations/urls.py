@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from nectar_dashboard.rcallocation.user_allocations.views import RestrictedAllocationsEditView  # noqa
 from nectar_dashboard.rcallocation.user_allocations.views import RestrictedAllocationsDetailsView  # noqa
@@ -6,14 +6,14 @@ from nectar_dashboard.rcallocation.user_allocations.views import UserAllocations
 from nectar_dashboard.rcallocation.user_allocations.forms import UserAllocationRequestAmendForm  # noqa
 
 urlpatterns = [
-    url(r'^$',
+    re_path(r'^$',
         UserAllocationsListView.as_view(), name='index'),
-    url(r'^view/(?P<pk>\d+)/$', RestrictedAllocationsDetailsView.as_view(),
+    re_path(r'^view/(?P<pk>\d+)/$', RestrictedAllocationsDetailsView.as_view(),
         name='allocation_view'),
-    url(r'^edit_request/(?P<pk>\d+)/$',
+    re_path(r'^edit_request/(?P<pk>\d+)/$',
         RestrictedAllocationsEditView.as_view(),
         name='edit_request'),
-    url(r'^edit_change_request/(?P<pk>\d+)/$',
+    re_path(r'^edit_change_request/(?P<pk>\d+)/$',
         RestrictedAllocationsEditView.as_view(
             form_class=UserAllocationRequestAmendForm,
             page_title='Request Allocation Extension',

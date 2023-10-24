@@ -14,12 +14,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from nectar_dashboard.project_members import views
 
 
 urlpatterns = [
-    url(r'^$', views.ManageMembersView.as_view(), name='index'),
-    url(r'^add/$', views.AddUserToProjectView.as_view(), name='add_member'),
+    re_path(r'^$',
+            views.ManageMembersView.as_view(),
+            name='index'),
+    re_path(r'^add/$',
+            views.AddUserToProjectView.as_view(),
+            name='add_member'),
 ]

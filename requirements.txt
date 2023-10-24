@@ -1,5 +1,6 @@
-git+https://github.com/Nectar-RC/horizon.git@nectar/wallaby#egg=horizon
-git+https://github.com/Nectar-RC/cloudkitty-dashboard.git@nectar/wallaby#egg=cloudkittydashboard
+git+https://github.com/Nectar-RC/horizon.git@nectar/2023.2#egg=horizon
+cloudkitty-dashboard~=17.0.0
+mysqlclient
 django-cors-headers
 python-memcached
 python-freshdesk

@@ -12,16 +12,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from . import views
 
 
 urlpatterns = [
-    url(r'^view/(?P<user_id>\w+)/$',
+    re_path(r'^view/(?P<user_id>\w+)/$',
         views.UserDetailView.as_view(),
         name='view'),
-    url(r'^$',
+    re_path(r'^$',
         views.UserListView.as_view(),
         name='list'),
 ]

@@ -19,8 +19,8 @@ URL patterns for the OpenStack Dashboard.
 
 from django.conf import settings
 from django.conf.urls import include
+from django.conf.urls import re_path
 from django.conf.urls.static import static
-from django.conf.urls import url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views import defaults
 from oslo_utils import importutils
@@ -45,15 +45,15 @@ for name, class_str, base_name in settings.REST_VIEW_SETS:
         router.register(name, klass, base_name=base_name)
 
 urlpatterns = [
-    url(r'^$', views.splash, name='splash'),
-    url(r'^auth/', include('openstack_auth.urls')),
-    url(r'^api/', include(rest.urls)),
-    url(r'^jasmine/(.*?)$', jasmine.dispatcher),
-    url(r'', horizon.base._wrapped_include(horizon.urls)),
-    url(r'^ngdetails/',
+    re_path(r'^$', views.splash, name='splash'),
+    re_path(r'^auth/', include('openstack_auth.urls')),
+    re_path(r'^api/', include(rest.urls)),
+    re_path(r'^jasmine/(.*?)$', jasmine.dispatcher),
+    re_path(r'', horizon.base._wrapped_include(horizon.urls)),
+    re_path(r'^ngdetails/',
         browsers_views.AngularDetailsView.as_view(),
         name='ngdetails'),
-    url(r'^rest_api/', include(router.urls)),
+    re_path(r'^rest_api/', include(router.urls)),
 ]
 
 # Development static app and project media serving using the staticfiles app.
@@ -65,4 +65,4 @@ urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
-    urlpatterns.append(url(r'^500/$', defaults.server_error))
+    urlpatterns.append(re_path(r'^500/$', defaults.server_error))

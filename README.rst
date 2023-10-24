@@ -22,7 +22,7 @@ Instructions are in the project's README.
 
 
 Policy files
-------
+--------
 
 This repository contains the OpenStack service policy files used by OpenStack
 dashboard for deciding which features to allow for users.

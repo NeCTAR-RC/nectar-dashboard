@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from nectar_dashboard.rcallocation.request import views
 
 
 urlpatterns = [
-    url(r'^$', views.AllocationCreateView.as_view(), name='request'),
+    re_path(r'^$', views.AllocationCreateView.as_view(), name='request'),
 ]

@@ -4,7 +4,7 @@ from nectar_dashboard import api
 from nectar_dashboard.api.rest import usage
 
 
-class UsageRestTestCase(test.TestCase):
+class UsageRestTestCase(test.RestAPITestCase):
 
     @test.create_mocks({api.usage: ['get_summary']})
     def test_summary(self):

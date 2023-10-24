@@ -61,6 +61,8 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append(
     'openstack_dashboard.context_processors.openstack'
 )
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 # 'key', 'label', 'path'
 AVAILABLE_THEMES = [
     (

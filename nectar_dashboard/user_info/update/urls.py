@@ -12,13 +12,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls import url
+from django.conf.urls import re_path
 
 from . import views
 
 
 urlpatterns = [
-    url(r'^$',
+    re_path(r'^$',
         views.UserEditSelfView.as_view(),
         name='edit-self'),
 ]
