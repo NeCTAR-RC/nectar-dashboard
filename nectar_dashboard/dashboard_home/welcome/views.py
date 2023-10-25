@@ -1,7 +1,9 @@
 from datetime import datetime
+from datetime import timedelta
 import logging
 
 from django import http
+from django.utils import timezone
 from django.views.decorators import cache
 from horizon import views as horizon_views
 import requests
@@ -118,10 +120,20 @@ class HomeView(horizon_views.HorizonTemplateView):
         try:
             client = langstroth.langstrothclient(self.request)
             outages = client.outages.list()
-            context['outages'] = [OutageWrapper(o) for o in outages
-                                  if o.updates
-                                  and o.updates[-1]['status'] not in [
-                                      RESOLVED, COMPLETED]]
+            # TODO(SC): make the start and end deltas Dashboardsettings, and
+            # do the filtering in the Langstroth Outages API.
+            start = timezone.now() - timedelta(days=1)
+            end = timezone.now() + timedelta(days=14)
+            wrappers = []
+            for o in outages:
+                w = OutageWrapper(o)
+                if ((w.scheduled
+                     and w.scheduled_end_ts() > start
+                     and w.scheduled_start_ts() < end)
+                    or (w.start_ts() and (
+                        not w.end_ts() or w.end_ts() >= start))):
+                    wrappers.append(w)
+            context['outages'] = wrappers
         except Exception as e:
             LOG.error("Langstroth outage lookup failed", exc_info=e)
             context['outages'] = []
