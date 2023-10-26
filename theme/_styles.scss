@@ -44,6 +44,14 @@ body {
   margin-bottom: -520px;
 }
 
+.modal {
+  .table_inner {
+    overflow-x: scroll;
+    padding-bottom: 50px;
+    margin-bottom: -50px;
+  }
+}
+
 .table_actions {
   float: none;
   width: 100%;
