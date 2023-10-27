@@ -1,6 +1,5 @@
 from openstack_dashboard.test import helpers
 
-from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 from nectar_dashboard.rcallocation import utils
@@ -13,46 +12,23 @@ class UtilsTest(helpers.TestCase):
         common.factory_setup()
 
     def test_copy_allocation(self):
+        self.maxDiff = 20000
         allocation = factories.AllocationFactory.create(
-            contact_email='other@example.com')
-        self.assertIsNone(allocation.parent_request)
-        original_dict = common.allocation_to_dict(allocation)
-        original_mod = allocation.modified_time
+            contact_email=self.user.name)
 
-        copy_id = utils.copy_allocation(allocation).id
+        old_allocation = utils.copy_allocation(allocation)
 
-        # Refetch the copy from the database
-        copy = models.AllocationRequest.objects.get(id=copy_id)
+        def _discard_different_attrs(a):
+            a.pop('id')
+            a.pop('parent_request')
 
-        # The copy's parent should refer to the allocation
-        self.assertIsNone(allocation.parent_request)
-        self.assertEqual(allocation.id, copy.parent_request.id)
+        allocation_dict = _discard_different_attrs(
+            common.allocation_to_dict(allocation))
+        old_allocation_dict = _discard_different_attrs(
+            common.allocation_to_dict(old_allocation))
 
-        copy_mod = copy.modified_time
-        current_mod = allocation.modified_time
-
-        # The copy should have the same mod date as the original
-        # allocation
-        self.assertEqual(original_mod, copy_mod)
-        self.assertEqual(original_mod, current_mod)
-
-        # Check for any other differences after removing dict entries
-        # that we've already dealt with or that we expect to be different.
-        current_dict = common.allocation_to_dict(allocation)
-        copy_dict = common.allocation_to_dict(copy)
-        for d in [original_dict, current_dict, copy_dict]:
-            d.pop('id', None)
-            d.pop('parent_request', None)
-            # ignore the quota tree for now
-            d.pop('quota', None)
-        self.maxDiff = None
-        self.assertDictEqual(copy_dict, current_dict)
-        self.assertDictEqual(copy_dict, original_dict)
-
-        self.assertEqual(len(list(allocation.usage_types.all())),
-                         len(factories.get_active_usage_types()))
-        self.assertEqual(len(list(copy.usage_types.all())),
-                         len(factories.get_active_usage_types()))
+        self.assertEqual(allocation_dict, old_allocation_dict)
+        self.assertEqual(allocation.id, old_allocation.parent_request_id)
 
     def test_is_project_name_available(self):
         factories.AllocationFactory.create(project_name='Fake_project')

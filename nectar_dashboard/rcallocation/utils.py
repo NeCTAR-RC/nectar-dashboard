@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from copy import deepcopy
 import logging
 
 from django.conf import settings
@@ -47,12 +48,12 @@ def copy_allocation(allocation):
     manager = models.AllocationRequest.objects
     old_object = manager.get(id=allocation.id)
     old_object.parent_request = allocation
-    quota_groups = old_object.quotas.all()
-    investigators = old_object.investigators.all()
-    institutions = old_object.institutions.all()
-    publications = old_object.publications.all()
-    grants = old_object.grants.all()
-    usage_types = old_object.usage_types.all()
+    quota_groups = deepcopy(old_object.quotas.all())
+    investigators = deepcopy(old_object.investigators.all())
+    institutions = deepcopy(old_object.institutions.all())
+    publications = deepcopy(old_object.publications.all())
+    grants = deepcopy(old_object.grants.all())
+    usage_types = deepcopy(old_object.usage_types.all())
 
     old_object.id = None
     old_object.save_without_updating_timestamps()

@@ -18,11 +18,9 @@ from django.urls import reverse
 from openstack_dashboard import api
 
 from nectar_dashboard.rcallocation import models
-
 from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import common
-
-from .factories import AllocationFactory
+from nectar_dashboard.rcallocation.tests import factories
 
 
 @mock.patch('nectar_dashboard.rcallocation.notifier.FreshdeskNotifier',
@@ -93,10 +91,6 @@ class RequestTestCase(base.BaseTestCase):
             del old_state[invalid_field]
             del initial_state[invalid_field]
 
-        for quota in old_state['quota'] + initial_state['quota']:
-            del quota['id']
-            del quota['allocation']
-
         self.assertEqual(old_state, initial_state,
                          msg="allocation fields changed unexpectedly")
 
@@ -105,7 +99,8 @@ class RequestTestCase(base.BaseTestCase):
 
         mock_nova_limits.return_value = {}
 
-        allocation = AllocationFactory.create(contact_email=self.user.name)
+        allocation = factories.AllocationFactory.create(
+            contact_email=self.user.name)
         initial_state = common.allocation_to_dict(
             models.AllocationRequest.objects.get(pk=allocation.pk))
         initial_mod = allocation.modified_time
@@ -141,8 +136,8 @@ class RequestTestCase(base.BaseTestCase):
 
         mock_nova_limits.return_value = {}
 
-        allocation = AllocationFactory.create(contact_email=self.user.name,
-                                              status='A')
+        allocation = factories.AllocationFactory.create(
+            contact_email=self.user.name, status='A')
         initial_state = common.allocation_to_dict(
             models.AllocationRequest.objects.get(pk=allocation.pk))
         initial_mod = allocation.modified_time
