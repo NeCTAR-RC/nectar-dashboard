@@ -28,8 +28,14 @@ GROUP_NAMES = ['compute', 'object', 'volume', 'network', 'rating']
 
 def allocation_to_dict(model):
     allocation = model_to_dict(model)
-    allocation['quota'] = [model_to_dict(quota)
-                           for quota in model.quotas.all()]
+    quotas = []
+    for quota_group in model.quotas.all():
+        for quota in quota_group.quota_set.all():
+            quota_dict = {'zone': quota_group.zone.name,
+                          'resource': quota.resource.codename(),
+                          'quota': quota.quota}
+            quotas.append(quota_dict)
+    allocation['quota'] = quotas
 
     allocation['institution'] = [model_to_dict(institution)
                                  for institution in model.institutions.all()]
