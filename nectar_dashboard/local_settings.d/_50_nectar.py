@@ -8,6 +8,10 @@ ADD_INSTALLED_APPS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
+# This is for rcshib, always use the configured keystone server
+# as opposed to referrer.
+WEBSSO_USE_HTTP_REFERER = False
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
     'rest_framework.pagination.LimitOffsetPagination',
