@@ -23,7 +23,7 @@
       <h1 id="home_greeting">Hello and Welcome!</h1>
       {% if outages|length > 0 %}
         {% for outage in outages %}
-          {% if outage.severity == 3 and outage.end_ts is None %}
+          {% if outage.severity == 3 and outage.end is None %}
             <div class="alert alert-danger fade in">
               <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
               <i class="fa fa-exclamation-circle fa-2x" style="vertical-align: middle;"></i>&nbsp;&nbsp;{{ outage.title }} <a href="{{ HORIZON_CONFIG.OUTAGE_BASE_URL }}{{ outage.id }}" target="_blank" class="alert-link">View Announcement <i class="fa fa-external-link"></i></a>
