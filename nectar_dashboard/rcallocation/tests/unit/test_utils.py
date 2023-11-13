@@ -21,6 +21,7 @@ class UtilsTest(helpers.TestCase):
         def _discard_different_attrs(a):
             a.pop('id')
             a.pop('parent_request')
+            return a
 
         allocation_dict = _discard_different_attrs(
             common.allocation_to_dict(allocation))
