@@ -27,27 +27,13 @@ from rest_framework import status
 from rest_framework import viewsets
 
 from nectar_dashboard.rcallocation.api import auth
+from nectar_dashboard.rcallocation.api import base
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import urgency
 from nectar_dashboard.rcallocation import utils
 from nectar_dashboard import rest_auth
 
 LOG = logging.getLogger(__name__)
-
-
-class NoDestroyViewSet(viewsets.ModelViewSet):
-
-    permission_classes = (rest_auth.ReadOrAdmin,)
-
-    def destroy(self, request, *args, **kwargs):
-        # Don't destroy these objects as it will "break" the form
-        # representations for current and historic allocation records.
-        # Where possible, mark the object as 'disabled'.  Where not
-        # possible, coding is probably required to make it possible.
-        # (Or ... it is "hack the database" time ...)
-        return response.Response(
-            {'error': 'Configuration objects should not be destroyed'},
-            status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class ZoneSerializer(serializers.ModelSerializer):
@@ -57,7 +43,7 @@ class ZoneSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ZoneViewSet(NoDestroyViewSet):
+class ZoneViewSet(base.NoDestroyViewSet):
     queryset = models.Zone.objects.all()
     serializer_class = ZoneSerializer
 
@@ -82,12 +68,12 @@ class ServiceTypeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ServiceTypeViewSet(NoDestroyViewSet):
+class ServiceTypeViewSet(base.NoDestroyViewSet):
     queryset = models.ServiceType.objects.all()
     serializer_class = ServiceTypeSerializer
 
 
-class ResourceViewSet(NoDestroyViewSet):
+class ResourceViewSet(base.NoDestroyViewSet):
     queryset = models.Resource.objects.all()
     serializer_class = ResourceSerializer
 
@@ -99,7 +85,7 @@ class SiteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SiteViewSet(NoDestroyViewSet):
+class SiteViewSet(base.NoDestroyViewSet):
     queryset = models.Site.objects.all()
     serializer_class = SiteSerializer
 
@@ -142,7 +128,7 @@ class ProposedOrganisationSerializer(CountryFieldMixin,
         exclude = ['vetted_by', 'proposed_by']
 
 
-class OrganisationViewSet(NoDestroyViewSet, auth.PermissionMixin):
+class OrganisationViewSet(base.NoDestroyViewSet, auth.PermissionMixin):
     queryset = models.Organisation.objects.all()
     serializer_class = OrganisationSerializer
 
@@ -254,7 +240,7 @@ class ARDCSupportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ARDCSupportViewSet(NoDestroyViewSet):
+class ARDCSupportViewSet(base.NoDestroyViewSet):
     queryset = models.ARDCSupport.objects.all()
     serializer_class = ARDCSupportSerializer
 
@@ -266,7 +252,7 @@ class NCRISFacilitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class NCRISFacilityViewSet(NoDestroyViewSet):
+class NCRISFacilityViewSet(base.NoDestroyViewSet):
     queryset = models.NCRISFacility.objects.all()
     serializer_class = NCRISFacilitySerializer
 
