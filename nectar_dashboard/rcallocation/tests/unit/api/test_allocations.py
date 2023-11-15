@@ -803,16 +803,6 @@ class AllocationTests(base.AllocationAPITest):
         response = self.client.post('/rest_api/allocations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    # # Disabled for now.  Organisations are optional via the API
-    # # ... until UoM get up to speed.
-    #
-    # def test_create_no_organisations(self):
-    #     self.client.force_authenticate(user=self.user)
-    #     factories.AllocationFactory.create()
-    #     data = self._make_data(supported_organisations=[])
-    #     response = self.client.post('/rest_api/allocations/', data)
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
     def test_create_dup_organisations(self):
         self.client.force_authenticate(user=self.user)
         factories.AllocationFactory.create()
