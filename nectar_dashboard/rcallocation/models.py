@@ -458,15 +458,6 @@ class AllocationRequest(models.Model):
         return reverse('horizon:allocation:requests:allocation_view',
                        args=[str(self.id)])
 
-    def set_status(self, status):
-        status = status.upper()
-        status_abbreviations = [abbr for abbr, full_name in
-                                self.REQUEST_STATUS_CHOICES]
-        if status not in status_abbreviations:
-            raise Exception()
-
-        self.status = status
-
     def is_active(self):
         """Return True if the allocation has either been approved,
         false otherwise.
@@ -590,37 +581,6 @@ class AllocationRequest(models.Model):
         elif self.is_rejected():
             template = 'alert_rejected'
             self.send_email_notification(template, extra_context=extra_context)
-
-    def get_all_fields(self):
-        """Returns a list of all non None fields, each entry containing
-        the fields label, field name, and value (if the display value
-        exists it is preferred)
-        """
-        fields = []
-        for f in self._meta.fields:
-            if f.editable:
-                field_name = f.name
-
-                # resolve picklists/choices, with get_xyz_display() function
-                try:
-                    get_choice = 'get_' + field_name + '_display'
-                    if hasattr(self, get_choice):
-                        value = getattr(self, get_choice)()
-                    else:
-                        value = getattr(self, field_name)
-                except AttributeError:
-                    value = None
-
-                # only display fields with values and skip some fields entirely
-                if not (value is None or field_name in ('id', 'status')):
-                    fields.append(
-                        {
-                            'label': f.verbose_name,
-                            'name': field_name,
-                            'value': value,
-                        }
-                    )
-        return fields
 
     def save_without_updating_timestamps(self):
         utils.save_allocation_without_updating_timestamps(self)
