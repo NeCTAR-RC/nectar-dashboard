@@ -1,6 +1,6 @@
 # Currently no overrides
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from horizon import forms
 
 from trove_dashboard.content.databases.workflows import create_instance
