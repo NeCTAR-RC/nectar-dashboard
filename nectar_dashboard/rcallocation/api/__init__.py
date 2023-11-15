@@ -26,47 +26,13 @@ from rest_framework import serializers
 from rest_framework import status
 from rest_framework import viewsets
 
+from nectar_dashboard.rcallocation.api import auth
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import urgency
 from nectar_dashboard.rcallocation import utils
 from nectar_dashboard import rest_auth
 
 LOG = logging.getLogger(__name__)
-
-
-class PermissionMixin(object):
-
-    def is_read_admin(self):
-        if self.request.user.is_authenticated:
-            roles = set([role['name'].lower()
-                         for role in self.request.user.roles])
-            required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES
-                           + settings.ALLOCATION_APPROVER_ROLES
-                           + settings.ALLOCATION_GLOBAL_READ_ROLES)
-            if required & roles:
-                return True
-        return False
-
-    def is_write_admin(self):
-        if self.request.user.is_authenticated:
-            roles = set([role['name'].lower()
-                         for role in self.request.user.roles])
-            required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES
-                           + settings.ALLOCATION_APPROVER_ROLES)
-            if required & roles:
-                return True
-        return False
-
-
-def is_write_admin(user):
-    if user.is_authenticated:
-        roles = set([role['name'].lower()
-                     for role in user.roles])
-        required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES
-                       + settings.ALLOCATION_APPROVER_ROLES)
-        if required & roles:
-            return True
-    return False
 
 
 class NoDestroyViewSet(viewsets.ModelViewSet):
@@ -176,7 +142,7 @@ class ProposedOrganisationSerializer(CountryFieldMixin,
         exclude = ['vetted_by', 'proposed_by']
 
 
-class OrganisationViewSet(PermissionMixin, NoDestroyViewSet):
+class OrganisationViewSet(NoDestroyViewSet, auth.PermissionMixin):
     queryset = models.Organisation.objects.all()
     serializer_class = OrganisationSerializer
 
@@ -358,7 +324,7 @@ class QuotaSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("No auth")
 
         search_args = {'id': self.initial_data['allocation']}
-        if not is_write_admin(user):
+        if not auth.is_write_admin(user):
             search_args['contact_email'] = user.username
         try:
             allocation = models.AllocationRequest.objects.get(**search_args)
@@ -425,7 +391,7 @@ class QuotaGroupsField(serializers.RelatedField):
         return output
 
 
-class QuotaViewSet(viewsets.ModelViewSet, PermissionMixin):
+class QuotaViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     queryset = models.Quota.objects.all()
     serializer_class = QuotaSerializer
     filter_fields = ('resource', 'group__allocation', 'group__zone',
@@ -723,7 +689,7 @@ class AllocationFilter(filters.FilterSet):
                   'created_by': ['exact']}
 
 
-class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
+class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     queryset = models.AllocationRequest.objects.prefetch_related(
         'quotas', 'quotas__quota_set', 'quotas__zone',
         'quotas__quota_set__resource__service_type',
@@ -882,7 +848,7 @@ class AllocationRelatedSerializer(serializers.ModelSerializer):
             allocation_id = self.initial_data.get('allocation')
 
         search_args = {'id': allocation_id}
-        if not is_write_admin(user):
+        if not auth.is_write_admin(user):
             search_args['contact_email'] = user.username
         try:
             allocation = models.AllocationRequest.objects.get(**search_args)
@@ -898,7 +864,7 @@ class AllocationRelatedSerializer(serializers.ModelSerializer):
         return data
 
 
-class AllocationRelatedViewSet(viewsets.ModelViewSet, PermissionMixin):
+class AllocationRelatedViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
     filter_fields = ('allocation',)
 
