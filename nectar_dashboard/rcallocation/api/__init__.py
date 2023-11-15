@@ -11,7 +11,6 @@
 #   under the License.
 #
 
-from functools import partial
 import logging
 
 from django.conf import settings
@@ -33,14 +32,6 @@ from nectar_dashboard.rcallocation import utils
 from nectar_dashboard import rest_auth
 
 LOG = logging.getLogger(__name__)
-
-
-try:
-    list_route_decorator = partial(decorators.action, detail=False)
-    detail_route_decorator = partial(decorators.action, detail=True)
-except AttributeError:
-    list_route_decorator = decorators.list_route
-    detail_route_decorator = decorators.detail_route
 
 
 class PermissionMixin(object):
@@ -104,7 +95,7 @@ class ZoneViewSet(NoDestroyViewSet):
     queryset = models.Zone.objects.all()
     serializer_class = ZoneSerializer
 
-    @list_route_decorator()
+    @decorators.action(methods=['get'], detail=False)
     def compute_homes(self, request):
         zone_map = settings.ALLOCATION_HOME_ZONE_MAPPINGS
         return response.Response(zone_map)
@@ -206,11 +197,11 @@ class OrganisationViewSet(PermissionMixin, NoDestroyViewSet):
             permission_classes = [rest_auth.IsAdmin]
         return [permission() for permission in permission_classes]
 
-    @detail_route_decorator(methods=['post'])
+    @decorators.action(methods=['post'], detail=True)
     def approve(self, request, pk=None):
         return self._vet(request, pk=pk, enable=True)
 
-    @detail_route_decorator(methods=['post'])
+    @decorators.action(methods=['post'], detail=True)
     def decline(self, request, pk=None):
         return self._vet(request, pk=pk, enable=False)
 
@@ -814,7 +805,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
             permission_classes = []
         return [permission() for permission in permission_classes]
 
-    @detail_route_decorator(methods=['post'])
+    @decorators.action(methods=['post'], detail=True)
     def approve(self, request, pk=None):
         allocation = self.get_object()
         # There are two ways to deal with this.  'approve' could infer the
@@ -834,7 +825,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.save()
         return response.Response(self.get_serializer_class()(allocation).data)
 
-    @detail_route_decorator(methods=['post'])
+    @decorators.action(methods=['post'], detail=True)
     def amend(self, request, pk=None):
         allocation = self.get_object()
         utils.copy_allocation(allocation)
@@ -844,7 +835,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
         allocation.send_notifications()
         return response.Response(self.get_serializer_class()(allocation).data)
 
-    @detail_route_decorator(methods=['post'])
+    @decorators.action(methods=['post'], detail=True)
     def delete(self, request, pk=None):
         allocation = self.get_object()
         # (Deleting an allocation is idempotent)
@@ -857,7 +848,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
     def destroy(self, request, *args, **kwargs):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    @detail_route_decorator(methods=['get'])
+    @decorators.action(methods=['get'], detail=True)
     def approver_info(self, request, pk=None):
         """Get the approver info for this allocation, comprising the
         approval urgency, the inferred expiry state and the list of
