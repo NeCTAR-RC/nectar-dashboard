@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+
+{% load static %}
 {% load publication_extras %}
 {% load countries %}
 
@@ -26,7 +28,7 @@
 
 {% block js %}
 {{ block.super }}
-<script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
+<script src="{% static 'rcportal/js/allocation.js' %}" type="text/javascript" charset="utf-8"></script>
 <script>
   function isNewAllocationRequest() {
     return {% if object %} false; {% else %} true; {% endif %}

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block sidebar %}
 {% with current_sidebar="allocation" %}
   {{ block.super }}
@@ -17,7 +19,7 @@
 
 {% block js %}
 {{ block.super }}
-  <script src='{{ STATIC_URL }}rcportal/js/allocation.js' type='text/javascript' charset='utf-8'></script>
+  <script src="{% static 'rcportal/js/allocation.js' %}" type="text/javascript" charset="utf-8"></script>
   <script>
     function isNewAllocationRequest() {
       return {% if object.pk %} false; {% else %} true; {% endif %}

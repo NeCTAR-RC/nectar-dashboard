@@ -1,3 +1,4 @@
+{% load static %}
 {% if field %}
   <div class="form-group {% if field.errors %}has-error{% endif %}">
     <label for="id_{{ field.html_name }}">
@@ -6,7 +7,7 @@
         <span class="glyphicon glyphicon-asterisk text-secondary"></span>
       {% endif %}
       {% if field.help_text %}
-        <img class="help-popover" src="{{ STATIC_URL }}rcportal/img/help.png" data-content="{{ field.help_text }}" data-original-title="{{ field.label }}" data-html="true">
+        <img class="help-popover" src="{% static 'rcportal/img/help.png' %}" data-content="{{ field.help_text }}" data-original-title="{{ field.label }}" data-html="true">
       {% endif %}
     </label>
     <div class="controls">
