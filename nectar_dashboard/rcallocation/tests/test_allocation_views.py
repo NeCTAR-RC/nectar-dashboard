@@ -38,8 +38,12 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
             parent_request_id=None)
         self.assertEqual("This is a note", model.notes)
         model_state = common.allocation_to_dict(model)
-        initial_state.pop('notes')
-        model_state.pop('notes')
+        del initial_state['notes']
+        del model_state['notes']
+        del initial_state['modified_time']
+        del model_state['modified_time']
+
+        self.maxDiff = None
         self.assertEqual(initial_state, model_state,
                          msg="allocation fields changed unexpectedly")
 

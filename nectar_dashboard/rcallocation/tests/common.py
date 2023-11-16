@@ -11,7 +11,8 @@
 #   under the License.
 #
 
-from django.forms.models import model_to_dict
+from itertools import chain
+
 from factory import fuzzy
 
 from nectar_dashboard.rcallocation import allocation_home_choices
@@ -26,6 +27,22 @@ ALLOCATION_HOMES = dict(allocation_home_choices.ALLOC_HOME_CHOICE[1:-1])
 GROUP_NAMES = ['compute', 'object', 'volume', 'network', 'rating']
 
 
+def model_to_dict(instance, exclude=[]):
+    """Copy of django.forms.models.model_to_dict
+
+    Django's version excludes non editable fields which
+    we don't want
+    """
+    opts = instance._meta
+    data = {}
+    for f in chain(opts.concrete_fields, opts.private_fields,
+                   opts.many_to_many):
+        if f.name in exclude:
+            continue
+        data[f.name] = f.value_from_object(instance)
+    return data
+
+
 def allocation_to_dict(model):
     allocation = model_to_dict(model)
     quotas = []
@@ -38,19 +55,23 @@ def allocation_to_dict(model):
     allocation['quota'] = quotas
 
     allocation['organisation'] = [
-        model_to_dict(org) for org in model.supported_organisations.all()]
+        model_to_dict(org, exclude=['id', 'allocation'])
+        for org in model.supported_organisations.all()]
 
     allocation['publication'] = [
-        model_to_dict(pub) for pub in model.publications.all()]
+        model_to_dict(pub, exclude=['id', 'allocation'])
+        for pub in model.publications.all()]
 
     allocation['grant'] = [
-        model_to_dict(grant) for grant in model.grants.all()]
+        model_to_dict(grant, exclude=['id', 'allocation'])
+        for grant in model.grants.all()]
 
-    allocation['usage'] = [
-        usage.name for usage in model.usage_types.all()]
+    allocation['usage_types'] = [
+        model_to_dict(usage) for usage in model.usage_types.all()]
 
     allocation['investigator'] = [
-        model_to_dict(inv) for inv in model.investigators.all()]
+        model_to_dict(inv, exclude=['id', 'allocation'])
+        for inv in model.investigators.all()]
     return allocation
 
 
