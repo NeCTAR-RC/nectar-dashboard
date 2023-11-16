@@ -16,7 +16,6 @@ from unittest import mock
 from rest_framework import status
 
 from nectar_dashboard.rcallocation.tests import base
-from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 
 from nectar_dashboard.rcallocation import models
@@ -27,7 +26,6 @@ class SiteTest(base.AllocationAPITest):
 
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
-        common.sites_setup()
         self.uom = models.Site.objects.get(name='uom')
 
     def test_list_sites(self):

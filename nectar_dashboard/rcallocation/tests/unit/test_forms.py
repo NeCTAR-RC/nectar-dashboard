@@ -11,14 +11,12 @@
 #   under the License.
 #
 
-from openstack_dashboard.test import helpers
-
 from nectar_dashboard.rcallocation import forms
 from nectar_dashboard.rcallocation.grant_type import GRANT_SUBTYPES
 from nectar_dashboard.rcallocation.grant_type import GRANT_TYPES
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import output_type_choices
-from nectar_dashboard.rcallocation.tests import common
+from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import factories
 
 
@@ -35,11 +33,10 @@ DUMMY_ALLOC_DATA = {'project_description': 'dummy',
 }
 
 
-class FormsTestCase(helpers.TestCase):
+class FormsTestCase(base.BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        common.factory_setup()
         self.allocation = factories.AllocationFactory.create(
             contact_email='other@example.com')
 

@@ -15,10 +15,8 @@ from unittest import mock
 
 from rest_framework import status
 
-from nectar_dashboard.rcallocation.tests import base
-from nectar_dashboard.rcallocation.tests import common
-
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation.tests import base
 
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
@@ -26,10 +24,10 @@ class ApproverTest(base.AllocationAPITest):
 
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
-        common.sites_setup()
         self.qcif = models.Site.objects.get(name='qcif')
         self.uom = models.Site.objects.get(name='uom')
-
+        # Delete all the existing approvers setup in base
+        models.Approver.objects.all().delete()
         self.assertEqual(models.Approver.objects.all().count(), 0)
         self.jim = models.Approver.objects.create(
             username='jim.spriggs@uq.edu.au',

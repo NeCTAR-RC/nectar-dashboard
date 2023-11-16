@@ -1,10 +1,9 @@
 from unittest import mock
 
 from django.conf import settings
-from openstack_dashboard.test import helpers
 
 from nectar_dashboard.rcallocation import notifier
-from nectar_dashboard.rcallocation.tests import common
+from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import factories
 
 
@@ -29,11 +28,10 @@ class FakeSettings(object):
             new=FAKE_FD_API_CLASS)
 @mock.patch('nectar_dashboard.rcallocation.notifier.EmailMessage',
             new=FAKE_EMAIL_MESSAGE_CLASS)
-class NotifierTests(helpers.TestCase):
+class NotifierTests(base.BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        common.factory_setup()
         self.allocation = factories.AllocationFactory.create(
             contact_email='other@example.com')
 

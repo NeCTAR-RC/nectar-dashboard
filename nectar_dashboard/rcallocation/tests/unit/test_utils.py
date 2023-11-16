@@ -1,17 +1,12 @@
 import os
 
-from openstack_dashboard.test import helpers
-
+from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 from nectar_dashboard.rcallocation import utils
 
 
-class UtilsTest(helpers.TestCase):
-
-    def setUp(self):
-        super().setUp()
-        common.factory_setup()
+class UtilsTest(base.BaseTestCase):
 
     def test_copy_allocation(self):
         self.maxDiff = 20000

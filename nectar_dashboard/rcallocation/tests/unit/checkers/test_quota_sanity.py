@@ -16,10 +16,9 @@ from unittest import mock
 
 from django.contrib.auth import models as auth_models
 
-from openstack_dashboard.test import helpers
-
 from nectar_dashboard.rcallocation import checkers
 from nectar_dashboard.rcallocation import models
+from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 
@@ -55,7 +54,7 @@ def build_checker(quotas, form=DUMMY_FORM, approver=None, allocation=None):
                                            user=user, approving=True)
 
 
-class QuotaSanityCheckerTest(helpers.TestCase):
+class QuotaSanityCheckerTest(base.BaseTestCase):
 
     def test_empty_checker(self):
         checker = checkers.QuotaSanityChecker()
@@ -91,12 +90,7 @@ class QuotaSanityCheckerTest(helpers.TestCase):
         self.assertEqual(checkers.NO_INSTANCE, res[1][0])
 
 
-class QuotaSanityChecksTest(helpers.TestCase):
-
-    def setUp(self):
-        super().setUp()
-        common.factory_setup()
-        common.sites_setup()
+class QuotaSanityChecksTest(base.BaseTestCase):
 
     def test_budget_checks(self):
         allocation = factories.AllocationFactory.create(
@@ -185,7 +179,6 @@ class QuotaSanityChecksTest(helpers.TestCase):
                          checkers.nondefault_ram_check(checker)[0])
 
     def test_cinder_checks(self):
-        common.sites_setup()
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('volume', 'gigabytes', 0, 'QRIScloud')]
         checker = build_checker(quotas)
@@ -325,7 +318,6 @@ class QuotaSanityChecksTest(helpers.TestCase):
                          checkers.trove_backup_check(checker)[0])
 
     def test_manila_checks(self):
-        common.sites_setup()
         quotas = [build_quota('compute', 'instances', 0),
                   build_quota('volume', 'gigabytes', 10, 'QRIScloud-GPFS')]
         checker = build_checker(quotas)
@@ -554,13 +546,7 @@ class QuotaSanityChecksTest(helpers.TestCase):
 MODELS_LOG = 'nectar_dashboard.rcallocation.models.LOG'
 
 
-class QuotaSanityApproverChecksTest(helpers.TestCase):
-
-    def setUp(self):
-        super().setUp()
-        common.factory_setup()
-        common.sites_setup()
-        common.approvers_setup()
+class QuotaSanityApproverChecksTest(base.BaseTestCase):
 
     def test_approver_authority_checks(self):
         quotas = [build_quota('volume', 'gigabytes', 1, 'QRIScloud')]

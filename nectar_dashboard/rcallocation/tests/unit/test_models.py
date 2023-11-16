@@ -14,19 +14,12 @@
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-from openstack_dashboard.test import helpers
-
 from nectar_dashboard.rcallocation import models
-
-from nectar_dashboard.rcallocation.tests import common
+from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import factories
 
 
-class ModelsTestCase(helpers.TestCase):
-
-    def setUp(self):
-        super().setUp()
-        common.factory_setup()
+class AllocationModelTestCase(base.BaseTestCase):
 
     def test_save_updates_timestamps(self):
         now = timezone.now()

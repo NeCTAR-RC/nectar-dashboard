@@ -12,10 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from openstack_dashboard.test import helpers
-
 from nectar_dashboard.rcallocation import checkers
-from nectar_dashboard.rcallocation.tests import common
+from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import factories
 
 
@@ -28,11 +26,7 @@ class FakeForm(object):
 DUMMY_FORM = FakeForm({})
 
 
-class CheckerTest(helpers.TestCase):
-
-    def setUp(self):
-        super().setUp()
-        common.factory_setup()
+class CheckerTest(base.BaseTestCase):
 
     def test_empty_checker(self):
         checker = checkers.Checker()

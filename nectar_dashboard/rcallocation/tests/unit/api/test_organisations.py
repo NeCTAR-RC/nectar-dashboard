@@ -18,7 +18,6 @@ from rest_framework import status
 
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation.tests import base
-from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 
 
@@ -27,7 +26,6 @@ class OrganisationTest(base.AllocationAPITest):
 
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
-        common.organisations_setup()
         self.admin_approver = models.Approver.objects.create(
             username=self.admin_user.username,
             display_name="Fred the Admin")
