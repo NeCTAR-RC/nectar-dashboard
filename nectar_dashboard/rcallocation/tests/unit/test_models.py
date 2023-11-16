@@ -149,3 +149,28 @@ class AllocationModelTestCase(base.BaseTestCase):
             models.VALIDATE_DOI("10.100000/Hello Mum")
         with self.assertRaises(ValidationError):
             models.VALIDATE_DOI("10.100000/Hello\tMum")
+
+
+class QuotaGroupModelTestCase(base.BaseTestCase):
+
+    def setUp(self, *args, **kwargs):
+        super().setUp(*args, **kwargs)
+        # Create an allocation which will in turn create some quotas
+        self.allocation = factories.AllocationFactory.create()
+
+    def test_quota_list_manager(self):
+        expected = [
+            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'monash'},
+            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'melbourne'},
+            {'quota': 0, 'resource': 'object.object', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'compute.cores', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'compute.instances', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'rating.budget', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.router', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.network', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.loadbalancer', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.floatingip', 'zone': 'nectar'}
+        ]
+
+        quota_list = self.allocation.quotas.quota_list()
+        self.assertCountEqual(expected, quota_list)

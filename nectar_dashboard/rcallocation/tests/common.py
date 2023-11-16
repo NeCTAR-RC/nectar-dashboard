@@ -44,15 +44,8 @@ def model_to_dict(instance, exclude=[]):
 
 
 def allocation_to_dict(model):
-    allocation = model_to_dict(model)
-    quotas = []
-    for quota_group in model.quotas.all():
-        for quota in quota_group.quota_set.all():
-            quota_dict = {'zone': quota_group.zone.name,
-                          'resource': quota.resource.codename(),
-                          'quota': quota.quota}
-            quotas.append(quota_dict)
-    allocation['quota'] = quotas
+    allocation = model_to_dict(model, exclude=[])
+    allocation['quota'] = model.quotas.quota_list()
 
     allocation['organisation'] = [
         model_to_dict(org, exclude=['id', 'allocation'])
