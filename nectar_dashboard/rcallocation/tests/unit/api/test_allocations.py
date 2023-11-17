@@ -143,6 +143,19 @@ class AllocationTests(base.AllocationAPITest):
         self.assertEqual(response.data['national'], False)
         self.assertEqual(response.data['allocation_home'], site)
         self.assertEqual(response.data['allocation_home_display'], site)
+        quotas = [
+            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'melbourne'},
+            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'monash'},
+            {'quota': 0, 'resource': 'compute.cores', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'compute.instances', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.router', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.network', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.loadbalancer', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.floatingip', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'object.object', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'rating.budget', 'zone': 'nectar'}
+        ]
+        self.assertEqual(response.data['quotas'], quotas)
 
     def test_get_allocation_unauthenticated(self):
         response = self.client.get('/rest_api/allocations/1/')
