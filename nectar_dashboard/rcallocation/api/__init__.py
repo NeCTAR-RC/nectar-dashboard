@@ -212,11 +212,6 @@ class QuotaSerializer(serializers.ModelSerializer):
         exclude = ('group',)
 
 
-class QuotaGroupsField(serializers.RelatedField):
-    def to_representation(self, value):
-        return value.quota_list()
-
-
 class QuotaViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     queryset = models.Quota.objects.all()
     serializer_class = QuotaSerializer
@@ -376,7 +371,7 @@ class ARDCSupportField(serializers.RelatedField):
 
 
 class AllocationSerializer(serializers.ModelSerializer):
-    quotas = QuotaGroupsField(many=False, read_only=True)
+    quotas = serializers.SerializerMethodField()
     status_display = serializers.SerializerMethodField()
     chief_investigator = serializers.SerializerMethodField()
     allocation_home = AllocationHomeField(source='*', required=False)
@@ -401,6 +396,10 @@ class AllocationSerializer(serializers.ModelSerializer):
                             'project_id', 'provisioned', 'notifications',
                             'special_approval', 'allocation_home',
                             'allocation_home_display', 'managed')
+
+    @staticmethod
+    def get_quotas(obj):
+        return obj.quota_list()
 
     @staticmethod
     def get_status_display(obj):

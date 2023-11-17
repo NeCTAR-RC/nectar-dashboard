@@ -169,6 +169,26 @@ class AllocationTests(base.AllocationAPITest):
                              'quotas'])
         self.assertEqual(public_fields, set(response.data.keys()))
 
+    def test_get_allocation_bundle(self):
+        silver = models.Bundle.objects.get(name='silver')
+        allocation = factories.AllocationFactory.create(bundle=silver,
+                                                        create_quotas=False)
+        response = self.client.get(f'/rest_api/allocations/{allocation.id}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected = [
+            {'quota': 100, 'resource': 'object.object', 'zone': 'nectar'},
+            {'quota': 100, 'resource': 'compute.cores', 'zone': 'nectar'},
+            {'quota': 100, 'resource': 'compute.instances', 'zone': 'nectar'},
+            {'quota': 1000, 'resource': 'compute.ram', 'zone': 'nectar'},
+            {'quota': 1000, 'resource': 'rating.budget', 'zone': 'nectar'},
+            {'quota': 10, 'resource': 'network.router', 'zone': 'nectar'},
+            {'quota': 10, 'resource': 'network.network', 'zone': 'nectar'},
+            {'quota': 10, 'resource': 'network.loadbalancer',
+             'zone': 'nectar'},
+            {'quota': 10, 'resource': 'network.floatingip', 'zone': 'nectar'}
+        ]
+        self.assertEqual(expected, response.data['quotas'])
+
     def test_get_allocation_negative(self):
         self.client.force_authenticate(user=self.user)
         factories.AllocationFactory.create(contact_email='other@example.com')

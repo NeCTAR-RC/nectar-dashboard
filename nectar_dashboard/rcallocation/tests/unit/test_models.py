@@ -137,6 +137,59 @@ class AllocationModelTestCase(base.BaseTestCase):
         with self.assertRaises(ValidationError):
             models.VALIDATE_DOI("10.100000/Hello\tMum")
 
+    def test_quota_list_no_bundle(self):
+        allocation = factories.AllocationFactory.create(bundle=None)
+        expected = [
+            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'melbourne'},
+            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'monash'},
+            {'quota': 0, 'resource': 'compute.cores', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'compute.instances', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.router', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.network', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.loadbalancer', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.floatingip', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'object.object', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'rating.budget', 'zone': 'nectar'}
+        ]
+        self.assertEqual(expected, allocation.quota_list())
+
+    def test_quota_list_bundle(self):
+        gold = models.Bundle.objects.get(name='gold')
+        allocation = factories.AllocationFactory.create(
+            create_quotas=False, bundle=gold)
+
+        expected = [
+            {'quota': 200, 'resource': 'object.object', 'zone': 'nectar'},
+            {'quota': 200, 'resource': 'compute.cores', 'zone': 'nectar'},
+            {'quota': 200, 'resource': 'compute.instances', 'zone': 'nectar'},
+            {'quota': 2000, 'resource': 'compute.ram', 'zone': 'nectar'},
+            {'quota': 2000, 'resource': 'rating.budget', 'zone': 'nectar'},
+            {'quota': 20, 'resource': 'network.router', 'zone': 'nectar'},
+            {'quota': 20, 'resource': 'network.network', 'zone': 'nectar'},
+            {'quota': 20, 'resource': 'network.loadbalancer',
+             'zone': 'nectar'},
+            {'quota': 20, 'resource': 'network.floatingip', 'zone': 'nectar'}
+        ]
+        self.assertEqual(expected, allocation.quota_list())
+
+    def test_quota_list_bundle_with_overrides(self):
+        bronze = models.Bundle.objects.get(name='bronze')
+        allocation = factories.AllocationFactory.create(bundle=bronze)
+        expected = [
+            {'quota': 0, 'resource': 'object.object', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'compute.cores', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'compute.instances', 'zone': 'nectar'},
+            {'quota': 500, 'resource': 'compute.ram', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'rating.budget', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.router', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.network', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.loadbalancer', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'network.floatingip', 'zone': 'nectar'},
+            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'melbourne'},
+            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'monash'}
+        ]
+        self.assertEqual(expected, allocation.quota_list())
+
 
 class QuotaGroupModelTestCase(base.BaseTestCase):
 
@@ -145,19 +198,8 @@ class QuotaGroupModelTestCase(base.BaseTestCase):
         # Create an allocation which will in turn create some quotas
         self.allocation = factories.AllocationFactory.create()
 
-    def test_quota_list_manager(self):
-        expected = [
-            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'monash'},
-            {'quota': 0, 'resource': 'volume.gigabytes', 'zone': 'melbourne'},
-            {'quota': 0, 'resource': 'object.object', 'zone': 'nectar'},
-            {'quota': 0, 'resource': 'compute.cores', 'zone': 'nectar'},
-            {'quota': 0, 'resource': 'compute.instances', 'zone': 'nectar'},
-            {'quota': 0, 'resource': 'rating.budget', 'zone': 'nectar'},
-            {'quota': 0, 'resource': 'network.router', 'zone': 'nectar'},
-            {'quota': 0, 'resource': 'network.network', 'zone': 'nectar'},
-            {'quota': 0, 'resource': 'network.loadbalancer', 'zone': 'nectar'},
-            {'quota': 0, 'resource': 'network.floatingip', 'zone': 'nectar'}
-        ]
-
-        quota_list = self.allocation.quotas.quota_list()
+    def test_all_quotas_manager(self):
+        expected = models.Quota.objects.filter(
+            group__allocation=self.allocation)
+        quota_list = self.allocation.quotas.all_quotas()
         self.assertCountEqual(expected, quota_list)
