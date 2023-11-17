@@ -729,6 +729,7 @@ class Resource(models.Model):
     def __str__(self):
         return self.name
 
+    @property
     def codename(self):
         return "%s.%s" % (self.service_type.catalog_name, self.quota_name)
 
@@ -744,7 +745,7 @@ class QuotaGroupManager(models.Manager):
         for quota_group in self.all():
             for quota in quota_group.quota_set.all():
                 quota_dict = {'zone': quota_group.zone.name,
-                              'resource': quota.resource.codename(),
+                              'resource': quota.resource.codename,
                               'quota': quota.quota}
                 output.append(quota_dict)
         return output
