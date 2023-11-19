@@ -19,9 +19,9 @@ URL patterns for the OpenStack Dashboard.
 
 from django.conf import settings
 from django.conf.urls import include
-from django.conf.urls import re_path
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import re_path
 from django.views import defaults
 from oslo_utils import importutils
 from rest_framework import routers
