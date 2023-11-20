@@ -1,24 +1,17 @@
-from collections import OrderedDict
-import json
 import logging
 from operator import methodcaller
-import re
 
-from django.conf import settings
 from django.contrib.auth import mixins
 from django.db.models import Q
 from django.db import transaction
 from django.forms.models import inlineformset_factory
-from django.http import HttpResponseBadRequest
-from django.http import HttpResponseRedirect
+from django import http
 from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.edit import UpdateView
 from horizon import tables as horizon_tables
 from horizon import views as horizon_views
-from novaclient import exceptions as n_exc
-from openstack_dashboard import api
 
 from nectar_dashboard.rcallocation import checkers
 from nectar_dashboard.rcallocation import forcodes
@@ -125,19 +118,82 @@ class AllocationHistoryView(mixins.UserPassesTestMixin,
         return utils.user_is_allocation_admin(self.request.user)
 
 
-class BaseAllocationView(mixins.UserPassesTestMixin,
+class QuotaFormMixin(object):
+
+    def get_quotas_initial(self):
+        initial = {}
+        if self.object:
+            quotas = self.object.quotas.all_quotas()
+            for quota in quotas:
+                key = "quota-%s__%s" % (quota.resource.codename,
+                                        quota.group.zone.name)
+                if self.object.status == models.AllocationRequest.APPROVED:
+                    initial[key] = quota.quota
+                else:
+                    initial[key] = quota.requested_quota
+        else:
+            for st in models.ServiceType.objects.filter(experimental=False):
+                for resource in st.resource_set.filter(requestable=True):
+                    for zone in st.zones.all():
+                        key = "quota-%s__%s" % (resource.codename, zone.name)
+                        initial[key] = resource.default or 0
+        return initial
+
+    @staticmethod
+    def set_quotas(allocation, form, approving=False):
+        non_quota_fields = [f.name for f in allocation._meta.fields
+                            + allocation._meta.many_to_many]
+        non_quota_fields.append('ignore_warnings')
+        for field_name, field in form.fields.items():
+            if field_name in non_quota_fields:
+                continue
+            zone = field.zone
+            resource = field.resource
+            value = form.cleaned_data[field_name]
+            if not allocation.bundle or resource.service_type.is_multizone():
+                if value:
+                    # Purposely test for 0 or None which means the same thing
+                    group, created = models.QuotaGroup.objects.get_or_create(
+                        allocation=allocation, zone=zone,
+                        service_type=resource.service_type)
+                    quota, created = models.Quota.objects.get_or_create(
+                        group=group, resource=resource)
+                    if approving:
+                        quota.quota = value
+                    else:
+                        quota.requested_quota = value
+                    quota.save()
+                else:
+                    try:
+                        group = models.QuotaGroup.objects.get(
+                            allocation=allocation, zone=zone,
+                            service_type=resource.service_type)
+                        quota = models.Quota.objects.get(group=group,
+                                                         resource=resource)
+                        quota.delete()
+                    except (models.QuotaGroup.DoesNotExist,
+                            models.Quota.DoesNotExist):
+                        pass
+            else:
+                models.Quota.objects.filter(
+                    group__allocation=allocation,
+                    resource=resource).delete()
+            # Delete empty quota groups
+            for group in allocation.quotas.all():
+                if group.quota_set.count() < 1:
+                    group.delete()
+
+
+class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
                          horizon_views.PageTitleMixin,
-                         UpdateView):
-    SHOW_EMPTY_SERVICE_TYPES = True
-    ONLY_REQUESTABLE_RESOURCES = True
+                         QuotaFormMixin):
+
     IGNORE_WARNINGS = False
+    APPROVING = False
 
     model = models.AllocationRequest
     form_class = forms.AllocationRequestForm
     page_title = "Update"
-
-    quota_form_class = forms.QuotaForm
-    quotagroup_form_class = forms.QuotaGroupForm
 
     # investigator
     formset_investigator_class = inlineformset_factory(
@@ -172,7 +228,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         return formset_class(queryset=queryset, prefix=prefix,
                              initial=initial, **kwargs)
 
-    def get_nonquota_formsets(self):
+    def get_formsets(self):
         formsets = {}
         if self.formset_investigator_class:
             formsets['investigator_formset'] = self.get_formset(
@@ -185,170 +241,14 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                 self.formset_grant_class)
         return formsets
 
-    def get_quota_formsets(self):
-        if not self.quotagroup_form_class:
-            return []
-
-        resource_kwargs = {}
-        quota_kwargs = {}
-        if self.ONLY_REQUESTABLE_RESOURCES:
-            quota_kwargs['resource__requestable'] = True
-            resource_kwargs['requestable'] = True
-        else:
-            resource_kwargs['requestable'] = False
-
-        quota_formsets = OrderedDict()
-        for service_type in models.ServiceType.objects.all():
-            existing_groups = []
-
-            initial = []
-            existing_resources = []
-            existing_quotas = []
-            if self.object:
-                existing_quotas = models.Quota.objects.filter(
-                    group__allocation=self.object,
-                    resource__service_type=service_type,
-                    **quota_kwargs)
-                if not existing_quotas and not self.SHOW_EMPTY_SERVICE_TYPES:
-                    continue
-                if not existing_resources:
-                    existing_resources = [quota.resource
-                                          for quota in existing_quotas]
-
-            if (not existing_quotas and service_type.experimental
-                    and not getattr(
-                        settings, 'SHOW_EXPERIMENTAL_SERVICE_TYPES', False)):
-                # Only show experimental service types if existing quota
-                # or SHOW_EXPERIMENTAL_SERVICE_TYPES=true
-                continue
-            resources = service_type.resource_set.filter(**resource_kwargs)
-            for resource in resources:
-                if resource not in existing_resources:
-                    initial.append({'resource': resource})
-
-            QuotaFormSet = inlineformset_factory(
-                models.QuotaGroup, models.Quota,
-                form=self.quota_form_class,
-                extra=len(initial))
-
-            group_form_args = {'service_type': service_type}
-            if self.request.method in ('POST'):
-                group_form_args.update({
-                    'data': self.request.POST,
-                })
-
-            GroupForm = self.quotagroup_form_class
-            service_quotas = models.Quota.objects.filter(
-                resource__service_type=service_type,
-                **quota_kwargs)
-
-            if self.object:
-                existing_groups = self.object.quotas.filter(
-                    service_type=service_type)
-                if existing_groups:
-                    qg_formsets = []
-                    for quotagroup in existing_groups:
-                        form = GroupForm(instance=quotagroup,
-                                         prefix="%s_%s" % (
-                                             service_type.catalog_name,
-                                             quotagroup.id),
-                                         **group_form_args)
-                        formset = self.get_formset(
-                            QuotaFormSet,
-                            queryset=service_quotas,
-                            prefix="%s_%s" % (service_type.catalog_name,
-                                              quotagroup.id),
-                            initial=initial,
-                            instance=quotagroup,
-                        )
-                        qg_formsets.append((form, formset))
-                    quota_formsets[service_type] = qg_formsets
-                else:
-                    form = GroupForm(prefix="%s_a" % service_type.catalog_name,
-                                     **group_form_args)
-                    formset = self.get_formset(
-                        QuotaFormSet,
-                        queryset=service_quotas,
-                        prefix="%s_a" % service_type.catalog_name,
-                        initial=initial,
-                        instance=None,
-                    )
-                    quota_formsets[service_type] = [(form, formset)]
-            else:
-                form = GroupForm(prefix="%s_a" % service_type.catalog_name,
-                                 **group_form_args)
-                formset = self.get_formset(
-                    QuotaFormSet,
-                    queryset=service_quotas,
-                    prefix="%s_a" % service_type.catalog_name,
-                    initial=initial,
-                    instance=None,
-                )
-                quota_formsets[service_type] = [(form, formset)]
-
-            # Find javascript created formsets
-            exp = re.compile('%s_(?P<prefix>[b-z])-TOTAL_FORMS' %
-                             service_type.catalog_name)
-            for key in self.request.POST.keys():
-                match = exp.search(key)
-                if match:
-                    prefix = "%s_%s" % (service_type.catalog_name,
-                                        match.group('prefix'))
-                    form = GroupForm(prefix=prefix, **group_form_args)
-                    formset = self.get_formset(
-                        QuotaFormSet,
-                        queryset=service_quotas,
-                        prefix=prefix,
-                        initial=initial,
-                        instance=None,
-                    )
-                    quota_formsets[service_type].append((form, formset))
-
-        return quota_formsets.items()
-
     def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['for_series'] = forcodes.FOR_SERIES.replace('_', ' ')
+        context['bundles'] = models.Bundle.objects.all()
+        return context
 
-        zones = {}
-        for zone in models.Zone.objects.filter(enabled=True):
-            zones[zone.name] = zone.display_name
-
-        service_types = {}
-        for st in models.ServiceType.objects.all():
-            service_types[st.catalog_name] = {
-                'name': st.name,
-                'zones': [{'name': z.name, 'display_name': z.display_name}
-                          for z in st.zones.filter(enabled=True)],
-            }
-
-        resources = {}
-        for resource in models.Resource.objects.all():
-            resources[resource.id] = {
-                'id': resource.id,
-                'name': resource.name,
-                'service_type': resource.service_type.catalog_name,
-                'quota_name': resource.quota_name,
-                'unit': resource.unit,
-                'help_text': resource.help_text,
-            }
-
-        # Get quota limits for Nova
-        quota_limits = {}
-        is_invalid = kwargs.get('is_invalid')
-        if self.object and self.object.project_id and not is_invalid:
-            try:
-                quota_limits = api.nova.tenant_absolute_limits(
-                    self.request, reserved=True,
-                    tenant_id=self.object.project_id)
-            except n_exc.Forbidden:
-                # required os_compute_api:os-used-limits policy
-                pass
-
-        return super().get_context_data(
-            service_types=json.dumps(service_types),
-            resources=json.dumps(resources),
-            zones=json.dumps(zones),
-            quota_limits=json.dumps(quota_limits),
-            **kwargs)
+    def get_initial(self):
+        return self.get_quotas_initial()
 
     def test_func(self):
         # Uses of this view needs alloc admin access ... unless overridden
@@ -388,9 +288,9 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         if 'actions' not in kwargs:
             kwargs['actions'] = []  # reduce template debug noise ...
         kwargs['form'] = form
-        kwargs['quota_formsets'] = self.get_quota_formsets()
-        kwargs.update(self.get_nonquota_formsets())
+        kwargs.update(self.get_formsets())
         kwargs['warnings'] = []
+        kwargs['nags'] = []
 
         if self.object:
             nag_checker = checkers.NagChecker(
@@ -402,22 +302,18 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                 person = 'approver' if approving else 'user'
                 LOG.info(f"Showing the {person} nags {tags} "
                          f"for allocation '{self.object.project_name}'")
-        else:
-            kwargs['nags'] = []
-        kwargs['for_series'] = forcodes.FOR_SERIES.replace('_', ' ')
 
         return self.render_to_response(self.get_context_data(**kwargs))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        approving = self.editor_attr == 'approver_email'
 
         # Create / assemble the form and non-quota formsets.  Note that
         # form instantiation may modify the state of self.object; e.g.
         # the value of self.object.status
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        form_dict = self.get_nonquota_formsets()
+        form_dict = self.get_formsets()
         form_dict['form'] = form
 
         # Check for certain actions / state transitions that will cause
@@ -426,207 +322,73 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
             current = models.AllocationRequest.objects.get(id=self.object.id)
             # Any changes to a history record
             if current.parent_request_id:
-                return HttpResponseBadRequest('Allocation record is historic')
+                return http.HttpResponseBadRequest(
+                    'Allocation record is historic')
             if (self.object.status == current.status
                 and current.status in (models.AllocationRequest.APPROVED,
                                        models.AllocationRequest.DECLINED,
                                        models.AllocationRequest.UPDATE_DECLINED
                                        )):
-                return HttpResponseBadRequest('Allocation state not changing')
+                return http.HttpResponseBadRequest(
+                    'Allocation state not changing')
 
-        ignore_warnings = self.IGNORE_WARNINGS or \
-                          request.POST.get('ignore_warnings', False)
-
-        # Primary validation of quotas + gathering of the values
-        # into a format that can be used for quota sanity checks.
-        quota_valid = True
-        sc_context = checkers.QuotaSanityChecker(
-            allocation=self.object,
-            form=form,
-            user=self.request.user,
-            approving=approving,
-            requested=self.ONLY_REQUESTABLE_RESOURCES)
-
-        quota_formsets = self.get_quota_formsets()
-        for service_type, form_tuple in quota_formsets:
-            selected_zones = []
-            for group_form, formset in form_tuple:
-                if not formset.is_valid() or not group_form.is_valid():
-                    quota_valid = False
-                else:
-                    zone = group_form.cleaned_data['zone']
-                    if zone and self._has_quotas(formset):
-                        if zone in selected_zones:
-                            group_form.add_error(
-                                None, "A single non-zero quota is allowed for "
-                                f"storage zone '{zone.display_name}'. Set the "
-                                "other quota(s) for this zone to zero.")
-                            quota_valid = False
-                        else:
-                            selected_zones.append(zone)
-                if form.is_valid() and quota_valid and not ignore_warnings:
-                    quotas_to_check = self._prep_quotas(form, group_form,
-                                                        formset)
-                    sc_context.add_quotas(quotas_to_check)
-
-        valid = quota_valid and \
-            all(map(methodcaller('is_valid'), form_dict.values()))
-
-        form_dict['quota_formsets'] = quota_formsets
+        valid = all(map(methodcaller('is_valid'), form_dict.values()))
 
         if valid:
-            warnings = sc_context.do_checks()
-            if len(warnings) == 0:
-                return self.form_valid(**form_dict)
-            else:
-                tags = [w[0] for w in warnings]
-                name = form.cleaned_data.get('project_name', '???')
-                person = 'approver' if approving else 'user'
-                if ignore_warnings:
-                    if not self.IGNORE_WARNINGS:
-                        LOG.info(f"The {person} ignored warnings {tags} "
-                                 f"for allocation '{name}'")
-                    return self.form_valid(**form_dict)
-                else:
-                    form_dict['warnings'] = warnings
-                    LOG.info(f"Showing the {person} warnings {tags} "
-                             f"for allocation '{name}'")
-                    return self.form_invalid(**form_dict)
+            return self.form_valid(**form_dict)
         else:
             return self.form_invalid(**form_dict)
 
-    def _has_quotas(self, formset):
-        for quota_data in formset.cleaned_data:
-            quota = quota_data.get('quota', 0)
-            requested_quota = quota_data.get('requested_quota', 0)
-            if quota or requested_quota:
-                return True
-        return False
-
-    def _prep_quotas(self, form, group_form, formset):
-        # Connect up the quotas, groups and allocation so that the
-        # quotas can be properly identified by the sanity checker.
-        object = form.save(commit=False)
-        group = group_form.save(commit=False)
-        group.allocation = object
-        zone = group_form.cleaned_data.get('zone', None)
-        if zone is None:
-            zone_name = 'nectar'
-        else:
-            zone_name = zone.name
-        try:
-            group.zone = models.Zone.objects.filter(name=zone_name)[0]
-        except IndexError:
-            raise Exception("Unknown zone %s" % zone_name)
-
-        quotas_to_check = []
-        for quota_data in formset.cleaned_data:
-            q = quota_data.get('id', None)
-            if q is None:
-                q = models.Quota()
-                if 'resource' in quota_data:
-                    q.resource = quota_data['resource']
-                else:
-                    continue
-            q.quota = quota_data.get('quota', 0)
-            q.requested_quota = quota_data.get('requested_quota', 0)
-            q.group = group
-            quotas_to_check.append(q)
-        return quotas_to_check
-
     @transaction.atomic
     def form_valid(self, form, investigator_formset=None,
-                   publication_formset=None,
-                   grant_formset=None, quota_formsets=[]):
+                   publication_formset=None, grant_formset=None):
         # Create a new historical object based on the original.
         if self.object:
             utils.copy_allocation(self.object)
 
         # Save the changes to the request.
-        object = form.save(commit=False)
+        allocation = form.save(commit=False)
         assert self.editor_attr
-        if not object.created_by:
-            object.created_by = self.request.user.token.tenant['id']
+        if not allocation.created_by:
+            allocation.created_by = self.request.user.token.tenant['id']
 
         # Set the editor attribute
-        setattr(object, self.editor_attr, self.request.user.username)
-        object.provisioned = False
+        setattr(allocation, self.editor_attr, self.request.user.username)
+        allocation.provisioned = False
 
         # Force update of submit_date if this a request / amendment
         # submission or resubmission
-        if object.status in [models.AllocationRequest.NEW,
+        if allocation.status in [models.AllocationRequest.NEW,
                              models.AllocationRequest.SUBMITTED,
                              models.AllocationRequest.UPDATE_PENDING]:
-            object.submit_date = timezone.now()
+            allocation.submit_date = timezone.now()
 
-        object.save()
+        allocation.save()
         form.save_m2m()
-        self.object = object
 
-        # quota formsets handled slightly differently as we want to
-        # drop objects if requested_quota == 0
-        # Default quotas are zero so requesting 0 is not needed
-        for service_type, form_tuple in quota_formsets:
-            for group_form, quota_formset in form_tuple:
-                quotas_to_save = []
-
-                quotas = quota_formset.save(commit=False)
-                for obj in quota_formset.deleted_objects:
-                    obj.delete()
-
-                # If quota is set to zero then delete the resource
-                # If unavailable qotas are visible then its approval
-                # And we want to determin by quota as opposed to requested
-                for quota in quotas:
-                    if self.ONLY_REQUESTABLE_RESOURCES:
-                        zero_check = quota.requested_quota
-                    else:
-                        zero_check = quota.quota
-
-                    if (zero_check or 0) > 0:
-                        quotas_to_save.append(quota)
-                    else:
-                        if quota.id:
-                            quota.delete()
-
-                if quotas_to_save or group_form.instance.id:
-                    group = group_form.save(commit=False)
-                    group.allocation = self.object
-                    group.save()
-                    for quota in quotas_to_save:
-                        quota.group = group
-                        if quota.requested_quota is None:
-                            quota.requested_quota = 0
-                        quota.save()
-
-        # Delete empty quota groups
-        for group in self.object.quotas.all():
-            if group.quota_set.count() < 1:
-                group.delete()
-
-        formsets = [investigator_formset, publication_formset, grant_formset]
+        formsets = [investigator_formset, publication_formset,
+                    grant_formset]
 
         for formset in formsets:
             if formset:
                 instances = formset.save(commit=False)
                 for instance in instances:
-                    instance.allocation = self.object
+                    instance.allocation = allocation
                     instance.save()
                 for instance in formset.deleted_objects:
                     instance.delete()
 
+        if form.has_quotas:
+            self.set_quotas(allocation, form, approving=self.APPROVING)
+
         # Send notification email
-        self.object.send_notifications(extra_context={'request': self.request})
+        allocation.send_notifications(extra_context={'request': self.request})
+        return http.HttpResponseRedirect(self.get_success_url())
 
-        return HttpResponseRedirect(self.get_success_url())
-
-    def form_invalid(self, form, warnings=[], **formsets):
+    def form_invalid(self, form, **formsets):
         """If the form is invalid, re-render the context data with the
         data-filled forms and errors.
         """
 
-        for_series = forcodes.FOR_SERIES.replace('_', ' ')
         return self.render_to_response(
-            self.get_context_data(form=form, warnings=warnings,
-                                  nags=[], for_series=for_series,
-                                  is_invalid=True, **formsets))
+            self.get_context_data(form=form, **formsets))

@@ -14,5 +14,6 @@
 
 {% block form_action %}{% url 'horizon:allocation:requests:reject_request' object.pk %}{% endblock %}
 
-{% block quotas %}
-{% endblock quotas %}
+{% block submit_buttons %}
+    <input type="submit" value="Decline Request" class="btn btn-danger"/>
+{% endblock %}

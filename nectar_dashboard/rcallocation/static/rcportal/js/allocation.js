@@ -10,11 +10,11 @@
         }, 3000);
         return (event.returnValue = "");
     }
-    
+
     function noTimeout() {
         leaving = true;
         clearTimeout(warning_timeout);
-    } 
+    }
 
     // Hides the horizon page loader which is displayed when the user clicks a link.
     function hideLoadingModal() {
@@ -23,7 +23,156 @@
         $("body").removeClass("modal-open");
     }
 
+    function setPanelStates(accordion_id) {
+        $(accordion_id + ' a[data-toggle="collapse"]').click(function(event) {
+            // Stop accordion collapse link from adding hash to URL
+            event.preventDefault();
+        });
+
+        // Does the page have errors?
+        if($(accordion_id + ' .has-error')[0]) {
+            // Open the first panel with an error
+            $(".has-error:first").closest(".request-collapse").addClass('in');
+        }
+        else {
+            // Otherwise, open the first panel
+            $(accordion_id + " .request-collapse:first").addClass('in');
+        }
+
+        // Highlight the active panel on page load
+        $(accordion_id + ' > .panel:has(.request-collapse.in)').removeClass("panel-default").addClass('panel-warning');
+
+        // Highlight error panels on page load
+        $(accordion_id + ' > .panel:has(div.has-error)').removeClass("panel-default").addClass('panel-danger');
+
+        // Highlight active panel on collapse show event
+        $(accordion_id + ' > .panel').on('show.bs.collapse', function() {
+            if($(this).hasClass('panel-default')) {
+                $(this).removeClass("panel-default");
+                $(this).addClass('panel-warning');
+            }
+            // Remove highlight when not active
+            $(accordion_id + ' > .panel').on('hide.bs.collapse', function() {
+                if($(this).hasClass('panel-danger')) {
+                    $(this).removeClass("panel-danger");
+                }
+                else {
+                    $(this).removeClass("panel-warning");
+                }
+                $(this).addClass('panel-default');
+            });
+        });
+    }
+
+    function setActiveResources() {
+        var isExistingRequest = $("#allocationrequest_edit").hasClass("allocation-existing") ? true : false;
+        var isNewWithErrors = $("#allocationrequest_edit").hasClass("allocation-new-errors") ? true : false;
+
+        if($('select#id_bundle').val()) {
+            // Show previously selected bundle as selected
+            $('.bundle[data-bundle=' + $('select#id_bundle').val() + ']').addClass('active');
+        }
+        else if(isExistingRequest || isNewWithErrors) {
+            // If no bundle previously selected, and
+            // it's an existing request or the page has
+            // relaoded with errors, show custom selected
+            $('.bundle:last').addClass('active');
+        }
+        else {
+            // Select standard bundle if it's a new request
+            // and no bundle previously selected
+            $('.bundle:first').addClass('active');
+            $('select#id_bundle').val($('.bundle:first').data('bundle'));
+        }
+
+        $('.resource-zone').each(function() {
+            if($(this).find('input').val() > 0) {
+                $(this).closest('.extra-resource').find('.resource-toggle').bootstrapToggle('on');
+                $(this).closest('.extra-resource').find('fieldset').show();
+                return false;
+            }
+        });
+    }
+
+    function showFormStep(formSectionId) {
+        if(formSectionId == 2) {
+            $('section#form-step1').hide();
+            $('section#form-step2').show();
+            $("#form-step-title").text("Cloud Resources");
+            $('#allocation_form_nav li.active').removeClass('active');
+            $('#allocation_form_nav li:nth-child(2)').addClass('active');
+        }
+        else {
+            $('section#form-step2').hide();
+            $('section#form-step1').show();
+            $("#form-step-title").text("About the Project");
+            $('#allocation_form_nav li.active').removeClass('active');
+            $('#allocation_form_nav li:first').addClass('active');
+        }
+    }
+
     if($("#allocationrequest_edit").length) {
+        setPanelStates("#request_accordion");
+        setPanelStates("#resources_accordion");
+        setActiveResources();
+
+        if(window.location.hash) {
+            var pageHash = window.location.hash.substring(1);
+            console.log(pageHash);
+            if(pageHash == "form-step2" || pageHash == "!#form-step2") {
+                showFormStep(2);
+            }
+            else {
+                showFormStep(1);
+            }
+        }
+        else {
+            showFormStep(1);
+        }
+
+        $('.show-form2-button').on('click', function() {
+            // Did the user click the continue button?
+            if($(this).hasClass("continue-button")) {
+                // Is the first panel currently collapsed?
+                if(!$("#resources_accordion .request-collapse:first").hasClass("in")) {
+                    // Collapse any other open panels
+                    $("#resources_accordion .request-collapse.in").collapse('hide').on('hidden.bs.collapse', function () {
+                        // Open the first panel
+                        $("#resources_accordion .request-collapse:first").collapse('show');
+                    });
+                }
+            }
+            $(window).scrollTop(0);
+            showFormStep(2);
+        });
+
+        $('.show-form1-button').on('click', function() {
+            $(window).scrollTop(0);
+            showFormStep(1);
+        });
+
+        $('.bundle > .btn').on('click', function(e) {
+            e.preventDefault();
+            var clickedBundle = $(this).closest('.bundle');
+            if(clickedBundle.hasClass('active') === false) {
+                $('.bundle.active').removeClass('active');
+                clickedBundle.addClass('active');
+                $('select#id_bundle').val(clickedBundle.data('bundle'));
+            }
+        });
+
+        $('.resource-toggle').each(function() {
+            $(this).change(function() {
+                var toggleFields = $(this).closest('.extra-resource').find('fieldset');
+                if(toggleFields.is(":hidden")) {
+                    toggleFields.slideDown();
+                }
+                else {
+                    toggleFields.slideUp();
+                }
+            });
+        });
+
         // Set a leave alert warning on the allocation form page
         $(window).bind('beforeunload', leaveWarning);
         $(window).bind('unload', noTimeout);
@@ -32,242 +181,6 @@
         });
     }
 
-    $('#request_accordion a[data-toggle="collapse"]').click(function(event) {
-        // Stop accordion collapse link from adding hash to URL
-        event.preventDefault();
-    });
-
-    // Does the page have errors?
-    if($('#request_accordion .has-error')[0]) {
-        // Open the first panel with an error
-        $(".has-error:first").closest(".request-collapse").addClass('in');
-    }
-    else {
-        // Otherwise, open the first panel
-        $("#panelOne").collapse('show');
-    }
-
-    // Highlight the active panel on page load
-    $('#request_accordion > .panel:has(.request-collapse.in)').removeClass("panel-default").addClass('panel-warning');
-
-    // Highlight error panels on page load
-    $('#request_accordion > .panel:has(div.has-error)').removeClass("panel-default").addClass('panel-danger');
-
-    // Highlight active panel on collapse show event
-    $('#request_accordion > .panel').on('show.bs.collapse', function() {
-        if($(this).hasClass('panel-default')) {
-            $(this).removeClass("panel-default");
-            $(this).addClass('panel-warning');
-        }
-        // Remove highlight when not active
-        $('#request_accordion > .panel').on('hide.bs.collapse', function() {
-            if($(this).hasClass('panel-danger')) {
-                $(this).removeClass("panel-danger");
-            }
-            else {
-                $(this).removeClass("panel-warning");
-            }
-            $(this).addClass('panel-default');
-        });
-    });
-
-    function renumber_forms(forms) {
-      var match = new RegExp('-\\d+-', 'g');
-      forms.each(function (i, item) {
-        $(item).find('input, label').each(function() {
-          var name = $(this).attr('name');
-          if (name) {
-            $(this).attr('name', name.replace(match, '-' + i + '-'));
-            $(this).attr('id', name.replace(match, '-' + i + '-'));
-          }
-        });
-      });
-    };
-
-
-    function delete_form(item) {
-      var form = $(item).closest('.quota-group');
-      form.hide();
-      form.find('input[id$="-DELETE"]').val(true);
-      form.find('input[id$="-requested_quota"]').val(0);
-    };
-
-
-    function create_forms(opts, service_type) {
-      var i = $('#quotas-' + service_type).find('.quota-group').length
-      var prefix = String.fromCharCode('a'.charCodeAt() + i)
-
-      var r = $('#empty-quotas-' + service_type).find('.quota-group').first().clone();
-
-      r.find('input, label, select').each(function() {
-        var name = $(this).attr('name');
-        if (name) {
-          $(this).attr('name', name.replace(/__prefix__/g, prefix));
-          $(this).attr('id', name.replace(/__prefix__/g, prefix));
-        }
-      });
-
-      r.find('.quota-group-delete').click(function() {
-        delete_form($(this));
-      });
-
-      $('#quotas-' + service_type).append(r);
-      r.show();
-    }
-
-
-    $.fn.formset = function(options) {
-      var opts = $.extend({}, $.fn.formset.defaults, options);
-      return this.each(function() {
-
-        $('div[id^="quota-resource-"]').each(function() {
-          var resource_id = $(this).attr('id').match(/[\d]+$/);
-          if (resource_id == null) {
-            return
-          }
-          var resource = opts['resources'][resource_id];
-          // Set the labels for the resources
-          $(this).find('.label-resource-name').text(resource['name']);
-          $(this).find('.label-resource-unit').text(resource['unit']);
-          if (resource['help_text']) {
-            $(this).find('.label-resource-help').text(resource['help_text']); // admin form
-          }
-          var popover = $(this).find('.help-popover');
-          if (resource['help_text']) {
-            popover.attr('title', resource['name']);
-            popover.attr('data-content', resource['help_text']);
-            popover.show();
-          }
-          else {
-            popover.hide();
-          }
-
-          /* Custom hack for RAM!
-             Here we add some html to add extra control for the RAM quota.
-             We add some radio buttons to ether use default value (= 0) and
-             hide the input box or allow a custom value and show it.
-          */
-          if (resource['quota_name'] == 'ram' && resource['service_type'] == 'compute') {
-
-            var ig = $(this).find('.quota').find('.input-g')
-            ig.after('<div class="resource-custom-override">' +
-                     '  <label class="radio-inline">' +
-                     '    <input type="radio" name="resource_custom_override" value="default">' +
-                     '      Default (4GB per core)' +
-                     '  </label>' +
-                     '  <label class="radio-inline">' +
-                     '    <input type="radio" name="resource_custom_override" value="custom">' +
-                     '      Custom' +
-                     '  </label>' +
-                     '</div>');
-
-            var ram_input = ig.find('input');
-            var ram_gb = ram_input.val();
-            var is_default_ram = (ram_gb == 0);
-
-            // nova project quotas are only available if a project exists
-            // already, and the form isn't being returned due to an error
-            if ('quota_limits' in opts) {
-              var quota_limits = opts['quota_limits'];
-              if ('maxTotalRAMSize' in quota_limits) {
-                ram_gb = parseInt(quota_limits['maxTotalRAMSize'] / 1024);
-                num_cores = parseInt(quota_limits['maxTotalCores']);
-                is_default_ram = (ram_gb == num_cores * 4);
-              }
-            }
-
-            // if ram value is default (e.g. cores x 4 or 0) then hide the
-            // input field and choose the default radio setting, otherwise
-            // choose the custom setting and set the value in the input
-            var radio_override = $(this).find('input:radio[name="resource_custom_override"]')
-            if (is_default_ram) {
-              radio_override.val(['default']);
-              ig.hide();
-            } else {
-              radio_override.val(['custom']);
-              ram_input.val(ram_gb);
-            }
-          }
-        });
-
-        $('input[name="resource_custom_override"]').change(function(){
-          var ig = $(this).closest('.controls').find('.input-g');
-
-          if ($(this).val() == 'custom') {
-            ig.show();
-          }
-          else {
-            // Reset to 0 as its what the default value is
-            ig.find('input').val(0);
-            ig.hide();
-          }
-        });
-
-        $('input:checkbox.toggle-quota').change(function() {
-          var panel = $(this).closest('.panel');
-          var enabled = this.checked;
-          panel.find('.panel-collapse').collapse(this.checked ? 'show' : 'hide');
-
-          // Set quotas to 0 if service is disabled
-          if (!enabled) {
-            panel.find('input[id$="-requested_quota"]').each(function() {
-              $(this).val(0);
-            });
-          }
-
-          // Set the value of hidden input field called enabled
-          panel.find('input.quota-group-enabled').each(function() {
-            $(this).val(enabled);
-          });
-        });
-
-
-        $(this).find('div[id^="panel-quota-"]').each(function() {
-          var id = $(this).attr('id');
-          var service_type = id.match(/^panel-quota-([\w-]+)$/)[1];
-          var zones = opts['service_types'][service_type]['zones']
-
-          /* If this is a multi-zone resource, show the 'Add more' button */
-          if (zones.length > 1) {
-            $('input[id^="add-quota-' + service_type + '"]').show();
-          } else {
-            $('input[id^="add-quota-' + service_type + '"]').hide();
-          }
-
-          var is_enabled = false;
-          if (service_type == "rating") {
-            is_enabled = true;
-          } else {
-            $(this).find('input[id$="-requested_quota"]').each(function() {
-              if (this.value > 0) {
-                is_enabled = true;
-             }
-            });
-          }
-
-          var toggle = $(this).find('input:checkbox.toggle-quota');
-          if (toggle.length) {
-            $(this).find('div.panel-collapse').collapse(is_enabled ? 'show' : 'hide');
-            toggle.prop('checked', is_enabled).change();
-          }
-        });
-
-        $('input[id^="add-quota-"]').click(function() {
-          var id = $(this).attr('id');
-          var service_type = id.match(/^add-quota-([\w-]+)$/)[1];
-          create_forms(opts, service_type);
-        });
-
-      });
-    };
-
-    // Plugin defaults – added as a property on our plugin function.
-    $.fn.formset.defaults = {
-       prefix: "",
-       service_types: {},
-       resources: {},
-       zones: {},
-    };
 }(jQuery));
 
 function apply_popover() {
@@ -578,7 +491,7 @@ $(function(){
             var id_input = $(this).find('input[id$=-id]');
             id_input.attr('id', 'id_' + opts.prefix + '-' + index + '-id');
             id_input.attr('name', opts.prefix + '-' + index + '-id');
-            
+
             //reindex the delete input field
             var id_input = $(this).find('input[id$=-DELETE]');
             id_input.attr('id', 'id_' + opts.prefix + '-' + index + '-DELETE');

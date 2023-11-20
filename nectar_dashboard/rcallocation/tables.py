@@ -95,14 +95,22 @@ def get_quota(wanted, actual=None):
 
 def get_quota_by_resource(service, resource):
     def quota(allocation):
+        quota = None
         want = 0
         have = 0
-        for quota in \
-            models.Quota.objects.filter(group__allocation=allocation,
-                                        resource__service_type=service,
-                                        resource__quota_name=resource):
-            want += quota.requested_quota
-            have += quota.quota
+        if allocation.bundle:
+            q = allocation.bundle.get_quota(f'{service}.{resource}')
+            if q:
+                have = want = q
+        try:
+            quota = models.Quota.objects.get(group__allocation=allocation,
+                                             resource__service_type=service,
+                                             resource__quota_name=resource)
+        except models.Quota.DoesNotExist:
+            pass
+        else:
+            want = quota.requested_quota
+            have = quota.quota
         return delta_quota(allocation, want, have)
     return quota
 
@@ -111,6 +119,7 @@ class AllocationHistoryTable(tables.DataTable):
     project = tables.Column("project_description", verbose_name="Project name",
                             link="horizon:allocation:requests:allocation_view")
     approver = tables.Column("approver_email", verbose_name="Approver")
+    bundle = tables.Column("bundle", verbose_name="Bundle")
     service_units = tables.Column(
         get_quota_by_resource("rating", "budget"),
         verbose_name="SUs")
