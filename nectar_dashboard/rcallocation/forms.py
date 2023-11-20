@@ -630,8 +630,3 @@ class GrantForm(NectarBaseModelForm):
                 self.add_error(
                     'funding_body_scheme',
                     ValidationError('Provide details for this grant'))
-
-
-class UsageForm(NectarBaseModelForm):
-    class Meta(NectarBaseModelForm.Meta):
-        model = models.UsageType
