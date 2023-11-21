@@ -17,6 +17,7 @@ import logging
 from django.conf import settings
 from django.core import validators
 from django.db.models import Q
+from django_countries.serializers import CountryFieldMixin
 from django_filters import rest_framework as filters
 from rest_framework import decorators
 from rest_framework import exceptions
@@ -146,7 +147,8 @@ class SiteViewSet(NoDestroyViewSet):
     serializer_class = SiteSerializer
 
 
-class AdminOrganisationSerializer(serializers.ModelSerializer):
+class AdminOrganisationSerializer(CountryFieldMixin,
+                                  serializers.ModelSerializer):
     precedes = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=models.Organisation.objects.all())
@@ -156,7 +158,7 @@ class AdminOrganisationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OrganisationSerializer(serializers.ModelSerializer):
+class OrganisationSerializer(CountryFieldMixin, serializers.ModelSerializer):
     precedes = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=models.Organisation.objects.all())
@@ -166,7 +168,8 @@ class OrganisationSerializer(serializers.ModelSerializer):
         exclude = ['vetted_by', 'proposed_by']
 
 
-class ProposedOrganisationSerializer(serializers.ModelSerializer):
+class ProposedOrganisationSerializer(CountryFieldMixin,
+                                     serializers.ModelSerializer):
     precedes = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=models.Organisation.objects.all())
