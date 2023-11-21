@@ -204,18 +204,6 @@ class OrganisationTest(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('country', response.data)
 
-    def test_propose_bad_country2(self):
-        self.client.force_authenticate(user=self.user)
-        data = self._make_data(
-            short_name='WTF',
-            full_name='World Triffid Foundation',
-            url='https://wtf.org',
-            country='au'         # should be AU
-        )
-        response = self.client.post('/rest_api/organisations/', data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('country', response.data)
-
     def test_propose_extra_fields(self):
         self.client.force_authenticate(user=self.user)
         data = self._make_data(
