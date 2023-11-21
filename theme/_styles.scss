@@ -202,6 +202,14 @@ input {
   }
 }
 
+.modal {
+  .modal-dialog:not(.modal-xs, .modal-sm, .modal-lg, .modal-xl) {
+    @media (min-width: 992px) {
+      width: 900px;
+    }
+  }
+}
+
 // Modal header
 // Top section of the modal w/ title and dismiss
 .modal-header {
