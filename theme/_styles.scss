@@ -94,6 +94,10 @@ body {
   }
 }
 
+.table-rsp .rsp-p1 {
+  word-break: break-all;
+}
+
 button, select, html, textarea, input {
   font-family: 'Figtree', sans-serif;
 }
@@ -229,6 +233,16 @@ input {
   .modal-body,
   .modal-footer {
     border-bottom: 1px solid $gray-light;
+  }
+}
+
+.wizard-navigation {
+  > .wizard-nav-toggle {
+    margin-top: 0;
+    margin-right: 0;
+    span:not(.sr-only, .fa-bars) {
+      display: none;
+    }
   }
 }
 
