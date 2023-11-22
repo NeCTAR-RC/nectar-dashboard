@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+
 {% block title %}{% trans "Home" %}{% endblock %}
 
 {% block custom_head_js %}
@@ -142,14 +143,14 @@
                   <p>
                     <strong>Status:</strong> {{ outage.status_display }}
                     {% if outage.start %}
-                      <strong>Start:</strong> {{ outage.start }}
+                      <strong>Start:</strong> {{ outage.start|date:"r" }}
                     {% elif outage.scheduled and outage.schedule_start %}
-                      <strong>Start:</strong> {{ outage.schedule_start }} (scheduled)
+                      <strong>Start:</strong> {{ outage.schedule_start|date:"r" }} (scheduled)
                     {% endif %}
                     {% if outage.end %}
-                      <strong>End:</strong> {{ outage.end }}
+                      <strong>End:</strong> {{ outage.end|date:"r" }}
                     {% elif outage.scheduled and outage.schedule_end %}
-                      <strong>End:</strong> {{ outage.schedule_end }} (scheduled).</p>
+                      <strong>End:</strong> {{ outage.schedule_end|date:"r" }} (scheduled).</p>
                     {% endif %}
                   </p>
                   <a href="{{ HORIZON_CONFIG.OUTAGE_BASE_URL }}{{ outage.id }}" target="_blank">View Announcement <i class="fa fa-external-link"></i></a>
