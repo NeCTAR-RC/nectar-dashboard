@@ -41,8 +41,7 @@ class BaseTestCase(helpers.TestCase):
         self.maxDiff = None
 
     def assert_allocation(self, model, quotas=[], supported_organisations=[],
-                          institutions=[], publications=[],
-                          grants=[], investigators=[],
+                          publications=[], grants=[], investigators=[],
                           usage_types=[], **attributes):
         """Check that 'model' AllocationRequest and its dependents
         match the expected state as given by the keyword args.
@@ -84,10 +83,6 @@ class BaseTestCase(helpers.TestCase):
                              matched[0]['requested_quota'])
             self.assertEqual(qm.quota, matched[0]['quota'])
 
-        institutions_l = model.institutions.all()
-        for i, institution_model in enumerate(institutions_l):
-            self.assertEqual(institution_model.name, institutions[i]['name'])
-
         publications_l = model.publications.all()
         for i, pub_model in enumerate(publications_l):
             self.assertEqual(pub_model.publication,
@@ -111,8 +106,6 @@ class BaseTestCase(helpers.TestCase):
             self.assertEqual(inv_m.given_name, investigators[i]['given_name'])
             self.assertEqual(inv_m.surname, investigators[i]['surname'])
             self.assertEqual(inv_m.email, investigators[i]['email'])
-            self.assertEqual(inv_m.institution,
-                             investigators[i]['institution'])
             self.assertEqual(inv_m.additional_researchers, investigators[i][
                 'additional_researchers'])
 
@@ -131,10 +124,6 @@ class BaseTestCase(helpers.TestCase):
         for invalid_field in ['id', 'parent_request']:
             del old_state[invalid_field]
             del initial_state[invalid_field]
-
-        for inst in old_state['institution'] + initial_state['institution']:
-            del inst['id']
-            del inst['allocation']
 
         for pub in old_state['publication'] + initial_state['publication']:
             del pub['id']

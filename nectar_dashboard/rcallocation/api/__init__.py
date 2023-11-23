@@ -777,19 +777,7 @@ class AllocationViewSet(viewsets.ModelViewSet, PermissionMixin):
                     + "'associated_site'")
             kwargs.update(compat_info)
             data.pop('allocation_home')
-
-        organisations = (kwargs.get('supported_organisations')
-                         or data.get('supported_organisations'))
-        allocation = serializer.save(**kwargs)
-
-        # Transitional handling: mirror organisation names as institutions
-        if organisations is not None:
-            models.Institution.objects.filter(allocation=allocation).delete()
-            for org in organisations:
-                institution = models.Institution.objects.create(
-                    allocation=allocation, name=org.full_name)
-                institution.save()
-        return allocation
+        return serializer.save(**kwargs)
 
     def perform_create(self, serializer):
         kwargs = {'created_by': self.request.user.token.project['id']}
@@ -943,7 +931,7 @@ class ChiefInvestigatorSerializer(AllocationRelatedSerializer):
 
     class Meta:
         model = models.ChiefInvestigator
-        exclude = ('institution',)
+        fields = '__all__'
 
 
 class ChiefInvestigatorViewSet(AllocationRelatedViewSet):
@@ -951,41 +939,18 @@ class ChiefInvestigatorViewSet(AllocationRelatedViewSet):
     serializer_class = ChiefInvestigatorSerializer
 
     def perform_create(self, serializer):
-        # Transitional handling: mirror primary organisation as institution
         org = serializer.validated_data.get('primary_organisation')
-        if org is None or org.full_name == models.ORG_UNKNOWN_FULL_NAME:
-            kwargs = {'institution': None}
-        elif org.full_name == models.ORG_ALL_FULL_NAME:
+        if org.full_name == models.ORG_ALL_FULL_NAME:
             raise serializers.ValidationError(
                 "'All Organisations' cannot be used in this context")
-        else:
-            kwargs = {'institution': org.full_name}
-        serializer.save(**kwargs)
+        serializer.save()
 
     def perform_update(self, serializer):
-        # Transitional handling: mirror primary organisation as institution
         org = serializer.validated_data.get('primary_organisation')
-        if org is None:
-            kwargs = {}
-        elif org.full_name == models.ORG_UNKNOWN_FULL_NAME:
-            kwargs = {'institution': None}
-        elif org.full_name == models.ORG_ALL_FULL_NAME:
+        if org and org.full_name == models.ORG_ALL_FULL_NAME:
             raise serializers.ValidationError(
                 "'All Organisations' cannot be used in this context")
-        else:
-            kwargs = {'institution': org.full_name}
-        serializer.save(**kwargs)
-
-
-class InstitutionSerializer(AllocationRelatedSerializer):
-    class Meta:
-        model = models.Institution
-        fields = '__all__'
-
-
-class InstitutionViewSet(AllocationRelatedViewSet):
-    queryset = models.Institution.objects.all()
-    serializer_class = InstitutionSerializer
+        serializer.save()
 
 
 class PublicationSerializer(AllocationRelatedSerializer):

@@ -27,8 +27,6 @@ REST_VIEW_SETS = (
      'nectar_dashboard.rcallocation.api.QuotaViewSet', None),
     ('chiefinvestigators',
      'nectar_dashboard.rcallocation.api.ChiefInvestigatorViewSet', None),
-#    ('institutions',
-#     'nectar_dashboard.rcallocation.api.InstitutionViewSet', None),
     ('organisations',
      'nectar_dashboard.rcallocation.api.OrganisationViewSet', None),
     ('publications',

@@ -118,8 +118,7 @@ class AllocationHistoryView(mixins.UserPassesTestMixin,
         pk = self.kwargs['pk']
         return models.AllocationRequest.objects.filter(
             Q(parent_request=pk) | Q(pk=pk)).prefetch_related(
-                'quotas', 'investigators', 'institutions',
-                'publications', 'grants')
+                'quotas', 'investigators', 'publications', 'grants')
 
     def test_func(self):
         # Direct uses of this view needs alloc admin access
@@ -145,11 +144,6 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         models.AllocationRequest, models.ChiefInvestigator,
         form=forms.ChiefInvestigatorForm,
         extra=0)
-
-    # institution
-    formset_institution_class = inlineformset_factory(
-        models.AllocationRequest, models.Institution,
-        form=forms.InstitutionForm, extra=0)
 
     # publication
     formset_publication_class = inlineformset_factory(
@@ -365,20 +359,12 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
         approving = self.editor_attr == 'approver_email'
 
         if self.object:
-            # Ensure old projects have to set an investigator and
-            # an institution
+            # Ensure old projects have to set an investigator
             investigators = self.object.investigators.all()
             if not investigators:
                 self.formset_investigator_class = inlineformset_factory(
                     models.AllocationRequest, models.ChiefInvestigator,
                     form=forms.ChiefInvestigatorForm, extra=1)
-
-            institutions = self.object.institutions.all()
-            if not institutions:
-                self.formset_institution_class = inlineformset_factory(
-                    models.AllocationRequest, models.Institution,
-                    form=forms.InstitutionForm,
-                    extra=1)
         else:
             kwargs['object'] = None
 
@@ -548,7 +534,7 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
 
     @transaction.atomic
     def form_valid(self, form, investigator_formset=None,
-                   institution_formset=None, publication_formset=None,
+                   publication_formset=None,
                    grant_formset=None, quota_formsets=[]):
         # Create a new historical object based on the original.
         if self.object:
@@ -627,32 +613,10 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
                 for instance in formset.deleted_objects:
                     instance.delete()
 
-        self._transitional_hack()
-
         # Send notification email
         self.object.send_notifications(extra_context={'request': self.request})
 
         return HttpResponseRedirect(self.get_success_url())
-
-    def _transitional_hack(self):
-        # Temporary: during the Institution string -> Organization transition
-        # and updates made to an Allocation or CIs organizations are mirrored
-        # in the corresponding (legacy) institution fields and relations
-        models.Institution.objects.filter(allocation=self.object).delete()
-        for org in list(self.object.supported_organisations.all()):
-            if org.short_name == models.ORG_UNKNOWN_SHORT_NAME:
-                continue
-            name = ("all" if org.short_name == models.ORG_ALL_SHORT_NAME
-                    else org.full_name)
-            inst = models.Institution.objects.create(
-                allocation=self.object, name=name)
-            inst.save()
-        try:
-            ci = models.ChiefInvestigator.objects.get(allocation=self.object)
-            ci.institution = ci.primary_organisation.full_name
-            ci.save()
-        except models.ChiefInvestigator.DoesNotExist:
-            pass
 
     def form_invalid(self, form, warnings=[], **formsets):
         """If the form is invalid, re-render the context data with the

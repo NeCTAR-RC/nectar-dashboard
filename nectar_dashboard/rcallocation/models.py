@@ -413,7 +413,6 @@ class AllocationRequest(models.Model):
 
     usage_types = models.ManyToManyField(UsageType)
 
-    # FIX: after transition remove 'blank=True'
     supported_organisations = select2_fields.ManyToManyField(
         'Organisation',
         ajax=True,
@@ -424,7 +423,7 @@ class AllocationRequest(models.Model):
         js_options={'ajax_url': '/allocation/fetch_organisations/',
                     'ajax_init_url': '/allocation/init_organisations/'},
         overlay="Enter one or more organisation names or acronyms...",
-        blank=True)
+        blank=False)
 
     class Meta:
         ordering = ['-modified_time']
@@ -850,16 +849,6 @@ class ChiefInvestigator(models.Model):
             organisation for accountability."""
     )
 
-    # Legacy field.  Remove after transition
-    institution = models.CharField(
-        'Institution (legacy)',
-        max_length=200,
-        help_text="""The name of the institution or university of
-                    the chief investigator including the schools,
-                    faculty and/or department."""
-    )
-
-    # Remove null=True & blank=True after transition
     primary_organisation = select2_fields.ForeignKey(
         'Organisation',
         ajax=True,
@@ -870,7 +859,7 @@ class ChiefInvestigator(models.Model):
         js_options={'ajax_url': '/allocation/fetch_organisations/',
                     'ajax_init_url': '/allocation/init_organisations/'},
         overlay="Enter an organisation name or acronym...",
-        null=True, blank=True, on_delete=models.PROTECT,
+        on_delete=models.PROTECT,
         help_text="""The chief investigator's primary organisation.""")
 
     additional_researchers = models.TextField(
@@ -885,26 +874,6 @@ class ChiefInvestigator(models.Model):
 
     def __str__(self):
         return '{0} {1} {2}'.format(self.title, self.given_name, self.surname)
-
-
-# Fix: this is being replaced by the Organisation class.
-class Institution(models.Model):
-    name = models.CharField(
-        'Supported institutions',
-        max_length=200,
-        help_text="""List the Australian research institutions and
-                    universities supported by this application. If this
-                    application is just for you, just write the name of
-                    your institution or university. If you are running a
-                    public web service list the Australian research
-                    institutions and universities that
-                    you think will benefit most.""")
-    allocation = models.ForeignKey(AllocationRequest,
-                                   related_name='institutions',
-                                   on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ("allocation", "name")
 
 
 ORG_ALL_FULL_NAME = "All Organisations"

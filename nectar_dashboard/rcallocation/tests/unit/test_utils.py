@@ -23,9 +23,6 @@ class UtilsTest(helpers.TestCase):
         def _discard_different_attrs(a):
             a.pop('id')
             a.pop('parent_request')
-            for i in a.get('institution', []):
-                i.pop('id')
-                i.pop('allocation')
             return a
 
         allocation_dict = _discard_different_attrs(

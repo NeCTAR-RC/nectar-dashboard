@@ -50,15 +50,14 @@ def copy_allocation(allocation):
     manager = models.AllocationRequest.objects
     old_object = manager.get(id=allocation.id)
     old_object.parent_request = allocation
-
     quota_groups = deepcopy(old_object.quotas.all())
     investigators = deepcopy(old_object.investigators.all())
-    institutions = deepcopy(old_object.institutions.all())
     publications = deepcopy(old_object.publications.all())
     grants = deepcopy(old_object.grants.all())
     usage_types = deepcopy(old_object.usage_types.all())
-    supported_organisations = deepcopy(
-        old_object.supported_organisations.all())
+
+    # Don't deep copy these.  They are shared by all allocations
+    supported_organisations = old_object.supported_organisations.all()
 
     old_object.id = None
     save_allocation_without_updating_timestamps(old_object)
@@ -78,11 +77,6 @@ def copy_allocation(allocation):
         inv.id = None
         inv.allocation = old_object
         inv.save()
-
-    for inst in institutions:
-        inst.id = None
-        inst.allocation = old_object
-        inst.save()
 
     for pub in publications:
         pub.id = None
