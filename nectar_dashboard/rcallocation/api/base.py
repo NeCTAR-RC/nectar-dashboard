@@ -11,23 +11,22 @@
 #   under the License.
 #
 
-from rest_framework import response
-from rest_framework import status
+from rest_framework import mixins
 from rest_framework import viewsets
 
 from nectar_dashboard import rest_auth
 
 
-class NoDestroyViewSet(viewsets.ModelViewSet):
+class NoDestroyViewSet(mixins.CreateModelMixin,
+                       mixins.RetrieveModelMixin,
+                       mixins.UpdateModelMixin,
+                       mixins.ListModelMixin,
+                       viewsets.GenericViewSet):
 
     permission_classes = (rest_auth.ReadOrAdmin,)
 
-    def destroy(self, request, *args, **kwargs):
-        # Don't destroy these objects as it will "break" the form
-        # representations for current and historic allocation records.
-        # Where possible, mark the object as 'disabled'.  Where not
-        # possible, coding is probably required to make it possible.
-        # (Or ... it is "hack the database" time ...)
-        return response.Response(
-            {'error': 'Configuration objects should not be destroyed'},
-            status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    """
+    A viewset that provides default `create()`, `retrieve()`, `update()`,
+    `partial_update()` and `list()` actions.
+    """
+    pass
