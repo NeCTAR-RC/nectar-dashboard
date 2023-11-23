@@ -3,19 +3,14 @@ from datetime import timedelta
 from unittest.mock import patch
 
 from django.utils import timezone
-from openstack_dashboard.test import helpers
 
-from nectar_dashboard.rcallocation.tests import common
+from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import factories
 
 from nectar_dashboard.rcallocation import urgency
 
 
-class UrgencyTests(helpers.TestCase):
-
-    def setUp(self):
-        super().setUp()
-        common.factory_setup()
+class UrgencyTests(base.BaseTestCase):
 
     def test_get_clockstop_allocation(self):
         now = datetime.now(timezone.utc)

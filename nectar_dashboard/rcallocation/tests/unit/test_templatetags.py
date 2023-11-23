@@ -12,14 +12,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from openstack_dashboard.test import helpers
-
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import output_type_choices
 from nectar_dashboard.rcallocation.templatetags import publication_extras
+from nectar_dashboard.rcallocation.tests import base
 
 
-class PublicationExtrasTestCase(helpers.TestCase):
+class PublicationExtrasTestCase(base.BaseTestCase):
 
     def test_crossref_summary(self):
         self.assertEqual("*** No JSON ***",

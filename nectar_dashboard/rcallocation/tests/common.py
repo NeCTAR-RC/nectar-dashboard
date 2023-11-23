@@ -68,7 +68,9 @@ def get_site(name):
 
 def factory_setup():
     sites_setup()
+    approvers_setup()
     organisations_setup()
+    usage_types_setup()
     melbourne = factories.ZoneFactory(name='melbourne')
     monash = factories.ZoneFactory(name='monash')
     tas = factories.ZoneFactory(name='tas')

@@ -14,23 +14,18 @@
 
 from datetime import datetime
 
-from openstack_dashboard.test import helpers
 
 from nectar_dashboard.rcallocation import checkers
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import output_type_choices
-from nectar_dashboard.rcallocation.tests import common
+from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import factories
 
 
 THIS_YEAR = datetime.now().year
 
 
-class NagCheckerTest(helpers.TestCase):
-
-    def setUp(self):
-        super().setUp()
-        common.factory_setup()
+class NagCheckerTest(base.BaseTestCase):
 
     def test_init(self):
         allocation = factories.AllocationFactory.create(project_name='fun')
@@ -79,11 +74,7 @@ class NagCheckerTest(helpers.TestCase):
 CUTOFF = checkers.EXPIRED_GRANT_CUTOFF_YEARS
 
 
-class NagChecksTest(helpers.TestCase):
-
-    def setUp(self):
-        super().setUp()
-        common.factory_setup()
+class NagChecksTest(base.BaseTestCase):
 
     def test_survey_check_good(self):
         allocation = factories.AllocationFactory.create()

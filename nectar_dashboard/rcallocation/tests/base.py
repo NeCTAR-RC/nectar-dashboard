@@ -34,9 +34,6 @@ class BaseTestCase(helpers.TestCase):
 
     def setUp(self):
         super().setUp()
-        common.sites_setup()
-        common.approvers_setup()
-        common.organisations_setup()
         common.factory_setup()
         self.maxDiff = None
 
@@ -141,9 +138,6 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
 
     def setUp(self):
         super().setUp()
-        common.sites_setup()
-        common.approvers_setup()
-        common.organisations_setup()
         common.factory_setup()
 
     def setActiveUser(self, *args, **kwargs):
@@ -162,9 +156,7 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
 class AllocationAPITest(test.APITestCase):
 
     def setUp(self, *args, **kwargs):
-        common.sites_setup()
         common.factory_setup()
-        common.usage_types_setup()
         self.user = utils.get_user(id='user1',
                                    username='bob',
                                    project_name='proj1')
