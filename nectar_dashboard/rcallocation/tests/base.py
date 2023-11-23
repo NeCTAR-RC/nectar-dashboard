@@ -122,10 +122,6 @@ class BaseTestCase(helpers.TestCase):
             del old_state[invalid_field]
             del initial_state[invalid_field]
 
-        for pub in old_state['publication'] + initial_state['publication']:
-            del pub['id']
-            del pub['allocation']
-
         self.assertEqual(old_state, initial_state,
                          msg="allocation fields changed unexpectedly")
 
