@@ -645,12 +645,6 @@ class AllocationSerializer(serializers.ModelSerializer):
         return value
 
     def validate_supported_organisations(self, value):
-        # # Only enable this check when UoM are populating the
-        # # supported_organisations
-        #
-        # if not value:
-        #     raise serializers.ValidationError(
-        #         "One or more supported organizations are required")
         if len(value) > 1:
             for org in value:
                 if org.full_name == models.ORG_ALL_FULL_NAME:
