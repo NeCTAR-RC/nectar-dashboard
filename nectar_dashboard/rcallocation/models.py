@@ -737,6 +737,19 @@ class Resource(models.Model):
         ordering = ['id']
 
 
+class QuotaGroupManager(models.Manager):
+
+    def quota_list(self):
+        output = []
+        for quota_group in self.all():
+            for quota in quota_group.quota_set.all():
+                quota_dict = {'zone': quota_group.zone.name,
+                              'resource': quota.resource.codename(),
+                              'quota': quota.quota}
+                output.append(quota_dict)
+        return output
+
+
 class QuotaGroup(models.Model):
     """A QuotaGroup object relates a group of Quotas (for resources in
     one ServiceType) to a Zone and an AllocationRequest.
@@ -746,6 +759,7 @@ class QuotaGroup(models.Model):
                                    on_delete=models.CASCADE)
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
+    objects = QuotaGroupManager()
 
     class Meta:
         unique_together = ("allocation", "zone", "service_type")

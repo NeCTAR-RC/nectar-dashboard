@@ -220,16 +220,7 @@ class QuotaSerializer(serializers.ModelSerializer):
 
 class QuotaGroupsField(serializers.RelatedField):
     def to_representation(self, value):
-        quota_groups = value.all()
-        output = []
-        for quota_group in quota_groups:
-            for quota in quota_group.quota_set.all():
-                quota_dict = {'zone': quota_group.zone.name,
-                              'resource': quota.resource.codename(),
-                              'quota': quota.quota,
-                              'id': quota.id}
-                output.append(quota_dict)
-        return output
+        return value.quota_list()
 
 
 class QuotaViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
