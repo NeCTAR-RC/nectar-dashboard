@@ -169,5 +169,4 @@ class AllocationAPITest(test.APITestCase):
                                          roles=['admin'])
         self.allocation = factories.AllocationFactory.create(
             contact_email=self.user.username,
-            status=models.AllocationRequest.SUBMITTED,
-            create_quotas=False)
+            status=models.AllocationRequest.SUBMITTED)
