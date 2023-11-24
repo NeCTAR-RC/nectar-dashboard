@@ -13,6 +13,7 @@
 
 from django.core import validators
 from django_countries.serializers import CountryFieldMixin
+from django_filters import rest_framework as filters
 from rest_framework import decorators
 from rest_framework import exceptions
 from rest_framework import permissions
@@ -63,9 +64,22 @@ class ProposedOrganisationSerializer(CountryFieldMixin,
         exclude = ['vetted_by', 'proposed_by']
 
 
+class OrganisationFilter(filters.FilterSet):
+
+    class Meta:
+        model = models.Organisation
+        fields = {'ror_id': ['exact', 'iexact'],
+                  'short_name': ['exact', 'iexact'],
+                  'full_name': ['exact', 'iexact', 'icontains'],
+                  'country': ['exact', 'iexact'],
+                  'url': ['exact', 'iexact'],
+        }
+
+
 class OrganisationViewSet(base.NoDestroyViewSet, auth.PermissionMixin):
     queryset = models.Organisation.objects.all()
     serializer_class = OrganisationSerializer
+    filter_class = OrganisationFilter
 
     def get_serializer_class(self):
         if self.is_read_admin():
