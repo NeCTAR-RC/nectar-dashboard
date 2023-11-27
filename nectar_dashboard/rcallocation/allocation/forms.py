@@ -17,8 +17,6 @@ class AllocationApproveForm(forms.ModelForm):
             'associated_site', 'national', 'special_approval',
         )
 
-        exclude = ('nectar_support', 'ncris_support',)
-
         widgets = {
             'project_name': forms.TextInput(attrs={'readonly': 'readonly'}),
             'project_description': forms.TextInput(
@@ -38,11 +36,8 @@ class AllocationApproveForm(forms.ModelForm):
         self.fields['project_name'].widget.attrs['class'] = 'form-control'
         self.fields['project_description'].widget.attrs[
             'class'] = 'form-control'
-        self.fields['project_description'].required = False
         self.fields['estimated_project_duration'].widget.attrs[
             'class'] = 'form-control'
-        self.fields['estimated_project_duration'].required = False
-        self.fields['status_explanation'].required = False
         self.fields['status_explanation'].help_text = 'Reviewer Comment'
         self.fields['status_explanation'].label = 'Comment'
         self.initial['status_explanation'] = ''
@@ -53,7 +48,6 @@ class AllocationApproveForm(forms.ModelForm):
         self.fields['associated_site'].widget.attrs['class'] = 'form-control'
         self.fields['associated_site'].queryset = \
             models.Site.objects.filter(enabled=True)
-        self.fields['national'].required = False
         self.fields['national'].help_text = \
             '''The Approver should check 'National funding' for all allocations
             that meet the Nectar national funding criteria.'''
