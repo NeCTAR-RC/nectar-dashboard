@@ -189,9 +189,17 @@ def get_groups(service_type, allocation=None):
             continue
         quotas = []
         for resource in resources:
+            if allocation:
+                # If this is an existing allocation, set the initial quota to
+                # zero for resources it doesn't have an exising quota for. This
+                # essentially means when submitting the form we don't ask for
+                # any extra resources.
+                requested_quota = 0
+            else:
+                requested_quota = quota_fuzz.fuzz()
             quotas.append(
                 {'id': '',
-                 'requested_quota': quota_fuzz.fuzz(),
+                 'requested_quota': requested_quota,
                  'resource': resource.id,
                  'group': '',
                  'quota': 0})
@@ -253,7 +261,7 @@ def quota_spec(service, resource, quota=0, requested_quota=0, zone='nectar'):
 
 
 def add_quota_forms(form, all_quotas, service_type, group_list,
-                    prefix_start='a'):
+                    prefix_start='a', allocation=None, approving=False):
     new_prefix = prefix_start
     for group in group_list:
         if group['id']:
@@ -277,6 +285,15 @@ def add_quota_forms(form, all_quotas, service_type, group_list,
                                'requested_quota': quota['requested_quota'],
                                'quota': quota['quota']})
             for k, v in quota.items():
+                if approving and k == 'quota':
+                    # With the approval form we populate the quota
+                    # fields with the requested_quota
+                    v = quota.get('requested_quota')
+                elif (allocation
+                      and allocation.is_active()
+                      and k == 'requested_quota'):
+                    v = quota.get('quota')
+
                 form['%s_%s-%s-%s' % (service_type, prefix, i, k)] = v
 
         for k, v in group.items():
@@ -290,7 +307,12 @@ def next_char(c):
 def request_allocation(user, model=None, quota_specs=None,
                        supported_organisations=None,
                        publications=None, grants=None,
-                       usage_types=None, investigators=None):
+                       usage_types=None, investigators=None,
+                       approving=False):
+    """Builds a form and a dict of the allocatio it would create
+
+    approving - set to true when testing approving form
+    """
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
     forp_1 = fuzzy.FuzzyInteger(1, 8).fuzz()
     forp_2 = fuzzy.FuzzyInteger(1, 9 - forp_1).fuzz()
@@ -406,7 +428,8 @@ def request_allocation(user, model=None, quota_specs=None,
 
     prefix_start = 'b' if model else 'a'
     for name, group_list in groups.items():
-        add_quota_forms(form, all_quotas, name, group_list, prefix_start)
+        add_quota_forms(form, all_quotas, name, group_list, prefix_start,
+                        allocation=model, approving=approving)
 
     form['publications-INITIAL_FORMS'] = \
         model.publications.count() if model else 0

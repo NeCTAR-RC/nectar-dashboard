@@ -67,6 +67,11 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
             parent_request_id=None)
         self.assertEqual('E', allocation.status)
 
+        budget = models.Quota.objects.get(group__allocation=allocation,
+                                          resource__quota_name='budget')
+        self.assertEqual(0, budget.quota)
+        requested_budget = budget.requested_quota
+
         # Check we can get the approval page
         url = reverse('horizon:allocation:requests:approve_request',
                       args=(allocation.id,))
@@ -75,7 +80,8 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
 
         # Rebuild the form ... because the formset ids need to change
         model, form = common.request_allocation(user=self.user,
-                                                model=allocation)
+                                                model=allocation,
+                                                approving=True)
 
         # Submit the approval form
         form['associated_site'] = common.get_site('uom').id
@@ -91,6 +97,10 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
         self.assertEqual(1,
                          models.AllocationRequest.objects.filter(
             parent_request_id=allocation.id).count())
+
+        budget = models.Quota.objects.get(group__allocation=allocation,
+                                          resource__quota_name='budget')
+        self.assertEqual(requested_budget, budget.quota)
 
         # Submit the approval again: simulate double approve.
         # This should fail

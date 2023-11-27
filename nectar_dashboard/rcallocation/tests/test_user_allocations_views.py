@@ -70,6 +70,14 @@ class RequestTestCase(base.BaseTestCase):
 
         allocation = factories.AllocationFactory.create(
             contact_email=self.user.name, status='A')
+
+        # For an approved allocaton we init the form with
+        # approved quotas as opposed to requested quotas
+        # So we should "approve" all the requested quotas
+        # first.
+        for quota in models.Quota.objects.filter(group__allocation=allocation):
+            quota.quota = quota.requested_quota
+            quota.save()
         initial_state = common.allocation_to_dict(
             models.AllocationRequest.objects.get(pk=allocation.pk))
         initial_mod = allocation.modified_time
