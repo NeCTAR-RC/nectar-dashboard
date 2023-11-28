@@ -143,6 +143,13 @@ class InvestigatorTests(base.AllocationAPITest):
             self.assertEqual('Bloggs', ci.surname)
             self.assertEqual(self.allocation, ci.allocation)
 
+    def test_create_primary_org_all(self):
+        self.client.force_authenticate(user=self.user)
+        data = self._make_data()
+        data['primary_organisation'] = 'all'
+        response = self.client.post('/rest_api/chiefinvestigators/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_create_wrong_state(self):
         self.client.force_authenticate(user=self.user)
         self.allocation.status = models.AllocationRequest.APPROVED

@@ -355,18 +355,6 @@ class OrganisationField(serializers.RelatedField):
                 "'%s' is an ambiguous Organisation name" % data)
 
 
-class PrimaryOrganisationField(OrganisationField):
-    def to_representation(self, value):
-        return value.ror_id or value.id
-
-    def to_internal_value(self, data):
-        organisation = super().to_internal_value(data)
-        if organisation.full_name == models.ORG_UNKNOWN_FULL_NAME:
-            raise serializers.ValidationError(
-                "'All Organisations' may not be used here")
-        return organisation
-
-
 class NCRISFacilitiesField(serializers.RelatedField):
     def to_representation(self, value):
         return value.short_name
@@ -708,6 +696,18 @@ class AllocationRelatedViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
                 allocation__contact_email=self.request.user.username)
 
 
+class PrimaryOrganisationField(OrganisationField):
+    def to_representation(self, value):
+        return value.ror_id or value.id
+
+    def to_internal_value(self, data):
+        organisation = super().to_internal_value(data)
+        if organisation.full_name == models.ORG_ALL_FULL_NAME:
+            raise serializers.ValidationError(
+                "'All Organisations' may not be used here")
+        return organisation
+
+
 class ChiefInvestigatorSerializer(AllocationRelatedSerializer):
     primary_organisation = PrimaryOrganisationField(
         many=False, queryset=models.Organisation.objects.all())
@@ -720,20 +720,6 @@ class ChiefInvestigatorSerializer(AllocationRelatedSerializer):
 class ChiefInvestigatorViewSet(AllocationRelatedViewSet):
     queryset = models.ChiefInvestigator.objects.all()
     serializer_class = ChiefInvestigatorSerializer
-
-    def perform_create(self, serializer):
-        org = serializer.validated_data.get('primary_organisation')
-        if org.full_name == models.ORG_ALL_FULL_NAME:
-            raise serializers.ValidationError(
-                "'All Organisations' cannot be used in this context")
-        serializer.save()
-
-    def perform_update(self, serializer):
-        org = serializer.validated_data.get('primary_organisation')
-        if org and org.full_name == models.ORG_ALL_FULL_NAME:
-            raise serializers.ValidationError(
-                "'All Organisations' cannot be used in this context")
-        serializer.save()
 
 
 class PublicationSerializer(AllocationRelatedSerializer):
