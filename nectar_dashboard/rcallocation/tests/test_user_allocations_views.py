@@ -44,6 +44,8 @@ class RequestTestCase(base.BaseTestCase):
         expected_model, form = common.request_allocation(user=self.user,
                                                          model=allocation)
 
+        # Update the use case in this edit
+        expected_model['use_case'] = form['use_case'] = 'new use case'
         form['ignore_warnings'] = True
 
         response = self.client.post(
@@ -89,6 +91,8 @@ class RequestTestCase(base.BaseTestCase):
         expected_model, form = common.request_allocation(user=self.user,
                                                          model=allocation)
 
+        # Update the use case in this edit
+        expected_model['use_case'] = form['use_case'] = 'new use case'
         form['ignore_warnings'] = True
 
         response = self.client.post(

@@ -41,9 +41,9 @@ class RequestTestCase(base.BaseTestCase):
             form)
 
         self._assert_success(response)
-        model = (models.AllocationRequest.objects
-                 .get(project_description=form['project_description'],
-                      parent_request_id=None))
+        model = models.AllocationRequest.objects.get(
+            project_description=form['project_description'],
+            parent_request_id=None)
         self.assert_allocation(model, **expected_model)
         self.assertTrue(model.managed)
         self.assertTrue(model.notifications)
@@ -56,18 +56,19 @@ class RequestTestCase(base.BaseTestCase):
         # Not checking the expansion of the template body.
 
     def _assert_success(self, response):
-        # Check to make sure we were redirected back to the index of
-        # our requests.
+        """Check to make sure we were redirected back to the index of
+        our requests.
+        """
         self.assertStatusCode(response, 302)
         self.assertTrue(response.get('location').endswith(
             reverse('horizon:allocation:user_requests:index')),
             msg="incorrect redirect location")
 
-    def _test_allocation(self, errors={}, override_form=True,
-                         **kwargs):
-        # The 'override_form' hack deals with the problem that the
-        # 'common.request_factory' method (currently) has limited ability
-        # to handle keyword args.
+    def _test_allocation(self, errors={}, override_form=True, **kwargs):
+        """The 'override_form' argument deals with the problem that the
+        'common.request_allocation' method has limited ability to handle
+        keyword args.
+        """
         response = self.client.get(
             reverse('horizon:allocation:request:request'))
         expected_model, form = (
