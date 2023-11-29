@@ -427,10 +427,12 @@ class BaseAllocationView(mixins.UserPassesTestMixin,
             # Any changes to a history record
             if current.parent_request_id:
                 return HttpResponseBadRequest('Allocation record is historic')
-            # Approval of a record that is already approved.  (Seen this!)
-            if self.object.status == current.status == \
-               models.AllocationRequest.APPROVED:
-                return HttpResponseBadRequest('Allocation already approved')
+            if (self.object.status == current.status
+                and current.status in (models.AllocationRequest.APPROVED,
+                                       models.AllocationRequest.DECLINED,
+                                       models.AllocationRequest.UPDATE_DECLINED
+                                       )):
+                return HttpResponseBadRequest('Allocation state not changing')
 
         ignore_warnings = self.IGNORE_WARNINGS or \
                           request.POST.get('ignore_warnings', False)
