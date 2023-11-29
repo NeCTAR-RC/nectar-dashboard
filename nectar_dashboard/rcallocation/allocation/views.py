@@ -1,4 +1,5 @@
 from django.contrib.auth import mixins
+from django import http
 from django.views.generic.edit import UpdateView
 
 from nectar_dashboard.rcallocation import forms
@@ -30,6 +31,14 @@ class AllocationNotesEdit(mixins.UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         return utils.user_is_allocation_admin(self.request.user)
+
+    def form_valid(self, form, investigator_formset=None,
+                   publication_formset=None, grant_formset=None):
+
+        # Save the changes to the request.
+        allocation = form.save(commit=False)
+        allocation.save_without_updating_timestamps()
+        return http.HttpResponseRedirect(self.get_success_url())
 
 
 class AllocationApproveView(views.BaseAllocationView):

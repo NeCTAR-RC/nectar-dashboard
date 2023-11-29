@@ -38,10 +38,10 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
             parent_request_id=None)
         self.assertEqual("This is a note", model.notes)
         model_state = common.allocation_to_dict(model)
-        del initial_state['notes']
-        del model_state['notes']
-        del initial_state['modified_time']
-        del model_state['modified_time']
+        old_notes = initial_state.pop('notes')
+        new_notes = model_state.pop('notes')
+        self.assertIsNone(old_notes)
+        self.assertEqual("This is a note", new_notes)
 
         self.maxDiff = None
         self.assertEqual(initial_state, model_state,
