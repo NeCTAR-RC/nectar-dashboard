@@ -3,6 +3,7 @@ import logging
 
 from django.core import exceptions
 
+from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation import utils
 
 
@@ -11,8 +12,10 @@ LOG = logging.getLogger(__name__)
 
 class Loader(object):
 
-    def __init__(self, catalog):
-        self.catalog = catalog
+    def __init__(self):
+        self.created = 0
+        self.updated = 0
+        self.disabled = 0
 
     def ror_record_to_org(self, ror):
         """Create or update an Organisation from a ROR record.
@@ -33,7 +36,7 @@ class Loader(object):
             short = ""
         org = None
         try:
-            org = self.catalog.Organisation.objects.get(ror_id=ror_id)
+            org = models.Organisation.objects.get(ror_id=ror_id)
             if org.enabled and not enabled:
                 self.disabled += 1
             org.full_name = name
@@ -44,7 +47,7 @@ class Loader(object):
             self.updated += 1
         except exceptions.ObjectDoesNotExist:
             self.created += 1
-            org = self.catalog.Organisation.objects.create(
+            org = models.Organisation.objects.create(
                 ror_id=ror_id,
                 enabled=enabled,
                 full_name=name,
@@ -54,9 +57,6 @@ class Loader(object):
         return (org, new)
 
     def load(self, uri, initial=False):
-        self.created = 0
-        self.updated = 0
-        self.disabled = 0
         parents = {}
         predecessors = {}
         with utils.open_config_file(uri) as fp:
@@ -86,10 +86,10 @@ class Loader(object):
                 # We need to clear all relationships between orgs in the
                 # ROR, but retain any relationships that involve non-ROR
                 # orgs ... on either side of the relationship
-                for o in self.catalog.Organisation.objects \
-                                .exclude(ror_id='') \
-                                .exclude(parent=None, precedes=None) \
-                                .prefetch_related('parent', 'precedes'):
+                for o in models.Organisation.objects \
+                                    .exclude(ror_id='') \
+                                    .exclude(parent=None, precedes=None) \
+                                    .prefetch_related('parent', 'precedes'):
                     touched = False
                     if o.parent and o.parent.ror_id:
                         o.parent = None
@@ -104,8 +104,8 @@ class Loader(object):
             LOG.info("Adding parent relationships")
             count = 0
             for (c, p) in parents.items():
-                child = self.catalog.Organisation.objects.get(ror_id=c)
-                parent = self.catalog.Organisation.objects.get(ror_id=p)
+                child = models.Organisation.objects.get(ror_id=c)
+                parent = models.Organisation.objects.get(ror_id=p)
                 child.parent = parent
                 child.save()
                 count += 1
@@ -116,9 +116,9 @@ class Loader(object):
             # in early ROR dumps; e.g. v1.8.  So don't be alarmed ...
             count = 0
             for (s, pl) in predecessors.items():
-                successor = self.catalog.Organisation.objects.get(ror_id=s)
+                successor = models.Organisation.objects.get(ror_id=s)
                 for p in pl:
-                    predecessor = self.catalog.Organisation.objects.get(
+                    predecessor = models.Organisation.objects.get(
                         ror_id=p)
                     successor.supercedes.add(predecessor)
                     count += 1

@@ -175,10 +175,6 @@ def organisations_setup():
         short_name=models.ORG_ALL_SHORT_NAME,
         full_name=models.ORG_ALL_FULL_NAME,
         ror_id='', country='AU')
-    models.Organisation.objects.get_or_create(
-        short_name=models.ORG_UNKNOWN_SHORT_NAME,
-        full_name=models.ORG_UNKNOWN_FULL_NAME,
-        ror_id='', country='AU')
 
 
 def approvers_setup():

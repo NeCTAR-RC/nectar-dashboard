@@ -55,24 +55,24 @@ class OrganisationTest(base.AllocationAPITest):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get('/rest_api/organisations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 5)
+        self.assertEqual(len(response.data['results']), 4)
 
     def test_list_as_approver(self):
         self.client.force_authenticate(user=self.approver_user)
         response = self.client.get('/rest_api/organisations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 5)
+        self.assertEqual(len(response.data['results']), 4)
 
     def test_list_as_user(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/rest_api/organisations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 5)
+        self.assertEqual(len(response.data['results']), 4)
 
     def test_list_anon(self):
         response = self.client.get('/rest_api/organisations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 5)
+        self.assertEqual(len(response.data['results']), 4)
 
     def test_get(self):
         self.client.force_authenticate(user=self.user)

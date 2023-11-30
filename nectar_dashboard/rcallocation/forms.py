@@ -240,10 +240,6 @@ class BaseAllocationForm(forms.ModelForm):
             raise forms.ValidationError(
                 f"'{models.ORG_ALL_FULL_NAME}' should not be used "
                 "with any other organisation")
-        if models.ORG_UNKNOWN_FULL_NAME in names:
-            raise forms.ValidationError(
-                f"'{models.ORG_UNKNOWN_FULL_NAME}' should not be used "
-                "in this context")
         return orgs
 
     def clean(self):

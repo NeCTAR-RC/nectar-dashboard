@@ -98,9 +98,6 @@ class OrganisationField(serializers.RelatedField):
             if not organisation.enabled:
                 raise serializers.ValidationError(
                     "Organisation '%s' is disabled" % data)
-            if organisation.full_name == models.ORG_UNKNOWN_FULL_NAME:
-                raise serializers.ValidationError(
-                    "'Unknown Organisation' may not be used")
             return organisation
 
         except models.Organisation.DoesNotExist:

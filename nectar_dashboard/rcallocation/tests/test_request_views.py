@@ -143,14 +143,12 @@ class RequestTestCase(base.BaseTestCase):
                 "with any other organisation"]}}
         )
 
-    def test_supported_org_unknown(self):
+    def test_supported_org_empty(self):
         self._test_allocation(
             override_form=False,
-            supported_organisations=[
-                models.Organisation.objects.get(short_name='unknown')],
+            supported_organisations=[],
             errors={'form': {'supported_organisations': [
-                "'Unspecified Organisation' should not be used "
-                "in this context"]}}
+                'This field is required.']}}
         )
 
     def test_all_ci_all_organisations(self):

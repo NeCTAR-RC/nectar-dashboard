@@ -887,6 +887,7 @@ class ChiefInvestigator(models.Model):
                     'ajax_init_url': '/allocation/init_organisations/'},
         overlay="Enter an organisation name or acronym...",
         on_delete=models.PROTECT,
+        null=True,
         help_text="""The chief investigator's primary organisation.""")
 
     additional_researchers = models.TextField(
@@ -905,8 +906,6 @@ class ChiefInvestigator(models.Model):
 
 ORG_ALL_FULL_NAME = "All Organisations"
 ORG_ALL_SHORT_NAME = "all"
-ORG_UNKNOWN_FULL_NAME = "Unspecified Organisation"
-ORG_UNKNOWN_SHORT_NAME = "unknown"
 
 
 class Organisation(models.Model):
