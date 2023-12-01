@@ -179,3 +179,33 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
             call_kwargs['subject'])
         self.assertIn('in this case your request has been declined',
                       call_kwargs['body'])
+
+    def test_pending_list(self):
+        factories.AllocationFactory.create(
+            contact_email=self.user.name, status='N')
+        factories.AllocationFactory.create(
+            contact_email=self.user.name, status='E')
+        factories.AllocationFactory.create(
+            contact_email=self.user.name, status='A')
+        factories.AllocationFactory.create(
+            contact_email=self.user.name, status='R')
+        factories.AllocationFactory.create(
+            contact_email=self.user.name, status='X')
+        factories.AllocationFactory.create(
+            contact_email=self.user.name, status='J')
+        factories.AllocationFactory.create(
+            contact_email=self.user.name, status='D')
+        url = reverse('horizon:allocation:requests:allocation_requests')
+        response = self.client.get(url)
+        self.assertStatusCode(response, 200)
+        self.assertEqual(len(response.context['allocation_list'].data), 3)
+        for allocation in response.context['allocation_list'].data:
+            self.assertIn(allocation.status, ['N', 'E', 'X'])
+
+    def test_allocation_view(self):
+        allocation = factories.AllocationFactory.create(
+            contact_email=self.user.name)
+        url = reverse('horizon:allocation:requests:allocation_view',
+                      args=(allocation.id,))
+        response = self.client.get(url)
+        self.assertStatusCode(response, 200)
