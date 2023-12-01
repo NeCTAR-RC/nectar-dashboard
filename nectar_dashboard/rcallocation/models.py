@@ -488,10 +488,6 @@ class AllocationRequest(models.Model):
     def can_be_edited(self):
         return not self.is_active() and not self.is_history() and self.managed
 
-    def can_admin_edit(self):
-        return self.status.upper() != self.APPROVED \
-            and not self.is_history() and self.managed
-
     def can_user_edit(self):
         return self.status.upper() in (self.SUBMITTED, self.DECLINED,
                                        self.NEW) \

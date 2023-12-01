@@ -76,19 +76,6 @@ class AllocationModelTestCase(base.BaseTestCase):
 
         self.assertFalse(allocation.can_be_edited())
 
-    def test_can_admin_edit(self):
-        allocation = factories.AllocationFactory.create(
-            create_quotas=False, status=models.AllocationRequest.SUBMITTED)
-
-        self.assertTrue(allocation.can_admin_edit())
-
-    def test_can_admin_edit_not_managed(self):
-        allocation = factories.AllocationFactory.create(
-            create_quotas=False, status=models.AllocationRequest.SUBMITTED,
-            managed=False)
-
-        self.assertFalse(allocation.can_admin_edit())
-
     def test_can_user_edit(self):
         allocation = factories.AllocationFactory.create(
             create_quotas=False, status=models.AllocationRequest.SUBMITTED)

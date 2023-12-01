@@ -4,7 +4,6 @@ from django.utils.safestring import mark_safe
 from horizon import tables
 
 from nectar_dashboard.rcallocation import models
-from nectar_dashboard.rcallocation import utils
 
 
 # Actions
@@ -15,9 +14,7 @@ class EditRequest(tables.LinkAction):
     classes = ("btn-associate",)
 
     def allowed(self, request, instance):
-        return instance.can_be_edited() or (
-            instance.can_admin_edit()
-            and utils.user_is_allocation_admin(request.user))
+        return instance.can_be_edited()
 
 
 class ViewHistory(tables.LinkAction):
