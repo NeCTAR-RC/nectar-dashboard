@@ -122,15 +122,9 @@ class ApproverSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ApproverViewSet(viewsets.ModelViewSet):
+class ApproverViewSet(base.NoDestroyViewSet):
     queryset = models.Approver.objects.all()
     serializer_class = ApproverSerializer
-
-    def destroy(self, request, *args, **kwargs):
-        # Approvers should be disabled, not destroyed.
-        return response.Response(
-            {'error': 'Approver objects should not be destroyed'},
-            status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
