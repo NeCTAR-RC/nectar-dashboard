@@ -58,6 +58,13 @@ class AllocationApproveView(views.BaseAllocationView):
     formset_publication_class = None
     formset_grant_class = None
 
+    def get(self, request, *args, **kwargs):
+        allocation = self.get_object()
+        if allocation.is_active():
+            return http.HttpResponseBadRequest(
+                'Allocation already approved')
+        return super().get(request, *args, **kwargs)
+
 
 class AllocationRejectView(views.BaseAllocationView):
     IGNORE_WARNINGS = True
@@ -74,3 +81,10 @@ class AllocationRejectView(views.BaseAllocationView):
     formset_institution_class = None
     formset_publication_class = None
     formset_grant_class = None
+
+    def get(self, request, *args, **kwargs):
+        allocation = self.get_object()
+        if allocation.is_rejected():
+            return http.HttpResponseBadRequest(
+                'Allocation already declined')
+        return super().get(request, *args, **kwargs)
