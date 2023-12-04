@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Maintenance Mode{% endblock title %}
+
+
+{% block sidebar %}
+{% with current_sidebar="allocation" %}
+  {{ block.super }}
+{% endwith %}
+{% endblock %}
+
+{% block breadcrumb_nav %}
+
+{% endblock %}
+
+{% block main %}
+<h1>Under maintenance</h3>
+<p>The allocation system is under temporary maintenance, please come back in an hour.</p>
+{% endblock %}

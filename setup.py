@@ -28,7 +28,8 @@ setuptools.setup(
                       "django-mathfilters",
                       "django-select2-forms @ git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms",
                       "django-countries<7.5",
-                      "langstrothclient>=0.5.0"
+                      "langstrothclient>=0.5.0",
+                      "django-maintenance-mode",
                       ],
     license="GPLv3+",
     zip_safe=False,
