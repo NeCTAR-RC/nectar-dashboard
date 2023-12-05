@@ -54,23 +54,24 @@ class BaseTestCase(helpers.TestCase):
                          set(supported_organisations))
 
         quotas_l = models.Quota.objects.filter(group__allocation=model)
-        # (For ... reasons ... there may be zero-valued quotas in the list)
+
+        # Ignore 0 valued quotas, these mean no quota
         quotas = [q for q in quotas if q['quota'] > 0
                   or q['requested_quota'] > 0]
 
-        # For debugging purposes ....
+        msg = ""
         if quotas_l.count() != len(quotas):
-            print(f"expected quotas - {quotas}")
-            print("actual quotas")
+            msg += f"\nexpected quotas - {quotas}\n"
+            msg += "actual quotas\n"
             for qm in quotas_l:
-                print(f"resource {qm.resource.id}, "
-                      f"({qm.resource.quota_name}), "
-                      f"zone {qm.group.zone.name},"
-                      f"requested quota {qm.requested_quota}, "
-                      f"quota {qm.quota}")
+                msg += f"resource {qm.resource.id}, "
+                msg += f"({qm.resource.quota_name}), "
+                msg += f"zone {qm.group.zone.name}, "
+                msg += f"requested quota {qm.requested_quota}, "
+                msg += f"quota {qm.quota}\n"
 
-        self.assertEqual(quotas_l.count(), len(quotas))
-        # (The order of the quotas don't need to match ...)
+        self.assertEqual(quotas_l.count(), len(quotas), msg=msg)
+        # The order of the quotas don't need to match
         for qm in quotas_l:
             matched = [q for q in quotas if q['resource'] == qm.resource.id
                        and q['zone'] == qm.group.zone.name]
