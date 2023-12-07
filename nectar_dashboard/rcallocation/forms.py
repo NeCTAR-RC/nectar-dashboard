@@ -153,7 +153,7 @@ class BaseAllocationForm(forms.ModelForm):
                    'start_date', 'end_date', 'modified_time', 'parent_request',
                    'associated_site', 'special_approval', 'provisioned',
                    'managed', 'project_id', 'notes', 'notifications',
-                   'ncris_support', 'nectar_support'
+                   'ncris_support', 'nectar_support', 'bundle',
         )
 
         widgets = {
