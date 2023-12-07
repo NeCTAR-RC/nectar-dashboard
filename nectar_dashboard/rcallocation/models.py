@@ -606,6 +606,22 @@ class AllocationRequest(models.Model):
     def __str__(self):
         return '"{0}" {1}'.format(self.project_name, self.contact_email)
 
+    def quota_list(self):
+        quotas = {}
+        if self.bundle:
+            bundle_quotas = self.bundle.bundlequota_set.all()
+            for bq in bundle_quotas:
+                quotas[
+                    f"{bq.resource.codename}-{bq.bundle.zone}"
+                ] = bq.quota_dict()
+
+        overrides = self.quotas.all_quotas()
+        for override in overrides:
+            quotas[
+                f"{override.resource.codename}-{override.group.zone}"
+            ] = override.quota_dict()
+        return list(quotas.values())
+
 
 class SiteManager(models.Manager):
 
@@ -758,15 +774,12 @@ class Resource(models.Model):
 
 class QuotaGroupManager(models.Manager):
 
-    def quota_list(self):
-        output = []
+    def all_quotas(self):
+        quotas = []
         for quota_group in self.all():
             for quota in quota_group.quota_set.all():
-                quota_dict = {'zone': quota_group.zone.name,
-                              'resource': quota.resource.codename,
-                              'quota': quota.quota}
-                output.append(quota_dict)
-        return output
+                quotas.append(quota)
+        return quotas
 
 
 class QuotaGroup(models.Model):
@@ -798,6 +811,11 @@ class BundleQuota(models.Model):
     class Meta:
         unique_together = ("bundle", "resource")
 
+    def quota_dict(self):
+        return {'zone': self.bundle.zone.name,
+                'resource': self.resource.codename,
+                'quota': self.quota}
+
 
 class Quota(models.Model):
     """A Quota object represent the actual value for a given Resource
@@ -822,6 +840,11 @@ class Quota(models.Model):
     def __str__(self):
         return '{0} {1} {2}'.format(self.group.allocation.id,
                                     self.resource, self.group.zone)
+
+    def quota_dict(self):
+        return {'zone': self.group.zone.name,
+                'resource': self.resource.codename,
+                'quota': self.quota}
 
 
 class ChiefInvestigator(models.Model):

@@ -45,7 +45,7 @@ def model_to_dict(instance, exclude=[]):
 
 def allocation_to_dict(model):
     allocation = model_to_dict(model, exclude=[])
-    allocation['quota'] = model.quotas.quota_list()
+    allocation['quota'] = model.quota_list()
 
     allocation['organisation'] = [
         model_to_dict(org, exclude=['id', 'allocation'])
@@ -102,19 +102,60 @@ def factory_setup():
     compute_st.zones.add(nectar)
     network_st.zones.add(nectar)
     rating_st.zones.add(nectar)
-    factories.ResourceFactory(quota_name='object', service_type=object_st)
+
     factories.ResourceFactory(quota_name='gigabytes', service_type=volume_st)
-    factories.ResourceFactory(quota_name='cores', service_type=compute_st)
-    factories.ResourceFactory(quota_name='instances', service_type=compute_st)
-    factories.ResourceFactory(quota_name='ram', service_type=compute_st,
-                              requestable=False)
-    factories.ResourceFactory(quota_name='budget', name="Budget",
-                              service_type=rating_st)
-    factories.ResourceFactory(quota_name='router', service_type=network_st)
-    factories.ResourceFactory(quota_name='network', service_type=network_st)
-    factories.ResourceFactory(quota_name='loadbalancer',
-                              service_type=network_st)
-    factories.ResourceFactory(quota_name='floatingip', service_type=network_st)
+    objects = factories.ResourceFactory(quota_name='object',
+                                        service_type=object_st)
+    cores = factories.ResourceFactory(quota_name='cores',
+                                      service_type=compute_st)
+    instances = factories.ResourceFactory(quota_name='instances',
+                                          service_type=compute_st)
+    ram = factories.ResourceFactory(quota_name='ram', service_type=compute_st,
+                                    requestable=False)
+    budget = factories.ResourceFactory(quota_name='budget', name="Budget",
+                                       service_type=rating_st)
+    router = factories.ResourceFactory(quota_name='router',
+                                       service_type=network_st)
+    network = factories.ResourceFactory(quota_name='network',
+                                        service_type=network_st)
+    lb = factories.ResourceFactory(quota_name='loadbalancer',
+                                   service_type=network_st)
+    fip = factories.ResourceFactory(quota_name='floatingip',
+                                    service_type=network_st)
+
+    gold = factories.BundleFactory(name='gold', zone=nectar)
+    silver = factories.BundleFactory(name='silver', zone=nectar)
+    bronze = factories.BundleFactory(name='bronze', zone=nectar)
+
+    factories.BundleQuotaFactory(bundle=gold, resource=objects, quota=200)
+    factories.BundleQuotaFactory(bundle=gold, resource=cores, quota=200)
+    factories.BundleQuotaFactory(bundle=gold, resource=instances, quota=200)
+    factories.BundleQuotaFactory(bundle=gold, resource=ram, quota=2000)
+    factories.BundleQuotaFactory(bundle=gold, resource=budget, quota=2000)
+    factories.BundleQuotaFactory(bundle=gold, resource=router, quota=20)
+    factories.BundleQuotaFactory(bundle=gold, resource=network, quota=20)
+    factories.BundleQuotaFactory(bundle=gold, resource=lb, quota=20)
+    factories.BundleQuotaFactory(bundle=gold, resource=fip, quota=20)
+
+    factories.BundleQuotaFactory(bundle=silver, resource=objects, quota=100)
+    factories.BundleQuotaFactory(bundle=silver, resource=cores, quota=100)
+    factories.BundleQuotaFactory(bundle=silver, resource=instances, quota=100)
+    factories.BundleQuotaFactory(bundle=silver, resource=ram, quota=1000)
+    factories.BundleQuotaFactory(bundle=silver, resource=budget, quota=1000)
+    factories.BundleQuotaFactory(bundle=silver, resource=router, quota=10)
+    factories.BundleQuotaFactory(bundle=silver, resource=network, quota=10)
+    factories.BundleQuotaFactory(bundle=silver, resource=lb, quota=10)
+    factories.BundleQuotaFactory(bundle=silver, resource=fip, quota=10)
+
+    factories.BundleQuotaFactory(bundle=bronze, resource=objects, quota=50)
+    factories.BundleQuotaFactory(bundle=bronze, resource=cores, quota=50)
+    factories.BundleQuotaFactory(bundle=bronze, resource=instances, quota=50)
+    factories.BundleQuotaFactory(bundle=bronze, resource=ram, quota=500)
+    factories.BundleQuotaFactory(bundle=bronze, resource=budget, quota=500)
+    factories.BundleQuotaFactory(bundle=bronze, resource=router, quota=5)
+    factories.BundleQuotaFactory(bundle=bronze, resource=network, quota=5)
+    factories.BundleQuotaFactory(bundle=bronze, resource=lb, quota=5)
+    factories.BundleQuotaFactory(bundle=bronze, resource=fip, quota=5)
 
 
 def organisations_setup():

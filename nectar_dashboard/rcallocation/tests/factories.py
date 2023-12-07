@@ -91,6 +91,20 @@ class QuotaFactory(factory.django.DjangoModelFactory):
     quota = 0
 
 
+class BundleFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.Bundle'
+    name = fuzzy.FuzzyText()
+    description = fuzzy.FuzzyText()
+    order = fuzzy.FuzzyInteger(1, 100000)
+
+
+class BundleQuotaFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'rcallocation.BundleQuota'
+    quota = fuzzy.FuzzyInteger(1, 100000)
+
+
 class OrganisationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Organisation'
