@@ -19,7 +19,7 @@ Propose an institution
 ### GET /organisations/
 List all organisations
 
-### GET /organisations/<id>/
+### GET /organisations/\<id>\/
 Get details of an organisation
 ```
 {
@@ -38,12 +38,12 @@ Get details of an organisation
 ```
 NOTE: proposed_by and vetted_by are only visible with admin permissions
 
-### POST /organisations/<id>/approve/
+### POST /organisations/\<id\>/approve/
 Approve a proposed organisation
 
 NOTE: Required admin permissions
 
-### POST /organisations/<id>/decline/
+### POST /organisations/\<id\>/decline/
 Decline a proposed organisation
 
 NOTE: Required admin permissions
