@@ -153,7 +153,7 @@
           <h3>Use Case</h3>
           <p>
             {% if allocation.use_case %}
-              {{ allocation.use_case }}
+              {{ allocation.use_case|linebreaksbr }}
             {% else %}
               <span class="label label-warning">No Submission</span>
             {% endif %}
@@ -161,7 +161,7 @@
           <h3>Usage Patterns</h3>
           <p>
             {% if allocation.usage_patterns %}
-              {{ allocation.usage_patterns }}
+              {{ allocation.usage_patterns|linebreaksbr }}
             {% else %}
               <span class="label label-warning">No Submission</span>
             {% endif %}
@@ -169,7 +169,7 @@
           <h3>Additional Location Requirements</h3>
           <p>
             {% if allocation.geographic_requirements %}
-              {{ allocation.geographic_requirements }}
+              {{ allocation.geographic_requirements|linebreaksbr }}
             {% else %}
               <span class="label label-warning">No Submission</span>
             {% endif %}
@@ -264,7 +264,7 @@
                     <tr>
                         <th>Other primary investigators, partner investigators
                             and other research collaborators</th>
-                        <td>{{ invest.additional_researchers }}</td>
+                        <td>{{ invest.additional_researchers|linebreaks }}</td>
                     </tr>
                  {% endfor %}
                 </table>
@@ -399,7 +399,7 @@
         <div class="col-md-12">
             <h3>Reviewer Comment</h3>
             <p>
-              {{allocation.status_explanation}}
+              {{allocation.status_explanation|linebreaksbr}}
             </p>
         </div>
       </div>
