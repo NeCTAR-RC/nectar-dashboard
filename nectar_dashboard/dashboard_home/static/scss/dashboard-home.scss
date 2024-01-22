@@ -9,6 +9,10 @@
 
 #welcome {
   display: none;
+  #welcome-video {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+  }
 }
 
 #home_featured_banner {

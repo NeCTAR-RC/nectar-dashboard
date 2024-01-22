@@ -33,16 +33,29 @@
         {% endfor %}
       {% endif %}
       <div id="welcome" class="panel panel-primary shadow position-relative">
-        <div class="panel-body p-5 text-center">
-          <h2>Welcome to the Dashboard!</h2>
-          <p class="lead"><em>The Dashboard</em> is your web interface to the <strong>ARDC Nectar Research Cloud</strong> - Australia&apos;s national research cloud, providing computing infrastructure to researchers, giving you access to powerful computing resources without the need to purchase or host your own hardware.</p>
-          <p>New to Nectar? Don&apos;t worry, we&apos;ve got loads of support arcticles and tutorials to help you along the way. You can learn all about the Nectar Cloud and The Dashboard on the Nectar Support Site and if you need help, you can simply contact our Support team by creating a help request.</p>
-          <div id="welcome_buttons">
-            <a href="https://support.ehelp.edu.au/" target="_blank" class="btn btn-warning">Support Centre</a>
-            <a href="https://tutorials.rc.nectar.org.au/" target="_blank" class="btn btn-info">Tutorials</a>
-            <a href="https://support.ehelp.edu.au/support/solutions/articles/6000156761-learning-and-training-resources/" target="_blank" class="btn btn-primary">Live Training</a>
+        <div class="panel-body p-5">
+          <div class="row">
+            <div class="col-xs-12 hidden-lg">
+              <h2>Welcome to the Dashboard!</h2>
+              <p class="lead"><em>The Dashboard</em> is your web interface to the <strong>ARDC Nectar Research Cloud</strong> - Australia&apos;s national research cloud, providing computing infrastructure to researchers, giving you access to powerful computing resources without the need to purchase or host your own hardware.</p>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <iframe id="welcome-video" src="https://www.youtube.com/embed/p-i1W6uFGRA?si=7ifpEfvLxjcs7_qn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="visible-lg">
+                <h2>Welcome to the Dashboard!</h2>
+                <p class="lead"><em>The Dashboard</em> is your web interface to the <strong>ARDC Nectar Research Cloud</strong> - Australia&apos;s national research cloud, providing computing infrastructure to researchers, giving you access to powerful computing resources without the need to purchase or host your own hardware.</p>
+              </div>
+              <p>New to Nectar? Don&apos;t worry, we&apos;ve got loads of support arcticles and tutorials to help you along the way. You can learn all about the Nectar Cloud and The Dashboard on the Nectar Support Site and if you need help, you can simply contact our Support team by creating a help request.</p>
+              <div id="welcome_buttons">
+                <a href="https://support.ehelp.edu.au/" target="_blank" class="btn btn-sm btn-warning">Support Centre</a>
+                <a href="https://tutorials.rc.nectar.org.au/" target="_blank" class="btn btn-sm btn-info">Tutorials</a>
+                <a href="https://support.ehelp.edu.au/support/solutions/articles/6000156761-learning-and-training-resources/" target="_blank" class="btn btn-sm btn-primary">Live Training</a>
+              </div>
+              <h3>To get started with the Nectar Cloud, we recommend following the <a href="https://tutorials.rc.nectar.org.au/cloud-starter/01-overview" target="_blank">Cloud Starter Series</a> of tutorials.</h3>
+            </div>
           </div>
-          <h3>To get started with the Nectar Cloud, we recommend following the <a href="https://tutorials.rc.nectar.org.au/cloud-starter/01-overview" target="_blank">Cloud Starter Series</a> of tutorials.</h3>
         </div>
         <button class="btn btn-sm btn-default btn-dismiss" id="welcome_dismiss"><i class="fa fa-close"></i> Dismiss</button>
       </div>
