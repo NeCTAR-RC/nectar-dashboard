@@ -169,7 +169,11 @@ class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
         'supported_organisations', 'associated_site',
         'ncris_facilities', 'usage_types', 'ardc_support')
 
-    filterset_class = AllocationFilter
+    @property
+    def filterset_class(self):
+        if self.request.user.is_authenticated:
+            return AllocationFilter
+        return None
 
     def get_queryset(self):
         if not self.request.user.is_authenticated:
