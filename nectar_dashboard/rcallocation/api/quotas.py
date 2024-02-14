@@ -103,8 +103,14 @@ class QuotaSerializer(serializers.ModelSerializer):
 class QuotaViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     queryset = models.Quota.objects.all()
     serializer_class = QuotaSerializer
-    filter_fields = ('resource', 'group__allocation', 'group__zone',
-                     'group__service_type')
+
+    @property
+    def filterset_fields(self):
+        if self.request.user.is_authenticated:
+            return ['resource', 'group__allocation',
+                    'group__zone',
+                    'group__service_type']
+        return None
 
     def get_queryset(self):
         if not self.request.user.is_authenticated:

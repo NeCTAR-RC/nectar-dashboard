@@ -53,7 +53,7 @@ class AllocationRelatedSerializer(serializers.ModelSerializer):
 
 class AllocationRelatedViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     permission_classes = (rest_auth.ApproverOrOwner, rest_auth.CanUpdate)
-    filter_fields = ('allocation',)
+    filterset_fields = ('allocation',)
 
     def get_queryset(self):
         if self.is_read_admin():
