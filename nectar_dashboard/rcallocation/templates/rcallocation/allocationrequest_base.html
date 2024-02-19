@@ -1,4 +1,4 @@
-{% extends 'rcallocation/base.html' %}
+{% extends 'base.html' %}
 
 {% load static %}
 
@@ -18,12 +18,13 @@
 {% endblock %}
 
 {% block js %}
+{{ block.super }}
+  <script src="{% static 'rcportal/js/allocation.js' %}" type="text/javascript" charset="utf-8"></script>
   <script>
     function isNewAllocationRequest() {
       return {% if object.pk %} false; {% else %} true; {% endif %}
     }
   </script>
-  {{ block.super }}
 {% endblock %}
 
 {% block main %}
@@ -72,10 +73,46 @@
       </div>
       {% endfor %}
       {% block quotas %}
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Cloud Resources</h2>
+          <div id="quota_formset">
+	        {% for service_type, form_tuple in quota_formsets %}
+            <div id="panel-quota-{{ service_type.catalog_name }}">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="list-group-item-heading">{{ service_type.name }}</h4>
+                  <p class="list-group-item-text">{{ service_type.description|safe }}</p>
+                </div>
+                <div class="panel-collapse collapse in">
+                  <div id="panel-{{ service_type.catalog_name }}" class="panel-body panel-quota">
+                    <div id="quotas-{{ service_type.catalog_name }}" class="quotas">
+                      {% for group_form, formset in form_tuple %}
+                        <div class="panel panel-default">
+                          <div class="panel-heading"><h4>{{ group_form.instance.zone }} Zone</h4></div>
+                          <div class="panel-body">
+                            {% for hidden in group_form.hidden_fields %}
+                              {{ hidden }}
+                            {% endfor %}
+                            {{ formset.management_form }}
+                            {% for form in formset.forms %}
+                              {% include "rcallocation/quota_admin_form.html" %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+         </div>
+        </div>
+      </div>
       {% endblock %}
       <br/>
       <div class="row">
-        <div class="col-md-12">
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="list-group-item-heading">Allocation Classification</h4>
@@ -85,7 +122,6 @@
               {% include "rcallocation/field.html" with field=form.special_approval %}
             </div>
           </div>
-        </div>
       </div>
       <div class="row">
         <div class="col-md-8">
@@ -103,6 +139,15 @@
       if (!("autofocus" in document.createElement("input"))) {
         document.getElementById("id_project_description").focus();
       }
+      $(document).ready(function() {
+        $('div#quota_formset').formset({
+          prefix: 'quotas',
+          service_types: {{ service_types|safe }},
+          resources: {{ resources|safe }},
+          zones: {{ zones|safe }},
+          quota_limits: {{ quota_limits|safe }},
+        });
+      });
     </script>
   </form>
 </div>

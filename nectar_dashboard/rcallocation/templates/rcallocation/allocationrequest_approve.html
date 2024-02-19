@@ -1,7 +1,5 @@
 {% extends 'rcallocation/allocationrequest_base.html' %}
 
-{% load static %}
-
 {% block title %}Approve Request{% endblock title %}
 
 {% block description %}
@@ -17,66 +15,11 @@ Instructions for approving an allocation:
 
 {% block form_action %}{% url 'horizon:allocation:requests:approve_request' object.pk %}{% endblock %}
 {% block submit_buttons %}
-<div class="form-actions">
-  <input class="btn btn-success" type="submit" value="Approve Request">
-  {% if warnings|length > 0 %}
-  <input class="btn btn-success" type="button"
-         onClick="submit_ignore()" value="Approve ignoring warnings">
-  {% endif %}
-</div>
-{% endblock %}
-
-
-{% block quotas %}
-<div class="row">
-  <div class="col-md-12">
-    <h2>Cloud Resources</h2>
-
-    {% if form.instance.bundle %}
-    <div class="row">
-      <div class="col-md-6">
-	{% include "rcallocation/field.html" with field=form.bundle %}
-      </div>
+    <div class="form-actions">
+      <input class="btn btn-success" type="submit" value="Submit">
+      {% if warnings|length > 0 %}
+      <input class="btn btn-success" type="button"
+             onClick="submit_ignore()" value="Submit ignoring warnings">
+      {% endif %}
     </div>
-    {% else %}
-    <p>Custom Bundle Selected</p>
-    {% endif %}
-
-    {% if not form.instance.bundle %}
-    <h3>Cloud Wide Resources</h3>
-    {% for st, fields in form.single_zone_quota_fields %}
-    <fieldset>
-      <legend>{{ st }}</legend>
-      <div class="row">
-        {% for field in fields %}
-        {% if not form.instance.bundle or field.value %}
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-          {% include "rcallocation/quota_field.html" with field=field %}
-        </div>
-        {% endif %}
-        {% endfor %}
-      </div>
-    </fieldset>
-    {% endfor %}
-    {% endif %}
-
-    <h3>Availability Zone Resources</h3>
-    {% for st, zones in form.multi_zone_quota_fields %}
-    <fieldset>
-      <legend>{{ st }}</legend>
-      {% for zone, fields in zones.items %}
-      <h4>{{ zone }}</h4>
-      <div class="row">
-        {% for field in fields %}
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-          {% include "rcallocation/quota_field.html" with field=field %}
-        </div>
-        {% endfor %}
-      </div>
-        {% endfor %}
-    </fieldset>
-    {% endfor %}
-
-  </div>
-</div>
 {% endblock %}

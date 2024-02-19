@@ -1,9 +1,7 @@
-{% extends 'rcallocation/_field.html' %}
+{% extends 'rcallocation/nohelp_field.html' %}
 {% block field %}
-<div class="input-group">
   {{ field }}
-  {% if field.field.resource.resource_type == "integer" %}
-  <span class="input-group-addon label-resource-unit">{{ field.field.resource.unit }}</span>
+  {% if field.field.widget.input_type == "number" %}
+    <span class="input-group-addon label-resource-unit"></span>
   {% endif %}
-</div>
 {% endblock %}

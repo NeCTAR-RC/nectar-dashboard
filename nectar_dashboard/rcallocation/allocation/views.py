@@ -42,13 +42,15 @@ class AllocationNotesEdit(mixins.UserPassesTestMixin, UpdateView):
 
 
 class AllocationApproveView(views.BaseAllocationView):
-
-    APPROVING = True
+    SHOW_EMPTY_SERVICE_TYPES = False
+    ONLY_REQUESTABLE_RESOURCES = False
 
     page_title = 'Approve Request'
     template_name = "rcallocation/allocationrequest_approve.html"
     model = models.AllocationRequest
     form_class = allocation_forms.AllocationApproveForm
+    quota_form_class = allocation_forms.QuotaForm
+    quotagroup_form_class = allocation_forms.QuotaGroupForm
     success_url = "../../"
 
     formset_investigator_class = None
@@ -71,6 +73,8 @@ class AllocationRejectView(views.BaseAllocationView):
     template_name = "rcallocation/allocationrequest_reject.html"
     model = models.AllocationRequest
     form_class = allocation_forms.AllocationRejectForm
+    quota_form_class = None
+    quotagroup_form_class = None
     success_url = "../../"
 
     formset_investigator_class = None

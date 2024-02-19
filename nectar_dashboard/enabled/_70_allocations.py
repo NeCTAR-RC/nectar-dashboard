@@ -13,6 +13,8 @@ ADD_INSTALLED_APPS = [
     'nectar_dashboard.rcallocation.user_allocations',
 ]
 
+AUTO_DISCOVER_STATIC_FILES = True
+
 ADD_SCSS_FILES = [
     'rcportal/scss/nectar.scss',
     'rcportal/scss/bootstrap-toggle.scss',

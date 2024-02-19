@@ -4,8 +4,7 @@ from nectar_dashboard.rcallocation import forms as base_forms
 from nectar_dashboard.rcallocation import models
 
 
-class AllocationApproveForm(forms.ModelForm, base_forms.QuotaMixin):
-    has_quotas = True
+class AllocationApproveForm(forms.ModelForm):
     error_css_class = 'has-error'
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
                                          required=False)
@@ -16,30 +15,29 @@ class AllocationApproveForm(forms.ModelForm, base_forms.QuotaMixin):
             'project_name', 'project_description',
             'estimated_project_duration', 'status_explanation',
             'associated_site', 'national', 'special_approval',
-            'bundle',
         )
 
         widgets = {
             'project_name': forms.TextInput(attrs={'readonly': 'readonly'}),
             'project_description': forms.TextInput(
                 attrs={'readonly': 'readonly'}),
+            'status_explanation': forms.Textarea(
+                attrs={'class': 'form-control'}),
+            'special_approval': forms.Textarea(
+                attrs={'class': 'form-control'}),
             'associated_site': forms.Select(attrs={'class': 'col-md-6'}),
             'national': forms.CheckboxInput(
-                attrs={'class': 'col-md-6',
+                attrs={'class': 'col-md-6 form-control',
                        'style': 'height:20px; width:20px'}),
         }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                'form-control ' + field.widget.attrs.get('class', ''))
-
-        self.generate_quota_fields()
-
-        if self.instance.bundle:
-            self.fields['bundle'].required = True
-
+        self.fields['project_name'].widget.attrs['class'] = 'form-control'
+        self.fields['project_description'].widget.attrs[
+            'class'] = 'form-control'
+        self.fields['estimated_project_duration'].widget.attrs[
+            'class'] = 'form-control'
         self.fields['status_explanation'].help_text = 'Reviewer Comment'
         self.fields['status_explanation'].label = 'Comment'
         self.initial['status_explanation'] = ''
@@ -47,6 +45,7 @@ class AllocationApproveForm(forms.ModelForm, base_forms.QuotaMixin):
         self.fields['associated_site'].help_text = \
             '''The Approver will normally set the Associated Site to their
             own node.'''
+        self.fields['associated_site'].widget.attrs['class'] = 'form-control'
         self.fields['associated_site'].queryset = \
             models.Site.objects.filter(enabled=True)
         self.fields['national'].help_text = \
@@ -61,7 +60,6 @@ class AllocationApproveForm(forms.ModelForm, base_forms.QuotaMixin):
 
 
 class AllocationRejectForm(forms.ModelForm):
-    has_quotas = False
     error_css_class = 'has-error'
 
     class Meta:
@@ -85,6 +83,43 @@ class AllocationRejectForm(forms.ModelForm):
         else:
             self.instance.status = 'R'
         self.fields['project_description'].required = False
+
+
+class QuotaForm(base_forms.BaseQuotaForm):
+    class Meta(base_forms.BaseQuotaForm.Meta):
+        fields = '__all__'
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = (
+                field.widget.attrs.get('class', '') + 'form-control')
+        self.fields['requested_quota'].widget.attrs['readonly'] = True
+        self.fields['requested_quota'].required = False
+        quota = kwargs.pop('instance', None)
+        if not quota:
+            self.fields['requested_quota'].widget = forms.HiddenInput()
+        self.initial['quota'] = self.instance.requested_quota
+        if (self.resource
+                and self.resource.resource_type == models.Resource.BOOLEAN):
+            self.fields['quota'].widget = base_forms.IntegerCheckboxInput(
+                attrs={'data-toggle': 'toggle'})
+
+    def has_changed(self):
+        """Overriding this, as the initial data passed to the form does not get
+        noticed, and so does not get saved, unless it actually changes
+        """
+        changed_data = super().has_changed()
+        return bool(self.initial or changed_data)
+
+
+class QuotaGroupForm(base_forms.BaseQuotaGroupForm):
+
+    class Meta(base_forms.BaseQuotaGroupForm.Meta):
+        widgets = {
+            'zone': forms.HiddenInput(),
+            'service_type': forms.HiddenInput()
+        }
 
 
 class EditNotesForm(forms.ModelForm):

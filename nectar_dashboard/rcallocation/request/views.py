@@ -78,9 +78,7 @@ class AllocationCreateView(views.BaseAllocationView):
         return None
 
     def get_initial(self):
-        initial = super().get_initial()
-        initial['contact_email'] = self.request.user.username
-        return initial
+        return {'contact_email': self.request.user.username}
 
     def get_success_url(self):
         return reverse('horizon:allocation:user_requests:index')
