@@ -54,6 +54,21 @@ class QuotaTests(base.AllocationAPITest):
         self.assertEqual(self._get_quotas(self.user).count(),
                          len(response.data['results']))
 
+    def test_list_quotas_for_allocation(self):
+        self.client.force_authenticate(user=self.user)
+        factories.AllocationFactory.create(contact_email=self.user.username,
+                                           create_quotas=True)
+        factories.AllocationFactory.create(contact_email='otheruser',
+                                           create_quotas=True)
+        factories.AllocationFactory.create(contact_email='otheruser2',
+                                           create_quotas=True)
+        response = self.client.get(
+            f'/rest_api/quotas/?group__allocation={self.allocation.id}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(models.Quota.objects.filter(
+            group__allocation=self.allocation).count(),
+                         len(response.data['results']))
+
     def test_list_quotas_unauthenticated(self):
         response = self.client.get('/rest_api/quotas/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
