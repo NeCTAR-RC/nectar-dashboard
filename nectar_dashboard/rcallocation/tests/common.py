@@ -298,43 +298,21 @@ def quota_spec(service, resource, quota=0, requested_quota=0, zone='nectar'):
 
 
 def add_quota_forms(form, all_quotas, service_type, group_list,
-                    prefix_start='a', allocation=None, approving=False):
-    new_prefix = prefix_start
+                    allocation=None, approving=False):
     for group in group_list:
-        if group['id']:
-            prefix = group['id']
-        else:
-            prefix = new_prefix
-            new_prefix = next_char(new_prefix)
-
         quotas = group.pop('quotas')
-        form['%s_%s-INITIAL_FORMS' %
-             (service_type, prefix)] = len(quotas) if group['id'] else 0
-        resource_count = models.Resource.objects.filter(
-            service_type__catalog_name=service_type,
-            requestable=True).count()
-        form['%s_%s-TOTAL_FORMS' % (service_type, prefix)] = resource_count
-        form['%s_%s-MAX_NUM_FORMS' % (service_type, prefix)] = 1000
-
-        for i, quota in enumerate(quotas):
+        for quota in quotas:
             all_quotas.append({'resource': quota['resource'],
                                'zone': group['zone'],
                                'requested_quota': quota['requested_quota'],
                                'quota': quota['quota']})
-            for k, v in quota.items():
-                if approving and k == 'quota':
-                    # With the approval form we populate the quota
-                    # fields with the requested_quota
-                    v = quota.get('requested_quota')
-                elif (allocation
-                      and allocation.is_active()
-                      and k == 'requested_quota'):
-                    v = quota.get('quota')
 
-                form['%s_%s-%s-%s' % (service_type, prefix, i, k)] = v
-
-        for k, v in group.items():
-            form['%s_%s-%s' % (service_type, prefix, k)] = v
+            resource = models.Resource.objects.get(id=quota['resource'])
+            if allocation and allocation.is_active():
+                limit = quota['quota']
+            else:
+                limit = quota['requested_quota']
+            form['quota-%s__%s' % (resource.codename, group['zone'])] = limit
 
 
 def next_char(c):
@@ -345,7 +323,7 @@ def request_allocation(user, model=None, quota_specs=None,
                        supported_organisations=None,
                        publications=None, grants=None,
                        usage_types=None, investigators=None,
-                       approving=False):
+                       approving=False, bundle=None):
     """Builds a form and a dict of the allocatio it would create
 
     approving - set to true when testing approving form
@@ -373,6 +351,7 @@ def request_allocation(user, model=None, quota_specs=None,
                   'estimated_number_users': quota.fuzz(),
                   'geographic_requirements': fuzzy.FuzzyText().fuzz(),
                   'associated_site': site,
+                  'bundle': bundle
                   }
 
     if model:
@@ -463,10 +442,9 @@ def request_allocation(user, model=None, quota_specs=None,
     form = model_dict.copy()
     all_quotas = []
 
-    prefix_start = 'b' if model else 'a'
     for name, group_list in groups.items():
-        add_quota_forms(form, all_quotas, name, group_list, prefix_start,
-                        allocation=model, approving=approving)
+        add_quota_forms(form, all_quotas, name, group_list, allocation=model,
+                        approving=approving)
 
     form['publications-INITIAL_FORMS'] = \
         model.publications.count() if model else 0
@@ -499,7 +477,19 @@ def request_allocation(user, model=None, quota_specs=None,
     form['supported_organisations'] = ','.join([
         str(org.id) for org in supported_organisations])
     form['associated_site'] = site or ''
-    model_dict['quotas'] = all_quotas
+    form['bundle'] = bundle.id if bundle else ''
+    if bundle:
+        # If bundle we only expect quotas from multi zone resources.
+        quotas = []
+        for q in all_quotas:
+            resource_id = q['resource']
+            resource = models.Resource.objects.get(id=resource_id)
+            if resource.service_type.is_multizone():
+                quotas.append(q)
+        model_dict['quotas'] = quotas
+    else:
+        model_dict['quotas'] = all_quotas
+
     model_dict['supported_organisations'] = supported_organisations
     model_dict['publications'] = publications
     model_dict['grants'] = grants

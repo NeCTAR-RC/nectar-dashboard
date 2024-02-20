@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'rcallocation/base.html' %}
 {% load publication_extras %}
 {% load organisation_extras %}
 
@@ -101,18 +101,23 @@
       <div class="row">
         {% if not allocation.is_active %}
         <div class="col-md-6">
-          <h3>Requested Quota</h3>
+          <h3>Requested Resources</h3>
+	  
           <table class="table table-hover">
+	    <tr>
+	      <th>Bundle</th>
+	      <td>{{ allocation.bundle|default:"Custom" }}</td>
+	    </tr>
             {% for quotagroup in allocation.quotas.all %}
             {% for quota in quotagroup.quota_set.all %}
-              <tr>
-                <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
-                {% if quota.resource.resource_type == 'boolean' %}
-                <td>Enabled</td>
-                {% else %}
-                <td>{{ quota.requested_quota }} {{ quota.resource.unit }}</td>
-                {% endif %}
-              </tr>
+            <tr>
+              <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
+              {% if quota.resource.resource_type == 'boolean' %}
+              <td>Enabled</td>
+              {% else %}
+              <td>{{ quota.requested_quota }} {{ quota.resource.unit }}</td>
+              {% endif %}
+            </tr>
             {% endfor %}
             {% endfor %}
           </table>
@@ -121,14 +126,18 @@
         <div class="col-md-6">
           <h3>
             {% if approved_is_current %}
-            Current Quota
+            Current Resources
             {% else %}
-            Approved Quota (at the time of this record)
+            Approved Resources (at the time of this record)
             {% endif %}
           </h3>
           <table class="table table-hover">
             {% if approved_allocation %}
-              {% for quotagroup in approved_allocation.quotas.all %}
+	    <tr>
+	      <th>Bundle</th>
+	      <td>{{ allocation.bundle|default:"Custom" }}</td>
+	    </tr>
+            {% for quotagroup in approved_allocation.quotas.all %}
                 {% for quota in quotagroup.quota_set.all %}
                   <tr>
                     <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>

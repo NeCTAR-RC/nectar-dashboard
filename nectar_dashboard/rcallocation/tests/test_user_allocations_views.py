@@ -14,7 +14,6 @@
 from unittest import mock
 
 from django.urls import reverse
-from openstack_dashboard import api
 
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation.tests import base
@@ -26,10 +25,7 @@ from nectar_dashboard.rcallocation.tests import factories
             new=base.FAKE_FD_NOTIFIER_CLASS)
 class RequestTestCase(base.BaseTestCase):
 
-    @mock.patch.object(api.nova, 'tenant_absolute_limits')
-    def test_edit_allocation_request(self, mock_nova_limits):
-
-        mock_nova_limits.return_value = {}
+    def test_edit_allocation_request(self):
 
         allocation = factories.AllocationFactory.create(
             contact_email=self.user.name)
@@ -65,10 +61,7 @@ class RequestTestCase(base.BaseTestCase):
         self.assert_allocation(model, status='E', **expected_model)
         self.assert_history(model, initial_state, initial_mod)
 
-    @mock.patch.object(api.nova, 'tenant_absolute_limits')
-    def test_amend_allocation_request(self, mock_nova_limits):
-
-        mock_nova_limits.return_value = {}
+    def test_amend_allocation_request(self):
 
         allocation = factories.AllocationFactory.create(
             contact_email=self.user.name, status='A')
@@ -110,4 +103,85 @@ class RequestTestCase(base.BaseTestCase):
             parent_request_id=None))
 
         self.assert_allocation(model, status='X', **expected_model)
+        self.assert_history(model, initial_state, initial_mod)
+
+    def test_edit_allocation_request_convert_to_bundle(self):
+
+        allocation = factories.AllocationFactory.create(
+            contact_email=self.user.name)
+        initial_state = common.allocation_to_dict(
+            models.AllocationRequest.objects.get(pk=allocation.pk))
+        initial_mod = allocation.modified_time
+
+        response = self.client.get(
+            reverse('horizon:allocation:user_requests:edit_request',
+                    args=(allocation.id,)))
+        self.assertStatusCode(response, 200)
+        gold = models.Bundle.objects.get(name='gold')
+        expected_model, form = common.request_allocation(user=self.user,
+                                                         model=allocation,
+                                                         bundle=gold)
+
+        form['ignore_warnings'] = True
+
+        response = self.client.post(
+            reverse('horizon:allocation:user_requests:edit_request',
+                    args=(allocation.id,)),
+            form)
+
+        # Check to make sure we were redirected back to the index of
+        # our requests.
+        self.assertStatusCode(response, 302)
+        self.assertEqual('../../', response.get('location'))
+
+        model = (models.AllocationRequest.objects.get(
+            project_description=form['project_description'],
+            parent_request_id=None))
+
+        self.assert_allocation(model, status='E', **expected_model)
+        self.assert_history(model, initial_state, initial_mod)
+
+    def test_edit_allocation_request_convert_from_bundle(self):
+        silver = models.Bundle.objects.get(name='silver')
+
+        allocation = factories.AllocationFactory.create(
+            contact_email=self.user.name, bundle=silver, create_quotas=False)
+        melbourne = models.Zone.objects.get(name='melbourne')
+        volume_st = models.ServiceType.objects.get(catalog_name='volume')
+        volumes = models.Resource.objects.get(quota_name='gigabytes',
+                                              service_type=volume_st)
+        group_volume_melbourne = factories.QuotaGroupFactory(
+            allocation=allocation, service_type=volume_st,
+            zone=melbourne)
+        factories.QuotaFactory(group=group_volume_melbourne, resource=volumes)
+
+        initial_state = common.allocation_to_dict(
+            models.AllocationRequest.objects.get(pk=allocation.pk))
+        initial_mod = allocation.modified_time
+
+        response = self.client.get(
+            reverse('horizon:allocation:user_requests:edit_request',
+                    args=(allocation.id,)))
+        self.assertStatusCode(response, 200)
+
+        expected_model, form = common.request_allocation(user=self.user,
+                                                         model=allocation)
+
+        form['ignore_warnings'] = True
+
+        response = self.client.post(
+            reverse('horizon:allocation:user_requests:edit_request',
+                    args=(allocation.id,)),
+            form)
+
+        # Check to make sure we were redirected back to the index of
+        # our requests.
+        self.assertStatusCode(response, 302)
+        self.assertEqual('../../', response.get('location'))
+
+        model = (models.AllocationRequest.objects.get(
+            project_description=form['project_description'],
+            parent_request_id=None))
+
+        self.assert_allocation(model, status='E', **expected_model)
         self.assert_history(model, initial_state, initial_mod)

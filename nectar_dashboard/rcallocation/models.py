@@ -116,6 +116,14 @@ class Bundle(models.Model):
     class Meta:
         ordering = ['order']
 
+    def __str__(self):
+        return self.name
+
+    def get_quota(self, resource_codename):
+        resource = Resource.objects.get_by_codename(resource_codename)
+        bq = self.bundlequota_set.filter(resource=resource).first()
+        return bq.quota if bq else None
+
 
 class AllocationRequest(models.Model):
     """An AllocationRequest represents a point in time in the history of
@@ -716,6 +724,9 @@ class ServiceType(models.Model):
 
     class Meta:
         ordering = ['order', 'name']
+
+    def is_multizone(self):
+        return self.zones.count() > 1
 
 
 class ResourceManager(models.Manager):

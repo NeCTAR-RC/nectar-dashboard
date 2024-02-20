@@ -40,6 +40,9 @@ class FormsTestCase(base.BaseTestCase):
         self.allocation = factories.AllocationFactory.create(
             contact_email='other@example.com')
 
+
+class AllocationFormTestCase(FormsTestCase):
+
     def test_validating_base_allocation_form(self):
         form = forms.BaseAllocationForm(data={})
         self.assertFalse(form.is_valid())
@@ -206,6 +209,9 @@ class FormsTestCase(base.BaseTestCase):
                           'not one of the available choices.'],
                          form.errors['usage_types'])
 
+
+class ChiefInvestigatorFormTestCase(FormsTestCase):
+
     def test_validating_ci_form_missing(self):
         form = forms.ChiefInvestigatorForm(data={})
         self.assertFalse(form.is_valid())
@@ -251,6 +257,9 @@ class FormsTestCase(base.BaseTestCase):
         self.assertEqual(1, len(form.errors))
         self.assertRegex(str(form.errors['primary_organisation']),
                          ".+not.+meaningful.+")
+
+
+class GrantFormTestCase(FormsTestCase):
 
     def test_validating_grant_form(self):
         form = forms.GrantForm(data={})
@@ -357,6 +366,9 @@ class FormsTestCase(base.BaseTestCase):
                     self.assertIsNone(form.errors.get('grant_subtype'))
                 else:
                     self.assertIsNotNone(form.errors.get('grant_subtype'))
+
+
+class PublicationFormTestCase(FormsTestCase):
 
     def test_validating_publication_form(self):
         form = forms.PublicationForm(data={})
@@ -479,3 +491,46 @@ class FormsTestCase(base.BaseTestCase):
             'allocation': self.allocation.id})
         form.is_valid()
         self.assertEqual(form.cleaned_data['doi'], '10.01000/ABCDEF')
+
+
+class QuotaMixinTestCase(FormsTestCase):
+
+    def test_generate_quota_fields(self):
+        form = forms.AllocationRequestForm()
+        quota_fields = [f for f in form.fields if f.startswith('quota-')]
+        self.assertEqual(11, len(quota_fields))
+
+    def test_multi_zone_quota_fields(self):
+        form = forms.AllocationRequestForm()
+        items = form.multi_zone_quota_fields()
+        self.assertEqual(1, len(items))
+        service_type, zones = list(items)[0]
+        self.assertEqual('volume', service_type.catalog_name)
+        # 3 zones (melbourne, monash and tas) so should be 3 fields
+        self.assertEqual(3, len(zones))
+
+        all_zones = [zone.name for zone in zones.keys()]
+        all_zones.sort()
+        self.assertEqual(['melbourne', 'monash', 'tas'], all_zones)
+        all_fields = []
+        for zone, fields in zones.items():
+            all_fields += fields
+        for f in all_fields:
+            self.assertEqual(
+                models.Resource.objects.get(quota_name='gigabytes'),
+                f.field.resource)
+
+    def test_single_zone_quota_fields(self):
+        form = forms.AllocationRequestForm()
+        items = form.single_zone_quota_fields()
+        self.assertEqual(4, len(items))
+        service_types = [d[0].catalog_name for d in items]
+        service_types.sort()
+        self.assertEqual(['compute', 'network', 'object', 'rating'],
+                         service_types)
+
+        data = [d for d in items if d[0].catalog_name == 'compute']
+        compute_st, fields = data[0]
+        self.assertEqual('compute', compute_st.catalog_name)
+        # Should be cores and instances (ram) is not requestable in tests
+        self.assertEqual(2, len(fields))

@@ -1,3 +1,4 @@
+from collections import defaultdict
 import json
 import logging
 import re
@@ -95,7 +96,9 @@ class ARDCChoiceField(select2_fields.ModelMultipleChoiceField):
 
 
 class BaseAllocationForm(forms.ModelForm):
+    has_quotas = False
     error_css_class = 'has-error'
+
     ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
                                          required=False)
     field_of_research_1 = FoRChoiceField("First Field Of Research")
@@ -153,7 +156,7 @@ class BaseAllocationForm(forms.ModelForm):
                    'start_date', 'end_date', 'modified_time', 'parent_request',
                    'associated_site', 'special_approval', 'provisioned',
                    'managed', 'project_id', 'notes', 'notifications',
-                   'ncris_support', 'nectar_support', 'bundle',
+                   'ncris_support', 'nectar_support',
         )
 
         widgets = {
@@ -294,7 +297,115 @@ class BaseAllocationForm(forms.ModelForm):
         return cleaned_data
 
 
-class AllocationRequestForm(BaseAllocationForm):
+class IntegerCheckboxInput(forms.CheckboxInput):
+    """Store booleans as Integer 0/1
+
+    Used by quota fields which store boolean fields
+    as a 1 or 0
+    """
+
+    def __init__(self, attrs=None, check_test=None):
+        super().__init__(
+            attrs, check_test=self._int_bool_check)
+
+    @staticmethod
+    def _int_bool_check(v):
+        return not (v is False or v == 0 or v == '0' or v is None or v == '')
+
+    def value_from_datadict(self, data, files, name):
+        value = super().value_from_datadict(data, files, name)
+        return int(value)
+
+
+class QuotaIntegerField(forms.IntegerField):
+
+    def __init__(self, resource, zone, *args, **kwargs):
+        self.resource = resource
+        self.zone = zone
+        super().__init__(*args, **kwargs)
+
+    def widget_attrs(self, widget):
+        attrs = super().widget_attrs(widget)
+        attrs['class'] = attrs.get('class', '') + ' form-control'
+        return attrs
+
+
+class QuotaBooleanField(forms.BooleanField):
+
+    widget = IntegerCheckboxInput
+
+    def __init__(self, resource, zone, *args, **kwargs):
+        self.resource = resource
+        self.zone = zone
+        super().__init__(*args, **kwargs)
+
+    def widget_attrs(self, widget):
+        attrs = super().widget_attrs(widget)
+        attrs['data-toggle'] = 'toggle'
+        attrs['class'] = attrs.get('class', '') + ' form-control'
+        return attrs
+
+
+class QuotaMixin(object):
+
+    def generate_quota_fields(self):
+        """Generates form fields based on available Resources
+
+        Will add Integer or Boolean fields for every requestable Resource.
+        Will exclude resources from experimental services.
+        """
+        for st in models.ServiceType.objects.filter(experimental=False):
+            for resource in st.resource_set.filter(requestable=True):
+                for zone in st.zones.all():
+                    key = "quota-%s__%s" % (resource.codename, zone.name)
+                    field_args = {'required': False,
+                                  'help_text': resource.help_text}
+                    if st.is_multizone():
+                        field_args['label'] = resource.name
+                    else:
+                        field_args['label'] = resource.name
+                    if resource.resource_type == 'boolean':
+                        self.fields[key] = QuotaBooleanField(resource=resource,
+                                                             zone=zone,
+                                                             **field_args)
+                    else:
+                        self.fields[key] = QuotaIntegerField(
+                            resource=resource,
+                            zone=zone,
+                            **field_args, min_value=0,
+                            initial=resource.default or 0)
+
+    def multi_zone_quota_fields(self):
+        """Get all quota fields that are multi zone
+
+        Returns a list of tuples of (service_type, fields)
+        """
+        fields = defaultdict(lambda: defaultdict(list))
+        for field in self:
+            if field.name.startswith('quota-'):
+                if field.field.resource.service_type.is_multizone():
+                    service_type = field.field.resource.service_type
+                    zone = field.field.zone
+                    fields[service_type][zone].append(field)
+        for field in fields.values():
+            field.default_factory = None
+        return fields.items()
+
+    def single_zone_quota_fields(self):
+        """Get all quota fields that are single zone
+
+        Returns a list of tuples of (service_type, fields)
+        """
+        fields = defaultdict(list)
+        for field in self:
+            if field.name.startswith('quota-'):
+                if not field.field.resource.service_type.is_multizone():
+                    fields[field.field.resource.service_type].append(field)
+        return fields.items()
+
+
+class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
+    has_quotas = True
 
     project_name = forms.CharField(
         validators=[
@@ -314,6 +425,10 @@ class AllocationRequestForm(BaseAllocationForm):
                   'hyphens only, must start with a letter and be between than '
                   '5 and 32 characters in length.',
         widget=forms.TextInput(attrs={'autofocus': 'autofocus'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.generate_quota_fields()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -341,123 +456,15 @@ class AllocationRequestForm(BaseAllocationForm):
         return cleaned_data
 
 
-class AllocationAmendRequestForm(BaseAllocationForm):
+class AllocationAmendRequestForm(BaseAllocationForm, QuotaMixin):
+    has_quotas = True
+
     class Meta(BaseAllocationForm.Meta):
         pass
 
-
-class BaseQuotaForm(forms.ModelForm):
-    error_css_class = 'has-error'
-    quota = forms.IntegerField(min_value=0, required=False)
-    requested_quota = forms.IntegerField(min_value=0, required=False)
-
-    class Meta:
-        model = models.Quota
-        fields = '__all__'
-
-        widgets = {
-            'resource': forms.HiddenInput(),
-        }
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        inst = kwargs.get('instance', None)
-        if inst:
-            self.resource = inst.resource
-        else:
-            self.resource = self.initial.get('resource')
-        if (self.resource
-                and self.resource.resource_type == models.Resource.BOOLEAN):
-            self.fields['requested_quota'].widget = IntegerCheckboxInput(
-                attrs={'data-toggle': 'toggle'})
-
-
-def int_bool_check(v):
-    return not (v is False or v == 0 or v == '0' or v is None or v == '')
-
-
-class IntegerCheckboxInput(forms.CheckboxInput):
-
-    def __init__(self, attrs=None, check_test=None):
-        super().__init__(
-            attrs, check_test=int_bool_check)
-
-    def value_from_datadict(self, data, files, name):
-        value = super().value_from_datadict(data, files, name)
-        return int(value)
-
-
-class QuotaForm(BaseQuotaForm):
-    """This version of the form class that allows editing of the requested
-    quota values.  If the allocation record being edited is in approved
-    state, we pre-fill the requested quota values from the current quota
-    values.
-    """
-
-    class Meta(BaseQuotaForm.Meta):
-        model = models.Quota
-        exclude = ('quota',)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + 'form-control')
-        self.fields['group'].required = False
-        inst = kwargs.get('instance', None)
-        if inst and inst.quota:
-            allocation = inst.group.allocation
-            if allocation.status == models.AllocationRequest.APPROVED:
-                self.initial['requested_quota'] = inst.quota
-
-        if self.resource and self.resource.default:
-            if self.initial.get('requested_quota', 0) < self.resource.default:
-                self.initial['requested_quota'] = self.resource.default
-
-    def has_changed(self):
-        if self.resource and self.resource.default:
-            return True
-        return super().has_changed()
-
-
-class BaseQuotaGroupForm(forms.ModelForm):
-
-    error_css_class = 'has-error'
-
-    enabled = forms.BooleanField(required=False, widget=forms.HiddenInput(
-        attrs={'class': 'quota-group-enabled'}))
-
-    def __init__(self, **kwargs):
-        self.service_type = kwargs.pop('service_type')
-        super().__init__(**kwargs)
-
-    class Meta:
-        model = models.QuotaGroup
-        exclude = ('allocation',)
-
-
-class QuotaGroupForm(BaseQuotaGroupForm):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.fields['service_type'].widget = forms.HiddenInput()
-        self.fields['service_type'].initial = self.service_type
-        self.fields['zone'].required = False
-        self.fields['zone'].queryset = \
-            self.service_type.zones.filter(enabled=True)
-        if len(self.service_type.zones.all()) == 1:
-            self.fields['zone'].widget = forms.HiddenInput()
-            self.fields['zone'].initial = 'nectar'
-        for field in self.fields.values():
-            field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + ' form-control')
-
-    def clean(self):
-        cleaned_data = super().clean()
-        enabled = cleaned_data.get('enabled')
-        zone = cleaned_data.get('zone')
-        if enabled and not zone:
-            raise forms.ValidationError("Please specify a zone")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.generate_quota_fields()
 
 
 class NectarBaseModelForm(forms.ModelForm):
