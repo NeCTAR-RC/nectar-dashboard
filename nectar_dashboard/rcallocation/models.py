@@ -612,7 +612,7 @@ class AllocationRequest(models.Model):
         utils.save_allocation_without_updating_timestamps(self)
 
     def __str__(self):
-        return '"{0}" {1}'.format(self.project_name, self.contact_email)
+        return '{0}: {1}'.format(self.id, self.project_name)
 
     def quota_list(self):
         quotas = {}
