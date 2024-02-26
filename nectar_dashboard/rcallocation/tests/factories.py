@@ -184,7 +184,6 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     for_percentage_3 = 10
     estimated_number_users = 1000
     associated_site = site
-    nectar_support = 'nectar supporting'
 
     @classmethod
     def create(cls, create_quotas=True, only_requestable=True, quota_value=0,

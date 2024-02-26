@@ -89,6 +89,8 @@ def factory_setup():
     monash = factories.ZoneFactory(name='monash')
     tas = factories.ZoneFactory(name='tas')
     nectar = factories.ZoneFactory(name='nectar')
+    # Needed for checker tests as we use this zone
+    factories.ZoneFactory(name='QRIScloud')
 
     volume_st = factories.ServiceTypeFactory(catalog_name='volume')
     object_st = factories.ServiceTypeFactory(catalog_name='object')

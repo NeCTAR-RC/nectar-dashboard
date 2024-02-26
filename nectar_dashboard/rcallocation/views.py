@@ -294,7 +294,7 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
 
         if self.object:
             nag_checker = checkers.NagChecker(
-                allocation=self.object, user=self.request.user)
+                form=None, allocation=self.object, user=self.request.user)
             nags = nag_checker.do_checks()
             kwargs['nags'] = nags
             if len(nags) > 0:
@@ -307,6 +307,7 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        approving = self.editor_attr == 'approver_email'
 
         # Create / assemble the form and non-quota formsets.  Note that
         # form instantiation may modify the state of self.object; e.g.
@@ -332,10 +333,37 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
                 return http.HttpResponseBadRequest(
                     'Allocation state not changing')
 
+        ignore_warnings = self.IGNORE_WARNINGS or \
+                          request.POST.get('ignore_warnings', False)
+
+        # Primary validation of quotas + gathering of the values
+        # into a format that can be used for quota sanity checks.
+        quota_checker = checkers.QuotaSanityChecker(
+            allocation=self.object,
+            form=form,
+            user=self.request.user,
+            approving=approving)
+
         valid = all(map(methodcaller('is_valid'), form_dict.values()))
 
         if valid:
-            return self.form_valid(**form_dict)
+            warnings = quota_checker.do_checks()
+            if len(warnings) == 0:
+                return self.form_valid(**form_dict)
+            else:
+                tags = [w[0] for w in warnings]
+                name = form.cleaned_data.get('project_name', '???')
+                person = 'approver' if approving else 'user'
+                if ignore_warnings:
+                    if not self.IGNORE_WARNINGS:
+                        LOG.info(f"The {person} ignored warnings {tags} "
+                                 f"for allocation '{name}'")
+                    return self.form_valid(**form_dict)
+                else:
+                    form_dict['warnings'] = warnings
+                    LOG.info(f"Showing the {person} warnings {tags} "
+                             f"for allocation '{name}'")
+                    return self.form_invalid(**form_dict)
         else:
             return self.form_invalid(**form_dict)
 
@@ -385,10 +413,10 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
         allocation.send_notifications(extra_context={'request': self.request})
         return http.HttpResponseRedirect(self.get_success_url())
 
-    def form_invalid(self, form, **formsets):
+    def form_invalid(self, form, warnings=[], **formsets):
         """If the form is invalid, re-render the context data with the
         data-filled forms and errors.
         """
 
         return self.render_to_response(
-            self.get_context_data(form=form, **formsets))
+            self.get_context_data(form=form, warnings=warnings, **formsets))

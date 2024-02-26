@@ -32,14 +32,14 @@ class CheckerTest(base.BaseTestCase):
         checker = checkers.Checker()
         self.assertIsNone(checker.allocation)
         self.assertIsNone(checker.form)
-        self.assertTrue(len(checker.checks) > 0)
+        self.assertTrue(len(checker.CHECKS) > 0)
 
     def test_alloc_checker(self):
         allocation = factories.AllocationFactory.create(project_name='fun')
         checker = checkers.Checker(allocation=allocation)
         self.assertIsNotNone(checker.allocation)
         self.assertIsNone(checker.form)
-        self.assertTrue(len(checker.checks) > 0)
+        self.assertTrue(len(checker.CHECKS) > 0)
         self.assertEqual('fun', checker.get_field('project_name'))
         self.assertIsNotNone(checker.get_field('project_description'))
 
@@ -49,7 +49,7 @@ class CheckerTest(base.BaseTestCase):
         checker = checkers.Checker(allocation=allocation, form=form)
         self.assertIsNotNone(checker.allocation)
         self.assertIsNotNone(checker.form)
-        self.assertTrue(len(checker.checks) > 0)
+        self.assertTrue(len(checker.CHECKS) > 0)
         self.assertEqual('fun', checker.get_field('project_name'))
         self.assertEqual('not much', checker.get_field('nectar_support'))
         self.assertIsNotNone(checker.get_field('project_description'))
