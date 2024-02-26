@@ -30,7 +30,7 @@
                                     <ul class="features">
                                         <li>Runs {% bundle_quota bundle "compute.cores" 0.25 %} VCPUs continuously (max {% bundle_quota bundle "compute.cores" %} VCPUs at one time)</li>
                                         <li>Up to {% bundle_quota bundle "compute.instances" %} instances</li>
-                                        <li>{% bundle_quota bundle "object.object" %}GB Object Storage</li>
+                                        <li>{% bundle_quota bundle "object.object" %} GB Object Storage</li>
                                     </ul>
                                     <a href="#" class="btn btn-default">
                                         <span class="not-selected">Select {{ bundle.name }}</span>
@@ -53,7 +53,7 @@
                     <div class="hidden">{{ form.bundle }}</div>
                     <div class="row mt-4">
                         <div class="col-sm-12 text-center">
-                            <p>Nectar resources are bundled with a Service Unit Budget and limits for each resource. A <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023" target="_blank">Service Unit (SU)</a> is a measure of the cost of using Nectar compute resources. e.g. 2000 SU = 1 x m3.large 8 VCPU instances. Consuming resources to the maximum limit for the full allocation period does not equate to the bundle SU Budget. For more details, checkout <a href="https://support.ehelp.edu.au/support/solutions/articles/6000205341" target="_blank">this support article</a>.</p>
+                            <p>Nectar resources are bundled with a Service Unit budget and limits for each resource. A <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023" target="_blank">Service Unit (SU)</a> is a measure of the cost of using Nectar compute resources, e.g. <strong>1000 SU = 1 m3.medium 4 core instance for 1 year</strong>. Consuming resources to the maximum limit for the full allocation period does not equate to the bundle SU budget. For more details, checkout <a href="https://support.ehelp.edu.au/support/solutions/articles/6000205341" target="_blank">this support article</a>.</p>
                         </div>
                     </div>
                     <div class="row step-nav">
