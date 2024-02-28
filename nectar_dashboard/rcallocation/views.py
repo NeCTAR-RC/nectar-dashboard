@@ -419,4 +419,5 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
         """
 
         return self.render_to_response(
-            self.get_context_data(form=form, warnings=warnings, **formsets))
+            self.get_context_data(form=form, warnings=warnings,
+                                  form_invalid=True, **formsets))

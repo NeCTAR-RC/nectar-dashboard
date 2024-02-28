@@ -36,7 +36,7 @@
 {% endblock %}
 
 {% block main %}
-<div id="allocationrequest_edit" class="dash_block {% if object.pk %}allocation-existing{% elif form.errors|length > 0 %}allocation-new-errors{% else %}allocation-new{% endif %}">
+<div id="allocationrequest_edit" class="dash_block {% if object.pk %}allocation-existing{% elif form_invalid %}allocation-new-errors{% else %}allocation-new{% endif %}">
   <div class="block-title d-md-flex align-items-center justify-content-between mb-2">
     {% if object %}
       <h3>Edit Allocation Request: <span id="form-step-title"></span></h3>
