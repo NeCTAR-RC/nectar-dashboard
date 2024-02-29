@@ -53,7 +53,7 @@ class HomeView(horizon_views.HorizonTemplateView):
             LOG.error("Langstroth outage lookup failed", exc_info=e)
             context['outages'] = []
 
-        LOG.error("Home page context is %s", context)
+        LOG.debug("Home page context is %s", context)
         return context
 
 
