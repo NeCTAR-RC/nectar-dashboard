@@ -47,6 +47,11 @@
 {% endif %}
 {% endif %}
 <br>
+{% if allocation.bundle %}
+<p>Resource Bundle:</p>
+<p>{{ allocation.bundle }}</p>
+<br>
+{% endif %}
 <table style="border:1px solid black;border-collapse:collapse;padding:5px 5px 5px 5px;">
   <tbody>
     <tr>
