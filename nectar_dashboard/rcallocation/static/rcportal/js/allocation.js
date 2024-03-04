@@ -89,7 +89,6 @@
             if($(this).find('input').val() > 0) {
                 $(this).closest('.extra-resource').find('.resource-toggle').bootstrapToggle('on');
                 $(this).closest('.extra-resource').find('fieldset').show();
-                return false;
             }
         });
     }
