@@ -156,13 +156,14 @@ class AllocationTests(base.AllocationAPITest):
             {'quota': 0, 'resource': 'rating.budget', 'zone': 'nectar'}
         ]
         self.assertEqual(response.data['quotas'], quotas)
+        self.assertEqual(None, response.data.get('bundle'))
 
     def test_get_allocation_unauthenticated(self):
         response = self.client.get('/rest_api/allocations/1/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         public_fields = set(['id', 'project_name', 'project_description',
                              'modified_time', 'submit_date', 'start_date',
-                             'end_date', 'field_of_research_1',
+                             'end_date', 'bundle', 'field_of_research_1',
                              'field_of_research_2', 'field_of_research_3',
                              'for_percentage_1', 'for_percentage_2',
                              'for_percentage_3', 'supported_organisations',
@@ -188,6 +189,7 @@ class AllocationTests(base.AllocationAPITest):
             {'quota': 10, 'resource': 'network.floatingip', 'zone': 'nectar'}
         ]
         self.assertEqual(expected, response.data['quotas'])
+        self.assertEqual('silver', response.data.get('bundle'))
 
     def test_get_allocation_negative(self):
         self.client.force_authenticate(user=self.user)
@@ -624,6 +626,26 @@ class AllocationTests(base.AllocationAPITest):
         self.assertEqual(models.AllocationRequest.SUBMITTED,
                          response.data['status'])
         self.assertEqual(1, len(response.data['ncris_facilities']))
+
+    def test_create_with_bundle(self):
+        self.client.force_authenticate(user=self.user)
+        data = self._make_data()
+        data['bundle'] = 'gold'
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        allocation = models.AllocationRequest.objects.get(
+            project_name='test-project')
+        bundle = models.Bundle.objects.get(name='gold')
+        self.assertEqual(bundle, allocation.bundle)
+
+    def test_create_with_bundle_invalid(self):
+        self.client.force_authenticate(user=self.user)
+        data = self._make_data()
+        data['bundle'] = 'bogus'
+        response = self.client.post('/rest_api/allocations/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual("Bundle 'bogus' does not exist",
+                         str(response.data['bundle'][0]))
 
     def test_create_with_no_site(self):
         self.client.force_authenticate(user=self.admin_user)

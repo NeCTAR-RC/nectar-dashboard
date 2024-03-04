@@ -56,6 +56,20 @@ class AssociatedSiteField(serializers.Field):
         return site
 
 
+class BundleField(serializers.Field):
+    def to_representation(self, obj):
+        return obj.name if obj else None
+
+    def to_internal_value(self, data):
+        try:
+            bundle = models.Bundle.objects.get(name=data)
+        except models.Bundle.DoesNotExist:
+            raise serializers.ValidationError(
+                "Bundle '%s' does not exist" % data)
+        else:
+            return bundle
+
+
 class UsageTypesField(serializers.RelatedField):
     # We must allow creation, etc of an allocation request with
     # no usage types via the API.  Alternatives are impractical.

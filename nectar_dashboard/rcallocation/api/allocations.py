@@ -30,6 +30,7 @@ from nectar_dashboard import rest_auth
 
 class AllocationSerializer(serializers.ModelSerializer):
     quotas = serializers.SerializerMethodField()
+    bundle = fields.BundleField(required=False)
     status_display = serializers.SerializerMethodField()
     chief_investigator = serializers.SerializerMethodField()
     allocation_home = fields.AllocationHomeField(source='*', required=False)
@@ -97,7 +98,7 @@ class PublicAllocationSerializer(AllocationSerializer):
     class Meta:
         model = models.AllocationRequest
         fields = ('id', 'project_name', 'project_description', 'modified_time',
-                  'submit_date', 'start_date', 'end_date',
+                  'submit_date', 'start_date', 'end_date', 'bundle',
                   'field_of_research_1', 'field_of_research_2',
                   'field_of_research_3', 'for_percentage_1',
                   'for_percentage_2', 'for_percentage_3',
