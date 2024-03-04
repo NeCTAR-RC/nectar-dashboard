@@ -124,6 +124,13 @@ class Bundle(models.Model):
         bq = self.bundlequota_set.filter(resource=resource).first()
         return bq.quota if bq else None
 
+    def quota_list(self):
+        quotas = []
+        bundle_quotas = self.bundlequota_set.all()
+        for bq in bundle_quotas:
+            quotas.append(bq.quota_dict())
+        return quotas
+
 
 class AllocationRequest(models.Model):
     """An AllocationRequest represents a point in time in the history of

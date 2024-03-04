@@ -39,6 +39,9 @@ REST_VIEW_SETS = (
     ('quotas',
      'nectar_dashboard.rcallocation.api.quotas.QuotaViewSet',
      None),
+    ('bundles',
+     'nectar_dashboard.rcallocation.api.bundles.BundleViewSet',
+     None),
     ('chiefinvestigators',
      'nectar_dashboard.rcallocation.api.allocation_extra.ChiefInvestigatorViewSet',  # noqa
      None),
