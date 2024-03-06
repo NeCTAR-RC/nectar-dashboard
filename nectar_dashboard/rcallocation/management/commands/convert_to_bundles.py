@@ -72,6 +72,12 @@ class Command(base.BaseCommand):
                         utils.copy_allocation(allocation)
                         allocation.bundle = bundle
                         allocation.save_without_updating_timestamps()
+                        qg_list = models.QuotaGroup.objects.filter(
+                            allocation=allocation, zone=bundle.zone)
+                        for qg in qg_list:
+                            for q in qg.quota_set.all():
+                                q.delete()
+                            qg.delete()
                     else:
                         ids_with_bundle.append(allocation.id)
 
