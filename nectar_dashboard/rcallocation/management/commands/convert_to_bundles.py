@@ -39,7 +39,8 @@ class Command(base.BaseCommand):
                     bundle__isnull=True, parent_request__isnull=True)
             else:
                 allocations = models.AllocationRequest.objects.filter(
-                    bundle__isnull=True, parent_request__isnull=True)
+                    bundle__isnull=True, parent_request__isnull=True,
+                    managed=True)
                 allocations = allocations.exclude(
                     status=models.AllocationRequest.DELETED)
                 if dry_run:
@@ -78,7 +79,8 @@ class Command(base.BaseCommand):
             LOG.info(f"Bundle {bundle} - {count}")
             totals[bundle] = count
         allocations = models.AllocationRequest.objects.filter(
-            bundle__isnull=True, parent_request__isnull=True)
+            bundle__isnull=True, parent_request__isnull=True,
+            managed=True)
         allocations = allocations.exclude(
             status=models.AllocationRequest.DELETED)
         if dry_run:
