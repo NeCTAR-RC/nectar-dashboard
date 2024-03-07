@@ -102,15 +102,13 @@ def get_quota_by_resource(service, resource):
             q = allocation.bundle.get_quota(f'{service}.{resource}')
             if q:
                 have = want = q
-        try:
-            quota = models.Quota.objects.get(group__allocation=allocation,
-                                             resource__service_type=service,
-                                             resource__quota_name=resource)
-        except models.Quota.DoesNotExist:
-            pass
-        else:
-            want = quota.requested_quota
-            have = quota.quota
+        for quota in \
+            models.Quota.objects.filter(group__allocation=allocation,
+                                        resource__service_type=service,
+                                        resource__quota_name=resource):
+            want += quota.requested_quota
+            have += quota.quota
+
         return delta_quota(allocation, want, have)
     return quota
 
