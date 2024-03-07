@@ -58,14 +58,14 @@ class Command(base.BaseCommand):
                             continue
                         quota_valid = False
                         LOG.info(f"{allocation.id}: Resource {quota.resource} "
-                                 "does not exist")
-                        break
+                                 "does not exist in this bundle")
+
                     if quota.quota > bq.quota:
                         quota_valid = False
                         LOG.info(
-                            f"{allocation.id}: {quota.resource}={quota.quota}"
+                            f"{allocation.id}: {quota.resource}={quota.quota} "
                             f"bigger than bundle {bq.quota}")
-                        break
+
                 if quota_valid:
                     LOG.info(f"Allocation {allocation} bundle={bundle}")
                     if not dry_run:
