@@ -76,22 +76,22 @@ class QuotaSanityChecksTest(base.BaseTestCase):
         data = build_quota('volume', 'gigabytes', 10, 'QRIScloud')
 
         form = FakeForm(data)
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertIsNone(checkers.cinder_local_check(checker))
 
         data.update({'associated_site': None})
         form = FakeForm(data)
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertIsNone(checkers.cinder_local_check(checker))
 
         data.update({'associated_site': common.get_site('qcif')})
         form = FakeForm(data)
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertIsNone(checkers.cinder_local_check(checker))
 
         data.update({'associated_site': common.get_site('monash')})
         form = FakeForm(data)
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertEqual(checkers.CINDER_NOT_LOCAL,
                          checkers.cinder_local_check(checker)[0])
         self.assertEqual('monash approved local allocation requests '
@@ -99,7 +99,7 @@ class QuotaSanityChecksTest(base.BaseTestCase):
                          checkers.cinder_local_check(checker)[1])
 
         data.update({'national': True})
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertEqual(checkers.CINDER_NOT_LOCAL,
                          checkers.cinder_local_check(checker)[0])
         self.assertEqual('monash approved national allocation requests '
@@ -109,23 +109,23 @@ class QuotaSanityChecksTest(base.BaseTestCase):
         data = build_quota('volume', 'gigabytes', 10, 'monash-03')
         data.update({'associated_site': common.get_site('monash')})
         form = FakeForm(data)
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertIsNone(checkers.cinder_local_check(checker))
 
     def test_manila_checks(self):
         data = build_quota('share', 'shares', 10, 'QRIScloud')
         form = FakeForm(data)
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertIsNone(checkers.manila_local_check(checker))
 
         data.update({'associated_site': None})
         form = FakeForm(data)
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertIsNone(checkers.manila_local_check(checker))
 
         data.update({'associated_site': common.get_site('uom')})
         form = FakeForm(data)
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertEqual(checkers.MANILA_NOT_LOCAL,
                          checkers.manila_local_check(checker)[0])
         self.assertEqual('uom approved local allocation requests shares '
@@ -134,7 +134,7 @@ class QuotaSanityChecksTest(base.BaseTestCase):
 
         data.update({'national': True})
         form = FakeForm(data)
-        checker = build_checker(form=form)
+        checker = build_checker(form=form, approver="test_user")
         self.assertEqual(checkers.MANILA_NOT_LOCAL,
                          checkers.manila_local_check(checker)[0])
         self.assertEqual('uom approved national allocation requests shares '

@@ -58,6 +58,9 @@ def get_foreign_zones(associated_sites):
 
 
 def cinder_local_check(context):
+    if not context.approving:
+        # These are approver-only checks.
+        return None
     associated_site = context.get_field('associated_site')
     if associated_site:
         foreign_zones = get_foreign_zones([associated_site])
@@ -76,6 +79,9 @@ def cinder_local_check(context):
 
 
 def manila_local_check(context):
+    if not context.approving:
+        # These are approver-only checks.
+        return None
     associated_site = context.get_field('associated_site')
     if associated_site:
         foreign_zones = get_foreign_zones([associated_site])
