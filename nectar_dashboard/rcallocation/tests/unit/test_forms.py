@@ -41,7 +41,36 @@ class FormsTestCase(base.BaseTestCase):
             contact_email='other@example.com')
 
 
-class AllocationFormTestCase(FormsTestCase):
+class BaseAllocationFormTestCase(FormsTestCase):
+
+    def test_fields(self):
+        form = forms.BaseAllocationForm()
+        self.assertCountEqual(['status_explanation',
+                               'project_name',
+                               'project_description',
+                               'contact_email',
+                               'estimated_project_duration',
+                               'convert_trial_project',
+                               'use_case',
+                               'usage_patterns',
+                               'geographic_requirements',
+                               'estimated_number_users',
+                               'field_of_research_1',
+                               'for_percentage_1',
+                               'field_of_research_2',
+                               'for_percentage_2',
+                               'field_of_research_3',
+                               'for_percentage_3',
+                               'ardc_support',
+                               'ardc_explanation',
+                               'ncris_explanation',
+                               'ncris_facilities',
+                               'national',
+                               'usage_types',
+                               'supported_organisations',
+                               'bundle',
+                               'ignore_warnings'],
+                         list(form.fields.keys()))
 
     def test_validating_base_allocation_form(self):
         form = forms.BaseAllocationForm(data={})
@@ -63,6 +92,25 @@ class AllocationFormTestCase(FormsTestCase):
         form = forms.BaseAllocationForm(data=DUMMY_ALLOC_DATA)
         self.assertTrue(form.is_valid())
 
+    def test_validating_survey_types(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['usage_types'] = ['Rubbish']
+
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Select a valid choice. Rubbish is '
+                          'not one of the available choices.'],
+                         form.errors['usage_types'])
+
+        data = DUMMY_ALLOC_DATA.copy()
+        data['usage_types'] = ['Disabled', 'Other']
+
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['Select a valid choice. Disabled is '
+                          'not one of the available choices.'],
+                         form.errors['usage_types'])
+
     def test_validating_project_name(self):
         data = DUMMY_ALLOC_DATA.copy()
         data['project_name'] = 'pt-10001'
@@ -76,12 +124,53 @@ class AllocationFormTestCase(FormsTestCase):
         form = forms.BaseAllocationForm(data=data)
         self.assertTrue(form.is_valid())
 
-        form = forms.AllocationRequestForm(data=data)
-        self.assertFalse(form.is_valid())
-        self.assertEqual(['Must not start with "pt-" or similar.'],
-                         form.errors['project_name'])
 
+class AllocationRequestFormTestCase(FormsTestCase):
+
+    def test_fields(self):
+        form = forms.AllocationRequestForm()
+        self.assertCountEqual(['status_explanation',
+                               'project_name',
+                               'project_description',
+                               'contact_email',
+                               'estimated_project_duration',
+                               'convert_trial_project',
+                               'use_case',
+                               'usage_patterns',
+                               'geographic_requirements',
+                               'estimated_number_users',
+                               'field_of_research_1',
+                               'for_percentage_1',
+                               'field_of_research_2',
+                               'for_percentage_2',
+                               'field_of_research_3',
+                               'for_percentage_3',
+                               'ardc_support',
+                               'ardc_explanation',
+                               'ncris_explanation',
+                               'ncris_facilities',
+                               'national',
+                               'usage_types',
+                               'supported_organisations',
+                               'bundle',
+                               'ignore_warnings',
+                               'quota-compute.cores__nectar',
+                               'quota-compute.instances__nectar',
+                               'quota-rating.budget__nectar',
+                               'quota-object.object__nectar',
+                               'quota-network.router__nectar',
+                               'quota-network.network__nectar',
+                               'quota-network.loadbalancer__nectar',
+                               'quota-network.floatingip__nectar',
+                               'quota-volume.gigabytes__monash',
+                               'quota-volume.gigabytes__melbourne',
+                               'quota-volume.gigabytes__tas'],
+                              list(form.fields.keys()))
+
+    def test_validating_project_name(self):
+        data = DUMMY_ALLOC_DATA.copy()
         data['project_name'] = 'pt_10001'
+
         form = forms.AllocationRequestForm(data=data)
         self.assertFalse(form.is_valid())
         self.assertEqual(['Must not start with "pt-" or similar.'],
@@ -190,27 +279,19 @@ class AllocationFormTestCase(FormsTestCase):
         form = forms.AllocationRequestForm(data=data)
         self.assertTrue(form.is_valid())
 
-    def test_validating_survey_types(self):
-        data = DUMMY_ALLOC_DATA.copy()
-        data['usage_types'] = ['Rubbish']
-
-        form = forms.BaseAllocationForm(data=data)
-        self.assertFalse(form.is_valid())
-        self.assertEqual(['Select a valid choice. Rubbish is '
-                          'not one of the available choices.'],
-                         form.errors['usage_types'])
-
-        data = DUMMY_ALLOC_DATA.copy()
-        data['usage_types'] = ['Disabled', 'Other']
-
-        form = forms.BaseAllocationForm(data=data)
-        self.assertFalse(form.is_valid())
-        self.assertEqual(['Select a valid choice. Disabled is '
-                          'not one of the available choices.'],
-                         form.errors['usage_types'])
-
 
 class ChiefInvestigatorFormTestCase(FormsTestCase):
+
+    def test_fields(self):
+        form = forms.ChiefInvestigatorForm()
+        self.assertCountEqual(['allocation',
+                               'title',
+                               'given_name',
+                               'surname',
+                               'email',
+                               'primary_organisation',
+                               'additional_researchers'],
+                              list(form.fields.keys()))
 
     def test_validating_ci_form_missing(self):
         form = forms.ChiefInvestigatorForm(data={})
@@ -260,6 +341,18 @@ class ChiefInvestigatorFormTestCase(FormsTestCase):
 
 
 class GrantFormTestCase(FormsTestCase):
+
+    def test_fields(self):
+        form = forms.GrantForm()
+        self.assertCountEqual(['grant_type',
+                               'grant_subtype',
+                               'funding_body_scheme',
+                               'grant_id',
+                               'first_year_funded',
+                               'last_year_funded',
+                               'total_funding',
+                               'allocation'],
+                              list(form.fields.keys()))
 
     def test_validating_grant_form(self):
         form = forms.GrantForm(data={})
@@ -369,6 +462,15 @@ class GrantFormTestCase(FormsTestCase):
 
 
 class PublicationFormTestCase(FormsTestCase):
+
+    def test_fields(self):
+        form = forms.PublicationForm()
+        self.assertCountEqual(['output_type',
+                               'publication',
+                               'doi',
+                               'crossref_metadata',
+                               'allocation'],
+                              list(form.fields.keys()))
 
     def test_validating_publication_form(self):
         form = forms.PublicationForm(data={})
