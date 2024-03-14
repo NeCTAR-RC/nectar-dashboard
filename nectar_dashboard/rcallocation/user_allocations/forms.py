@@ -19,10 +19,16 @@ class UserAllocationRequestAmendForm(base_forms.AllocationAmendRequestForm):
     next_status = 'X'
 
     class Meta(base_forms.AllocationAmendRequestForm.Meta):
-        exclude = ('project_id', 'allocation_home',
-                   'associated_site', 'special_approval', 'national',
-                   'status_explanation', 'convert_project_trial'
-                   ) + base_forms.AllocationAmendRequestForm.Meta.exclude
+        fields = ['project_name', 'project_description', 'contact_email',
+                  'estimated_project_duration', 'use_case', 'usage_patterns',
+                  'geographic_requirements', 'estimated_number_users',
+                  'field_of_research_1', 'for_percentage_1',
+                  'field_of_research_2', 'for_percentage_2',
+                  'field_of_research_3', 'for_percentage_3',
+                  'ardc_support', 'ardc_explanation',
+                  'ncris_explanation', 'ncris_facilities',
+                  'usage_types', 'supported_organisations',
+                  'bundle', 'ignore_warnings']
 
         widgets = {
             'project_name': forms.TextInput(attrs={'readonly': 'readonly'}),

@@ -65,7 +65,6 @@ class UserAllocationRequestAmendFormTestCase(base.BaseTestCase):
                                'project_description',
                                'contact_email',
                                'estimated_project_duration',
-                               'convert_trial_project',
                                'use_case',
                                'usage_patterns',
                                'geographic_requirements',
