@@ -485,7 +485,6 @@ class NectarBaseModelForm(forms.ModelForm):
 class ChiefInvestigatorForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.ChiefInvestigator
-        fields = '__all__'
         widgets = {
             'additional_researchers': forms.Textarea(),
         }
