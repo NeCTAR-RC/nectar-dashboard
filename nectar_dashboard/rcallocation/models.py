@@ -112,6 +112,7 @@ class Bundle(models.Model):
     description = models.CharField(max_length=255)
     zone = models.ForeignKey('Zone', on_delete=models.PROTECT)
     order = models.IntegerField()
+    su_per_year = models.IntegerField('SU budget per year')
 
     class Meta:
         ordering = ['order']
@@ -629,6 +630,12 @@ class AllocationRequest(models.Model):
                 quotas[
                     f"{bq.resource.codename}-{bq.bundle.zone}"
                 ] = bq.quota_dict()
+            quotas[f"rating.budget-{self.bundle.zone}"] = {
+                'zone': self.bundle.zone.name,
+                'resource': 'rating.budget',
+                'quota': int(self.bundle.su_per_year / 12
+                             * self.estimated_project_duration)
+                }
 
         overrides = self.quotas.all_quotas()
         for override in overrides:
@@ -737,6 +744,7 @@ class ServiceType(models.Model):
 
 
 class ResourceManager(models.Manager):
+    use_in_migrations = True
 
     def get_by_codename(self, codename):
         """Finds the Resource for a 'service_name.resource_name' codename."""

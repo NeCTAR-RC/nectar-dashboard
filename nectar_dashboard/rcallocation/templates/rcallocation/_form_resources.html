@@ -25,7 +25,7 @@
                                         <div class="badge bg-danger bundle-badge">Most Popular!</div>
                                     {% endif %}
                                     <h4>{{ bundle.name }}</h4>
-                                    <h3>{% bundle_quota bundle "rating.budget" %} SU / yr</h3>
+                                    <h3>{{ bundle.su_per_year }} SU / yr</h3>
                                     <p>{{ bundle.description }}</p>
                                     <ul class="features">
                                         <li>Runs {% bundle_quota bundle "compute.cores" 0.25 %} VCPUs continuously (max {% bundle_quota bundle "compute.cores" %} VCPUs at one time)</li>

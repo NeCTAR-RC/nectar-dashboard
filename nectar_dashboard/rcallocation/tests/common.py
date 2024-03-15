@@ -125,9 +125,12 @@ def factory_setup():
     fip = factories.ResourceFactory(quota_name='floatingip',
                                     service_type=network_st)
 
-    gold = factories.BundleFactory(name='gold', zone=nectar)
-    silver = factories.BundleFactory(name='silver', zone=nectar)
-    bronze = factories.BundleFactory(name='bronze', zone=nectar)
+    gold = factories.BundleFactory(name='gold', zone=nectar,
+                                   su_per_year=16000)
+    silver = factories.BundleFactory(name='silver', zone=nectar,
+                                     su_per_year=8000)
+    bronze = factories.BundleFactory(name='bronze', zone=nectar,
+                                     su_per_year=4000)
 
     factories.BundleQuotaFactory(bundle=gold, resource=objects, quota=200)
     factories.BundleQuotaFactory(bundle=gold, resource=cores, quota=200)

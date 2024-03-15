@@ -55,6 +55,7 @@ class BundleTest(base.AllocationAPITest):
         data = {'name': 'platinum',
                 'description': 'lots and lots',
                 'zone': 'nectar',
+                'su_per_year': 20000,
                 'order': 10}
         response = self.client.post('/rest_api/bundles/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
