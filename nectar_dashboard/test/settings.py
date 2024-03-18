@@ -409,18 +409,6 @@ SITE_MEMBERS_MAPPING = {
 # names are defined in forcodes.py file.
 ALLOCATION_FOR_CODE_SERIES = "ANZSRC_2020"
 
-# URI for the ROR dump file for the 0070 / 0071 migrations that load the
-# Organisations table, load local additions, and convert institution
-# strings to organisation refs.  It the URI is a URL, it will be fetched
-# locally and cached in the current directory.  If it is a relative URI
-# (i.e. no protocol) it is interpreted as a local pathname.  If it is None,
-# these migrations are no-ops.
-ORGANISATION_MIGRATION_ROR_DUMP_URI = None
-
-# If the following setting is True, any unmappable institution strings
-# will cause the 0071 migration to fail.  If False, they will be quietly
-# mapped to "Unknown Organization"
-ORGANISATION_MIGRATION_STRICT = False
 
 HORIZON_CONFIG['WARNING_INFO_URL'] = \
     "https://support.ehelp.edu.au/support/home"
