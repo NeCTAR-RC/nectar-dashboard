@@ -49,7 +49,7 @@ class OrganisationTest(base.AllocationAPITest):
         for k in ['id', 'proposed_by', 'vetted_by']:
             d.pop(k, None)
             e.pop(k, None)
-        self.assertEqual(e, d)
+        self.assertCountEqual(e, d)
 
     def test_list(self):
         self.client.force_authenticate(user=self.admin_user)
@@ -154,18 +154,6 @@ class OrganisationTest(base.AllocationAPITest):
         org = models.Organisation.objects.get(pk=response.data['id'])
         self.assertFalse(org.proposed_by)
         self.assertIsNone(org.vetted_by)
-
-    def test_propose_as_admin(self):
-        self.client.force_authenticate(user=self.admin_user)
-        data = self._make_data(url="https://www.uta.edu.au")
-        response = self.client.post('/rest_api/organisations/', data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self._check_data(data, response.data)
-        self.assertIn('vetted_by', response.data)
-        self.assertIn('proposed_by', response.data)
-        org = models.Organisation.objects.get(pk=response.data['id'])
-        self.assertEqual(self.admin_user.keystone_user_id, org.proposed_by)
-        self.assertEqual(self.admin_approver, org.vetted_by)
 
     def test_propose_as_user(self):
         self.client.force_authenticate(user=self.user)

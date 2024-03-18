@@ -49,9 +49,6 @@ class OrganisationSerializer(CountryFieldMixin, serializers.ModelSerializer):
 
 class ProposedOrganisationSerializer(CountryFieldMixin,
                                      serializers.ModelSerializer):
-    precedes = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=models.Organisation.objects.all())
     short_name = serializers.CharField(
         required=True, allow_blank=False, max_length=16)
     url = serializers.CharField(
@@ -61,7 +58,8 @@ class ProposedOrganisationSerializer(CountryFieldMixin,
     class Meta:
         model = models.Organisation
         read_only_fields = ['precedes', 'parent', 'ror_id', 'enabled']
-        exclude = ['vetted_by', 'proposed_by']
+        fields = ['id', 'url', 'short_name', 'full_name', 'country', 'ror_id',
+                  'precedes', 'parent', 'enabled']
 
 
 class OrganisationFilter(filters.FilterSet):
@@ -78,11 +76,10 @@ class OrganisationFilter(filters.FilterSet):
 
 class OrganisationViewSet(base.NoDestroyViewSet, auth.PermissionMixin):
     queryset = models.Organisation.objects.all()
-    serializer_class = OrganisationSerializer
     filter_class = OrganisationFilter
 
     def get_serializer_class(self):
-        if self.is_read_admin():
+        if self.is_write_admin():
             return AdminOrganisationSerializer
         elif self.action == 'create':
             return ProposedOrganisationSerializer
@@ -155,28 +152,11 @@ class OrganisationViewSet(base.NoDestroyViewSet, auth.PermissionMixin):
 
     def perform_create(self, serializer):
         if self.is_write_admin():
-            if serializer.validated_data.get('ror_id', '') \
-               or serializer.validated_data.get('vetted_by', None) \
-               or serializer.validated_data.get('proposed_by', ''):
-                # This is assumed to be a classic 'create' since the
-                # "propose organization" form doesn't supply any of
-                # these fields.
-                return serializer.save()
+            return serializer.save()
 
-            # Otherwise, this is a propose + vet, so we want to fill
-            # in the proposer + vetter + enable
-            try:
-                approver = models.Approver.objects.get(
-                    username=self.request.user.username)
-            except models.Approver.DoesNotExist:
-                approver = models.Approver.objects.get(username='system')
-            kwargs = {'vetted_by': approver,
-                      'proposed_by': self.request.user.keystone_user_id,
-                      'enabled': True}
-        else:
-            # This is a proposal that will require vetting
-            kwargs = {'vetted_by': None,
-                      'proposed_by': self.request.user.keystone_user_id,
-                      'enabled': True}
+        # This is a proposal that will require vetting
+        kwargs = {'vetted_by': None,
+                  'proposed_by': self.request.user.keystone_user_id,
+                  'enabled': True}
         self._check_unique_proposal(serializer)
         return serializer.save(**kwargs)
