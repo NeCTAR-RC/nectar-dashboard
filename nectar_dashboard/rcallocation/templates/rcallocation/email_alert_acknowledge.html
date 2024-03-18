@@ -55,7 +55,11 @@
 <table style="border:1px solid black;border-collapse:collapse;padding:5px 5px 5px 5px;">
   <tbody>
     <tr>
-      <td style="text-align:center;border:1px solid black;border-collapse:collapse;padding:5px 5px 5px 5px;" colspan=2>Requested Quotas</td>
+      {% if allocation.bundle %}
+      <td style="text-align:center;border:1px solid black;border-collapse:collapse;padding:5px 5px 5px 5px;" colspan=2>Additional Requested Local Resources</td>
+      {% else %}
+      <td style="text-align:center;border:1px solid black;border-collapse:collapse;padding:5px 5px 5px 5px;" colspan=2>Requested Resources</td>
+      {% endif %}
     </tr>
     {% for quota in quotas %}
     <tr>
