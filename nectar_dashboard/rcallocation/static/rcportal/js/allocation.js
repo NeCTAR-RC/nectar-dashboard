@@ -110,10 +110,31 @@
         }
     }
 
+    function setBudgets() {
+        let duration = $("#id_estimated_project_duration").val();
+        let durationStr = "year";
+
+        if(duration == 1) {
+            durationStr = "month";
+        } else if(duration > 1 && duration < 12) {
+            durationStr = duration + " months";
+        }
+        
+        $('.bundle').each(function() {
+            if($(this).data('suyear')) {
+                let budget = $(this).data('suyear') / 12 * duration;
+                $(this).find('.bundle-budget').text(parseInt(budget));
+                $(this).find('.bundle-duration').text(durationStr);
+            }
+        });
+    }
+
     if($("#allocationrequest_edit").length) {
         setPanelStates("#request_accordion");
         setPanelStates("#resources_accordion");
         setActiveResources();
+        setBudgets();
+        $("#id_estimated_project_duration").on("change", function() { setBudgets() });
 
         if(window.location.hash) {
             var pageHash = window.location.hash.substring(1);
