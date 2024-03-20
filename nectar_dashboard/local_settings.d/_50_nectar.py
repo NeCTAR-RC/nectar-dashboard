@@ -10,7 +10,7 @@ ADD_INSTALLED_APPS = [
 
 MIDDLEWARE += ('maintenance_mode.middleware.MaintenanceModeMiddleware',)  # noqa
 MAINTENANCE_MODE_STATE_BACKEND = "maintenance_mode.backends.CacheBackend"
-MAINTENANCE_MODE_IGNORE_URLS = (r"^(?!/allocation.*$).*",)
+MAINTENANCE_MODE_IGNORE_URLS = (r"^(?!/allocation.*|/rest_api.*$).*",)
 MAINTENANCE_MODE_TEMPLATE = 'rcallocation/maintenance-mode.html'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
