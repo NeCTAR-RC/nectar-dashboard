@@ -246,7 +246,7 @@ class AllocationRequest(models.Model):
     estimated_project_duration = models.IntegerField(
         'Estimated project duration',
         choices=project_duration_choices.DURATION_CHOICE,
-        default=1,
+        default=12,
         help_text="""Resources are approved for at most 12-months,
                     but projects can extend a request for resources
                     once it has been approved.""")

@@ -181,7 +181,7 @@ class AllocationTests(base.AllocationAPITest):
             {'quota': 100, 'resource': 'compute.cores', 'zone': 'nectar'},
             {'quota': 100, 'resource': 'compute.instances', 'zone': 'nectar'},
             {'quota': 1000, 'resource': 'compute.ram', 'zone': 'nectar'},
-            {'quota': 666, 'resource': 'rating.budget', 'zone': 'nectar'},
+            {'quota': 8000, 'resource': 'rating.budget', 'zone': 'nectar'},
             {'quota': 10, 'resource': 'network.router', 'zone': 'nectar'},
             {'quota': 10, 'resource': 'network.network', 'zone': 'nectar'},
             {'quota': 10, 'resource': 'network.loadbalancer',

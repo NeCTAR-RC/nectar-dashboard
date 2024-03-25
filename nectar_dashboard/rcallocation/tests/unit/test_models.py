@@ -163,7 +163,7 @@ class AllocationModelTestCase(base.BaseTestCase):
             {'quota': 200, 'resource': 'compute.cores', 'zone': 'nectar'},
             {'quota': 200, 'resource': 'compute.instances', 'zone': 'nectar'},
             {'quota': 2000, 'resource': 'compute.ram', 'zone': 'nectar'},
-            {'quota': 1333, 'resource': 'rating.budget', 'zone': 'nectar'},
+            {'quota': 16000, 'resource': 'rating.budget', 'zone': 'nectar'},
             {'quota': 20, 'resource': 'network.router', 'zone': 'nectar'},
             {'quota': 20, 'resource': 'network.network', 'zone': 'nectar'},
             {'quota': 20, 'resource': 'network.loadbalancer',
