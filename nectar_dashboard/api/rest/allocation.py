@@ -2,7 +2,24 @@ from django.views import generic
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
 
-from nectar_dashboard.api import allocation
+from nectar_dashboard.api import allocation as allocation_api
+from nectar_dashboard.rcallocation.api import allocations
+
+
+@urls.register
+class CurrentAllocation(generic.View):
+    """API for Quotas.
+
+    """
+    url_regex = r'nectar/allocation/current/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get the current allocation for the context
+
+        """
+        allocation = allocation_api.get_current_allocation(request)
+        return allocations.AllocationSerializer(allocation).data
 
 
 @urls.register
@@ -17,7 +34,7 @@ class Quota(generic.View):
         """Get quota for a given resource
 
         """
-        quota = allocation.get_quota(request, resource_code)
+        quota = allocation_api.get_quota(request, resource_code)
         if quota:
             return quota
         return -1
@@ -35,7 +52,7 @@ class Usage(generic.View):
         """Get su usage for an allocation
 
         """
-        usage = allocation.get_usage(request)
+        usage = allocation_api.get_usage(request)
         if usage:
             return usage
         return [{'rate': 0, 'qty': 0}]

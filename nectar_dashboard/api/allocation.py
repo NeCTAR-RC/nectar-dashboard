@@ -10,6 +10,12 @@ def get_current_allocation(request):
         .filter(project_id=request.user.project_id) \
         .filter(status=models.AllocationRequest.APPROVED)
 
+    no_parents = allocations.filter(parent_request__isnull=True)
+    if no_parents:
+        return no_parents[0]
+
+    # If the latest approved has a parent then means under
+    # renewal so get the last approved allocation.
     if allocations:
         return allocations[0]
 
