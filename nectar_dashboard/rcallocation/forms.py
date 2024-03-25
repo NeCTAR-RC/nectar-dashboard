@@ -356,7 +356,7 @@ class QuotaMixin(object):
         """
         for st in models.ServiceType.objects.filter(experimental=False):
             for resource in st.resource_set.filter(requestable=True):
-                for zone in st.zones.all():
+                for zone in st.zones.filter(enabled=True):
                     key = "quota-%s__%s" % (resource.codename, zone.name)
                     field_args = {'required': False,
                                   'help_text': resource.help_text}
