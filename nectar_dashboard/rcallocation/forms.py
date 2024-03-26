@@ -359,21 +359,21 @@ class QuotaMixin(object):
                 for zone in st.zones.filter(enabled=True):
                     key = "quota-%s__%s" % (resource.codename, zone.name)
                     field_args = {'required': False,
-                                  'help_text': resource.help_text}
+                                  'help_text': resource.help_text,
+                                  'resource': resource,
+                                  'zone': zone}
+                    if not self.instance.id:
+                        field_args['initial'] = resource.default or 0
                     if st.is_multizone():
                         field_args['label'] = resource.name
                     else:
                         field_args['label'] = resource.name
                     if resource.resource_type == 'boolean':
-                        self.fields[key] = QuotaBooleanField(resource=resource,
-                                                             zone=zone,
-                                                             **field_args)
+                        self.fields[key] = QuotaBooleanField(**field_args)
                     else:
                         self.fields[key] = QuotaIntegerField(
-                            resource=resource,
-                            zone=zone,
-                            **field_args, min_value=0,
-                            initial=resource.default or 0)
+                            **field_args,
+                            min_value=0)
 
     def multi_zone_quota_fields(self):
         """Get all quota fields that are multi zone
