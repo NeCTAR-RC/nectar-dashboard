@@ -8,6 +8,7 @@ function getUsageTotal() {
   $.ajax({
     url: "/api/nectar/allocation/usage/",
     type: 'GET',
+    dataType: 'JSON',
     success: function(data) {
       //console.log(data);
       if(data[0].rate) {
@@ -16,7 +17,7 @@ function getUsageTotal() {
       }
     },
     error: function (xhr, ajaxOptions, thrownError) {
-      console.error(url + " " + xhr.status + " " + thrownError);
+      console.error(xhr.status + " " + thrownError);
       return false;
     }
   });
@@ -27,6 +28,7 @@ function getUsageBudget() {
   $.ajax({
     url: "/api/nectar/allocation/su-budget/",
     type: 'GET',
+    dataType: 'JSON',
     success: function(data) {
       if(data) {
         var project_su_budget = data;
@@ -38,8 +40,31 @@ function getUsageBudget() {
         }
       }
     },
-    error: function (xhr, ajaxOptions, thrownError){
-      console.error(url + " " + xhr.status + " " + thrownError);
+    error: function (xhr, ajaxOptions, thrownError) {
+      console.error(xhr.status + " " + thrownError);
+    }
+  });
+}
+
+/* Function to get the current bundle for the project allocation  */
+function getCurrentBundle() {
+  var api_url = "/api/nectar/allocation/current/";
+  $.ajax({
+    url: api_url,
+    type: 'GET',
+    dataType: 'JSON',
+    success: function(data) {
+      console.log(data);
+      if(data.bundle) {
+        let bundle = data.bundle;
+        $("#current_bundle").text(bundle);
+      }
+      else {
+        $("#current_bundle").text("Custom");
+      }
+    },
+    error: function(xhr, ajaxOptions, thrownError){
+      console.error(api_url + " " + xhr.status + " " + thrownError);
     }
   });
 }
@@ -60,7 +85,7 @@ $(document).ready(function() {
   $('[data-toggle="tooltip"]').tooltip();
 
   // Is it the login page?
-  if($("#splash")) {
+  if($("#splash").length) {
     // Stop css animations when
     setTimeout(function(){
       $("#hex-flashing polygon").addClass("paused");
@@ -69,7 +94,8 @@ $(document).ready(function() {
     }, 60000);
   }
 
-  if($("#project_info")) {
+  if($("#project_info").length) {
+    getCurrentBundle();
     getUsageTotal();
     getUsageBudget();
   }

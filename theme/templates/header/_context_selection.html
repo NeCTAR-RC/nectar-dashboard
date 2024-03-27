@@ -37,8 +37,10 @@
     <p><small><a href="https://support.ehelp.edu.au/support/solutions/articles/6000171494-project-allocation-expiry-and-renewal#pt" target="_blank">Learn more about project trials <i class="fa fa-chevron-right"></i></a></small></p>
   {% else %}
     <p><small><a href="https://support.ehelp.edu.au/support/solutions/articles/6000171494-project-allocation-expiry-and-renewal" target="_blank">Learn more about allocations <i class="fa fa-chevron-right"></i></a></small></p>
+    <h6 class="text-muted text-uppercase">Resource Bundle <i class="fa fa-question-circle" title="The current Resource Bundle for the project allocation." data-toggle="tooltip"></i></h6>
+    <h5 id="current_bundle">N/A</h5>
     <h6 class="text-muted text-uppercase">Project Usage <i class="fa fa-question-circle" title="The amount of Service Units (SUs) used by the project to date, out of the SU Budget for the allocation period." data-toggle="tooltip"></i></h6>
-    <h4><span id="project_su_used">0</span> / <span id="project_su_budget">0</span> SU</h4>
+    <h5><span id="project_su_used">0</span> / <span id="project_su_budget">0</span> SU</h5>
     <p><small><a href="{% url 'horizon:project:allocation-usage:index' %}">Usage Summary</a> | <a href="{% url 'horizon:project:overview:index' %}">Limit Summary</a></small></p>
   {% endif %}
 </div>
