@@ -33,6 +33,9 @@ REST_FRAMEWORK = {
 }
 
 REST_VIEW_SETS = (
+    ('versions',
+     'nectar_dashboard.rcallocation.api.versions.VersionsViewSet',
+     'versions'),
     ('allocations',
      'nectar_dashboard.rcallocation.api.allocations.AllocationViewSet',
      None),
