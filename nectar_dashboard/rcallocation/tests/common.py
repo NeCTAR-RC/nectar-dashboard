@@ -89,6 +89,7 @@ def factory_setup():
     monash = factories.ZoneFactory(name='monash')
     tas = factories.ZoneFactory(name='tas')
     nectar = factories.ZoneFactory(name='nectar')
+    disabled_zone = factories.ZoneFactory(name='disabled-zone', enabled=False)
     # Needed for checker tests as we use this zone
     factories.ZoneFactory(name='QRIScloud')
 
@@ -100,6 +101,7 @@ def factory_setup():
     volume_st.zones.add(melbourne)
     volume_st.zones.add(monash)
     volume_st.zones.add(tas)
+    volume_st.zones.add(disabled_zone)
     object_st.zones.add(nectar)
     compute_st.zones.add(nectar)
     network_st.zones.add(nectar)
@@ -226,7 +228,7 @@ def get_groups(service_type, allocation=None):
                            'service_type': group.service_type.catalog_name,
                            'quotas': quotas})
             allocated_zones.append(group.zone.name)
-    for zone in st.zones.all():
+    for zone in st.zones.filter(enabled=True):
         if zone.name in allocated_zones:
             continue
         quotas = []
