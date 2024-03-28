@@ -38,6 +38,19 @@ def get_quota(request, resource_code):
 
 
 @memoized.memoized
+def get_su_budget(request):
+    allocation = get_current_allocation(request)
+    if allocation is None:
+        return None
+
+    if allocation.bundle:
+        return allocation.bundle.su_per_year / 12 \
+            * allocation.estimated_project_duration
+    else:
+        return get_quota(request, 'rating.budget')
+
+
+@memoized.memoized
 def get_usage(request):
     allocation = get_current_allocation(request)
     if allocation is None:

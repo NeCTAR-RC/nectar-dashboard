@@ -35,8 +35,26 @@ class Quota(generic.View):
 
         """
         quota = allocation_api.get_quota(request, resource_code)
-        if quota:
+        if quota is not None:
             return quota
+        return -1
+
+
+@urls.register
+class SUBudget(generic.View):
+    """API for SU Budget.
+
+    """
+    url_regex = r'nectar/allocation/su-budget/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get SU budget for current allocation
+
+        """
+        budget = allocation_api.get_su_budget(request)
+        if budget is not None:
+            return budget
         return -1
 
 

@@ -25,7 +25,7 @@ function getUsageTotal() {
 /* Function to get the project usage budget from api request */
 function getUsageBudget() {
   $.ajax({
-    url: "/api/nectar/allocation/quota/rating.budget/",
+    url: "/api/nectar/allocation/su-budget/",
     type: 'GET',
     success: function(data) {
       if(data) {
