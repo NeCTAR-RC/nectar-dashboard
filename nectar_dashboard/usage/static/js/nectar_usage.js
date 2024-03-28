@@ -60,7 +60,7 @@ var usageTrend = (function() {
   /* Private function to get the project usage budget from api request */
   function getUsageBudget() {
     $.ajax({
-      url: "/api/nectar/allocation/quota/rating.budget/",
+      url: "/api/nectar/allocation/su-budget/",
       type: 'GET',
       async: false,
       success: function(data) {
