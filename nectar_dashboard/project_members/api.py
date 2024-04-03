@@ -19,7 +19,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from openstack_dashboard.api.keystone import keystoneclient
+
+from nectar_dashboard.api.manuka import manukaclient
+from nectarclient_lib import exceptions
 
 
 class UserNotFound(Exception):
@@ -30,13 +32,14 @@ class DuplicateUsers(Exception):
     pass
 
 
-def user_get_by_name(request, name, admin=True):
-    manager = keystoneclient(request, admin=admin).users
-    users = manager.list(name=name)
-    if len(users) == 0:
+def user_get_by_name(request, name):
+    client = manukaclient(request)
+    try:
+        user = client.keystone_ext.get_user_by_name(name)
+    except exceptions.NotFound:
         raise UserNotFound()
-    elif len(users) > 1:
+    except exceptions.Conflict:
         # Just in case ...
         raise DuplicateUsers(name)
     else:
-        return users[0]
+        return user

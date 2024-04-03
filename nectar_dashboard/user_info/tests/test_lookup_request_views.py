@@ -15,7 +15,7 @@
 from unittest import mock
 
 from django.urls import reverse
-from manukaclient import exceptions as manuka_exceptions
+from nectarclient_lib import exceptions
 
 from . import base
 
@@ -102,7 +102,7 @@ class AdminViewUserTestCase(ViewMixin, base.AdminViewTestCase):
 
     def test_get_unknown(self, mock_get_manuka):
         client = mock_get_manuka.return_value
-        client.users.get.side_effect = manuka_exceptions.NotFound
+        client.users.get.side_effect = exceptions.NotFound
         unknown_url = reverse('horizon:identity:lookup:view', args=[9999])
         response = self.client.get(unknown_url)
         self.assertStatusCode(response, 302)

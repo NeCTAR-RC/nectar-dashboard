@@ -4,7 +4,8 @@ mysqlclient
 django-cors-headers
 python-memcached
 python-freshdesk
-manukaclient>=0.7.0
+manukaclient>=1.1.0
+nectarclient-lib
 gnocchiclient
 django-mathfilters
 git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms
