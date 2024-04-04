@@ -187,7 +187,7 @@ class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
                 'quotas__quota_set__resource__service_type',
                 'quotas__quota_set__resource', 'investigators',
                 'associated_site', 'ncris_facilities', 'usage_types',
-                'ardc_support', 'supported_organisations')
+                'ardc_support', 'supported_organisations', 'bundle')
 
     def _perform_create_or_update(self, serializer, kwargs):
         data = serializer.validated_data
