@@ -14,10 +14,6 @@ class AllocationUsage(horizon.Panel):
         """Only show panel if allocation has a budget"""
 
         project_id = context['request'].user.project_id
-        try:
-            resource = models.Resource.objects.get(quota_name='budget')
-        except models.Resource.DoesNotExist:
-            return False
 
         allocations = models.AllocationRequest.objects \
             .filter(project_id=project_id) \
@@ -25,13 +21,7 @@ class AllocationUsage(horizon.Panel):
 
         if allocations:
             allocation = allocations[0]
-            try:
-                budget = models.Quota.objects.get(group__allocation=allocation,
-                                                  resource=resource)
-            except models.Quota.DoesNotExist:
-                return False
-
-            if budget.quota > 0:
+            if allocation.su_budget and allocation.su_budget > 0:
                 return True
         return False
 
