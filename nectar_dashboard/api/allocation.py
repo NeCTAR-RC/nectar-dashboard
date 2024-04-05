@@ -25,16 +25,7 @@ def get_quota(request, resource_code):
     allocation = get_current_allocation(request)
     if allocation is None:
         return None
-
-    resource = models.Resource.objects.get_by_codename(resource_code)
-    try:
-        quota = models.Quota.objects.get(group__allocation=allocation,
-                                         resource=resource)
-    except models.Quota.DoesNotExist:
-        quota = None
-
-    if quota:
-        return quota.quota
+    return allocation.get_quota(resource_code)
 
 
 @memoized.memoized
@@ -42,12 +33,7 @@ def get_su_budget(request):
     allocation = get_current_allocation(request)
     if allocation is None:
         return None
-
-    if allocation.bundle:
-        return allocation.bundle.su_per_year / 12 \
-            * allocation.estimated_project_duration
-    else:
-        return get_quota(request, 'rating.budget')
+    return allocation.su_budget
 
 
 @memoized.memoized

@@ -36,11 +36,6 @@ def get_cores_resource_id():
     return models.Resource.objects.get_by_codename('compute.cores').id
 
 
-@memoized.memoized
-def get_budget_resource_id():
-    return models.Resource.objects.get_by_codename('rating.budget').id
-
-
 class FOR2008ViewSet(viewsets.GenericViewSet):
 
     @method_decorator(cache_page(86400))
@@ -191,7 +186,6 @@ def apply_partitioned_quotas(allocation, allocation_summary, percentage):
     fraction = float(percentage) / 100.0
     instance_quota = 0
     core_quota = 0
-    budget_quota = 0
 
     for group in allocation.quotas.all():
         for quota in group.quota_cache:
@@ -199,10 +193,9 @@ def apply_partitioned_quotas(allocation, allocation_summary, percentage):
                 instance_quota = quota.quota
             elif quota.resource_id == get_cores_resource_id():
                 core_quota = quota.quota
-            elif quota.resource_id == get_budget_resource_id():
-                budget_quota = quota.quota
     allocation_summary['instance_quota'] = instance_quota * fraction
     allocation_summary['core_quota'] = core_quota * fraction
+    budget_quota = allocation.su_budget or 0
     allocation_summary['budget_quota'] = budget_quota * fraction
 
 

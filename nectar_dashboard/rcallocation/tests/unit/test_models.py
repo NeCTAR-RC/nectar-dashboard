@@ -190,6 +190,52 @@ class AllocationModelTestCase(base.BaseTestCase):
         ]
         self.assertEqual(expected, allocation.quota_list())
 
+    def test_su_budget_no_bundle(self):
+        allocation = factories.AllocationFactory.create(
+            bundle=None, create_quotas=False)
+        budget_resource = models.Resource.objects.get_by_codename(
+            'rating.budget')
+        zone = models.Zone.objects.get(name='nectar')
+        qg = models.QuotaGroup.objects.create(
+            allocation=allocation, zone=zone,
+            service_type=budget_resource.service_type)
+        models.Quota.objects.create(group=qg, resource=budget_resource,
+                                    quota=25, requested_quota=20)
+        self.assertEqual(25, allocation.su_budget)
+
+    def test_su_budget_override(self):
+        bronze = models.Bundle.objects.get(name='bronze')
+        allocation = factories.AllocationFactory.create(
+            bundle=bronze, create_quotas=False)
+        budget_resource = models.Resource.objects.get_by_codename(
+            'rating.budget')
+        zone = models.Zone.objects.get(name='nectar')
+        qg = models.QuotaGroup.objects.create(
+            allocation=allocation, zone=zone,
+            service_type=budget_resource.service_type)
+        models.Quota.objects.create(group=qg, resource=budget_resource,
+                                    quota=13453, requested_quota=20)
+        self.assertEqual(13453, allocation.su_budget)
+
+    def test_su_budget_none(self):
+        allocation = factories.AllocationFactory.create(
+            bundle=None, create_quotas=False)
+        self.assertIsNone(allocation.su_budget)
+
+    def test_su_budget_bundle(self):
+        gold = models.Bundle.objects.get(name='gold')
+        allocation = factories.AllocationFactory.create(
+            bundle=gold, create_quotas=False)
+        self.assertEqual(16000, allocation.su_budget)
+
+    def test_get_quota_does_not_exist(self):
+        allocation = factories.AllocationFactory.create(create_quotas=False)
+        self.assertIsNone(allocation.get_quota('rating.budget'))
+
+    def test_get_quota_exists(self):
+        allocation = factories.AllocationFactory.create()
+        self.assertEqual(0, allocation.get_quota('rating.budget'))
+
 
 class QuotaGroupModelTestCase(base.BaseTestCase):
 

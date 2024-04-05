@@ -489,6 +489,16 @@ class AllocationRequest(models.Model):
             return self.associated_site.display_name
 
     @property
+    def su_budget(self):
+        budget_quota = self.get_quota('rating.budget')
+        if self.bundle:
+            if budget_quota is not None:
+                return budget_quota
+            return int(self.bundle.su_per_year / 12
+                       * self.estimated_project_duration)
+        return budget_quota
+
+    @property
     def primary_id(self):
         return self.parent_request.id if self.parent_request else self.id
 
@@ -622,6 +632,16 @@ class AllocationRequest(models.Model):
     def __str__(self):
         return '{0}: {1}'.format(self.id, self.project_name)
 
+    def get_quota(self, resource_code):
+        resource = Resource.objects.get_by_codename(resource_code)
+        try:
+            quota = Quota.objects.get(group__allocation=self,
+                                      resource=resource)
+        except Quota.DoesNotExist:
+            return None
+        else:
+            return quota.quota
+
     def quota_list(self):
         quotas = {}
         if self.bundle:
@@ -633,8 +653,7 @@ class AllocationRequest(models.Model):
             quotas[f"rating.budget-{self.bundle.zone}"] = {
                 'zone': self.bundle.zone.name,
                 'resource': 'rating.budget',
-                'quota': int(self.bundle.su_per_year / 12
-                             * self.estimated_project_duration)
+                'quota': self.su_budget
                 }
 
         overrides = self.quotas.all_quotas()

@@ -22,7 +22,7 @@ class IndexView(horizon_views.HorizonTemplateView):
             raise
 
         context['allocation'] = allocation
-        su_budget = allocation_api.get_su_budget(self.request)
+        su_budget = allocation.su_budget
         context['su_budget'] = su_budget
         today = datetime.datetime.today()
 
