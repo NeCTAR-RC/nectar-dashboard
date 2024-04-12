@@ -51,7 +51,7 @@ class RequestTestCase(base.BaseTestCase):
         call_kwargs = base.FAKE_FD_NOTIFIER.send_email.mock_calls[0].kwargs
         self.assertEqual("test_user", call_kwargs['email'])
         self.assertEqual(
-            f"Allocation request [{form['project_description']}]",
+            f"Allocation request [unassigned][{form['project_description']}]",
             call_kwargs['subject'])
         # Not checking the expansion of the template body.
 
