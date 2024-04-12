@@ -5,8 +5,13 @@ ADD_INSTALLED_APPS = [
     'corsheaders',
     'select2',
     'mathfilters',
-    'maintenance_mode'
+    'maintenance_mode',
+    'tz_detect',
 ]
+
+MIDDLEWARE += ('tz_detect.middleware.TimezoneMiddleware',)  # noqa
+TZ_DETECT_COUNTRIES = ('AU', 'NZ')
+TZ_SESSION_KEY = "django_timezone"
 
 MIDDLEWARE += ('maintenance_mode.middleware.MaintenanceModeMiddleware',)  # noqa
 MAINTENANCE_MODE_STATE_BACKEND = "maintenance_mode.backends.CacheBackend"

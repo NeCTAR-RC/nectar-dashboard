@@ -30,6 +30,7 @@ setuptools.setup(
                       "django-countries<7.5",
                       "langstrothclient>=0.5.0",
                       "django-maintenance-mode",
+                      "django-tz-detect @ git+https://github.com/sorrison/django-tz-detect@develop",
                       ],
     license="GPLv3+",
     zip_safe=False,
