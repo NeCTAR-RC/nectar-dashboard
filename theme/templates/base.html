@@ -84,5 +84,7 @@
     </script>
     <script type="text/javascript" src="{% themable_asset 'js/custom.js' %}"></script>
     <div id="modal_wrapper"></div>
+    {% load tz_detect %}
+    {% tz_detect %}
   </body>
 </html>
