@@ -7,6 +7,10 @@ ADD_INSTALLED_APPS = [
     'mathfilters',
     'maintenance_mode',
     'tz_detect',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.contrib.migrations',
 ]
 
 MIDDLEWARE += ('tz_detect.middleware.TimezoneMiddleware',)  # noqa
@@ -17,6 +21,18 @@ MIDDLEWARE += ('maintenance_mode.middleware.MaintenanceModeMiddleware',)  # noqa
 MAINTENANCE_MODE_STATE_BACKEND = "maintenance_mode.backends.CacheBackend"
 MAINTENANCE_MODE_IGNORE_URLS = (r"^(?!/allocation.*|/rest_api.*$).*",)
 MAINTENANCE_MODE_TEMPLATE = 'rcallocation/maintenance-mode.html'
+
+
+HEALTH_CHECK = {
+    "SUBSETS": {
+        "startup-probe": ["MigrationsHealthCheck",
+                          "DatabaseBackend",
+                          "Cache backend: default"],
+        "liveness-probe": ["Cache backend: default"],
+
+    },
+}
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 

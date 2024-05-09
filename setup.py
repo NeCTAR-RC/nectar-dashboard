@@ -31,6 +31,7 @@ setuptools.setup(
                       "langstrothclient>=0.5.0",
                       "django-maintenance-mode",
                       "django-tz-detect @ git+https://github.com/sorrison/django-tz-detect@develop",
+                      "django-health-check",
                       ],
     license="GPLv3+",
     zip_safe=False,
