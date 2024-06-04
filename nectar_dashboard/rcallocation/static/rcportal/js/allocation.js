@@ -275,6 +275,18 @@ $(function(){
   }
 });
 
+// Show Pawsey modal on first load of a new allocation request form if
+// the contact email matches any of W.A Universities' email pattern.
+$(function(){
+  if ($('#id_contact_email').length) {
+    var email = $('#id_contact_email').val();
+    var show = email.match(/^.+@(.+\.)*uwa\.edu\.au$|^.+@(.+\.)*murdoch\.edu\.au$|^.+@curtin\.edu\.au$|^.+@nd\.edu\.au$|^.+@ecu\.edu\.au$/);
+    if (show != null && isNewAllocationRequest() /* see template */ ) {
+      $('#modal-pawsey').modal('show');
+    }
+  }
+});
+
 // Grants formset
 (function($) {
     var this_year = new Date().getFullYear().toString();

@@ -257,6 +257,25 @@
     </div>
   </div>
 
+  <!-- Pawsey modal dialog -->
+  <div id="modal-pawsey" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Notice for W.A users</h4>
+        </div>
+        <div class="modal-body">
+          <p>For W.A users affected by Nimbus Cloud decommissioning, before submitting an allocation, please read this information document here: <a href="https://support.ehelp.edu.au/support/solutions/articles/6000272127-nimbus-cloud-changes-information-for-users" target="_blank">Nimbus Cloud Changes: Information For Users</a>.</p>
+          <p>If you have further questions you can email our help desk: support@nectar.org.au </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
     {% if nags|length > 0 %}
     <script>
       function show_nags() {
