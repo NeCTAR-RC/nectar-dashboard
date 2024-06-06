@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="row">
-                      <div class="col-sm-12">
+                      <div class="col-sm-12 col-lg-8 col-lg-offset-2">
                             {% for st, zones in form.multi_zone_quota_fields %}
                                 <div class="extra-resource mb-4" style="display: flex;">
                                     <div class="pt-1 pr-4">
@@ -90,33 +90,63 @@
                                     <div style="flex-grow: 1;">
                                         <h4>{{ st }}</h4>
                                         <p class="mb-4">{{ st.description|safe }}</p>
-					                    {% for zone, fields in zones.items %}
+                                        {% if st.catalog_name == 'volume' %}
                                             <fieldset hidden>
-                                                <legend>{{ zone }}</legend>
-                                                {% for field in fields %}
-                                                    <div class="form-horizontal">
-                                                        <div class="form-group {% if field.errors %}has-error{% endif %}"
-                                                        id="id_{{ field.html_name }}-group" {% if hide %}hidden{% endif %}>
-                                                            <label for="id_{{ field.html_name }}" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                                                                {{ field.label }}
-                                                                {% if field.help_text %}
-                                                                    <img class="help-popover" src="{% static 'rcportal/img/help.png' %}" data-content="{{ field.help_text }}" data-original-title="{{ field.label }}" data-html="true">
-                                                                {% endif %}
-                                                            </label>
-                                                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                                                                <div class="input-group resource-zone">
-                                                                    {{ field }}
-                                                                    <span class="input-group-addon">{{ field.field.resource.unit }}</span>
+                                                <legend>Zones</legend>
+                                                {% for zone, fields in zones.items %}
+                                                    {% for field in fields %}
+                                                        <div class="form-horizontal">
+                                                            <div class="form-group {% if field.errors %}has-error{% endif %}"
+                                                            id="id_{{ field.html_name }}-group" {% if hide %}hidden{% endif %}>
+                                                                <label for="id_{{ field.html_name }}" class="control-label text-capitalize col-xs-12 col-sm-6 col-md-4">
+                                                                    {{ zone }}&nbsp;{{ field.label }}
+                                                                    {% if field.help_text %}
+                                                                        <img class="help-popover" src="{% static 'rcportal/img/help.png' %}" data-content="{{ field.help_text }}" data-original-title="{{ field.label }}" data-html="true">
+                                                                    {% endif %}
+                                                                </label>
+                                                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                                                    <div class="input-group resource-zone">
+                                                                        {{ field }}
+                                                                        <span class="input-group-addon">{{ field.field.resource.unit }}</span>
+                                                                    </div>
+                                                                    {% for error in field.errors %}
+                                                                        <span class="help-block">{{ error }}</span>
+                                                                    {% endfor %}
                                                                 </div>
-                                                                {% for error in field.errors %}
-                                                                    <span class="help-block">{{ error }}</span>
-                                                                {% endfor %}
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    {% endfor %}
                                                 {% endfor %}
                                             </fieldset>
-					                    {% endfor %}
+                                        {% else %}
+                                            {% for zone, fields in zones.items %}
+                                                <fieldset class="boxed-field" hidden>
+                                                    <legend>{{ zone }}</legend>
+                                                    {% for field in fields %}
+                                                        <div class="form-horizontal">
+                                                            <div class="form-group {% if field.errors %}has-error{% endif %}"
+                                                            id="id_{{ field.html_name }}-group" {% if hide %}hidden{% endif %}>
+                                                                <label for="id_{{ field.html_name }}" class="control-label col-xs-12 col-sm-6 col-md-4">
+                                                                    {{ field.label }}
+                                                                    {% if field.help_text %}
+                                                                        <img class="help-popover" src="{% static 'rcportal/img/help.png' %}" data-content="{{ field.help_text }}" data-original-title="{{ field.label }}" data-html="true">
+                                                                    {% endif %}
+                                                                </label>
+                                                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                                                    <div class="input-group resource-zone">
+                                                                        {{ field }}
+                                                                        <span class="input-group-addon">{{ field.field.resource.unit }}</span>
+                                                                    </div>
+                                                                    {% for error in field.errors %}
+                                                                        <span class="help-block">{{ error }}</span>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </fieldset>
+                                            {% endfor %}
+                                        {% endif %}
                                     </div>
                                 </div>
                             {% endfor %}

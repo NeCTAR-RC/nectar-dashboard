@@ -372,6 +372,21 @@ img.help-popover {
     margin: 0 10px;
 }
 
+.control-label {
+  text-align: left !important;
+}
+
+fieldset.boxed-field {
+  border: 1px solid #e5e5e5;
+  margin: 10px 2px;
+  padding: 0.35em 0.625em 0.75em;
+  legend {
+    border: initial;
+    padding: initial;
+    width: initial;
+  }
+}
+
 .more_fields_tab {
   fieldset {
     position: relative;
