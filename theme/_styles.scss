@@ -126,9 +126,8 @@ input {
 }
 
 .btn {
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 1px;
+  display: inline-block;
+  letter-spacing: 0.5px;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out, filter .15s ease-in-out;
   // &:focus,
   // &:active,
@@ -146,6 +145,32 @@ input {
     &:hover {
       background-color: #969696;
       border-color: #969696;
+    }
+  }
+}
+
+.btn-primary {
+  color: #000000;
+  background-color: $ardc-orange;
+  border-color: $ardc-orange;
+  &:after {
+    content: "";
+    opacity: 0;
+    transition: all 0.15s ease-in-out 0s;
+  }
+  &:hover {
+    color: #ffffff;
+    background-color: $ardc-purple;
+    border-color: $ardc-purple;
+    &:after {
+      opacity: 1;
+      color: #ffffff;
+      margin-left: 10px;
+      vertical-align: top;
+      font-family: FontAwesome;
+      content: "\f054";
+      font-style: normal;
+      font-weight: normal;
     }
   }
 }

@@ -205,22 +205,26 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#resources_accordion" href="#panelSubmit">4. Submit</a>
+                    <a data-toggle="collapse" data-parent="#resources_accordion" href="#panelSubmit">4. Submit Checklist</a>
                 </h4>
             </div>
             <div id="panelSubmit" class="request-collapse panel-collapse collapse">
                 <div class="panel-body">
                     <div class="row step-nav">
-                        <div class="col-xs-12 text-center">
-                            <p>Step 4 out of 4</p>
-                            <h3>Are you ready to submit your allocation request?</h3>
-                            <div class="form-actions">
+                        <div class="col-xs-12">
+                            <p class="text-center">Before submitting this allocation request, please review the following checklist:</p>
+                            <div class="medium_width m-auto well">
+                                <ul>
+                                    <li>I have provided all required project information.</li>
+                                    <li>I have provided the Chief Investigator details and contact information.</li>
+                                    <li>I have provided Research Grant information.</li>
+                                    <li>I have provided the FoR code to describe the research for this project.</li>
+                                </ul>
+                            </div>
+                            
+                            <p class="text-center mt-4">Step 4 out of 4</p>
+                            <div class="form-actions text-center">
                                 <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#resources_accordion" href="#panelJustification"><i class="fa fa-chevron-left"></i> Previous</a>
-                                <input class="btn btn-sm btn-success submit-form-button" type="submit" value="Submit">
-				{% if warnings|length > 0 %}
-				<input class="btn btn-sm btn-success submit-form-button" type="button"
-				       onClick="submit_ignore()" value="Submit ignoring warnings">
-				{% endif %}
                             </div>
                         </div>
                     </div>

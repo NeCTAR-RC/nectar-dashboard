@@ -115,6 +115,14 @@
     <section id="form-step2">
       {% include "rcallocation/_form_resources.html" with form=form %}
     </section>
+    <section id="submit-section" class="py-5 text-right">
+      <h4 class="d-inline-block mr-3">Are you ready to submit this allocation request?</h4>
+      <input class="btn btn-primary submit-form-button" type="submit" value="Submit">
+      {% if warnings|length > 0 %}
+        <input class="btn btn-primary submit-form-button" type="button"
+              onClick="submit_ignore()" value="Submit ignoring warnings">
+      {% endif %}
+    </section>
   </form>
   
   <!-- Usage Budget Modal -->
