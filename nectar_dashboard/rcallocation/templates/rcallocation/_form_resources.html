@@ -90,6 +90,11 @@
                                     <div style="flex-grow: 1;">
                                         <h4>{{ st }}</h4>
                                         <p class="mb-4">{{ st.description|safe }}</p>
+                                            {% if st.notes %}
+                                                <fieldset>
+                                                    <p><span class="label label-info">Note:</span> {{ st.notes|safe }}</p>
+                                                </fieldset>
+                                            {% endif %}
                                         {% if st.catalog_name == 'volume' %}
                                             <fieldset hidden>
                                                 <legend>Zones</legend>
@@ -120,7 +125,7 @@
                                             </fieldset>
                                         {% else %}
                                             {% for zone, fields in zones.items %}
-                                                <fieldset class="boxed-field" hidden>
+                                                <fieldset class="boxed-field" >
                                                     <legend>{{ zone }}</legend>
                                                     {% for field in fields %}
                                                         <div class="form-horizontal">
@@ -244,6 +249,9 @@
                 {% for st, fields in form.single_zone_quota_fields %}
                     <fieldset>
                         <legend>{{ st }}</legend>
+                        {% if st.notes %}
+                            <p><span class="label label-info">Note:</span> {{ st.notes|safe }}</p>
+                        {% endif %}
                         <div class="row">
                             <div class="col-xs-8">
                             {% for field in fields %}

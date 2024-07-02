@@ -298,7 +298,8 @@ body {
 }
 
 .panel-group#quota_formset .panel .panel-heading {
-  border-top-radius: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
 }
 
 .bundle {
@@ -356,6 +357,12 @@ body {
 
 .quota-group {
   margin-bottom: 10px;
+}
+
+.extra-resource {
+  fieldset {
+    display: none;
+  }
 }
 
 .flex-group {
