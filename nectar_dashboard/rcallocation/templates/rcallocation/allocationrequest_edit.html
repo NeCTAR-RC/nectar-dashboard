@@ -91,6 +91,9 @@
                 <li>Chief Investigator details and contact.</li>
                 <li>Research Grant information.</li>
                 <li>FoR code to describe research.</li>
+                {% if object and object.can_have_publications %}
+                  <li>Details of research project outputs/publications.</li>
+                {% endif %}
               </ul>
             </div>
           </div>

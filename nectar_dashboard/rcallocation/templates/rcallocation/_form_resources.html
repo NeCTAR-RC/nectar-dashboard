@@ -219,6 +219,9 @@
                                     <li>I have provided the Chief Investigator details and contact information.</li>
                                     <li>I have provided Research Grant information.</li>
                                     <li>I have provided the FoR code to describe the research for this project.</li>
+                                    {% if object and object.can_have_publications %}
+                                        <li>I have provided details of research project outputs/publications.</li>
+                                    {% endif %}
                                 </ul>
                             </div>
                             
