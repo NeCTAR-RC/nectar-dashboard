@@ -18,9 +18,15 @@ class PendingAllocationsListView(views.BaseAllocationsListView):
 class AllocationUpdateView(views.BaseAllocationView):
     template_name = "rcallocation/allocationrequest_update.html"
     model = models.AllocationRequest
-    form_class = forms.AllocationRequestForm
     success_url = "../../"
     page_title = 'Update'
+
+    def get_form_class(self):
+        allocation = self.get_object()
+        if allocation.is_requested():
+            return forms.AllocationRequestForm
+        elif allocation.amendment_requested():
+            return forms.AllocationAmendRequestForm
 
 
 class AllocationNotesEdit(mixins.UserPassesTestMixin, UpdateView):

@@ -66,14 +66,53 @@
             <div class="panel-body">
               <div class="row">
                 <div class="col-xs-12">
-                  <div class="row">
-                    <div class="col-md-6">
-                      {% include "rcallocation/field.html" with field=form.use_case %}
-                    </div>
-                    <div class="col-md-6">
-                      {% include "rcallocation/field.html" with field=form.estimated_number_users %}
-                    </div>
-                  </div>
+                {% if not object or not object.can_have_publications %}
+                   <span class="label label-info">Note:</span>
+                   Estimate the number of users and services that will be supported by the allocation over the next year.
+                   Please distinguish between users who will have direct access to the VM instances and those who will use any
+                   services that are hosted on the instances.
+                   <br/>
+                   <br/>
+                   <div class="row">
+                     <div class="col-sm-12 col-md-8">
+                       {% include "rcallocation/field.html" with field=form.direct_access_user_estimate %}
+                     </div>
+                     <div class="col-sm-12 col-md-8">
+                       {% include "rcallocation/field.html" with field=form.estimated_service_count %}
+                     </div>
+                     <div class="col-sm-12 col-md-8">
+                       {% include "rcallocation/field.html" with field=form.estimated_service_active_users %}
+                     </div>
+                {% else %}
+                   <span class="label label-info">Note:</span>
+                   Specify the number of users of your project allocation over the past year.
+                   Estimated number of users and services that have been supported by the allocation over the past year.
+                   Please distinguish between users who have direct access to the VM instances and those who have used any services
+                   that are hosted on the instances. If your project has multiple Nectar project allocations, only provide these
+                   numbers for one of the allocations to avoid double counting.
+                   <br/>
+                   <br/>
+                   <div class="row">
+                     <div class="col-sm-12 col-md-6">
+                        {% include "rcallocation/field.html" with field=form.multiple_allocations_check %}
+                     </div>
+                     <div class="col-sm-12 col-md-8 toggleable">
+                       {% include "rcallocation/field.html" with field=form.direct_access_user_past_year %}
+                     </div>
+                     <div class="col-sm-12 col-md-8 toggleable">
+                       {% include "rcallocation/field.html" with field=form.active_service_count %}
+                     </div>
+                     <div class="col-sm-12 col-md-8 toggleable">
+                       {% include "rcallocation/field.html" with field=form.service_active_users_past_year %}
+                     </div>
+                     <div class="col-sm-12 col-md-8 toggleable">
+                       {% include "rcallocation/field.html" with field=form.users_figure_type %}
+                     </div>
+                {% endif %}
+                     <div class="col-sm-12 col-md-8">
+                       {% include "rcallocation/field.html" with field=form.use_case %}
+                     </div>
+                   </div>
                 </div>
               </div>
               <div class="row step-nav">
@@ -162,7 +201,7 @@
                 <div class="col-xs-12">
                   <span class="label label-info">Note:</span>
                   Specify the Universities and other Research Organisations that will
-                  be supported by the allocation.  Alternatively you can select 'All Organisations'.
+                  be supported by the allocation. Alternatively you can select 'All Organisations'.
                   <br/>
                   <br/>
                   {% include "rcallocation/organisation_field.html" with field=form.supported_organisations field_marker="supported_organisations" %}
@@ -291,7 +330,7 @@
       <div class="panel panel-default {% if not object or not object.can_have_publications %}hidden{% endif %}">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelEight">8. Publication/Output</a>
+                <a data-toggle="collapse" data-parent="#request_accordion" href="#panelEight">8. Publication/Output and Impact</a>
             </h4>
         </div>
         <div {% if object.can_have_publications %}id="panelEight"{%endif%} class="request-collapse panel-collapse collapse">
@@ -307,6 +346,12 @@
                     {{ publication_formset.management_form }}
                     {% include "rcallocation/publication_form.html"%}
                   </div>
+                </div>
+                <div class="col-md-6">
+                    {% include "rcallocation/field.html" with field=form.nectar_benefit_description %}
+                  </div>
+                  <div class="col-md-6">
+                    {% include "rcallocation/field.html" with field=form.nectar_research_impact %}
                 </div>
               </div>
               <div class="row step-nav">

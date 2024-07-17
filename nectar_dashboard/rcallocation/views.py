@@ -391,6 +391,11 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
                              models.AllocationRequest.UPDATE_PENDING]:
             allocation.submit_date = timezone.now()
 
+        # Set the old filed to None if the new user count fields are set
+        if allocation.direct_access_user_estimate is not None or \
+               allocation.direct_access_user_past_year is not None:
+            allocation.estimated_number_users = None
+
         allocation.save()
         form.save_m2m()
 

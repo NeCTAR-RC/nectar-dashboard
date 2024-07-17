@@ -182,7 +182,6 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     for_percentage_1 = 50
     for_percentage_2 = 40
     for_percentage_3 = 10
-    estimated_number_users = 1000
     associated_site = site
 
     @classmethod

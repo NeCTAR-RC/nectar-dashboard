@@ -174,6 +174,12 @@ class BaseAllocationForm(forms.ModelForm):
             'contact_email': forms.TextInput(attrs={'readonly': 'readonly'}),
             'use_case': forms.Textarea(),
             'usage_patterns': forms.Textarea(),
+            'direct_access_user_estimate': forms.NumberInput(
+                attrs={'class': 'w-auto'}),
+            'estimated_service_count': forms.NumberInput(
+                attrs={'class': 'w-auto'}),
+            'estimated_service_active_users': forms.NumberInput(
+                attrs={'class': 'w-auto'}),
             'associated_site': forms.CheckboxInput(
                 attrs={'class': 'col-md-6'}),
             'national': forms.CheckboxInput(attrs={'class': 'col-md-6'}),
@@ -183,6 +189,20 @@ class BaseAllocationForm(forms.ModelForm):
             'for_percentage_3': forms.Select(attrs={'class': 'col-md-2'}),
             'ncris_explanation': forms.TextInput(),
             'ardc_explanation': forms.TextInput(),
+            'multiple_allocations_check': forms.Select(
+                attrs={'class': 'w-auto'},
+                choices=[
+                         (False, 'No, this is the only allocation for '
+                                 'this project.'),
+                         (True, 'Yes, usage numbers have already been '
+                                'provided.'),]),
+            'direct_access_user_past_year': forms.NumberInput(
+                attrs={'class': 'w-auto'}),
+            'active_service_count': forms.NumberInput(
+                attrs={'class': 'w-auto'}),
+            'service_active_users_past_year': forms.NumberInput(
+                attrs={'class': 'w-auto'}),
+            'users_figure_type': forms.Select(attrs={'class': 'w-auto'}),
         }
 
     groups = (
@@ -426,6 +446,13 @@ class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
                   '5 and 32 characters in length.',
         widget=forms.TextInput(attrs={'autofocus': 'autofocus'}))
 
+    class Meta(BaseAllocationForm.Meta):
+        exclude = ('multiple_allocations_check',
+                  'direct_access_user_past_year', 'active_service_count',
+                  'service_active_users_past_year', 'users_figure_type',
+                  'nectar_benefit_description', 'nectar_research_impact',
+                   ) + BaseAllocationForm.Meta.exclude
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.generate_quota_fields()
@@ -460,7 +487,9 @@ class AllocationAmendRequestForm(BaseAllocationForm, QuotaMixin):
     has_quotas = True
 
     class Meta(BaseAllocationForm.Meta):
-        pass
+        exclude = ('direct_access_user_estimate', 'estimated_service_count',
+                  'estimated_service_active_users',
+                   ) + BaseAllocationForm.Meta.exclude
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

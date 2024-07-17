@@ -66,7 +66,7 @@ class RequestTestCase(base.BaseTestCase):
         allocation = factories.AllocationFactory.create(
             contact_email=self.user.name, status='A')
 
-        # For an approved allocaton we init the form with
+        # For an approved allocation we init the form with
         # approved quotas as opposed to requested quotas
         # So we should "approve" all the requested quotas
         # first.
@@ -82,8 +82,8 @@ class RequestTestCase(base.BaseTestCase):
                     args=(allocation.id,)))
         self.assertStatusCode(response, 200)
         expected_model, form = common.request_allocation(user=self.user,
-                                                         model=allocation)
-
+                                                         model=allocation,
+                                                         amending=True)
         # Update the use case in this edit
         expected_model['use_case'] = form['use_case'] = 'new use case'
         form['ignore_warnings'] = True
@@ -101,7 +101,6 @@ class RequestTestCase(base.BaseTestCase):
         model = (models.AllocationRequest.objects.get(
             project_description=form['project_description'],
             parent_request_id=None))
-
         self.assert_allocation(model, status='X', **expected_model)
         self.assert_history(model, initial_state, initial_mod)
 
