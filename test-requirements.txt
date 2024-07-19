@@ -5,3 +5,12 @@ mox
 mox3
 mock
 freezegun
+heat-dashboard~=10.0
+manila-ui~=10.0
+octavia-dashboard~=12.0
+designate-dashboard~=17.0
+magnum-ui @ git+https://github.com/NeCTAR-RC/magnum-ui@nectar/2023.2
+cloudkitty-dashboard~=17.0
+trove-dashboard @ git+https://github.com/NeCTAR-RC/trove-dashboard@nectar/2023.2
+murano-dashboard @ git+https://github.com/NeCTAR-RC/murano-dashboard@nectar/2023.2
+warre-dashboard @ git+https://github.com/NeCTAR-RC/warre-dashboard@nectar/2023.2
