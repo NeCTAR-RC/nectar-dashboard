@@ -254,3 +254,18 @@ class OrganisationTest(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         org = models.Organisation.objects.get(pk=1)
         self.assertEqual("https://www.uta.edu.au", org.url)
+
+    def test_filter_organisations(self):
+        org1 = factories.OrganisationFactory.create()
+        factories.OrganisationFactory.create()
+        factories.OrganisationFactory.create()
+
+        response = self.client.get('/rest_api/organisations/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 7)
+        response = self.client.get(
+            f'/rest_api/organisations/?short_name={org1.short_name}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['full_name'],
+                         org1.full_name)

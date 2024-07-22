@@ -76,7 +76,7 @@ class OrganisationFilter(filters.FilterSet):
 
 class OrganisationViewSet(base.NoDestroyViewSet, auth.PermissionMixin):
     queryset = models.Organisation.objects.all()
-    filter_class = OrganisationFilter
+    filterset_class = OrganisationFilter
 
     def get_serializer_class(self):
         if self.is_write_admin():
