@@ -28,6 +28,17 @@ class RestrictedAllocationsEditView(BaseAllocationUpdateView):
     form_class = forms.UserAllocationRequestForm
     success_url = "../../"
 
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.object.can_be_amended():
+            initial['direct_access_user_past_year'] = \
+                self.object.direct_access_user_estimate
+            initial['active_service_count'] = \
+                self.object.estimated_service_count
+            initial['service_active_users_past_year'] = \
+                self.object.estimated_service_active_users
+        return initial
+
 
 class RestrictedAllocationsDetailsView(views.AllocationDetailView):
     template_name = "rcallocation/allocationrequest_user_detail.html"

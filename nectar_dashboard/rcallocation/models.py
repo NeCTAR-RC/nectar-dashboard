@@ -296,12 +296,115 @@ class AllocationRequest(models.Model):
 
     estimated_number_users = models.IntegerField(
         'Estimated number of users',
-        default='1',
         validators=[MinValueValidator(1), ],
         error_messages={
-            'min_value': 'The estimated number of users must be great than 0'},
+            'min_value': 'The estimated number of users must be greater '
+            'than 0'},
         help_text="""Estimated number of users, researchers and collaborators
-        to be supported by the allocation.""")
+        to be supported by the allocation.""",
+        editable=False, null=True)  # Read only field as this is no longer used
+
+    direct_access_user_estimate = models.IntegerField(
+        'Estimated number of users who will directly access the instances',
+        null=True, blank=False,
+        validators=[MinValueValidator(1), ],
+        error_messages={
+            'min_value': 'The estimated number of users must be greater '
+            'than 0'},
+        help_text= """Estimated number of users who will be creating virtual
+                machine instances or directly logging in to them.""")
+
+    estimated_service_count = models.IntegerField(
+        'Estimated number of research services or platforms to be hosted '
+        'using this allocation',
+        null=True, blank=False,
+        validators=[MinValueValidator(-1), ],
+        error_messages={
+            'min_value': 'The estimated number cannot be less than 0'},
+        help_text= """Estimate the number of research services or research
+                 platforms (also called virtual research environments or
+                 virtual laboratories) you expect to be hosted on your
+                 allocation. These could be web sites, web applications,
+                 databases or data repositories. Do not include application
+                 software that is run by users who log in to the virtual
+                 machine instance and run the application themselves,
+                 e.g. from the command line.""")
+
+    estimated_service_active_users = models.IntegerField(
+        'Estimated total number of unique active users of these services',
+        null=True, blank=False,
+        validators=[MinValueValidator(1), ],
+        error_messages={
+            'min_value': 'The estimated number of users must be greater '
+            'than 0'},
+        help_text= """Estimate the number of people you expect will use the
+                 research services or platforms hosted on your allocation.
+                 Note that when you renew your Nectar allocation we will ask
+                 you to estimate the number of unique active users of these
+                 services over the previous year.""")
+
+    multiple_allocations_check = models.BooleanField(
+        """Does the research project have more than one allocation
+         on the Nectar Cloud where the number of users has already been
+         provided in a separate allocation?""",
+        default=False)
+
+    direct_access_user_past_year = models.IntegerField(
+        'Number of users directly accessing instances over the past year',
+        null=True, blank=False,
+        validators=[MinValueValidator(1), ],
+        error_messages={
+             'min_value': 'The number of users must be greater '
+             'than 0'},
+        help_text="""Number of users who have created virtual machine
+                 instances or directly logged in to them in the last year.""")
+
+    active_service_count = models.IntegerField(
+        'Number of active research services or platforms hosted using '
+        'this allocation',
+        null=True, blank=False,
+        validators=[MinValueValidator(-1), ],
+        error_messages={
+             'min_value': 'The number cannot be less than 0'},
+        help_text="""Estimate the number of research services or research
+                 platforms (also called virtual research environments of
+                 virtual laboratories) that were hosted on your allocation
+                 resources at any time during the last year. These could be
+                 web sites, web applications, databases or data repositories.
+                 Do not include application software that is run by users who
+                 log in to the virtual machine instance and run the
+                 application themselves, e.g. from the command line.""")
+
+    service_active_users_past_year = models.IntegerField(
+        'Total number of unique active users of these services over '
+        'the past year',
+        null=True, blank=False,
+        validators=[MinValueValidator(1), ],
+        error_messages={
+             'min_value': 'The number of users must be greater '
+             'than 0'},
+        help_text="""The number of individuals who have used the research
+                 services or platforms hosted on your allocation in the last
+                 year (or less if they have been operating for less than a
+                 year). Specify if this number is measured (e.g. you can
+                 accurately measure the number of individuals who have logged
+                 in to your service in the last year) or estimated (please
+                 provide conservative, justifiable estimates).""")
+
+    MEASURED = 'measured'
+    ESTIMATED = 'estimated'
+
+    OPTION_CHOICES = [
+        (MEASURED, 'Measured'),
+        (ESTIMATED, 'Estimated'),
+    ]
+
+    users_figure_type = models.CharField(
+        'Are the above figures measured or estimated?',
+        max_length=10,
+        choices=OPTION_CHOICES,
+        default=MEASURED,
+    )
 
     # At the model level, we need to represent both 2008 and 2020 code
     # indefinitely.
@@ -462,6 +565,18 @@ class AllocationRequest(models.Model):
 
     bundle = models.ForeignKey(Bundle, null=True, blank=True,
                                on_delete=models.PROTECT)
+    nectar_benefit_description = models.TextField(
+        "Benefits of Nectar",
+        max_length=4096, blank=True,
+        help_text='Briefly describe how the use of Nectar has benefited '
+                  'your research activity.')
+
+    nectar_research_impact = models.TextField(
+        "Research Impact",
+        max_length=4096, blank=True,
+        help_text='Briefly indicate the impact of your research activity '
+                  'that has been supported by Nectar, particularly '
+                  'translational impact (i.e. impact on society).')
 
     class Meta:
         ordering = ['-modified_time']

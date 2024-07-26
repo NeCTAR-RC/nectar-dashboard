@@ -330,9 +330,9 @@ def request_allocation(user, model=None, quota_specs=None,
                        supported_organisations=None,
                        publications=None, grants=None,
                        usage_types=None, investigators=None,
-                       approving=False, bundle=None):
-    """Builds a form and a dict of the allocatio it would create
-
+                       approving=False, amending=False,
+                       bundle=None):
+    """Builds a form and a dict of the allocation it would create
     approving - set to true when testing approving form
     """
     duration = fuzzy.FuzzyChoice(DURATION_CHOICES.keys()).fuzz()
@@ -355,11 +355,20 @@ def request_allocation(user, model=None, quota_specs=None,
                   'for_percentage_3': forp_3 * 10,
                   'usage_patterns': fuzzy.FuzzyText().fuzz(),
                   'use_case': fuzzy.FuzzyText().fuzz(),
-                  'estimated_number_users': quota.fuzz(),
+                  'users_figure_type': 'measured',
+                  'multiple_allocations_check': False,
                   'geographic_requirements': fuzzy.FuzzyText().fuzz(),
                   'associated_site': site,
                   'bundle': bundle
                   }
+    if not amending:
+        model_dict['direct_access_user_estimate'] = quota.fuzz()
+        model_dict['estimated_service_count'] = quota.fuzz()
+        model_dict['estimated_service_active_users'] = quota.fuzz()
+    else:
+        model_dict['direct_access_user_past_year'] = quota.fuzz()
+        model_dict['active_service_count'] = quota.fuzz()
+        model_dict['service_active_users_past_year'] = quota.fuzz()
 
     if model:
         groups = {}

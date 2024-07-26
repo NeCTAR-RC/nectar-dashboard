@@ -196,13 +196,44 @@
           <p><span class="label label-warning">Not recorded</span></p>
           {% endif %}
           <h3>Estimated Number of Users</h3>
-          <p>
-            {% if allocation.estimated_number_users %}
-              {{ allocation.estimated_number_users }}
-            {% else %}
-              <span class="label label-warning">No Submission</span>
-            {% endif %}
-          </p>
+          {% if allocation.estimated_number_users %}
+             <p>
+                {{ allocation.estimated_number_users }}
+             </p>
+          {% elif allocation.multiple_allocations_check %}
+              <p>
+                 The number of users and services have been provided in another allocation for this project
+              </p>
+          {% else %}
+          <h4>Number of users directly accessing instances over the past year</h4>
+               <p>
+                  {{ allocation.direct_access_user_past_year }}
+               </p>
+          <h4>Number of active research services or platforms hosted using this allocation</h4>
+               <p>
+                  {{ allocation.active_service_count }}
+               </p>
+          <h4>Total number of unique active users of these services over the past year </h4>
+               <p>
+                  {{ allocation.service_active_users_past_year }}
+               </p>
+          <h4>Are the above figures measured or estimated?</h4>
+               <p>
+                  {{ allocation.users_figure_type }}
+               </p>
+          <h4>Estimated number of users who will directly access the instances</h4>
+               <p>
+                  {{ allocation.direct_access_user_estimate }}
+               </p>
+          <h4>Estimated number of research services or platforms to be hosted using this allocation</h4>
+               <p>
+                  {{ allocation.estimated_service_count }}
+               </p>
+          <h4>Estimated total number of unique active users of these services</h4>
+               <p>
+                  {{ allocation.estimated_service_active_users }}
+               </p>
+          {% endif %}
         </div>
       </div>
       <div class="row">
@@ -366,7 +397,7 @@
 
       <div class="row">
         <div class="col-md-8">
-          <h3>Publications / Outputs</h3>
+          <h3>Publication/Output and Impact</h3>
             {% if allocation.publications.all %}
                  <table class="table table-hover">
                     {% for pub in allocation.publications.all %}
@@ -401,6 +432,24 @@
             {% else %}
               <p><span class="label label-warning">No Submission. (None expected for new requests.)</span></p>
             {% endif %}
+          {% if allocation.can_have_publications %}
+             <h4>Benefits of Nectar</h4>
+                <p>
+                {% if allocation.nectar_benefit_description %}
+                   {{ allocation.nectar_benefit_description|linebreaksbr }}
+                {% else %}
+                   <span class="label label-warning">No Submission</span>
+                {% endif %}
+                </p>
+             <h4>Research Impact</h4>
+                <p>
+                {% if allocation.nectar_research_impact %}
+                   {{ allocation.nectar_research_impact|linebreaksbr }}
+                {% else %}
+                   <span class="label label-warning">No Submission</span>
+                {% endif %}
+                </p>
+         {% endif %}
         </div>
       </div>
       {% if allocation.status_explanation %}

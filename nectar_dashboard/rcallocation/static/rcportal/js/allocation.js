@@ -1278,3 +1278,22 @@ function submit_ignore() {
     document.getElementById("id_ignore_warnings").value = '1';
     document.getElementById("new-allocation").submit();   // sic
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    function toggleFields() {
+        var selectField = document.getElementById("id_multiple_allocations_check");
+        var fields = document.getElementsByClassName("toggleable");
+
+        var selectedValue = selectField.value;
+
+        for (var i = 0; i < fields.length; i++) {
+            fields[i].style.display = selectedValue === "True" ? "none" : "block";
+        }
+    }
+
+    var selectField = document.getElementById("id_multiple_allocations_check");
+    if (selectField) {
+        selectField.addEventListener("change", toggleFields);
+        toggleFields();  // Initial call to set the correct visibility
+    }
+});
