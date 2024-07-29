@@ -22,16 +22,21 @@
                             <div class="col-sm-12 col-md-6 col-lg-3">
                                 <div class="bundle" data-bundle="{{ bundle.id }}" data-suyear="{{ bundle.su_per_year }}">
                                     {% if forloop.first %}
-                                        <div class="badge bg-danger bundle-badge">Most Popular!</div>
+                                        <div class="badge bg-danger bundle-badge">Popular</div>
                                     {% endif %}
                                     <h4>{{ bundle.name }}</h4>
                                     <h3><span class="bundle-budget">{{ bundle.su_per_year }}</span> SU / <span class="bundle-duration">yr</span></h3>
-                                    <p>{{ bundle.description }}</p>
+                                    <p class="mb-auto">{{ bundle.description }}</p>
                                     <ul class="features">
                                         <li>Runs {% bundle_quota bundle "compute.cores" 0.25 %} VCPUs continuously (max {% bundle_quota bundle "compute.cores" %} VCPUs at one time)</li>
                                         <li>Up to {% bundle_quota bundle "compute.instances" %} instances</li>
                                         <li>{% bundle_quota bundle "object.object" %} GB Object Storage</li>
                                     </ul>
+                                    <p class="mb-4">
+                                        <small>
+                                            <a href="#" onclick="event.preventDefault();FreshworksWidget('open', 'article', { id: 6000271206 });"><i class="fa fa-info-circle mr-2"></i>More details</a>
+                                        </small>
+                                    </p>
                                     <a href="#" class="btn btn-default">
                                         <span class="not-selected">Select {{ bundle.name }}</span>
                                         <span class="selected"><i class="fa fa-check"></i> Selected</span>
@@ -42,7 +47,7 @@
                         <div class="col-sm-12 col-md-6 col-lg-3">
                             <div class="bundle">
                                 <h4 class="mb-5">Custom</h4>
-                                <p>For advanced cloud users with a specific set of resource requirements. Users must be able to estimate their requested SU budget using the methods suggested in <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257485-how-to-estimate-a-service-unit-budget" target="_blank">this guide</a>.</p>
+                                <p class="mb-auto">For advanced cloud users with a specific set of resource requirements. Users must be able to estimate their requested SU budget using the methods suggested in <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257485-how-to-estimate-a-service-unit-budget" target="_blank">this guide</a>.</p>
                                 <a href="#" data-toggle="modal" data-target="#modal-custom-bundle" class="btn btn-default">
                                     <span class="not-selected">Select Custom</span>
                                     <span class="selected"><i class="fa fa-check"></i> Customise</span>
