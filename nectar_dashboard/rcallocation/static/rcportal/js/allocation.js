@@ -211,6 +211,7 @@ function apply_popover() {
     placement: "top",
     html: true,
     animation: false,
+    container: 'body'
   })
   .on("mouseenter", function() {
     var _this = this;
