@@ -454,6 +454,8 @@ var usageTrend = (function() {
   }
 
   function showServiceUsage(object_arr) {
+    $("#service_comparison").empty();
+    $("#service_legend").empty();
     let sum = 0;
     const colours = ["#00A2C4", "#E51875", "#F8B20E", "#8E489B", "#969696", "#666666"];
     object_arr.forEach(obj => {
