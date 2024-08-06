@@ -66,7 +66,7 @@
             Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-secondary"></span>
             sign.</p>
           </blockquote>
-          {% if form.errors or investigator_formset.errors|first or publication_formset.errors or grant_formset.errors or grant_formset.non_form_errors %}
+          {% if form.errors or investigator_formset.errors|first or publication_formset.errors|first or grant_formset.errors|first or grant_formset.non_form_errors %}
             <div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Please fix the errors highlighted below and resubmit.</div>
           {% endif %}
           {% if warnings %}
