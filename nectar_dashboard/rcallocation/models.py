@@ -347,7 +347,7 @@ class AllocationRequest(models.Model):
         """Does the research project have more than one allocation
          on the Nectar Cloud where the number of users has already been
          provided in a separate allocation?""",
-        default=False)
+        null=True, default=False)
 
     direct_access_user_past_year = models.IntegerField(
         'Number of users directly accessing instances over the past year',
@@ -404,6 +404,7 @@ class AllocationRequest(models.Model):
         max_length=10,
         choices=OPTION_CHOICES,
         default=MEASURED,
+        null=True,
     )
 
     # At the model level, we need to represent both 2008 and 2020 code
@@ -567,13 +568,13 @@ class AllocationRequest(models.Model):
                                on_delete=models.PROTECT)
     nectar_benefit_description = models.TextField(
         "Benefits of Nectar",
-        max_length=4096, blank=True,
+        max_length=4096, blank=True, null=True,
         help_text='Briefly describe how the use of Nectar has benefited '
                   'your research activity.')
 
     nectar_research_impact = models.TextField(
         "Research Impact",
-        max_length=4096, blank=True,
+        max_length=4096, blank=True, null=True,
         help_text='Briefly indicate the impact of your research activity '
                   'that has been supported by Nectar, particularly '
                   'translational impact (i.e. impact on society).')
