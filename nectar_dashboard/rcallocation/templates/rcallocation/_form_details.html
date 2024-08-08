@@ -74,13 +74,16 @@
                    <br/>
                    <br/>
                    <div class="row">
-                     <div class="col-sm-12 col-md-8">
+                     <div class="col-sm-12 col-md-6">
+                        {% include "rcallocation/field.html" with field=form.multiple_allocations_check %}
+                     </div>
+                     <div class="col-sm-12 col-md-8 toggleable">
                        {% include "rcallocation/field.html" with field=form.direct_access_user_estimate %}
                      </div>
-                     <div class="col-sm-12 col-md-8">
+                     <div class="col-sm-12 col-md-8 toggleable">
                        {% include "rcallocation/field.html" with field=form.estimated_service_count %}
                      </div>
-                     <div class="col-sm-12 col-md-8">
+                     <div class="col-sm-12 col-md-8 toggleable">
                        {% include "rcallocation/field.html" with field=form.estimated_service_active_users %}
                      </div>
                 {% else %}

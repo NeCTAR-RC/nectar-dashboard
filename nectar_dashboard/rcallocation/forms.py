@@ -447,8 +447,7 @@ class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
         widget=forms.TextInput(attrs={'autofocus': 'autofocus'}))
 
     class Meta(BaseAllocationForm.Meta):
-        exclude = ('multiple_allocations_check',
-                  'direct_access_user_past_year', 'active_service_count',
+        exclude = ('direct_access_user_past_year', 'active_service_count',
                   'service_active_users_past_year', 'users_figure_type',
                   'nectar_benefit_description', 'nectar_research_impact',
                    ) + BaseAllocationForm.Meta.exclude
@@ -460,6 +459,13 @@ class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
     def clean(self):
         cleaned_data = super().clean()
         project_name = cleaned_data.get('project_name')
+        multiple_allocations_check = \
+            cleaned_data.get('multiple_allocations_check')
+        direct_access_user_estimate = \
+            cleaned_data.get('direct_access_user_estimate')
+        estimated_service_count = cleaned_data.get('estimated_service_count')
+        estimated_service_active_users = \
+            cleaned_data.get('estimated_service_active_users')
 
         if project_name and not self.instance.id:
             # Only want this restriction on new allocations only
@@ -480,6 +486,23 @@ class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
                         'Otherwise, choose a different identifier.'
                         % reverse('horizon:allocation:user_requests:index'))))
 
+        if multiple_allocations_check:
+            cleaned_data['direct_access_user_estimate'] = None
+            cleaned_data['estimated_service_count'] = None
+            cleaned_data['estimated_service_active_users'] = None
+        else:
+            if direct_access_user_estimate is None:
+                self.add_error(
+                    'direct_access_user_estimate',
+                    forms.ValidationError('This field is required'))
+            if estimated_service_count is None:
+                self.add_error(
+                    'estimated_service_count',
+                    forms.ValidationError('This field is required'))
+            if estimated_service_active_users is None:
+                self.add_error(
+                    'estimated_service_active_users',
+                    forms.ValidationError('This field is required'))
         return cleaned_data
 
 
@@ -494,6 +517,35 @@ class AllocationAmendRequestForm(BaseAllocationForm, QuotaMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.generate_quota_fields()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        multiple_allocations_check = \
+            cleaned_data.get('multiple_allocations_check')
+        direct_access_user_past_year = \
+            cleaned_data.get('direct_access_user_past_year')
+        active_service_count = cleaned_data.get('active_service_count')
+        service_active_users_past_year = \
+            cleaned_data.get('service_active_users_past_year')
+
+        if multiple_allocations_check:
+            cleaned_data['direct_access_user_past_year'] = None
+            cleaned_data['active_service_count'] = None
+            cleaned_data['service_active_users_past_year'] = None
+        else:
+            if direct_access_user_past_year is None:
+                self.add_error(
+                    'direct_access_user_past_year',
+                    forms.ValidationError('This field is required'))
+            if active_service_count is None:
+                self.add_error(
+                    'active_service_count',
+                    forms.ValidationError('This field is required'))
+            if service_active_users_past_year is None:
+                self.add_error(
+                    'service_active_users_past_year',
+                    forms.ValidationError('This field is required'))
+        return cleaned_data
 
 
 class NectarBaseModelForm(forms.ModelForm):

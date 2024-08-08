@@ -304,9 +304,9 @@ class AllocationRequest(models.Model):
         to be supported by the allocation.""",
         editable=False, null=True)  # Read only field as this is no longer used
 
-    direct_access_user_estimate = models.IntegerField(
+    direct_access_user_estimate = models.PositiveIntegerField(
         'Estimated number of users who will directly access the instances',
-        null=True, blank=False,
+        null=True, blank=True,
         validators=[MinValueValidator(1), ],
         error_messages={
             'min_value': 'The estimated number of users must be greater '
@@ -314,11 +314,10 @@ class AllocationRequest(models.Model):
         help_text= """Estimated number of users who will be creating virtual
                 machine instances or directly logging in to them.""")
 
-    estimated_service_count = models.IntegerField(
+    estimated_service_count = models.PositiveIntegerField(
         'Estimated number of research services or platforms to be hosted '
         'using this allocation',
-        null=True, blank=False,
-        validators=[MinValueValidator(-1), ],
+        null=True, blank=True,
         error_messages={
             'min_value': 'The estimated number cannot be less than 0'},
         help_text= """Estimate the number of research services or research
@@ -330,9 +329,9 @@ class AllocationRequest(models.Model):
                  machine instance and run the application themselves,
                  e.g. from the command line.""")
 
-    estimated_service_active_users = models.IntegerField(
+    estimated_service_active_users = models.PositiveIntegerField(
         'Estimated total number of unique active users of these services',
-        null=True, blank=False,
+        null=True, blank=True,
         validators=[MinValueValidator(1), ],
         error_messages={
             'min_value': 'The estimated number of users must be greater '
@@ -349,9 +348,9 @@ class AllocationRequest(models.Model):
          provided in a separate allocation?""",
         null=True, default=False)
 
-    direct_access_user_past_year = models.IntegerField(
+    direct_access_user_past_year = models.PositiveIntegerField(
         'Number of users directly accessing instances over the past year',
-        null=True, blank=False,
+        null=True, blank=True,
         validators=[MinValueValidator(1), ],
         error_messages={
              'min_value': 'The number of users must be greater '
@@ -359,11 +358,10 @@ class AllocationRequest(models.Model):
         help_text="""Number of users who have created virtual machine
                  instances or directly logged in to them in the last year.""")
 
-    active_service_count = models.IntegerField(
+    active_service_count = models.PositiveIntegerField(
         'Number of active research services or platforms hosted using '
         'this allocation',
-        null=True, blank=False,
-        validators=[MinValueValidator(-1), ],
+        null=True, blank=True,
         error_messages={
              'min_value': 'The number cannot be less than 0'},
         help_text="""Estimate the number of research services or research
@@ -375,10 +373,10 @@ class AllocationRequest(models.Model):
                  log in to the virtual machine instance and run the
                  application themselves, e.g. from the command line.""")
 
-    service_active_users_past_year = models.IntegerField(
+    service_active_users_past_year = models.PositiveIntegerField(
         'Total number of unique active users of these services over '
         'the past year',
-        null=True, blank=False,
+        null=True, blank=True,
         validators=[MinValueValidator(1), ],
         error_messages={
              'min_value': 'The number of users must be greater '

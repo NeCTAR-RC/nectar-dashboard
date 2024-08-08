@@ -27,6 +27,7 @@ class UserAllocationRequestFormTestCase(base.BaseTestCase):
                                'use_case',
                                'usage_patterns',
                                'geographic_requirements',
+                               'multiple_allocations_check',
                                'direct_access_user_estimate',
                                'estimated_service_count',
                                'estimated_service_active_users',

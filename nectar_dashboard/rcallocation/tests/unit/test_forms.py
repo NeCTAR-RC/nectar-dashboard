@@ -24,12 +24,7 @@ DUMMY_ALLOC_DATA = {'project_description': 'dummy',
                     'project_name': 'dummy',
                     'estimated_project_duration': 1,
                     'use_case': 'dummy',
-                    'direct_access_user_estimate': 1,
-                    'estimated_service_count': 1,
-                    'estimated_service_active_users': 1,
-                    'direct_access_user_past_year': 1,
-                    'active_service_count': 1,
-                    'service_active_users_past_year': 1,
+                    'multiple_allocations_check': True,
                     'users_figure_type': 'measured',
                     'for_percentage_1': 0,
                     'for_percentage_2': 0,
@@ -92,12 +87,7 @@ class BaseAllocationFormTestCase(FormsTestCase):
         self.assertFalse(form.is_valid())
         required_fields = ['project_description',
                            'estimated_project_duration',
-                           'use_case', 'direct_access_user_estimate',
-                           'estimated_service_count',
-                           'estimated_service_active_users',
-                           'direct_access_user_past_year',
-                           'active_service_count',
-                           'service_active_users_past_year',
+                           'use_case',
                            'users_figure_type',
                            'for_percentage_1', 'for_percentage_2',
                            'for_percentage_3', 'usage_types',
@@ -159,6 +149,7 @@ class AllocationRequestFormTestCase(FormsTestCase):
                                'use_case',
                                'usage_patterns',
                                'geographic_requirements',
+                               'multiple_allocations_check',
                                'direct_access_user_estimate',
                                'estimated_service_count',
                                'estimated_service_active_users',
@@ -235,6 +226,18 @@ class AllocationRequestFormTestCase(FormsTestCase):
         data['project_name'] = 'abc-123'
         form = forms.AllocationRequestForm(data=data)
         self.assertTrue(form.is_valid())
+
+    def test_user_estimate_not_multiple_required(self):
+        data = DUMMY_ALLOC_DATA.copy()
+        data['multiple_allocations_check'] = False
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(['This field is required'],
+                         form.errors['direct_access_user_estimate'])
+        self.assertEqual(['This field is required'],
+                         form.errors['estimated_service_count'])
+        self.assertEqual(['This field is required'],
+                         form.errors['estimated_service_active_users'])
 
     def test_validating_facilities_unwanted_explanation(self):
         data = DUMMY_ALLOC_DATA.copy()

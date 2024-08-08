@@ -1281,6 +1281,21 @@ function submit_ignore() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    function addAsterisk(label) {
+        // Check if the asterisk already exists
+        if (label.querySelector('.glyphicon.glyphicon-asterisk.text-secondary')) {
+            return;
+        }
+        var asterisk = document.createElement('span');
+        asterisk.className = 'glyphicon glyphicon-asterisk text-secondary';
+        var img = label.querySelector('img');
+        if (img) {
+            label.insertBefore(asterisk, img);
+        } else {
+            label.appendChild(asterisk);
+        }
+    }
+
     function toggleFields() {
         var selectField = document.getElementById("id_multiple_allocations_check");
         var fields = document.getElementsByClassName("toggleable");
@@ -1288,7 +1303,12 @@ document.addEventListener('DOMContentLoaded', function() {
         var selectedValue = selectField.value;
 
         for (var i = 0; i < fields.length; i++) {
-            fields[i].style.display = selectedValue === "True" ? "none" : "block";
+            if (selectedValue == "True"){
+                fields[i].style.display = "none";
+            } else {
+                fields[i].style.display = "block";
+                addAsterisk(fields[i].querySelector('label'))
+            }
         }
     }
 

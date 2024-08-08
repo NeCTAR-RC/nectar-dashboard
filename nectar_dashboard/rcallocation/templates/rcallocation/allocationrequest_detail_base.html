@@ -195,8 +195,9 @@
           {% else %}
           <p><span class="label label-warning">Not recorded</span></p>
           {% endif %}
-          <h3>Estimated Number of Users</h3>
+          <h3>Usage Information</h3>
           {% if allocation.estimated_number_users %}
+          <h4>Estimated Number of Users</>
              <p>
                 {{ allocation.estimated_number_users }}
              </p>
@@ -205,22 +206,6 @@
                  The number of users and services have been provided in another allocation for this project
               </p>
           {% else %}
-          <h4>Number of users directly accessing instances over the past year</h4>
-               <p>
-                  {{ allocation.direct_access_user_past_year }}
-               </p>
-          <h4>Number of active research services or platforms hosted using this allocation</h4>
-               <p>
-                  {{ allocation.active_service_count }}
-               </p>
-          <h4>Total number of unique active users of these services over the past year </h4>
-               <p>
-                  {{ allocation.service_active_users_past_year }}
-               </p>
-          <h4>Are the above figures measured or estimated?</h4>
-               <p>
-                  {{ allocation.users_figure_type }}
-               </p>
           <h4>Estimated number of users who will directly access the instances</h4>
                <p>
                   {{ allocation.direct_access_user_estimate }}
@@ -233,6 +218,25 @@
                <p>
                   {{ allocation.estimated_service_active_users }}
                </p>
+            {% if allocation.can_have_publications %}
+               <hr>
+               <h4>Number of users directly accessing instances over the past year</h4>
+                    <p>
+                       {{ allocation.direct_access_user_past_year }}
+                    </p>
+               <h4>Number of active research services or platforms hosted using this allocation</h4>
+                    <p>
+                       {{ allocation.active_service_count }}
+                    </p>
+               <h4>Total number of unique active users of these services over the past year </h4>
+                    <p>
+                       {{ allocation.service_active_users_past_year }}
+                    </p>
+               <h4>Are the above figures measured or estimated?</h4>
+                    <p>
+                       {{ allocation.users_figure_type }}
+                    </p>
+            {% endif %}
           {% endif %}
         </div>
       </div>
