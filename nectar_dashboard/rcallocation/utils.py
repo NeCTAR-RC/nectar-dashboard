@@ -126,8 +126,11 @@ def save_allocation_without_updating_timestamps(allocation):
 # the associate "categorizer.py" code.
 
 
-def is_project_name_available(project_name):
+def is_project_name_available(project_name, allocation=None):
     manager = models.AllocationRequest.objects
+    if allocation:
+        manager = manager.exclude(id=allocation.id).exclude(
+            parent_request_id=allocation.id)
     normalized_name = manager.filter().annotate(
       normalized_name=Func(
         F('project_name'), Value('_'), Value('-'), function='replace',

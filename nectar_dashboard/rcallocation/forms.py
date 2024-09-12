@@ -467,7 +467,9 @@ class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
         estimated_service_active_users = \
             cleaned_data.get('estimated_service_active_users')
 
-        if project_name and not self.instance.id:
+        if project_name and (
+                not self.instance.id
+                or self.instance.status == models.AllocationRequest.SUBMITTED):
             # Only want this restriction on new allocations only
             if len(project_name) < 5:
                 self.add_error(
@@ -475,7 +477,8 @@ class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
                     forms.ValidationError('Project identifier must be at '
                                           'least 5 characters in length.'))
 
-            if not utils.is_project_name_available(project_name):
+            if not utils.is_project_name_available(
+                    project_name, self.instance):
                 self.add_error(
                    'project_name',
                    forms.ValidationError(mark_safe(

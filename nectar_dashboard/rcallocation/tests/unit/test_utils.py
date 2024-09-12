@@ -29,10 +29,14 @@ class UtilsTest(base.BaseTestCase):
         self.assertEqual(allocation.id, old_allocation.parent_request_id)
 
     def test_is_project_name_available(self):
-        factories.AllocationFactory.create(project_name='Fake_project')
-        factories.AllocationFactory.create(project_name='fake-PROject1')
+        a1 = factories.AllocationFactory.create(project_name='Fake_project')
+
         self.assertFalse(utils.is_project_name_available('fake-project'))
+        self.assertTrue(utils.is_project_name_available('fake-project', a1))
         self.assertFalse(utils.is_project_name_available('faKe-proJect'))
+
+        factories.AllocationFactory.create(project_name='fake-PROject1')
+
         self.assertFalse(utils.is_project_name_available('Fake_project1'))
         self.assertTrue(utils.is_project_name_available('Fake_project2'))
 
