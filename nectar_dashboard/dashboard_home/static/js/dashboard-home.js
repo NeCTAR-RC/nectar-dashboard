@@ -22,13 +22,13 @@ var dashboardHome = (function() {
     let button_class = "";
     switch(ardc_color) {
       case "blue":
-        button_class = "btn-info";
+        button_class = "btn-primary";
         break;
       case "pink":
-        button_class = "btn-danger";
+        button_class = "btn-primary";
         break;
       case "orange":
-        button_class = "btn-warning";
+        button_class = "btn-primary";
         break;
       case "purple":
         button_class = "btn-primary";
@@ -160,10 +160,19 @@ var dashboardHome = (function() {
       $('#ardc_news').slick({
         centerMode: true,
         centerPadding: '60px',
-        slidesToShow: 3,
+        slidesToShow: 5,
         responsive: [
           {
-            breakpoint: 1024,
+            breakpoint: 2000,
+            settings: {
+              arrows: false,
+              centerMode: true,
+              centerPadding: '40px',
+              slidesToShow: 3
+            }
+          },
+          {
+            breakpoint: 1600,
             settings: {
               arrows: false,
               centerMode: true,
@@ -202,10 +211,10 @@ var dashboardHome = (function() {
     getBannerData().then((result) => {
       let bannerDiv = $(`<div class="row">
         <div class="col-xs-12">
-          <div id="home_featured_banner" class="panel panel-default shadow panel-bg-image" style="background-image: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0, 0, 0, 0)), url(${result.bg_image});">
+          <div id="home_featured_banner" class="panel panel-default panel-bg-image" style="background-image: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0, 0, 0, 0)), url(${result.bg_image});">
             <div class="panel-body py-5">
               <div class="row">
-                <div class="col-xs-6 banner-text">
+                <div class="col-xs-12 col-sm-6 col-lg-4 banner-text">
                   <h2 class="banner-title h1">${result.title}</h2>
                   <h4 class="banner-subtitle">${result.subtitle}</h4>
                 </div>

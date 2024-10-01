@@ -82,7 +82,7 @@ $(document).ready(function() {
   });
 
   // Activate Bootstrap 3 tooltips
-  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
 
   // Is it the login page?
   if($("#splash").length) {

@@ -7,25 +7,28 @@ $bootstrap-sass-asset-helper: (twbs-font-path("") != unquote('twbs-font-path("")
 // --------------------------------------------------
 
 // ARDC colours
-$ardc-blue:   #00A2C4 !default;
-$ardc-pink:   #E51875 !default;
-$ardc-orange: #F8B20E !default;
-$ardc-purple: #8E489B !default;
-$ardc-grey:   #969696 !default;
+$ardc-blue:   #00A2C4;
+$ardc-pink:   #E51875;
+$ardc-yellow: #F8B20E;
+$ardc-purple: #8E489B;
+$ardc-grey:   #808080;
+$ardc-orange: #f6861f;
+$ardc-navy: #29347b;
+$ardc-green: #39833e;
 
 //== Colors
 //
 //## Gray and brand colors for use across Bootstrap.
 /* Bootstrap variables overrides */
 
-$gray-darker:            #111111 !default;
+$gray-darker:            #16161d !default;
 $gray-dark:              #666666 !default;
 $gray:                   $ardc-grey;
 $gray-light:             #e5e5e5 !default;
-$gray-lighter:           #fcfcfc !default;
+$gray-lighter:           #f5f5f5 !default;
 
 $brand-primary:         $ardc-purple;
-$brand-success:         #62C400 !default;
+$brand-success:         $ardc-green;
 $brand-info:            $ardc-blue;
 $brand-warning:         $ardc-orange;
 $brand-danger:          $ardc-pink;
@@ -36,10 +39,10 @@ $brand-danger:          $ardc-pink;
 //## Settings for some of the most global styles.
 
 //** Background color for `<body>`.
-$body-bg:               $gray-lighter;
+$body-bg:               #ffffff;
 //** Global text color on `<body>`.
 $text-color:            $gray-darker !default;
-$headings-color:        inherit !default;
+$headings-color:        $text-color !default;
 //** Text muted color
 $text-muted:                  $gray-dark !default;
 //** Abbreviations and acronyms border color
@@ -55,12 +58,15 @@ $page-header-border-color:    $gray-light !default;
 //** Horizontal line color.
 $hr-border:                   $gray-light !default;
 //** Global textual link color.
-$link-color:            darken($brand-info, 10%) !default;
+$link-color:            $brand-primary !default;
+$link-hover-decoration: underline !default;
 
 // Global border radius values.
-$border-radius-base:        4px !default;
-$border-radius-large:       6px !default;
-$border-radius-small:       3px !default;
+$border-radius:             0 !default;
+$border-radius-base:        .25rem !default;
+$border-radius-large:       .3rem !default;
+$border-radius-small:       .2rem !default;
+$btn-border-radius:         .25rem !default;
 
 //== Typography
 //
@@ -145,24 +151,24 @@ $btn-default-color:              #333 !default;
 $btn-default-bg:                 #fff !default;
 $btn-default-border:             #ccc !default;
 
-$btn-primary-color:              #000 !default;
-$btn-primary-bg:                 lighten($brand-primary, 10%) !default;
+$btn-primary-color:              #fff !default;
+$btn-primary-bg:                 $brand-primary !default;
 $btn-primary-border:             $btn-primary-bg !default;
 
-$btn-success-color:              #000 !default;
-$btn-success-bg:                 lighten($brand-success, 2%) !default;
+$btn-success-color:              #fff !default;
+$btn-success-bg:                 $brand-success !default;
 $btn-success-border:             $btn-success-bg !default;
 
-$btn-info-color:                 #000 !default;
-$btn-info-bg:                    lighten($brand-info, 5%) !default;
+$btn-info-color:                 $gray-darker !default;
+$btn-info-bg:                    lighten($brand-info, 2%) !default;
 $btn-info-border:                $btn-info-bg !default;
 
-$btn-warning-color:              #000 !default;
-$btn-warning-bg:                 lighten($brand-warning, 5%) !default;
+$btn-warning-color:              #fff !default;
+$btn-warning-bg:                 darken($brand-warning, 5%) !default;
 $btn-warning-border:             $btn-warning-bg !default;
 
-$btn-danger-color:               #000 !default;
-$btn-danger-bg:                  lighten($brand-danger, 2%) !default;
+$btn-danger-color:               #fff !default;
+$btn-danger-bg:                  darken($brand-danger, 2%) !default;
 $btn-danger-border:              $btn-danger-bg !default;
 
 //== Form states and alerts

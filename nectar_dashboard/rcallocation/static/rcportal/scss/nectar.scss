@@ -302,6 +302,12 @@ body {
   border-top-right-radius: 4px;
 }
 
+.bundle-col {
+  @media only screen and (min-width: 992px) and (max-width: 1199px) {
+    margin-bottom: 30px;
+  }
+}
+
 .bundle {
   border: 1px solid $gray-light;
   padding: 20px;

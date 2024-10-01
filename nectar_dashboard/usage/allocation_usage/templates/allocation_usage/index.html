@@ -33,7 +33,7 @@
   </div>
   <div class="row equal">
     <div class="col-sx-12 col-sm-12 col-md-4 mb-3">
-      <div class="panel panel-info shadow h-100">
+      <div class="panel panel-info h-100">
         <div class="panel-body d-flex align-items-middle">
           <h2 class="usage-stats-value">{{ su_used | floatformat }}</h2>
           <div class="usage-stats-description">
@@ -44,7 +44,7 @@
       </div>
     </div>
     <div class="col-sx-12 col-sm-12 col-md-4 mb-3">
-      <div class="panel panel-danger shadow h-100">
+      <div class="panel panel-danger h-100">
         <div class="panel-body d-flex align-items-middle">
           <h2 class="usage-stats-value">{{ su_budget | sub:su_used | floatformat }}</h2>
           <div class="usage-stats-description">
@@ -55,7 +55,7 @@
       </div>
     </div>
     <div class="col-sx-12 col-sm-12 col-md-4 mb-3">
-      <div class="panel panel-primary shadow h-100">
+      <div class="panel panel-primary h-100">
         <div class="panel-body d-flex align-items-middle">
           <h2 class="usage-stats-value">{{ total_hours }}</h2>
           <div class="usage-stats-description">
@@ -68,7 +68,7 @@
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <div class="panel panel-default shadow">
+      <div class="panel panel-default">
         <div class="panel-heading">Cumulative Usage for This Allocation</div>
         <div class="panel-body">
           {% if budget_tracking > 0 %}

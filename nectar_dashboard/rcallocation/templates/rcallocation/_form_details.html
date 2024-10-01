@@ -67,7 +67,7 @@
               <div class="row">
                 <div class="col-xs-12">
                 {% if not object or not object.can_have_publications %}
-                   <span class="label label-info">Note:</span>
+                   <span class="label label-info">NOTE</span>
                    Estimate the number of users and services that will be supported by the allocation over the next year.
                    Please distinguish between users who will have direct access to the VM instances and those who will use any
                    services that are hosted on the instances.
@@ -87,7 +87,7 @@
                        {% include "rcallocation/field.html" with field=form.estimated_service_active_users %}
                      </div>
                 {% else %}
-                   <span class="label label-info">Note:</span>
+                   <span class="label label-info">NOTE</span>
                    Specify the number of users of your project allocation over the past year.
                    Estimated number of users and services that have been supported by the allocation over the past year.
                    Please distinguish between users who have direct access to the VM instances and those who have used any services
@@ -139,7 +139,7 @@
             <div class="panel-body">
               <div class="row">
                 <div class="col-xs-12">
-                  <span class="label label-info">Note:</span>
+                  <span class="label label-info">NOTE</span>
                   Please enter at least 1 and up to 3 {{for_series}} Field of Research (FoR)
                   codes for the area(s) of research supported by this allocation
                   request, and set percentages adding up to a total of 100%. Please see
@@ -202,7 +202,7 @@
             <div class="panel-body">
               <div class="row">
                 <div class="col-xs-12">
-                  <span class="label label-info">Note:</span>
+                  <span class="label label-info">NOTE</span>
                   Specify the Universities and other Research Organisations that will
                   be supported by the allocation. Alternatively you can select 'All Organisations'.
                   <br/>
@@ -302,7 +302,7 @@
                       {{ grant_formset.non_form_errors }}
                     </div>
                   {% endif %}
-                  <p><span class="label label-info">Note:</span> Research grant information aids in the assessment of research allocations and indicates the scale of the research supported. You must put at least one grant, or specify you have no grants for the project</p>
+                  <p><span class="label label-info">NOTE</span> Research grant information aids in the assessment of research allocations and indicates the scale of the research supported. You must put at least one grant, or specify you have no grants for the project</p>
                   <p>A National project allocation request can only be approved if the project is:</p>
                   <ul>
                     <li>funded through a <a href="https://docs.education.gov.au/system/files/doc/other/2018_acgr_listing_final.pdf">national competitive research grant</a></li>
@@ -341,7 +341,7 @@
               <div class="row">
                 <div class="publication_formset">
                   <div class="col-xs-12">
-                    <span class="label label-info">Note:</span>
+                    <span class="label label-info">NOTE</span>
                     List any publications or other research outputs from work on this project
                     that has been supported by use of the Nectar cloud.
                     <br/>

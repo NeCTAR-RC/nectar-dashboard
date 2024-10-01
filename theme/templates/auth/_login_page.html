@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load themes %}
 
+
 {% block pre_login %}
   <div id="login_content">
     <svg id="login_bg" class="d-none d-md-block" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080" preserveAspectRatio="xMinYMin slice">
@@ -443,11 +444,12 @@
 
           {% block post_login %}
 
-          <a href="https://ardc.edu.au/campaign/accelerate-your-health-and-medical-research/?utm_source=NECTAR&utm_medium=referral-HM&utm_id=TRDC&utm_term=people&utm_content=dashboard" target="_blank"><img src="https://object-store.rc.nectar.org.au/v1/AUTH_2f6f7e75fc0f453d9c127b490b02e9e3/web_images/researcher_campaign2023/PEOPLE-585pxAdSpace.gif" alt="Building Australia's Research Data Structure" class="img-responsive" /></a>
         {{ block.super }}
         </div>
       </div>
     </div>
   </div>
-  {% include '_footer.html' %}
+  <div id="footer">
+    {% include '_footer.html' %}
+  </div>
 {% endblock %}

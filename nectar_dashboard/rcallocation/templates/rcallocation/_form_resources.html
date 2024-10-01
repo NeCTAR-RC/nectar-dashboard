@@ -19,7 +19,7 @@
                     </div>
                     <div class="row-fluid equal">
                         {% for bundle in bundles %}
-                            <div class="col-sm-12 col-md-6 col-lg-3">
+                            <div class="col-sm-12 col-md-6 col-lg-3 bundle-col">
                                 <div class="bundle" data-bundle="{{ bundle.id }}" data-suyear="{{ bundle.su_per_year }}">
                                     {% if forloop.first %}
                                         <div class="badge bg-danger bundle-badge">Popular</div>
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                         {% endfor %}
-                        <div class="col-sm-12 col-md-6 col-lg-3">
+                        <div class="col-sm-12 col-md-6 col-lg-3 bundle-col">
                             <div class="bundle">
                                 <h4 class="mb-5">Custom</h4>
                                 <p class="mb-auto">For advanced cloud users with a specific set of resource requirements. Users must be able to estimate their requested SU budget using the methods suggested in <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257485-how-to-estimate-a-service-unit-budget" target="_blank">this guide</a>.</p>
@@ -97,7 +97,7 @@
                                         <p class="mb-4">{{ st.description|safe }}</p>
                                             {% if st.notes %}
                                                 <fieldset>
-                                                    <p><span class="label label-info">Note:</span> {{ st.notes|safe }}</p>
+                                                    <p><span class="label label-info">NOTE</span> {{ st.notes|safe }}</p>
                                                 </fieldset>
                                             {% endif %}
                                         {% if st.catalog_name == 'volume' %}
@@ -262,7 +262,7 @@
                     <fieldset>
                         <legend>{{ st }}</legend>
                         {% if st.notes %}
-                            <p><span class="label label-info">Note:</span> {{ st.notes|safe }}</p>
+                            <p><span class="label label-info">NOTE</span> {{ st.notes|safe }}</p>
                         {% endif %}
                         <div class="row">
                             <div class="col-xs-8">

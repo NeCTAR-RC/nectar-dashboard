@@ -54,7 +54,7 @@
             {% block form_intro %}
               <p>This form allows you to request a project specific allocation on the Nectar Research Cloud. Allocations take up to 3 weeks to process. If you have any questions please <a href="https://support.ehelp.edu.au/support/tickets/new">create a support ticket</a>.</p>
               <p>
-                <span class="label label-info">Note:</span>
+                <span class="label label-info">NOTE</span>
                 If you would like to request an extension or amendment of an existing allocation, please
                 use the <i>Amend/Extend allocation</i> action on the existing allocation request on the
                 <a href="/allocation/user_requests/">My Requests</a> page.
@@ -82,7 +82,7 @@
           {% endif %}
         </div>
         <div class="col-md-6 col-lg-4">
-          <div class="panel panel-info shadow">
+          <div class="panel panel-info">
             <div class="panel-body">
               <h4>You will need...</h4>
               <p>Before you begin this form, please have the following information ready.</p>
@@ -118,8 +118,8 @@
     <section id="form-step2">
       {% include "rcallocation/_form_resources.html" with form=form %}
     </section>
-    <section id="submit-section" class="py-5 text-right">
-      <h4 class="d-inline-block mr-3">Are you ready to submit this allocation request?</h4>
+    <section id="submit-section" class="py-5 text-center">
+      <h4 class="d-inline-block">Are you ready to submit this allocation request?</h4>
       <input class="btn btn-primary submit-form-button" type="submit" value="Submit">
       {% if warnings|length > 0 %}
         <input class="btn btn-primary submit-form-button" type="button"
