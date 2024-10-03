@@ -1,14 +1,16 @@
-git+https://github.com/Nectar-RC/horizon.git@nectar/2023.2#egg=horizon
-cloudkitty-dashboard~=17.0.0
+horizon @ git+https://github.com/Nectar-RC/horizon.git@nectar/2023.2#egg=horizon
 mysqlclient
 django-cors-headers
+djangorestframework
 python-memcached
+python-dateutil
 python-freshdesk
 manukaclient>=1.1.0
 nectarclient-lib
 gnocchiclient
+django-filter
 django-mathfilters
-git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms
+django-select2-forms @ git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms
 langstrothclient>=0.5.0
 django-countries<7.5
 django-maintenance-mode

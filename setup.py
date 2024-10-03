@@ -1,47 +1,19 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+# implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import setuptools
 
-readme = open('README.rst').read()
-
 setuptools.setup(
-    name='nectar-dashboard',
-    version='7.0',
-    description='nectar-dashboard',
-    long_description=readme,
-    author='Sam Morrison',
-    author_email='sorrison@gmail.com',
-    url='https://github.com/NeCTAR-RC/nectar-dashboard',
-    packages=setuptools.find_packages(),
-    include_package_data=True,
-    install_requires=["horizon>=23.0.0,<24.0.0",
-                      "django~=3.2",
-                      "djangorestframework",
-                      "django-filter",
-                      "mysqlclient",
-                      "python-dateutil",
-                      "python-freshdesk",
-                      "django-cors-headers",
-                      "manukaclient>=0.7.0",
-                      "gnocchiclient",
-                      "django-mathfilters",
-                      "django-select2-forms @ git+https://github.com/NeCTAR-RC/django-select2-forms.git@nectar/master#egg=django-select2-forms",
-                      "django-countries<7.5",
-                      "langstrothclient>=0.5.0",
-                      "django-maintenance-mode",
-                      "django-tz-detect @ git+https://github.com/sorrison/django-tz-detect@develop",
-                      "django-health-check",
-                      ],
-    license="GPLv3+",
-    zip_safe=False,
-    keywords='NeCTAR-RC/nectar-dashboard',
-    classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.10',
-    ],
-)
+    setup_requires=['pbr>=2.0.0'],
+    pbr=True)

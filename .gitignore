@@ -22,3 +22,4 @@ coverage.xml
 .tox/
 nectar_dashboard.egg-info/*
 policy/default_policies/
+.eggs/
