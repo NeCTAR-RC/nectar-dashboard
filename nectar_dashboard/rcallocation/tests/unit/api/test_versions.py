@@ -20,7 +20,6 @@ from nectar_dashboard.rcallocation.tests import base
 
 
 class VersionsApiTests(base.AllocationAPITest):
-
     def test_version_list(self):
         response = self.client.get('/rest_api/versions/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

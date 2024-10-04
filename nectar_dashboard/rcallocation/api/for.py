@@ -37,28 +37,24 @@ def get_cores_resource_id():
 
 
 class FOR2008ViewSet(viewsets.GenericViewSet):
-
     @method_decorator(cache_page(86400))
     def list(self, request, *args, **kwargs):
         return response.Response(forcodes.FOR_CODES_2008)
 
 
 class FOR2020ViewSet(viewsets.GenericViewSet):
-
     @method_decorator(cache_page(86400))
     def list(self, request, *args, **kwargs):
         return response.Response(forcodes.FOR_CODES_2020)
 
 
 class FORAllViewSet(viewsets.GenericViewSet):
-
     @method_decorator(cache_page(86400))
     def list(self, request, *args, **kwargs):
         return response.Response(forcodes.FOR_CODES_ALL)
 
 
 class AllocationTree2008ViewSet(viewsets.GenericViewSet):
-
     @method_decorator(cache_page(86400))
     def list(self, request, *args, **kwargs):
         tree = restructure_allocations_tree(forcodes.FOR_CODES_2008)
@@ -66,7 +62,6 @@ class AllocationTree2008ViewSet(viewsets.GenericViewSet):
 
 
 class AllocationTree2020ViewSet(viewsets.GenericViewSet):
-
     @method_decorator(cache_page(86400))
     def list(self, request, *args, **kwargs):
         tree = restructure_allocations_tree(forcodes.FOR_CODES_2020)
@@ -74,7 +69,6 @@ class AllocationTree2020ViewSet(viewsets.GenericViewSet):
 
 
 class AllocationTreeAllViewSet(viewsets.GenericViewSet):
-
     @method_decorator(cache_page(86400))
     def list(self, request, *args, **kwargs):
         tree = restructure_allocations_tree(forcodes.FOR_CODES_ALL)
@@ -83,16 +77,24 @@ class AllocationTreeAllViewSet(viewsets.GenericViewSet):
 
 def partition_active_allocations(for_code_map):
     allocation_summaries = list()
-    active_allocations = models.AllocationRequest.objects \
-            .filter(status__in=[models.AllocationRequest.APPROVED,
-                    models.AllocationRequest.UPDATE_PENDING]) \
-            .filter(parent_request__isnull=True) \
-            .prefetch_related(
-                Prefetch('quotas',
-                         queryset=models.QuotaGroup.objects.filter(
-                             service_type__in=['compute', 'rating'],
-                             zone='nectar')),
-                Prefetch('quotas__quota_set', to_attr='quota_cache'))
+    active_allocations = (
+        models.AllocationRequest.objects.filter(
+            status__in=[
+                models.AllocationRequest.APPROVED,
+                models.AllocationRequest.UPDATE_PENDING,
+            ]
+        )
+        .filter(parent_request__isnull=True)
+        .prefetch_related(
+            Prefetch(
+                'quotas',
+                queryset=models.QuotaGroup.objects.filter(
+                    service_type__in=['compute', 'rating'], zone='nectar'
+                ),
+            ),
+            Prefetch('quotas__quota_set', to_attr='quota_cache'),
+        )
+    )
 
     codes = for_code_map.keys()
     for active_allocation in active_allocations:
@@ -167,12 +169,14 @@ def traverse_allocations_tree(allocations_tree, node_parent, recursion_depth):
         node_parent['children'].append(node_children)
         allocations_subtree = allocations_tree[node_name]
         if recursion_depth < MAX_RECURSION_DEPTH:
-            traverse_allocations_tree(allocations_subtree, node_children,
-                                      recursion_depth + 1)
+            traverse_allocations_tree(
+                allocations_subtree, node_children, recursion_depth + 1
+            )
         else:
             for allocation_summary in allocations_subtree:
                 allocation_items = create_allocation_tree_leaf_node(
-                    allocation_summary)
+                    allocation_summary
+                )
                 node_children['children'].append(allocation_items)
 
 
@@ -203,23 +207,21 @@ def summary(allocation, code):
     allocation_summary = dict()
     allocation_summary['id'] = allocation.id
     allocation_summary['institution'] = utils.institution_from_email(
-        allocation.contact_email)
+        allocation.contact_email
+    )
     allocation_summary['project_description'] = allocation.project_description
     allocation_summary['national'] = allocation.national
     apply_for_code_to_summary(allocation_summary, code)
     if code == allocation.field_of_research_1:
         apply_partitioned_quotas(
-            allocation,
-            allocation_summary,
-            allocation.for_percentage_1)
+            allocation, allocation_summary, allocation.for_percentage_1
+        )
     elif code == allocation.field_of_research_2:
         apply_partitioned_quotas(
-            allocation,
-            allocation_summary,
-            allocation.for_percentage_2)
+            allocation, allocation_summary, allocation.for_percentage_2
+        )
     elif code == allocation.field_of_research_3:
         apply_partitioned_quotas(
-            allocation,
-            allocation_summary,
-            allocation.for_percentage_3)
+            allocation, allocation_summary, allocation.for_percentage_3
+        )
     return allocation_summary

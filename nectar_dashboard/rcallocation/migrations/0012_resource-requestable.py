@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import migrations, models
-import django.core.validators
 
 
 def set_ram_unrequestable(apps, schema_editor):
@@ -16,7 +12,6 @@ def set_ram_unrequestable(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('rcallocation', '0011_add-quota-groups'),
     ]

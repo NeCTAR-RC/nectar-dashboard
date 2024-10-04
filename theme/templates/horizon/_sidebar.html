@@ -42,7 +42,7 @@
                         </a>
                     {% endif %}
                         <div id="sidebar-accordion-{{ dashboard.slug }}-{{ group.slug }}"
-                          class="list-group collapse 
+                          class="list-group collapse
                             {% if current.slug == dashboard.slug and current_panel_group == group.slug or group.slug == 'default' %} in
                             {% elif current.slug != dashboard.slug and forloop.counter0 == 0 %} in{% endif %}">
                     {% for panel in filtered_panels %}

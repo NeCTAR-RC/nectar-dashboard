@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('rcallocation', '0065_auto_20220427_0027'),
     ]
@@ -12,10 +11,14 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddIndex(
             model_name='allocationrequest',
-            index=models.Index(fields=['project_id'], name='rcallocatio_project_479f7e_idx'),
+            index=models.Index(
+                fields=['project_id'], name='rcallocatio_project_479f7e_idx'
+            ),
         ),
         migrations.AddIndex(
             model_name='allocationrequest',
-            index=models.Index(fields=['status'], name='rcallocatio_status_94501a_idx'),
+            index=models.Index(
+                fields=['status'], name='rcallocatio_status_94501a_idx'
+            ),
         ),
     ]

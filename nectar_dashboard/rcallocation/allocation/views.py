@@ -38,9 +38,13 @@ class AllocationNotesEdit(mixins.UserPassesTestMixin, UpdateView):
     def test_func(self):
         return utils.user_is_allocation_admin(self.request.user)
 
-    def form_valid(self, form, investigator_formset=None,
-                   publication_formset=None, grant_formset=None):
-
+    def form_valid(
+        self,
+        form,
+        investigator_formset=None,
+        publication_formset=None,
+        grant_formset=None,
+    ):
         # Save the changes to the request.
         allocation = form.save(commit=False)
         allocation.save_without_updating_timestamps()
@@ -48,7 +52,6 @@ class AllocationNotesEdit(mixins.UserPassesTestMixin, UpdateView):
 
 
 class AllocationApproveView(views.BaseAllocationView):
-
     APPROVING = True
 
     page_title = 'Approve Request'
@@ -65,8 +68,7 @@ class AllocationApproveView(views.BaseAllocationView):
     def get(self, request, *args, **kwargs):
         allocation = self.get_object()
         if allocation.is_active():
-            return http.HttpResponseBadRequest(
-                'Allocation already approved')
+            return http.HttpResponseBadRequest('Allocation already approved')
         return super().get(request, *args, **kwargs)
 
 
@@ -87,6 +89,5 @@ class AllocationRejectView(views.BaseAllocationView):
     def get(self, request, *args, **kwargs):
         allocation = self.get_object()
         if allocation.is_rejected():
-            return http.HttpResponseBadRequest(
-                'Allocation already declined')
+            return http.HttpResponseBadRequest('Allocation already declined')
         return super().get(request, *args, **kwargs)

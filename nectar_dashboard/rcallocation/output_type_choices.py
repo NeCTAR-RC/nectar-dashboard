@@ -28,11 +28,11 @@ OUTPUT_TYPE_CHOICE = (
     (OTHER_PEER_REVIEWED_PAPER, 'Other peer reviewed paper'),
     (NON_PEER_REVIEWED_PAPER, 'Non-peer reviewed paper'),
     (BOOK, 'Book or book chapter'),
-    (MEDIA_PUBLICATION, 'Media publication'),   # includes new media
+    (MEDIA_PUBLICATION, 'Media publication'),  # includes new media
     (DATASET, 'Dataset'),
     (SOFTWARE, 'Software'),
     (PATENT, 'Patent'),
     (OTHER, 'Other'),
-    (UNSPECIFIED, 'Unspecified'),               # for legacy cases only
+    (UNSPECIFIED, 'Unspecified'),  # for legacy cases only
 )
 OUTPUT_TYPE_MAP = dict(OUTPUT_TYPE_CHOICE)

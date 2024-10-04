@@ -14,11 +14,9 @@
 
 from django.urls import re_path
 
-from . import views
+from nectar_dashboard.user_info.update import views
 
 
 urlpatterns = [
-    re_path(r'^$',
-        views.UserEditSelfView.as_view(),
-        name='edit-self'),
+    re_path(r'^$', views.UserEditSelfView.as_view(), name='edit-self'),
 ]

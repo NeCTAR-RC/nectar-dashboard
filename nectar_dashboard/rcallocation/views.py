@@ -24,9 +24,12 @@ from nectar_dashboard.rcallocation import utils
 LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 
-class AllocationDetailView(mixins.UserPassesTestMixin,
-                           horizon_views.PageTitleMixin,
-                           DetailView, ModelFormMixin):
+class AllocationDetailView(
+    mixins.UserPassesTestMixin,
+    horizon_views.PageTitleMixin,
+    DetailView,
+    ModelFormMixin,
+):
     """A class that handles rendering the details view, and then the
     posting of the associated accept/reject action
     """
@@ -48,10 +51,11 @@ class AllocationDetailView(mixins.UserPassesTestMixin,
             approved_is_current = not self.object.is_history()
         else:
             parent = (self.object.parent_request or self.object).pk
-            all_approved = \
-                list(models.AllocationRequest.objects
-                     .filter(status=models.AllocationRequest.APPROVED)
-                     .filter(parent_request=parent))
+            all_approved = list(
+                models.AllocationRequest.objects.filter(
+                    status=models.AllocationRequest.APPROVED
+                ).filter(parent_request=parent)
+            )
             if len(all_approved) == 0:
                 approved = None
                 approved_is_current = False
@@ -59,7 +63,8 @@ class AllocationDetailView(mixins.UserPassesTestMixin,
                 mod_time = self.object.modified_time
                 approved = next(
                     (a for a in all_approved if a.modified_time < mod_time),
-                    None)
+                    None,
+                )
                 approved_is_current = approved == all_approved[0]
 
         kwargs['approved_allocation'] = approved
@@ -71,37 +76,45 @@ class AllocationDetailView(mixins.UserPassesTestMixin,
         return utils.user_is_allocation_admin(self.request.user)
 
 
-class BaseAllocationsListView(mixins.UserPassesTestMixin,
-                              horizon_tables.DataTableView):
+class BaseAllocationsListView(
+    mixins.UserPassesTestMixin, horizon_tables.DataTableView
+):
     """A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
     by status?
     """
+
     context_object_name = "allocation_list"
     template_name = 'rcallocation/allocationrequest_list.html'
     page_title = 'Allocation Requests'
 
     def get_data(self):
-        return [ar for ar in
-                models.AllocationRequest.objects.filter(
-                    status__in=(models.AllocationRequest.NEW,
-                                models.AllocationRequest.SUBMITTED,
-                                models.AllocationRequest.UPDATE_PENDING)
-                ).filter(
-                    parent_request=None).order_by(
-                        'submit_date')]
+        return [
+            ar
+            for ar in models.AllocationRequest.objects.filter(
+                status__in=(
+                    models.AllocationRequest.NEW,
+                    models.AllocationRequest.SUBMITTED,
+                    models.AllocationRequest.UPDATE_PENDING,
+                )
+            )
+            .filter(parent_request=None)
+            .order_by('submit_date')
+        ]
 
     def test_func(self):
         # Direct uses of this view needs alloc admin access
         return utils.user_is_allocation_admin(self.request.user)
 
 
-class AllocationHistoryView(mixins.UserPassesTestMixin,
-                            horizon_tables.DataTableView):
+class AllocationHistoryView(
+    mixins.UserPassesTestMixin, horizon_tables.DataTableView
+):
     """A simple paginated view of the allocation requests, ordered by
     status. Later we should perhaps add sortable columns, filterable
     by status?
     """
+
     context_object_name = "allocation_list"
     table_class = tables.AllocationHistoryTable
     template_name = 'rcallocation/allocationrequest_list.html'
@@ -110,23 +123,23 @@ class AllocationHistoryView(mixins.UserPassesTestMixin,
     def get_data(self):
         pk = self.kwargs['pk']
         return models.AllocationRequest.objects.filter(
-            Q(parent_request=pk) | Q(pk=pk)).prefetch_related(
-                'quotas', 'investigators', 'publications', 'grants')
+            Q(parent_request=pk) | Q(pk=pk)
+        ).prefetch_related('quotas', 'investigators', 'publications', 'grants')
 
     def test_func(self):
         # Direct uses of this view needs alloc admin access
         return utils.user_is_allocation_admin(self.request.user)
 
 
-class QuotaFormMixin(object):
-
+class QuotaFormMixin:
     def get_quotas_initial(self):
         initial = {}
         if self.object:
             quotas = self.object.quotas.all_quotas()
             for quota in quotas:
-                key = "quota-%s__%s" % (quota.resource.codename,
-                                        quota.group.zone.name)
+                key = (
+                    f"quota-{quota.resource.codename}__{quota.group.zone.name}"
+                )
                 if self.object.status == models.AllocationRequest.APPROVED:
                     initial[key] = quota.quota
                 else:
@@ -135,14 +148,16 @@ class QuotaFormMixin(object):
             for st in models.ServiceType.objects.filter(experimental=False):
                 for resource in st.resource_set.filter(requestable=True):
                     for zone in st.zones.all():
-                        key = "quota-%s__%s" % (resource.codename, zone.name)
+                        key = f"quota-{resource.codename}__{zone.name}"
                         initial[key] = resource.default or 0
         return initial
 
     @staticmethod
     def set_quotas(allocation, form, approving=False):
-        non_quota_fields = [f.name for f in allocation._meta.fields
-                            + allocation._meta.many_to_many]
+        non_quota_fields = [
+            f.name
+            for f in allocation._meta.fields + allocation._meta.many_to_many
+        ]
         non_quota_fields.append('ignore_warnings')
         for field_name, field in form.fields.items():
             if field_name in non_quota_fields:
@@ -154,10 +169,13 @@ class QuotaFormMixin(object):
                 if value:
                     # Purposely test for 0 or None which means the same thing
                     group, created = models.QuotaGroup.objects.get_or_create(
-                        allocation=allocation, zone=zone,
-                        service_type=resource.service_type)
+                        allocation=allocation,
+                        zone=zone,
+                        service_type=resource.service_type,
+                    )
                     quota, created = models.Quota.objects.get_or_create(
-                        group=group, resource=resource)
+                        group=group, resource=resource
+                    )
                     if approving:
                         quota.quota = value
                     else:
@@ -166,28 +184,35 @@ class QuotaFormMixin(object):
                 else:
                     try:
                         group = models.QuotaGroup.objects.get(
-                            allocation=allocation, zone=zone,
-                            service_type=resource.service_type)
-                        quota = models.Quota.objects.get(group=group,
-                                                         resource=resource)
+                            allocation=allocation,
+                            zone=zone,
+                            service_type=resource.service_type,
+                        )
+                        quota = models.Quota.objects.get(
+                            group=group, resource=resource
+                        )
                         quota.delete()
-                    except (models.QuotaGroup.DoesNotExist,
-                            models.Quota.DoesNotExist):
+                    except (
+                        models.QuotaGroup.DoesNotExist,
+                        models.Quota.DoesNotExist,
+                    ):
                         pass
             else:
                 models.Quota.objects.filter(
-                    group__allocation=allocation,
-                    resource=resource).delete()
+                    group__allocation=allocation, resource=resource
+                ).delete()
             # Delete empty quota groups
             for group in allocation.quotas.all():
                 if group.quota_set.count() < 1:
                     group.delete()
 
 
-class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
-                         horizon_views.PageTitleMixin,
-                         QuotaFormMixin):
-
+class BaseAllocationView(
+    UpdateView,
+    mixins.UserPassesTestMixin,
+    horizon_views.PageTitleMixin,
+    QuotaFormMixin,
+):
     IGNORE_WARNINGS = False
     APPROVING = False
 
@@ -197,48 +222,60 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
 
     # investigator
     formset_investigator_class = inlineformset_factory(
-        models.AllocationRequest, models.ChiefInvestigator,
+        models.AllocationRequest,
+        models.ChiefInvestigator,
         form=forms.ChiefInvestigatorForm,
-        extra=0)
+        extra=0,
+    )
 
     # publication
     formset_publication_class = inlineformset_factory(
-        models.AllocationRequest, models.Publication,
-        form=forms.PublicationForm, extra=0)
+        models.AllocationRequest,
+        models.Publication,
+        form=forms.PublicationForm,
+        extra=0,
+    )
 
     # grant
     formset_grant_class = inlineformset_factory(
-        models.AllocationRequest, models.Grant, form=forms.GrantForm,
-        extra=0)
+        models.AllocationRequest, models.Grant, form=forms.GrantForm, extra=0
+    )
 
     # The attribute used to record who did the edit.  this should
     # either be approver_email or contact_email
     editor_attr = 'approver_email'
 
-    def get_formset(self, formset_class, queryset=None, prefix=None,
-                    initial=None, **kwargs):
+    def get_formset(
+        self, formset_class, queryset=None, prefix=None, initial=None, **kwargs
+    ):
         if 'instance' not in kwargs:
             kwargs['instance'] = self.object
 
         if self.request.method in ('POST', 'PUT'):
-            kwargs.update({
-                'data': self.request.POST,
-                'files': self.request.FILES,
-            })
-        return formset_class(queryset=queryset, prefix=prefix,
-                             initial=initial, **kwargs)
+            kwargs.update(
+                {
+                    'data': self.request.POST,
+                    'files': self.request.FILES,
+                }
+            )
+        return formset_class(
+            queryset=queryset, prefix=prefix, initial=initial, **kwargs
+        )
 
     def get_formsets(self):
         formsets = {}
         if self.formset_investigator_class:
             formsets['investigator_formset'] = self.get_formset(
-                self.formset_investigator_class)
+                self.formset_investigator_class
+            )
         if self.formset_publication_class:
             formsets['publication_formset'] = self.get_formset(
-                self.formset_publication_class)
+                self.formset_publication_class
+            )
         if self.formset_grant_class:
             formsets['grant_formset'] = self.get_formset(
-                self.formset_grant_class)
+                self.formset_grant_class
+            )
         return formsets
 
     def get_context_data(self, **kwargs):
@@ -263,8 +300,11 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
             investigators = self.object.investigators.all()
             if not investigators:
                 self.formset_investigator_class = inlineformset_factory(
-                    models.AllocationRequest, models.ChiefInvestigator,
-                    form=forms.ChiefInvestigatorForm, extra=1)
+                    models.AllocationRequest,
+                    models.ChiefInvestigator,
+                    form=forms.ChiefInvestigatorForm,
+                    extra=1,
+                )
         else:
             kwargs['object'] = None
 
@@ -272,15 +312,21 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
         # that there is at least one Grant in the grant formset to
         # "encourage" the user to either fill it out or click the
         # "I have no grants" button to remove it.
-        if self.formset_grant_class \
-           and (not self.object
-                or self.object.status not in [
-                    models.AllocationRequest.SUBMITTED,
-                    models.AllocationRequest.UPDATE_PENDING]):
+        if self.formset_grant_class and (
+            not self.object
+            or self.object.status
+            not in [
+                models.AllocationRequest.SUBMITTED,
+                models.AllocationRequest.UPDATE_PENDING,
+            ]
+        ):
             self.formset_grant_class = inlineformset_factory(
-                models.AllocationRequest, models.Grant,
+                models.AllocationRequest,
+                models.Grant,
                 form=forms.GrantForm,
-                min_num=1, extra=0)
+                min_num=1,
+                extra=0,
+            )
 
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -294,14 +340,17 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
 
         if self.object:
             nag_checker = checkers.NagChecker(
-                form=None, allocation=self.object, user=self.request.user)
+                form=None, allocation=self.object, user=self.request.user
+            )
             nags = nag_checker.do_checks()
             kwargs['nags'] = nags
             if len(nags) > 0:
                 tags = [n[0] for n in nags]
                 person = 'approver' if approving else 'user'
-                LOG.info(f"Showing the {person} nags {tags} "
-                         f"for allocation '{self.object.project_name}'")
+                LOG.info(
+                    f"Showing the {person} nags {tags} "
+                    f"for allocation '{self.object.project_name}'"
+                )
 
         return self.render_to_response(self.get_context_data(**kwargs))
 
@@ -324,17 +373,20 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
             # Any changes to a history record
             if current.parent_request_id:
                 return http.HttpResponseBadRequest(
-                    'Allocation record is historic')
-            if (self.object.status == current.status
-                and current.status in (models.AllocationRequest.APPROVED,
-                                       models.AllocationRequest.DECLINED,
-                                       models.AllocationRequest.UPDATE_DECLINED
-                                       )):
+                    'Allocation record is historic'
+                )
+            if self.object.status == current.status and current.status in (
+                models.AllocationRequest.APPROVED,
+                models.AllocationRequest.DECLINED,
+                models.AllocationRequest.UPDATE_DECLINED,
+            ):
                 return http.HttpResponseBadRequest(
-                    'Allocation state not changing')
+                    'Allocation state not changing'
+                )
 
-        ignore_warnings = self.IGNORE_WARNINGS or \
-                          request.POST.get('ignore_warnings', False)
+        ignore_warnings = self.IGNORE_WARNINGS or request.POST.get(
+            'ignore_warnings', False
+        )
 
         # Primary validation of quotas + gathering of the values
         # into a format that can be used for quota sanity checks.
@@ -342,7 +394,8 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
             allocation=self.object,
             form=form,
             user=self.request.user,
-            approving=approving)
+            approving=approving,
+        )
 
         valid = all(map(methodcaller('is_valid'), form_dict.values()))
 
@@ -356,20 +409,29 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
                 person = 'approver' if approving else 'user'
                 if ignore_warnings:
                     if not self.IGNORE_WARNINGS:
-                        LOG.info(f"The {person} ignored warnings {tags} "
-                                 f"for allocation '{name}'")
+                        LOG.info(
+                            f"The {person} ignored warnings {tags} "
+                            f"for allocation '{name}'"
+                        )
                     return self.form_valid(**form_dict)
                 else:
                     form_dict['warnings'] = warnings
-                    LOG.info(f"Showing the {person} warnings {tags} "
-                             f"for allocation '{name}'")
+                    LOG.info(
+                        f"Showing the {person} warnings {tags} "
+                        f"for allocation '{name}'"
+                    )
                     return self.form_invalid(**form_dict)
         else:
             return self.form_invalid(**form_dict)
 
     @transaction.atomic
-    def form_valid(self, form, investigator_formset=None,
-                   publication_formset=None, grant_formset=None):
+    def form_valid(
+        self,
+        form,
+        investigator_formset=None,
+        publication_formset=None,
+        grant_formset=None,
+    ):
         # Create a new historical object based on the original.
         if self.object:
             utils.copy_allocation(self.object)
@@ -386,9 +448,11 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
 
         # Force update of submit_date if this a request / amendment
         # submission or resubmission
-        if allocation.status in [models.AllocationRequest.NEW,
-                             models.AllocationRequest.SUBMITTED,
-                             models.AllocationRequest.UPDATE_PENDING]:
+        if allocation.status in [
+            models.AllocationRequest.NEW,
+            models.AllocationRequest.SUBMITTED,
+            models.AllocationRequest.UPDATE_PENDING,
+        ]:
             allocation.submit_date = timezone.now()
 
         # Set the old field to None in the newer allocation request/amend
@@ -397,8 +461,7 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
         allocation.save()
         form.save_m2m()
 
-        formsets = [investigator_formset, publication_formset,
-                    grant_formset]
+        formsets = [investigator_formset, publication_formset, grant_formset]
 
         for formset in formsets:
             if formset:
@@ -422,5 +485,7 @@ class BaseAllocationView(UpdateView, mixins.UserPassesTestMixin,
         """
 
         return self.render_to_response(
-            self.get_context_data(form=form, warnings=warnings,
-                                  form_invalid=True, **formsets))
+            self.get_context_data(
+                form=form, warnings=warnings, form_invalid=True, **formsets
+            )
+        )

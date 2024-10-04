@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('rcallocation', '0077_auto_20240325_2338'),
     ]
@@ -13,11 +12,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='allocationrequest',
             name='nectar_benefit_description',
-            field=models.TextField(blank=True, help_text='Briefly describe how the use of Nectar has benefited your research activity.', max_length=4096, verbose_name='Benefits of Nectar'),
+            field=models.TextField(
+                blank=True,
+                help_text='Briefly describe how the use of Nectar has benefited your research activity.',
+                max_length=4096,
+                verbose_name='Benefits of Nectar',
+            ),
         ),
         migrations.AddField(
             model_name='allocationrequest',
             name='nectar_research_impact',
-            field=models.TextField(blank=True, help_text='Briefly indicate the impact of your research activity that has been supported by Nectar, particularly translational impact (i.e. impact on society).', max_length=4096, verbose_name='Research Impact'),
+            field=models.TextField(
+                blank=True,
+                help_text='Briefly indicate the impact of your research activity that has been supported by Nectar, particularly translational impact (i.e. impact on society).',
+                max_length=4096,
+                verbose_name='Research Impact',
+            ),
         ),
     ]

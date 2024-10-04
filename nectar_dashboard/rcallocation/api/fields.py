@@ -24,7 +24,7 @@ def _valid_site(name):
     try:
         return models.Site.objects.get(name=name)
     except models.Site.DoesNotExist:
-        raise serializers.ValidationError("Site '%s' does not exist" % name)
+        raise serializers.ValidationError(f"Site '{name}' does not exist")
 
 
 class AllocationHomeField(serializers.Field):
@@ -33,8 +33,9 @@ class AllocationHomeField(serializers.Field):
 
     def to_internal_value(self, data):
         if data == 'unassigned':
-            return {'allocation_home': {'national': False,
-                                        'associated_site': None}}
+            return {
+                'allocation_home': {'national': False, 'associated_site': None}
+            }
         if data == 'national':
             # Leave the existing 'associated_site' value alone.
             # We don't know what it *should* be.
@@ -42,9 +43,11 @@ class AllocationHomeField(serializers.Field):
         site = _valid_site(data)
         if site is None:
             raise serializers.ValidationError(
-                "'allocation_home' must be a real site name")
-        return {'allocation_home': {'national': False,
-                                    'associated_site': site}}
+                "'allocation_home' must be a real site name"
+            )
+        return {
+            'allocation_home': {'national': False, 'associated_site': site}
+        }
 
 
 class AssociatedSiteField(serializers.Field):
@@ -65,7 +68,8 @@ class BundleField(serializers.Field):
             bundle = models.Bundle.objects.get(name=data)
         except models.Bundle.DoesNotExist:
             raise serializers.ValidationError(
-                "Bundle '%s' does not exist" % data)
+                f"Bundle '{data}' does not exist"
+            )
         else:
             return bundle
 
@@ -82,11 +86,13 @@ class UsageTypesField(serializers.RelatedField):
             usage_type = models.UsageType.objects.get(name=data)
             if not usage_type.enabled:
                 raise serializers.ValidationError(
-                    "UsageType '%s' is disabled" % data)
+                    f"UsageType '{data}' is disabled"
+                )
             return usage_type
         except models.UsageType.DoesNotExist:
             raise serializers.ValidationError(
-                "'%s' is not a known UsageType" % data)
+                f"'{data}' is not a known UsageType"
+            )
 
 
 class OrganisationField(serializers.RelatedField):
@@ -107,19 +113,22 @@ class OrganisationField(serializers.RelatedField):
                     organisation = models.Organisation.objects.get(ror_id=data)
                 except models.Organisation.DoesNotExist:
                     organisation = models.Organisation.objects.get(
-                        Q(full_name__iexact=data)
-                        | Q(short_name__iexact=data))
+                        Q(full_name__iexact=data) | Q(short_name__iexact=data)
+                    )
             if not organisation.enabled:
                 raise serializers.ValidationError(
-                    "Organisation '%s' is disabled" % data)
+                    f"Organisation '{data}' is disabled"
+                )
             return organisation
 
         except models.Organisation.DoesNotExist:
             raise serializers.ValidationError(
-                "'%s' doesn't match a known Organisation" % data)
+                f"'{data}' doesn't match a known Organisation"
+            )
         except models.Organisation.MultipleObjectsReturned:
             raise serializers.ValidationError(
-                "'%s' is an ambiguous Organisation name" % data)
+                f"'{data}' is an ambiguous Organisation name"
+            )
 
 
 class PrimaryOrganisationField(OrganisationField):
@@ -130,7 +139,8 @@ class PrimaryOrganisationField(OrganisationField):
         organisation = super().to_internal_value(data)
         if organisation.full_name == models.ORG_ALL_FULL_NAME:
             raise serializers.ValidationError(
-                "'All Organisations' may not be used here")
+                "'All Organisations' may not be used here"
+            )
         return organisation
 
 
@@ -141,10 +151,12 @@ class NCRISFacilitiesField(serializers.RelatedField):
     def to_internal_value(self, data):
         try:
             return models.NCRISFacility.objects.get(
-                Q(short_name__iexact=data) | Q(name__iexact=data))
+                Q(short_name__iexact=data) | Q(name__iexact=data)
+            )
         except models.NCRISFacility.DoesNotExist:
             raise serializers.ValidationError(
-                "'%s' is not a known NCRIS Facility" % data)
+                f"'{data}' is not a known NCRIS Facility"
+            )
 
 
 class ARDCSupportField(serializers.RelatedField):
@@ -154,7 +166,9 @@ class ARDCSupportField(serializers.RelatedField):
     def to_internal_value(self, data):
         try:
             return models.ARDCSupport.objects.get(
-                Q(short_name__iexact=data) | Q(name__iexact=data))
+                Q(short_name__iexact=data) | Q(name__iexact=data)
+            )
         except models.ARDCSupport.DoesNotExist:
             raise serializers.ValidationError(
-                "'%s' is not a known ARDC project or program" % data)
+                f"'{data}' is not a known ARDC project or program"
+            )

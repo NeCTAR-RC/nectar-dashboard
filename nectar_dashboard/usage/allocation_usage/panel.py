@@ -15,9 +15,9 @@ class AllocationUsage(horizon.Panel):
 
         project_id = context['request'].user.project_id
 
-        allocations = models.AllocationRequest.objects \
-            .filter(project_id=project_id) \
-            .filter(status=models.AllocationRequest.APPROVED)
+        allocations = models.AllocationRequest.objects.filter(
+            project_id=project_id
+        ).filter(status=models.AllocationRequest.APPROVED)
 
         if allocations:
             allocation = allocations[0]

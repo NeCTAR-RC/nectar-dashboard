@@ -22,7 +22,6 @@ from nectar_dashboard.rcallocation import models
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class FacilitiesTest(base.AllocationAPITest):
-
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         # The 0058 migration populates the initial facilities
@@ -60,13 +59,16 @@ class FacilitiesTest(base.AllocationAPITest):
     def test_update_facility(self):
         self.client.force_authenticate(user=self.admin_user)
         data = {'name': 'Atlas of Lovely Australia'}
-        response = self.client.patch('/rest_api/ncris-facilities/%s/' %
-                                     self.ala.id, data)
+        response = self.client.patch(
+            f'/rest_api/ncris-facilities/{self.ala.id}/', data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_facility(self):
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.delete('/rest_api/ncris-facilities/%s/' %
-                                      self.ala.id)
-        self.assertEqual(response.status_code,
-                         status.HTTP_405_METHOD_NOT_ALLOWED)
+        response = self.client.delete(
+            f'/rest_api/ncris-facilities/{self.ala.id}/'
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
+        )

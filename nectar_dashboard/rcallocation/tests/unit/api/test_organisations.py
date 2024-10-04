@@ -23,20 +23,23 @@ from nectar_dashboard.rcallocation.tests import factories
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class OrganisationTest(base.AllocationAPITest):
-
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         self.admin_approver = models.Approver.objects.create(
-            username=self.admin_user.username,
-            display_name="Fred the Admin")
+            username=self.admin_user.username, display_name="Fred the Admin"
+        )
 
-    def _make_data(self,
-                   full_name='University of Testing Australia',
-                   short_name='UTA', country='AU',
-                   **kwargs):
-        data = {'full_name': full_name,
-                'short_name': short_name,
-                'country': country
+    def _make_data(
+        self,
+        full_name='University of Testing Australia',
+        short_name='UTA',
+        country='AU',
+        **kwargs,
+    ):
+        data = {
+            'full_name': full_name,
+            'short_name': short_name,
+            'country': country,
         }
         data.update(kwargs)
         return data
@@ -103,7 +106,8 @@ class OrganisationTest(base.AllocationAPITest):
         self.client.force_authenticate(user=self.admin_user)
         org = factories.OrganisationFactory.create(proposed_by="someone")
         response = self.client.post(
-            f'/rest_api/organisations/{org.id}/approve/')
+            f'/rest_api/organisations/{org.id}/approve/'
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data['enabled'])
         self.assertEqual(self.admin_approver.pk, response.data['vetted_by'])
@@ -113,7 +117,8 @@ class OrganisationTest(base.AllocationAPITest):
         self.client.force_authenticate(user=self.admin_user)
         org = factories.OrganisationFactory.create(ror_id="https://xyz")
         response = self.client.post(
-            f'/rest_api/organisations/{org.id}/approve/')
+            f'/rest_api/organisations/{org.id}/approve/'
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_approve_as_admin_unknown(self):
@@ -134,7 +139,8 @@ class OrganisationTest(base.AllocationAPITest):
         self.client.force_authenticate(user=self.admin_user)
         org = factories.OrganisationFactory.create(proposed_by="someone")
         response = self.client.post(
-            f'/rest_api/organisations/{org.id}/decline/')
+            f'/rest_api/organisations/{org.id}/decline/'
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(response.data['enabled'])
         self.assertEqual(self.admin_approver.pk, response.data['vetted_by'])
@@ -146,8 +152,9 @@ class OrganisationTest(base.AllocationAPITest):
 
     def test_create_as_admin(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = self._make_data(url="https://www.uta.edu.au",
-                               ror_id="https://ror.org/spqr01")
+        data = self._make_data(
+            url="https://www.uta.edu.au", ror_id="https://ror.org/spqr01"
+        )
         response = self.client.post('/rest_api/organisations/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self._check_data(data, response.data, extra={'enabled': False})
@@ -170,9 +177,7 @@ class OrganisationTest(base.AllocationAPITest):
     def test_propose_missing_field(self):
         self.client.force_authenticate(user=self.user)
         data = self._make_data(
-            short_name='WTF',
-            full_name='',
-            url='https://wtf.org'
+            short_name='WTF', full_name='', url='https://wtf.org'
         )
         response = self.client.post('/rest_api/organisations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -184,7 +189,7 @@ class OrganisationTest(base.AllocationAPITest):
             short_name='WTF',
             full_name='World Triffid Foundation',
             url='https://wtf.org',
-            country='xx'
+            country='xx',
         )
         response = self.client.post('/rest_api/organisations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -209,32 +214,44 @@ class OrganisationTest(base.AllocationAPITest):
         data = self._make_data(
             short_name='QCIF',
             full_name='Queensland Cyber Infrastructure Foundation',
-            url='https://qcif.edu.au'
+            url='https://qcif.edu.au',
         )
         response = self.client.post('/rest_api/organisations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual({
-            'full_name': [
-                exceptions.ErrorDetail(
-                    string='An Organisation with this full name '
-                    'already exists.', code='invalid')]},
-            response.data)
+        self.assertEqual(
+            {
+                'full_name': [
+                    exceptions.ErrorDetail(
+                        string='An Organisation with this full name '
+                        'already exists.',
+                        code='invalid',
+                    )
+                ]
+            },
+            response.data,
+        )
 
     def test_propose_rejected(self):
         self.client.force_authenticate(user=self.user)
         data = self._make_data(
             short_name='UWW',
             full_name='University of Woop Woop',
-            url='https://uww.edu.au'
+            url='https://uww.edu.au',
         )
         response = self.client.post('/rest_api/organisations/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual({
-            'full_name': [
-                exceptions.ErrorDetail(
-                    string='An Organisation with this full name '
-                    'has already been rejected.', code='invalid')]},
-            response.data)
+        self.assertEqual(
+            {
+                'full_name': [
+                    exceptions.ErrorDetail(
+                        string='An Organisation with this full name '
+                        'has already been rejected.',
+                        code='invalid',
+                    )
+                ]
+            },
+            response.data,
+        )
 
     def test_patch_as_anon(self):
         data = self._make_data(url="https://www.uta.edu.au")
@@ -264,8 +281,10 @@ class OrganisationTest(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 7)
         response = self.client.get(
-            f'/rest_api/organisations/?short_name={org1.short_name}')
+            f'/rest_api/organisations/?short_name={org1.short_name}'
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 1)
-        self.assertEqual(response.data['results'][0]['full_name'],
-                         org1.full_name)
+        self.assertEqual(
+            response.data['results'][0]['full_name'], org1.full_name
+        )

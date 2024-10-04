@@ -1,4 +1,3 @@
-
 # Copyright 2021 Australian Research Data Commons
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -24,16 +23,19 @@ register = Library()
 
 @register.filter()
 def pub_summary(publication):
-    res = "<i>Type</i>: %s" % publication.get_output_type_display()
+    res = f"<i>Type</i>: {publication.get_output_type_display()}"
     if publication.doi:
-        res = res + ", <i>DOI</i>: %s (%s)" % (
+        res = res + ", <i>DOI</i>: {} ({})".format(
             escape(publication.doi),
-            "validated" if publication.crossref_metadata else "not validated")
+            "validated" if publication.crossref_metadata else "not validated",
+        )
     if publication.crossref_metadata:
         res = res + ", " + crossref_summary(publication.crossref_metadata)
     else:
-        res = res + ", <i>Citation reference</i>: %s" % \
-            escape(publication.publication)
+        res = (
+            res
+            + f", <i>Citation reference</i>: {escape(publication.publication)}"
+        )
     return res
 
 
@@ -51,10 +53,12 @@ def crossref_summary(jsonString):
     msg = data.get('message')
     if not msg:
         return "*** Not a JSON Crossref response ***"
-    return ("<i>Title</i>: %s, <i>Author(s)</i>: %s, "
-            "<i>Publication</i>: %s, <i>Year</i>: %s" % (
-                format_title(msg), format_authors(msg),
-                format_publication(msg), format_pub_date(msg)))
+    return (
+        f"<i>Title</i>: {format_title(msg)}, "
+        f"<i>Author(s)</i>: {format_authors(msg)}, "
+        f"<i>Publication</i>: {format_publication(msg)}, "
+        f"<i>Year</i>: {format_pub_date(msg)}"
+    )
 
 
 def format_title(msg):

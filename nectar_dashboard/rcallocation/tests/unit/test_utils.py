@@ -7,11 +7,11 @@ from nectar_dashboard.rcallocation import utils
 
 
 class UtilsTest(base.BaseTestCase):
-
     def test_copy_allocation(self):
         self.maxDiff = 20000
         allocation = factories.AllocationFactory.create(
-            contact_email=self.user.name)
+            contact_email=self.user.name
+        )
 
         old_allocation = utils.copy_allocation(allocation)
 
@@ -21,9 +21,11 @@ class UtilsTest(base.BaseTestCase):
             return a
 
         allocation_dict = _discard_different_attrs(
-            common.allocation_to_dict(allocation))
+            common.allocation_to_dict(allocation)
+        )
         old_allocation_dict = _discard_different_attrs(
-            common.allocation_to_dict(old_allocation))
+            common.allocation_to_dict(old_allocation)
+        )
 
         self.assertEqual(allocation_dict, old_allocation_dict)
         self.assertEqual(allocation.id, old_allocation.parent_request_id)
@@ -47,23 +49,24 @@ class UtilsTest(base.BaseTestCase):
         self.assertEqual(2, len(member_map['csiro.au']))
 
     def test_sites_from_email(self):
-        self.assertEqual(1,
-                         len(utils.sites_from_email("ab.cd@ardc.edu.au")))
-        self.assertEqual('ardc',
-                         utils.sites_from_email("ab.cd@ardc.edu.au")[0].name)
-        self.assertEqual('uom',
-                         utils.sites_from_email(
-                             "ab.cd@student.unimelb.edu.au")[0].name)
-        self.assertEqual('uom',
-                         utils.sites_from_email(
-                             "ab.cd@exchange.unimelb.edu.au")[0].name)
-        self.assertEqual('qcif',
-                         utils.sites_from_email(
-                             "ab.cd@student.griffithuni.edu.au")[0].name)
-        self.assertEqual(2,
-                         len(utils.sites_from_email("ab.cd@csiro.au")))
-        self.assertEqual(0,
-                         len(utils.sites_from_email("ab.cd@gmail.com")))
+        self.assertEqual(1, len(utils.sites_from_email("ab.cd@ardc.edu.au")))
+        self.assertEqual(
+            'ardc', utils.sites_from_email("ab.cd@ardc.edu.au")[0].name
+        )
+        self.assertEqual(
+            'uom',
+            utils.sites_from_email("ab.cd@student.unimelb.edu.au")[0].name,
+        )
+        self.assertEqual(
+            'uom',
+            utils.sites_from_email("ab.cd@exchange.unimelb.edu.au")[0].name,
+        )
+        self.assertEqual(
+            'qcif',
+            utils.sites_from_email("ab.cd@student.griffithuni.edu.au")[0].name,
+        )
+        self.assertEqual(2, len(utils.sites_from_email("ab.cd@csiro.au")))
+        self.assertEqual(0, len(utils.sites_from_email("ab.cd@gmail.com")))
 
     def test_open_config_file(self):
         file_name = f"testing-{os.getpid()}.txt"

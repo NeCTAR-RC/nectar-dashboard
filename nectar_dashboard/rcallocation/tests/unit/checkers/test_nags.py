@@ -25,7 +25,6 @@ THIS_YEAR = datetime.now().year
 
 
 class NagCheckerTest(base.BaseTestCase):
-
     def test_init(self):
         allocation = factories.AllocationFactory.create(project_name='fun')
         checker = checkers.NagChecker(allocation=allocation)
@@ -38,7 +37,6 @@ CUTOFF = checkers.EXPIRED_GRANT_CUTOFF_YEARS
 
 
 class NagChecksTest(base.BaseTestCase):
-
     def test_survey_check_good(self):
         allocation = factories.AllocationFactory.create()
         checker = checkers.NagChecker(allocation=allocation)
@@ -60,16 +58,16 @@ class NagChecksTest(base.BaseTestCase):
 
     def test_ncris_check_good_2(self):
         allocation = factories.AllocationFactory.create(
-            ncris_support='legacy value',
-            ncris_facilities=['ALA'])
+            ncris_support='legacy value', ncris_facilities=['ALA']
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual([], res)
 
     def test_ncris_check_bad(self):
         allocation = factories.AllocationFactory.create(
-            ncris_support='legacy value',
-            ncris_facilities=[])
+            ncris_support='legacy value', ncris_facilities=[]
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual(1, len(res))
@@ -83,16 +81,16 @@ class NagChecksTest(base.BaseTestCase):
 
     def test_ardc_check_good_2(self):
         allocation = factories.AllocationFactory.create(
-            nectar_support='legacy value',
-            ardc_support=['CVL'])
+            nectar_support='legacy value', ardc_support=['CVL']
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual([], res)
 
     def test_ardc_check_bad(self):
         allocation = factories.AllocationFactory.create(
-            nectar_support='legacy value',
-            ardc_support=[])
+            nectar_support='legacy value', ardc_support=[]
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual(1, len(res))
@@ -107,8 +105,8 @@ class NagChecksTest(base.BaseTestCase):
     def test_grant_current(self):
         allocation = factories.AllocationFactory.create()
         factories.GrantFactory.create(
-            allocation=allocation,
-            last_year_funded=THIS_YEAR)
+            allocation=allocation, last_year_funded=THIS_YEAR
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual([], res)
@@ -116,8 +114,8 @@ class NagChecksTest(base.BaseTestCase):
     def test_grant_current_2(self):
         allocation = factories.AllocationFactory.create()
         factories.GrantFactory.create(
-            allocation=allocation,
-            last_year_funded=(THIS_YEAR - CUTOFF + 1))
+            allocation=allocation, last_year_funded=(THIS_YEAR - CUTOFF + 1)
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual([], res)
@@ -125,8 +123,8 @@ class NagChecksTest(base.BaseTestCase):
     def test_grant_expired(self):
         allocation = factories.AllocationFactory.create()
         factories.GrantFactory.create(
-            allocation=allocation,
-            last_year_funded=(THIS_YEAR - CUTOFF))
+            allocation=allocation, last_year_funded=(THIS_YEAR - CUTOFF)
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual(1, len(res))
@@ -141,8 +139,8 @@ class NagChecksTest(base.BaseTestCase):
     def test_output_ok(self):
         allocation = factories.AllocationFactory.create()
         factories.PublicationFactory.create(
-            allocation=allocation,
-            output_type=output_type_choices.DATASET)
+            allocation=allocation, output_type=output_type_choices.DATASET
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual([], res)
@@ -150,8 +148,8 @@ class NagChecksTest(base.BaseTestCase):
     def test_output_unspecified(self):
         allocation = factories.AllocationFactory.create()
         factories.PublicationFactory.create(
-            allocation=allocation,
-            output_type=output_type_choices.UNSPECIFIED)
+            allocation=allocation, output_type=output_type_choices.UNSPECIFIED
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual(1, len(res))
@@ -162,7 +160,8 @@ class NagChecksTest(base.BaseTestCase):
         factories.PublicationFactory.create(
             allocation=allocation,
             crossref_metadata="",
-            output_type=output_type_choices.PEER_REVIEWED_JOURNAL_ARTICLE)
+            output_type=output_type_choices.PEER_REVIEWED_JOURNAL_ARTICLE,
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual(1, len(res))
@@ -172,8 +171,9 @@ class NagChecksTest(base.BaseTestCase):
         allocation = factories.AllocationFactory.create()
         factories.PublicationFactory.create(
             allocation=allocation,
-            crossref_metadata="{'foo': 'bar'}",    # fake ...
-            output_type=output_type_choices.PEER_REVIEWED_JOURNAL_ARTICLE)
+            crossref_metadata="{'foo': 'bar'}",  # fake ...
+            output_type=output_type_choices.PEER_REVIEWED_JOURNAL_ARTICLE,
+        )
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual([], res)

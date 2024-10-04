@@ -13,8 +13,9 @@ class ApprovedAllocationsListView(BaseAllocationsListView):
     table_class = tables.ApprovedAllocationListTable
 
     def get_data(self):
-        return [ar for ar in
-                AllocationRequest.objects.filter(
-                    parent_request=None).filter(
-                    status__in=('A', 'X', 'J')).order_by(
-                    'project_name')]
+        return [
+            ar
+            for ar in AllocationRequest.objects.filter(parent_request=None)
+            .filter(status__in=('A', 'X', 'J'))
+            .order_by('project_name')
+        ]

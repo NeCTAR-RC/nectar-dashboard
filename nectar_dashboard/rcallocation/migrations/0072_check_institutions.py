@@ -17,11 +17,14 @@ class Migration(migrations.Migration):
     def check(apps, schema_editor):
         ChiefInvestigator = apps.get_model('rcallocation', 'ChiefInvestigator')
 
-        cis_with_no_orgs = ChiefInvestigator.objects \
-                                    .filter(primary_organisation=None)
+        cis_with_no_orgs = ChiefInvestigator.objects.filter(
+            primary_organisation=None
+        )
         if ci_count := cis_with_no_orgs.count():
-            LOG.error(f"Found {ci_count} ChiefInvestigator records with "
-                      "no primary organisation.")
+            LOG.error(
+                f"Found {ci_count} ChiefInvestigator records with "
+                "no primary organisation."
+            )
         if ci_count:
             raise Exception("Detected NULL Organisation fields.")
 
@@ -32,6 +35,4 @@ class Migration(migrations.Migration):
         ('rcallocation', '0071_convert_institutions'),
     ]
 
-    operations = [
-        migrations.RunPython(check, reverse_code=noop) 
-    ]
+    operations = [migrations.RunPython(check, reverse_code=noop)]

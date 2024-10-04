@@ -16,7 +16,7 @@
                     {% include "rcallocation/field.html" with field=grant_form.last_year_funded %}
                     {% include "rcallocation/field.html" with field=grant_form.total_funding %}
                 </div>
-            
+
                 <button class="btn btn-danger field-delete-btn" id="delete-grant" type="button">
                     <i class="fa fa-close"></i> {% if forloop.first and not grant_form.total_funding.value %}I don't have any grants{% else %}Delete{% endif %}
                 </button>

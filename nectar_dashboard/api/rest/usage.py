@@ -7,9 +7,8 @@ from nectar_dashboard.api import usage
 
 @urls.register
 class Summary(generic.View):
-    """Cloudkitty summary
+    """Cloudkitty summary"""
 
-    """
     url_regex = r'nectar/usage/summary/$'
 
     @rest_utils.ajax()
@@ -25,8 +24,7 @@ class Summary(generic.View):
         if resource_type:
             filters['type'] = resource_type
 
-        return usage.get_summary(request, filters=filters,
-                                 detailed=detailed)
+        return usage.get_summary(request, filters=filters, detailed=detailed)
 
 
 @urls.register
@@ -36,12 +34,12 @@ class SummaryByType(generic.View):
     Use Summary /api/nectar/usage/summary/?type=instance instead
 
     """
+
     url_regex = r'nectar/usage/summary/(?P<resource_type>[^/]+)/$'
 
     @rest_utils.ajax()
     def get(self, request, resource_type):
-        """List summary with resource_type filter
-        """
+        """List summary with resource_type filter"""
         detailed = request.GET.get('detailed', False)
         filters = {'type': resource_type}
         return usage.get_summary(request, filters=filters, detailed=detailed)
@@ -49,9 +47,8 @@ class SummaryByType(generic.View):
 
 @urls.register
 class MostUsedResources(generic.View):
-    """API for load balancers.
+    """API for load balancers."""
 
-    """
     url_regex = r'nectar/usage/most-used/(?P<resource_type>[^/]+)/$'
 
     @rest_utils.ajax()
@@ -65,9 +62,8 @@ class MostUsedResources(generic.View):
 
 @urls.register
 class InstanceData(generic.View):
-    """API for load balancers.
+    """API for load balancers."""
 
-    """
     url_regex = r'nectar/usage/instance-data/$'
 
     @rest_utils.ajax()

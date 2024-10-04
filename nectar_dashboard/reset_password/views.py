@@ -34,18 +34,19 @@ def credentials(request):
         session = utils.get_session()
 
         api.keystone.user_update_own_password(
-            request,
-            settings.PASSWORD_RESET_TOKEN,
-            password)
+            request, settings.PASSWORD_RESET_TOKEN, password
+        )
 
         # Reauthenticate.
         project_domain = request.user.token.project['domain_id']
-        auth = v3.Password(auth_url=endpoint,
-                           username=request.user.username,
-                           password=password,
-                           project_id=project_id,
-                           user_domain_id=request.user.user_domain_id,
-                           project_domain_id=project_domain)
+        auth = v3.Password(
+            auth_url=endpoint,
+            username=request.user.username,
+            password=password,
+            project_id=project_id,
+            user_domain_id=request.user.user_domain_id,
+            project_domain_id=project_domain,
+        )
 
         auth_ref = auth.get_access(session)
         token = auth_user.Token(auth_ref, unscoped_token=auth_ref.auth_token)
@@ -53,10 +54,10 @@ def credentials(request):
         auth_user.set_session_from_user(request, user)
         # (sorrison) This is needed for some reason, else get a 403
         time.sleep(5)
-        messages.add_message(request, messages.INFO,
-                             "Your password has been reset.")
+        messages.add_message(
+            request, messages.INFO, "Your password has been reset."
+        )
 
-    context = {'form': passwordForm,
-               'password': password}
+    context = {'form': passwordForm, 'password': password}
 
     return shortcuts.render(request, 'password/index.html', context)

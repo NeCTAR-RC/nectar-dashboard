@@ -6,12 +6,12 @@ from nectar_dashboard.rcallocation import models
 
 
 # These correspond to expiration states for expiring allocations
-DANGER = 'Danger'      # getting close to auto-decline
+DANGER = 'Danger'  # getting close to auto-decline
 ARCHIVED = 'Archived'
 STOPPED = 'Stopped'
 EXPIRED = 'Expired'
-NONE = 'None'          # not expiring
-UNKNOWN = 'Unknown'    # can't figure out when the expiry clock stopped.
+NONE = 'None'  # not expiring
+UNKNOWN = 'Unknown'  # can't figure out when the expiry clock stopped.
 
 # These represent the waiting time for non-expiring allocations
 OVERDUE = 'Overdue'
@@ -36,21 +36,21 @@ def get_clockstop_amendment(allocation):
     '''
 
     # The last approved allocation
-    approval = models.AllocationRequest.objects \
-                                       .filter(status=APPROVED) \
-                                       .filter(parent_request=allocation.id) \
-                                       .first()
+    approval = (
+        models.AllocationRequest.objects.filter(status=APPROVED)
+        .filter(parent_request=allocation.id)
+        .first()
+    )
     if approval is None:
         return None
     # The first amendment after the last approval
-    return models.AllocationRequest.objects \
-                                   .filter(status=UPDATE_PENDING) \
-                                   .filter(Q(parent_request=allocation.id)
-                                           | Q(id=allocation.id)) \
-                                   .filter(modified_time__gt=
-                                           approval.modified_time) \
-                                   .order_by('modified_time') \
-                                   .first()
+    return (
+        models.AllocationRequest.objects.filter(status=UPDATE_PENDING)
+        .filter(Q(parent_request=allocation.id) | Q(id=allocation.id))
+        .filter(modified_time__gt=approval.modified_time)
+        .order_by('modified_time')
+        .first()
+    )
 
 
 def get_urgency_info(allocation):
@@ -74,10 +74,12 @@ def get_urgency_info(allocation):
                 # At risk of automatic decline, restarting expiry
                 expiry = DANGER
             elif expiry_clock > allocation.end_date + datetime.timedelta(
-                    days=28):
+                days=28
+            ):
                 expiry = ARCHIVED
             elif expiry_clock > allocation.end_date + datetime.timedelta(
-                    days=14):
+                days=14
+            ):
                 expiry = STOPPED
             elif expiry_clock > allocation.end_date:
                 expiry = EXPIRED

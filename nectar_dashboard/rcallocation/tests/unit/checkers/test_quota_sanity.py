@@ -28,8 +28,7 @@ def build_quota(service, resource, value, zone='nectar'):
     return {f'quota-{service}.{resource}__{zone}': value}
 
 
-class FakeForm(object):
-
+class FakeForm:
     def __init__(self, values):
         self.cleaned_data = values
 
@@ -39,17 +38,15 @@ DUMMY_FORM = FakeForm({})
 
 def build_checker(form=DUMMY_FORM, approver=None, allocation=None):
     if approver is None:
-        return checkers.QuotaSanityChecker(form=form,
-                                           allocation=allocation)
+        return checkers.QuotaSanityChecker(form=form, allocation=allocation)
     else:
         user = auth_models.User(username=approver)
-        return checkers.QuotaSanityChecker(form=form,
-                                           allocation=allocation,
-                                           user=user, approving=True)
+        return checkers.QuotaSanityChecker(
+            form=form, allocation=allocation, user=user, approving=True
+        )
 
 
 class QuotaSanityCheckerTest(base.BaseTestCase):
-
     def test_empty_checker(self):
         checker = checkers.QuotaSanityChecker()
         self.assertIsNone(checker.form)
@@ -71,7 +68,6 @@ class QuotaSanityCheckerTest(base.BaseTestCase):
 
 
 class QuotaSanityChecksTest(base.BaseTestCase):
-
     def test_cinder_checks(self):
         data = build_quota('volume', 'gigabytes', 10, 'QRIScloud')
 
@@ -92,19 +88,25 @@ class QuotaSanityChecksTest(base.BaseTestCase):
         data.update({'associated_site': common.get_site('monash')})
         form = FakeForm(data)
         checker = build_checker(form=form, approver="test_user")
-        self.assertEqual(checkers.CINDER_NOT_LOCAL,
-                         checkers.cinder_local_check(checker)[0])
-        self.assertEqual('monash approved local allocation requests '
-                         'volume storage in QRIScloud',
-                         checkers.cinder_local_check(checker)[1])
+        self.assertEqual(
+            checkers.CINDER_NOT_LOCAL, checkers.cinder_local_check(checker)[0]
+        )
+        self.assertEqual(
+            'monash approved local allocation requests '
+            'volume storage in QRIScloud',
+            checkers.cinder_local_check(checker)[1],
+        )
 
         data.update({'national': True})
         checker = build_checker(form=form, approver="test_user")
-        self.assertEqual(checkers.CINDER_NOT_LOCAL,
-                         checkers.cinder_local_check(checker)[0])
-        self.assertEqual('monash approved national allocation requests '
-                         'volume storage in QRIScloud',
-                         checkers.cinder_local_check(checker)[1])
+        self.assertEqual(
+            checkers.CINDER_NOT_LOCAL, checkers.cinder_local_check(checker)[0]
+        )
+        self.assertEqual(
+            'monash approved national allocation requests '
+            'volume storage in QRIScloud',
+            checkers.cinder_local_check(checker)[1],
+        )
 
         data = build_quota('volume', 'gigabytes', 10, 'monash-03')
         data.update({'associated_site': common.get_site('monash')})
@@ -126,20 +128,24 @@ class QuotaSanityChecksTest(base.BaseTestCase):
         data.update({'associated_site': common.get_site('uom')})
         form = FakeForm(data)
         checker = build_checker(form=form, approver="test_user")
-        self.assertEqual(checkers.MANILA_NOT_LOCAL,
-                         checkers.manila_local_check(checker)[0])
-        self.assertEqual('uom approved local allocation requests shares '
-                         'in QRIScloud',
-                         checkers.manila_local_check(checker)[1])
+        self.assertEqual(
+            checkers.MANILA_NOT_LOCAL, checkers.manila_local_check(checker)[0]
+        )
+        self.assertEqual(
+            'uom approved local allocation requests shares ' 'in QRIScloud',
+            checkers.manila_local_check(checker)[1],
+        )
 
         data.update({'national': True})
         form = FakeForm(data)
         checker = build_checker(form=form, approver="test_user")
-        self.assertEqual(checkers.MANILA_NOT_LOCAL,
-                         checkers.manila_local_check(checker)[0])
-        self.assertEqual('uom approved national allocation requests shares '
-                         'in QRIScloud',
-                         checkers.manila_local_check(checker)[1])
+        self.assertEqual(
+            checkers.MANILA_NOT_LOCAL, checkers.manila_local_check(checker)[0]
+        )
+        self.assertEqual(
+            'uom approved national allocation requests shares ' 'in QRIScloud',
+            checkers.manila_local_check(checker)[1],
+        )
 
     def test_flavor_check(self):
         data = build_quota('compute', 'flavor:hugeram-v3', 0)
@@ -150,11 +156,11 @@ class QuotaSanityChecksTest(base.BaseTestCase):
         data = build_quota('compute', 'flavor:hugeram-v3', 1)
         form = FakeForm(data)
         checker = build_checker(form=form)
-        self.assertEqual(checkers.FLAVORS_NOT_JUSTIFIED,
-                         checkers.flavor_check(checker)[0])
+        self.assertEqual(
+            checkers.FLAVORS_NOT_JUSTIFIED, checkers.flavor_check(checker)[0]
+        )
 
-        data.update({'usage_patterns':
-                     'Need lots of RAM ... because reasons'})
+        data.update({'usage_patterns': 'Need lots of RAM ... because reasons'})
         form = FakeForm(data)
         checker = build_checker(form=form)
         self.assertIsNone(checkers.flavor_check(checker))
@@ -164,7 +170,6 @@ MODELS_LOG = 'nectar_dashboard.rcallocation.models.LOG'
 
 
 class QuotaSanityApproverChecksTest(base.BaseTestCase):
-
     def test_approver_authority_checks(self):
         data = build_quota('volume', 'gigabytes', 1, 'QRIScloud')
         form = FakeForm(data)
@@ -176,8 +181,9 @@ class QuotaSanityApproverChecksTest(base.BaseTestCase):
         form = FakeForm(data)
         checker = build_checker(form=form, approver="not_a_user")
         with mock.patch(MODELS_LOG) as mock_log:
-            self.assertEqual(checkers.APPROVER_PROBLEM,
-                             checkers.approver_checks(checker)[0])
+            self.assertEqual(
+                checkers.APPROVER_PROBLEM, checkers.approver_checks(checker)[0]
+            )
             mock_log.warning.assert_called_once()
 
     def test_no_approver_sites(self):
@@ -185,16 +191,19 @@ class QuotaSanityApproverChecksTest(base.BaseTestCase):
         form = FakeForm(data)
         checker = build_checker(form=form, approver="test_user3")
         with mock.patch(MODELS_LOG) as mock_log:
-            self.assertEqual(checkers.APPROVER_PROBLEM,
-                             checkers.approver_checks(checker)[0])
+            self.assertEqual(
+                checkers.APPROVER_PROBLEM, checkers.approver_checks(checker)[0]
+            )
             mock_log.warning.assert_called_once()
 
     def test_approver_not_authorized(self):
         data = build_quota('volume', 'gigabytes', 1, 'QRIScloud')
         form = FakeForm(data)
         checker = build_checker(form=form, approver="test_user2")
-        self.assertEqual(checkers.APPROVER_NOT_AUTHORIZED,
-                         checkers.approver_checks(checker)[0][0])
+        self.assertEqual(
+            checkers.APPROVER_NOT_AUTHORIZED,
+            checkers.approver_checks(checker)[0][0],
+        )
 
     def test_approver_not_authorized_zero(self):
         data = build_quota('volume', 'gigabytes', 0, 'QRIScloud')
@@ -214,119 +223,146 @@ class QuotaSanityApproverChecksTest(base.BaseTestCase):
 
     def test_no_grants_approving_local(self):
         allocation = factories.AllocationFactory.create(
-            project_name='fun', national=False)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
+            project_name='fun', national=False
+        )
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
         self.assertIsNone(checkers.grant_checks(checker))
 
     def test_no_grants_approving_national(self):
         allocation = factories.AllocationFactory.create(
-            project_name='fun', national=True)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
-        self.assertEqual(checkers.NO_VALID_GRANTS,
-                         checkers.grant_checks(checker)[0][0])
+            project_name='fun', national=True
+        )
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
+        self.assertEqual(
+            checkers.NO_VALID_GRANTS, checkers.grant_checks(checker)[0][0]
+        )
 
     def test_no_grants_special_approving_national(self):
         allocation = factories.AllocationFactory.create(
-            project_name='fun', national=True,
-            special_approval="Fun is special")
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
+            project_name='fun',
+            national=True,
+            special_approval="Fun is special",
+        )
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
         self.assertIsNone(checkers.grant_checks(checker))
 
     def test_no_grants_ardc_approving_national(self):
         allocation = factories.AllocationFactory.create(
-            project_name='fun', national=True)
+            project_name='fun', national=True
+        )
         support = factories.ARDCSupportFactory.create()
         allocation.ardc_support.add(support)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
         self.assertIsNone(checkers.grant_checks(checker))
 
     def test_no_grants_ncris_approving_national(self):
         allocation = factories.AllocationFactory.create(
-            project_name='fun', national=True)
+            project_name='fun', national=True
+        )
         facility = factories.NCRISFacilityFactory.create()
         allocation.ncris_facilities.add(facility)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
         self.assertIsNone(checkers.grant_checks(checker))
 
     def test_old_grant_approving_national(self):
         allocation = factories.AllocationFactory.create(
-            project_name='fun', national=True)
-        factories.GrantFactory.create(allocation_id=allocation.id,
-                                      grant_type='ardc',
-                                      last_year_funded=2000)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
-        self.assertEqual(checkers.NO_VALID_GRANTS,
-                         checkers.grant_checks(checker)[0][0])
+            project_name='fun', national=True
+        )
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='ardc',
+            last_year_funded=2000,
+        )
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
+        self.assertEqual(
+            checkers.NO_VALID_GRANTS, checkers.grant_checks(checker)[0][0]
+        )
 
     def test_local_grant_approving_national(self):
         allocation = factories.AllocationFactory.create(
-            project_name='fun', national=True)
-        factories.GrantFactory.create(allocation_id=allocation.id,
-                                      grant_type='inst',
-                                      last_year_funded=20000)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
-        self.assertEqual(checkers.NO_VALID_GRANTS,
-                         checkers.grant_checks(checker)[0][0])
+            project_name='fun', national=True
+        )
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='inst',
+            last_year_funded=20000,
+        )
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
+        self.assertEqual(
+            checkers.NO_VALID_GRANTS, checkers.grant_checks(checker)[0][0]
+        )
 
     def test_current_grant_approving_national(self):
         allocation = factories.AllocationFactory.create(
-            project_name='fun', national=True)
-        factories.GrantFactory.create(allocation_id=allocation.id,
-                                      grant_type='arc',
-                                      last_year_funded=20000)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
+            project_name='fun', national=True
+        )
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='arc',
+            last_year_funded=20000,
+        )
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
         self.assertIsNone(checkers.grant_checks(checker))
 
     def test_std_organisation(self):
-        allocation = factories.AllocationFactory.create(
-            project_name='fun')
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
+        allocation = factories.AllocationFactory.create(project_name='fun')
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
         self.assertIsNone(checkers.organisation_checks(checker))
 
     def test_unvetted_organisation(self):
-        allocation = factories.AllocationFactory.create(
-            project_name='fun')
+        allocation = factories.AllocationFactory.create(project_name='fun')
         org = factories.OrganisationFactory.create(
-            proposed_by="someone", vetted_by=None)
+            proposed_by="someone", vetted_by=None
+        )
         allocation.supported_organisations.add(org.id)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
         res = checkers.organisation_checks(checker)
         self.assertEqual(1, len(res))
         self.assertEqual(checkers.APPROVER_UNVETTED_ORGANISATION, res[0][0])
-        self.assertRegex(res[0][1],
-                         f".+{org.full_name}.+{org.proposed_by}.+")
+        self.assertRegex(res[0][1], f".+{org.full_name}.+{org.proposed_by}.+")
 
     def test_disabled_organisation(self):
-        allocation = factories.AllocationFactory.create(
-            project_name='fun')
+        allocation = factories.AllocationFactory.create(project_name='fun')
         org = factories.OrganisationFactory.create(
-            proposed_by="someone", enabled=False)
+            proposed_by="someone", enabled=False
+        )
         allocation.supported_organisations.add(org.id)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
         res = checkers.organisation_checks(checker)
         self.assertEqual(1, len(res))
         self.assertEqual(checkers.APPROVER_DISABLED_ORGANISATION, res[0][0])
         self.assertRegex(res[0][1], f".+{org.full_name}.+")
 
     def test_vetted_organisation(self):
-        allocation = factories.AllocationFactory.create(
-            project_name='fun')
+        allocation = factories.AllocationFactory.create(project_name='fun')
         organisation = factories.OrganisationFactory.create(
             proposed_by="someone",
-            vetted_by=models.Approver.objects.get(
-                username="test_user"))
+            vetted_by=models.Approver.objects.get(username="test_user"),
+        )
         allocation.supported_organisations.add(organisation.id)
-        checker = build_checker([], approver='test_user',
-                                allocation=allocation)
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
         self.assertIsNone(checkers.organisation_checks(checker))

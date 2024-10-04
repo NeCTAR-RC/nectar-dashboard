@@ -22,7 +22,6 @@ from nectar_dashboard.rcallocation import models
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class SupportsTest(base.AllocationAPITest):
-
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         # The 0060 migration populates the initial ARDC programs and projects
@@ -53,22 +52,27 @@ class SupportsTest(base.AllocationAPITest):
 
     def test_create_project(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'name': 'Applied Magic Project',
-                'short_name': 'AMF',
-                'rank': 50}
+        data = {
+            'name': 'Applied Magic Project',
+            'short_name': 'AMF',
+            'rank': 50,
+        }
         response = self.client.post('/rest_api/ardc-projects/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_update_project(self):
         self.client.force_authenticate(user=self.admin_user)
         data = {'name': 'Chimeric Virtual Laboratory'}
-        response = self.client.patch('/rest_api/ardc-projects/%s/' %
-                                     self.cvl.id, data)
+        response = self.client.patch(
+            f'/rest_api/ardc-projects/{self.cvl.id}/', data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_project(self):
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.delete('/rest_api/ardc-projects/%s/' %
-                                      self.cvl.id)
-        self.assertEqual(response.status_code,
-                         status.HTTP_405_METHOD_NOT_ALLOWED)
+        response = self.client.delete(
+            f'/rest_api/ardc-projects/{self.cvl.id}/'
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
+        )

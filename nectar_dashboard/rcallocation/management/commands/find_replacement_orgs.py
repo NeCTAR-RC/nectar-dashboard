@@ -10,26 +10,32 @@ LOG = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Scan for active local (non-ROR) Organisation records that seem " \
-        "to be subsumed by records from the ROR.  For each potential hit, " \
-        "print the details of the local Organisation folllowed by the " \
+    help = (
+        "Scan for active local (non-ROR) Organisation records that seem "
+        "to be subsumed by records from the ROR.  For each potential hit, "
+        "print the details of the local Organisation folllowed by the "
         "ROR Organisations that seem to match."
+    )
 
     def add_arguments(self, parser):
         pass
 
     def handle(self, **options):
         verbose = options['verbosity'] > 1
-        for o in models.Organisation.objects.filter(
-                ror_id="", enabled=True):
-            candidates = models.Organisation.objects \
-                                .exclude(ror_id="") \
-                                .filter(country=o.country) \
-                                .filter(Q(short_name__iexact=o.short_name)
-                                        | Q(full_name__iexact=o.full_name))
+        for o in models.Organisation.objects.filter(ror_id="", enabled=True):
+            candidates = (
+                models.Organisation.objects.exclude(ror_id="")
+                .filter(country=o.country)
+                .filter(
+                    Q(short_name__iexact=o.short_name)
+                    | Q(full_name__iexact=o.full_name)
+                )
+            )
             if c := candidates.count():
-                print(f"Local Organisation {o.id} potentially matches "
-                      f"{c} ROR Organisation{'s' if c > 1 else ''}")
+                print(
+                    f"Local Organisation {o.id} potentially matches "
+                    f"{c} ROR Organisation{'s' if c > 1 else ''}"
+                )
                 print("-- Local Organisation --")
                 self.show_organisation(o)
                 for r in candidates:
@@ -37,8 +43,10 @@ class Command(BaseCommand):
                     self.show_organisation(r)
                 print("========================")
             elif verbose:
-                print(f"Local Organisation {o.id} ({o.full_name}) "
-                      "does not match")
+                print(
+                    f"Local Organisation {o.id} ({o.full_name}) "
+                    "does not match"
+                )
                 print("========================")
 
     def show_organisation(self, org):

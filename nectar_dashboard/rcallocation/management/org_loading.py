@@ -10,16 +10,14 @@ from nectar_dashboard.rcallocation import utils
 LOG = logging.getLogger(__name__)
 
 
-class Loader(object):
-
+class Loader:
     def __init__(self):
         self.created = 0
         self.updated = 0
         self.disabled = 0
 
     def ror_record_to_org(self, ror):
-        """Create or update an Organisation from a ROR record.
-        """
+        """Create or update an Organisation from a ROR record."""
 
         new = False
         ror_id = ror['id']
@@ -52,7 +50,8 @@ class Loader(object):
                 enabled=enabled,
                 full_name=name,
                 short_name=short,
-                country=country)
+                country=country,
+            )
             new = True
         return (org, new)
 
@@ -86,10 +85,11 @@ class Loader(object):
                 # We need to clear all relationships between orgs in the
                 # ROR, but retain any relationships that involve non-ROR
                 # orgs ... on either side of the relationship
-                for o in models.Organisation.objects \
-                                    .exclude(ror_id='') \
-                                    .exclude(parent=None, precedes=None) \
-                                    .prefetch_related('parent', 'precedes'):
+                for o in (
+                    models.Organisation.objects.exclude(ror_id='')
+                    .exclude(parent=None, precedes=None)
+                    .prefetch_related('parent', 'precedes')
+                ):
                     touched = False
                     if o.parent and o.parent.ror_id:
                         o.parent = None
@@ -103,7 +103,7 @@ class Loader(object):
 
             LOG.info("Adding parent relationships")
             count = 0
-            for (c, p) in parents.items():
+            for c, p in parents.items():
                 child = models.Organisation.objects.get(ror_id=c)
                 parent = models.Organisation.objects.get(ror_id=p)
                 child.parent = parent
@@ -115,18 +115,21 @@ class Loader(object):
             # Note that there are no Successor / Predecessor relationships
             # in early ROR dumps; e.g. v1.8.  So don't be alarmed ...
             count = 0
-            for (s, pl) in predecessors.items():
+            for s, pl in predecessors.items():
                 successor = models.Organisation.objects.get(ror_id=s)
                 for p in pl:
-                    predecessor = models.Organisation.objects.get(
-                        ror_id=p)
+                    predecessor = models.Organisation.objects.get(ror_id=p)
                     successor.supercedes.add(predecessor)
                     count += 1
                 successor.save()
             LOG.info(f"Added {count} predecessor relationships")
 
-            LOG.info(f"Added {self.created} and refreshed "
-                     f"{self.updated} organisations")
+            LOG.info(
+                f"Added {self.created} and refreshed "
+                f"{self.updated} organisations"
+            )
             if self.disabled:
-                LOG.info(f"{self.disabled} of the existing organisations "
-                         "were disabled")
+                LOG.info(
+                    f"{self.disabled} of the existing organisations "
+                    "were disabled"
+                )

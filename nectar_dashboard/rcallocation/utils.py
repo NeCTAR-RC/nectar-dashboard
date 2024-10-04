@@ -130,26 +130,43 @@ def is_project_name_available(project_name, allocation=None):
     manager = models.AllocationRequest.objects
     if allocation:
         manager = manager.exclude(id=allocation.id).exclude(
-            parent_request_id=allocation.id)
-    normalized_name = manager.filter().annotate(
-      normalized_name=Func(
-        F('project_name'), Value('_'), Value('-'), function='replace',
-      )
-    ).annotate(
-      project_names=Func(
-        F('normalized_name'), function='LOWER',
-      )
+            parent_request_id=allocation.id
+        )
+    normalized_name = (
+        manager.filter()
+        .annotate(
+            normalized_name=Func(
+                F('project_name'),
+                Value('_'),
+                Value('-'),
+                function='replace',
+            )
+        )
+        .annotate(
+            project_names=Func(
+                F('normalized_name'),
+                function='LOWER',
+            )
+        )
     )
     project_names = normalized_name.all().values_list(
-        'project_names', flat=True)
+        'project_names', flat=True
+    )
     project_name = project_name.lower().replace('_', '-')
     return project_name not in project_names
 
 
 def strip_email_sub_domains(domain):
     prefix = domain.split('.', 1)[0]
-    if prefix in ('my', 'ems', 'exchange', 'groupwise',
-                  'student', 'students', 'studentmail'):
+    if prefix in (
+        'my',
+        'ems',
+        'exchange',
+        'groupwise',
+        'student',
+        'students',
+        'studentmail',
+    ):
         _, _, domain = domain.partition('.')
         if domain == 'griffithuni.edu.au':
             return 'griffith.edu.au'
@@ -219,4 +236,4 @@ def open_config_file(uri):
         filename = uri
         LOG.info(f"Using builtin config file: {filename}")
 
-    return open(filename, mode='r')
+    return open(filename)

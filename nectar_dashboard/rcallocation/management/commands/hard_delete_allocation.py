@@ -8,31 +8,39 @@ LOG = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Hard delete an allocation request and associated records.  " \
+    help = (
+        "Hard delete an allocation request and associated records.  "
         "Use carefully as there is no undo."
+    )
 
     def add_arguments(self, parser):
-        parser.add_argument('allocation',
-                            help="The allocation id")
-        parser.add_argument('--no-dry-run', action="store_true",
-                            help="If set, do the delete")
-        parser.add_argument('--history', action="store_true",
-                            help="If set, just delete a single history "
-                            "record.  Otherwise delete an allocation and "
-                            "all of its history.")
+        parser.add_argument('allocation', help="The allocation id")
+        parser.add_argument(
+            '--no-dry-run', action="store_true", help="If set, do the delete"
+        )
+        parser.add_argument(
+            '--history',
+            action="store_true",
+            help="If set, just delete a single history "
+            "record.  Otherwise delete an allocation and "
+            "all of its history.",
+        )
 
     def handle(self, allocation, **options):
         dry_run = not options["no_dry_run"]
-        self.delete_allocation(allocation, dry_run=dry_run,
-                               history=options["history"])
+        self.delete_allocation(
+            allocation, dry_run=dry_run, history=options["history"]
+        )
 
     def _summary(self, allocation):
         type = "history" if allocation.parent_request else "parent"
-        return (f"{type} record {allocation.id}, "
-                f"project name: {allocation.project_name}, "
-                f"project id: {allocation.project_id}, "
-                f"status: {allocation.status}, "
-                f"last update: {allocation.modified_time}")
+        return (
+            f"{type} record {allocation.id}, "
+            f"project name: {allocation.project_name}, "
+            f"project id: {allocation.project_id}, "
+            f"status: {allocation.status}, "
+            f"last update: {allocation.modified_time}"
+        )
 
     def delete_allocation(self, id, dry_run=True, history=False):
         """Hard delete an allocation record with a given 'id'
@@ -45,14 +53,16 @@ class Command(BaseCommand):
         try:
             allocation = models.AllocationRequest.objects.get(id=id)
         except models.AllocationRequest.DoesNotExist:
-            print("Allocation with id %s not found" % id)
+            print(f"Allocation with id {id} not found")
             return
 
         allocations = [allocation]
         if allocation.parent_request:
             if not history:
-                print(f"Allocation record {id} is a history record "
-                      f"for allocation {allocation.parent_request.id}")
+                print(
+                    f"Allocation record {id} is a history record "
+                    f"for allocation {allocation.parent_request.id}"
+                )
                 return
         else:
             if history:
@@ -61,7 +71,8 @@ class Command(BaseCommand):
 
         # Build list of allocation records be deleted
         for h in models.AllocationRequest.objects.filter(
-                parent_request=allocation):
+            parent_request=allocation
+        ):
             allocations.append(h)
 
         if not dry_run:

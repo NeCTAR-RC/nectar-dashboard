@@ -9,8 +9,7 @@ PANEL = 'update'
 DISABLED = False
 
 # Python panel class of the PANEL to be added.
-ADD_PANEL = \
-    'nectar_dashboard.user_info.update.panel.UserUpdatePanel'
+ADD_PANEL = 'nectar_dashboard.user_info.update.panel.UserUpdatePanel'
 
 
 # A list of applications to be added to INSTALLED_APPS.

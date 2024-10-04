@@ -36,26 +36,45 @@ class AllocationSerializer(serializers.ModelSerializer):
     allocation_home = fields.AllocationHomeField(source='*', required=False)
     allocation_home_display = serializers.SerializerMethodField()
     associated_site = fields.AssociatedSiteField(
-        allow_null=True, required=False)
+        allow_null=True, required=False
+    )
     usage_types = fields.UsageTypesField(
-        many=True, queryset=models.UsageType.objects.all())
+        many=True, queryset=models.UsageType.objects.all()
+    )
     ardc_support = fields.ARDCSupportField(
-        many=True, queryset=models.ARDCSupport.objects.all())
+        many=True, queryset=models.ARDCSupport.objects.all()
+    )
     ncris_facilities = fields.NCRISFacilitiesField(
-        many=True, queryset=models.NCRISFacility.objects.all())
+        many=True, queryset=models.NCRISFacility.objects.all()
+    )
     supported_organisations = fields.OrganisationField(
-        many=True, queryset=models.Organisation.objects.all())
+        many=True, queryset=models.Organisation.objects.all()
+    )
 
     class Meta:
         model = models.AllocationRequest
-        exclude = ('created_by', 'notes', 'status_explanation',
-                   'parent_request')
-        read_only_fields = ('status', 'start_date', 'end_date',
-                            'national', 'associated_site',
-                            'contact_email', 'approver_email',
-                            'project_id', 'provisioned', 'notifications',
-                            'special_approval', 'allocation_home',
-                            'allocation_home_display', 'managed')
+        exclude = (
+            'created_by',
+            'notes',
+            'status_explanation',
+            'parent_request',
+        )
+        read_only_fields = (
+            'status',
+            'start_date',
+            'end_date',
+            'national',
+            'associated_site',
+            'contact_email',
+            'approver_email',
+            'project_id',
+            'provisioned',
+            'notifications',
+            'special_approval',
+            'allocation_home',
+            'allocation_home_display',
+            'managed',
+        )
 
     @staticmethod
     def get_quotas(obj):
@@ -88,7 +107,8 @@ class AllocationSerializer(serializers.ModelSerializer):
             for org in value:
                 if org.full_name == models.ORG_ALL_FULL_NAME:
                     raise serializers.ValidationError(
-                        "'All Organisations' cannot be used in this context")
+                        "'All Organisations' cannot be used in this context"
+                    )
             if len(set(value)) != len(value):
                 raise serializers.ValidationError("Duplicate organisations")
         return value
@@ -97,26 +117,38 @@ class AllocationSerializer(serializers.ModelSerializer):
 class PublicAllocationSerializer(AllocationSerializer):
     class Meta:
         model = models.AllocationRequest
-        fields = ('id', 'project_name', 'project_description', 'modified_time',
-                  'submit_date', 'start_date', 'end_date', 'bundle',
-                  'field_of_research_1', 'field_of_research_2',
-                  'field_of_research_3', 'for_percentage_1',
-                  'for_percentage_2', 'for_percentage_3',
-                  'supported_organisations', 'quotas')
+        fields = (
+            'id',
+            'project_name',
+            'project_description',
+            'modified_time',
+            'submit_date',
+            'start_date',
+            'end_date',
+            'bundle',
+            'field_of_research_1',
+            'field_of_research_2',
+            'field_of_research_3',
+            'for_percentage_1',
+            'for_percentage_2',
+            'for_percentage_3',
+            'supported_organisations',
+            'quotas',
+        )
         read_only_fields = fields
 
 
 class AdminAllocationSerializer(AllocationSerializer):
-
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by',)
-        read_only_fields = ('parent_request', 'approver_email', 'status'),
+        read_only_fields = (('parent_request', 'approver_email', 'status'),)
 
 
 class AllocationFilter(filters.FilterSet):
-    parent_request__isnull = filters.BooleanFilter(field_name='parent_request',
-                                                   lookup_expr='isnull')
+    parent_request__isnull = filters.BooleanFilter(
+        field_name='parent_request', lookup_expr='isnull'
+    )
     chief_investigator = filters.CharFilter('investigators__email')
     allocation_home = filters.CharFilter(method='filter_allocation_home')
     associated_site = filters.CharFilter('associated_site__name')
@@ -125,50 +157,88 @@ class AllocationFilter(filters.FilterSet):
         if value == 'national':
             return queryset.filter(national=True)
         elif value == 'unassigned':
-            return queryset.filter(national=False) \
-                           .filter(associated_site__isnull=True)
+            return queryset.filter(national=False).filter(
+                associated_site__isnull=True
+            )
         else:
-            return queryset.filter(associated_site__name=value) \
-                           .filter(national=False)
+            return queryset.filter(associated_site__name=value).filter(
+                national=False
+            )
 
     class Meta:
         model = models.AllocationRequest
 
-        fields = {'status': ['exact', 'in'],
-                  'parent_request_id': ['exact'],
-                  'project_id': ['exact', 'in'],
-                  'project_name': ['exact', 'contains', 'icontains',
-                                   'startswith', 'istartswith', 'endswith',
-                                   'iendswith', 'regex'],
-                  'convert_trial_project': ['exact'],
-                  'provisioned': ['exact'],
-                  'parent_request': ['exact'],
-                  'associated_site': ['exact'],
-                  'national': ['exact'],
-                  'managed': ['exact'],
-                  'notifications': ['exact'],
-                  'contact_email': ['exact', 'contains', 'icontains',
-                                    'startswith', 'istartswith', 'endswith',
-                                    'iendswith', 'regex'],
-                  'approver_email': ['exact', 'contains', 'icontains',
-                                     'startswith', 'istartswith', 'endswith',
-                                     'iendswith', 'regex'],
-                  'start_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'year'],
-                  'end_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'year'],
-                  'modified_time': ['exact', 'lt', 'gt', 'gte', 'lte', 'date',
-                                    'year'],
-                  'submit_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'date',
-                                  'year'],
-                  'created_by': ['exact']}
+        fields = {
+            'status': ['exact', 'in'],
+            'parent_request_id': ['exact'],
+            'project_id': ['exact', 'in'],
+            'project_name': [
+                'exact',
+                'contains',
+                'icontains',
+                'startswith',
+                'istartswith',
+                'endswith',
+                'iendswith',
+                'regex',
+            ],
+            'convert_trial_project': ['exact'],
+            'provisioned': ['exact'],
+            'parent_request': ['exact'],
+            'associated_site': ['exact'],
+            'national': ['exact'],
+            'managed': ['exact'],
+            'notifications': ['exact'],
+            'contact_email': [
+                'exact',
+                'contains',
+                'icontains',
+                'startswith',
+                'istartswith',
+                'endswith',
+                'iendswith',
+                'regex',
+            ],
+            'approver_email': [
+                'exact',
+                'contains',
+                'icontains',
+                'startswith',
+                'istartswith',
+                'endswith',
+                'iendswith',
+                'regex',
+            ],
+            'start_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'year'],
+            'end_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'year'],
+            'modified_time': [
+                'exact',
+                'lt',
+                'gt',
+                'gte',
+                'lte',
+                'date',
+                'year',
+            ],
+            'submit_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'date', 'year'],
+            'created_by': ['exact'],
+        }
 
 
 class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     queryset = models.AllocationRequest.objects.prefetch_related(
-        'quotas', 'quotas__quota_set', 'quotas__zone',
+        'quotas',
+        'quotas__quota_set',
+        'quotas__zone',
         'quotas__quota_set__resource__service_type',
-        'quotas__quota_set__resource', 'investigators',
-        'supported_organisations', 'associated_site',
-        'ncris_facilities', 'usage_types', 'ardc_support')
+        'quotas__quota_set__resource',
+        'investigators',
+        'supported_organisations',
+        'associated_site',
+        'ncris_facilities',
+        'usage_types',
+        'ardc_support',
+    )
 
     @property
     def filterset_class(self):
@@ -182,27 +252,39 @@ class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
         if self.is_read_admin():
             return self.queryset
         return models.AllocationRequest.objects.filter(
-            contact_email=self.request.user.username).prefetch_related(
-                'quotas', 'quotas__quota_set', 'quotas__zone',
-                'quotas__quota_set__resource__service_type',
-                'quotas__quota_set__resource', 'investigators',
-                'associated_site', 'ncris_facilities', 'usage_types',
-                'ardc_support', 'supported_organisations', 'bundle')
+            contact_email=self.request.user.username
+        ).prefetch_related(
+            'quotas',
+            'quotas__quota_set',
+            'quotas__zone',
+            'quotas__quota_set__resource__service_type',
+            'quotas__quota_set__resource',
+            'investigators',
+            'associated_site',
+            'ncris_facilities',
+            'usage_types',
+            'ardc_support',
+            'supported_organisations',
+            'bundle',
+        )
 
     def _perform_create_or_update(self, serializer, kwargs):
         data = serializer.validated_data
         compat_info = data.get('allocation_home')
         if not self.is_write_admin():
-            if data.get('national') \
-               or data.get('associated_site') \
-               or data.get('special_approval') \
-               or data.get('allocation_home'):
+            if (
+                data.get('national')
+                or data.get('associated_site')
+                or data.get('special_approval')
+                or data.get('allocation_home')
+            ):
                 raise exceptions.PermissionDenied()
         if compat_info:
             if data.get('associated_site') or data.get('national'):
                 raise serializers.ValidationError(
                     "Cannot use 'allocation_home' with 'national' or "
-                    + "'associated_site'")
+                    + "'associated_site'"
+                )
             kwargs.update(compat_info)
             data.pop('allocation_home')
         return serializer.save(**kwargs)
@@ -250,11 +332,14 @@ class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
         # "cores" people don't have a single site.  Or it could just say
         # that the associated site must have already been set explicitly;
         # e.g. via an earlier 'create' or 'amend'.
-        if (allocation.associated_site is None):
+        if allocation.associated_site is None:
             return response.Response(
-                {'error': "The associated_site attribute must be set "
-                 "before approving"},
-                status=status.HTTP_400_BAD_REQUEST)
+                {
+                    'error': "The associated_site attribute must be set "
+                    "before approving"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         utils.copy_allocation(allocation)
         allocation.status = models.AllocationRequest.APPROVED
         allocation.provisioned = False
@@ -298,13 +383,20 @@ class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
         if allocation.parent_request:
             return response.Response(
                 {'error': "The allocation cannot be a history record"},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         u, e = urgency.get_urgency_info(allocation)
         if allocation.status not in [
-                models.AllocationRequest.NEW,
-                models.AllocationRequest.SUBMITTED,
-                models.AllocationRequest.UPDATE_PENDING]:
+            models.AllocationRequest.NEW,
+            models.AllocationRequest.SUBMITTED,
+            models.AllocationRequest.UPDATE_PENDING,
+        ]:
             u = "N/A"
         sites = [s.name for s in allocation.get_interested_sites()]
-        return response.Response({'approval_urgency': u, 'expiry_state': e,
-                                  'concerned_sites': sites})
+        return response.Response(
+            {
+                'approval_urgency': u,
+                'expiry_state': e,
+                'concerned_sites': sites,
+            }
+        )

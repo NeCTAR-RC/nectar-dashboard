@@ -26,11 +26,12 @@ from nectar_dashboard.rcallocation import models
 from nectar_dashboard import rest_auth
 
 
-class AdminOrganisationSerializer(CountryFieldMixin,
-                                  serializers.ModelSerializer):
+class AdminOrganisationSerializer(
+    CountryFieldMixin, serializers.ModelSerializer
+):
     precedes = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=models.Organisation.objects.all())
+        many=True, queryset=models.Organisation.objects.all()
+    )
 
     class Meta:
         model = models.Organisation
@@ -39,38 +40,52 @@ class AdminOrganisationSerializer(CountryFieldMixin,
 
 class OrganisationSerializer(CountryFieldMixin, serializers.ModelSerializer):
     precedes = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=models.Organisation.objects.all())
+        many=True, queryset=models.Organisation.objects.all()
+    )
 
     class Meta:
         model = models.Organisation
         exclude = ['vetted_by', 'proposed_by']
 
 
-class ProposedOrganisationSerializer(CountryFieldMixin,
-                                     serializers.ModelSerializer):
+class ProposedOrganisationSerializer(
+    CountryFieldMixin, serializers.ModelSerializer
+):
     short_name = serializers.CharField(
-        required=True, allow_blank=False, max_length=16)
+        required=True, allow_blank=False, max_length=16
+    )
     url = serializers.CharField(
-        required=True, allow_blank=False, max_length=64,
-        validators=[validators.URLValidator(schemes=['http', 'https'])])
+        required=True,
+        allow_blank=False,
+        max_length=64,
+        validators=[validators.URLValidator(schemes=['http', 'https'])],
+    )
 
     class Meta:
         model = models.Organisation
         read_only_fields = ['precedes', 'parent', 'ror_id', 'enabled']
-        fields = ['id', 'url', 'short_name', 'full_name', 'country', 'ror_id',
-                  'precedes', 'parent', 'enabled']
+        fields = [
+            'id',
+            'url',
+            'short_name',
+            'full_name',
+            'country',
+            'ror_id',
+            'precedes',
+            'parent',
+            'enabled',
+        ]
 
 
 class OrganisationFilter(filters.FilterSet):
-
     class Meta:
         model = models.Organisation
-        fields = {'ror_id': ['exact', 'iexact'],
-                  'short_name': ['exact', 'iexact'],
-                  'full_name': ['exact', 'iexact', 'icontains'],
-                  'country': ['exact', 'iexact'],
-                  'url': ['exact', 'iexact'],
+        fields = {
+            'ror_id': ['exact', 'iexact'],
+            'short_name': ['exact', 'iexact'],
+            'full_name': ['exact', 'iexact', 'icontains'],
+            'country': ['exact', 'iexact'],
+            'url': ['exact', 'iexact'],
         }
 
 
@@ -106,57 +121,71 @@ class OrganisationViewSet(base.NoDestroyViewSet, auth.PermissionMixin):
     def _vet(self, request, pk=None, enable=True):
         organisation = self.get_object()
         if organisation.ror_id:
-            raise serializers.ValidationError({
-                'ror_id': [
-                    "An Organisation from the ROR should not be vetted."
-                ]})
+            raise serializers.ValidationError(
+                {
+                    'ror_id': [
+                        "An Organisation from the ROR should not be vetted."
+                    ]
+                }
+            )
         try:
             approver = models.Approver.objects.get(
-                username=request.user.username)
+                username=request.user.username
+            )
         except models.Approver.DoesNotExist:
             approver = models.Approver.objects.get(username='system')
         organisation.vetted_by = approver
         organisation.enabled = enable
         organisation.save()
         return response.Response(
-            AdminOrganisationSerializer(organisation).data)
+            AdminOrganisationSerializer(organisation).data
+        )
 
     def _check_unique_proposal(self, serializer):
         data = serializer.validated_data
         full_name = data.get('full_name', None)
         if full_name:
-            existing = models.Organisation.objects \
-                            .filter(full_name__iexact=full_name) \
-                            .first()
+            existing = models.Organisation.objects.filter(
+                full_name__iexact=full_name
+            ).first()
             if existing:
-                raise serializers.ValidationError({
-                    'full_name': [
-                        "An Organisation with this full name already exists."
-                        if existing.enabled
-                        else "An Organisation with this full name has "
-                        "already been rejected."
-                    ]})
+                raise serializers.ValidationError(
+                    {
+                        'full_name': [
+                            "An Organisation with this full name already "
+                            "exists."
+                            if existing.enabled
+                            else "An Organisation with this full name has "
+                            "already been rejected."
+                        ]
+                    }
+                )
         url = data.get('url', None)
         if url:
-            existing = models.Organisation.objects \
-                            .filter(url__iexact=url) \
-                            .first()
+            existing = models.Organisation.objects.filter(
+                url__iexact=url
+            ).first()
             if existing:
-                raise exceptions.ValidationError({
-                    'url': [
-                        "An Organisation with this url already exists."
-                        if existing.enabled
-                        else "An Organisation with this url has "
-                        "already been rejected."
-                    ]})
+                raise exceptions.ValidationError(
+                    {
+                        'url': [
+                            "An Organisation with this url already exists."
+                            if existing.enabled
+                            else "An Organisation with this url has "
+                            "already been rejected."
+                        ]
+                    }
+                )
 
     def perform_create(self, serializer):
         if self.is_write_admin():
             return serializer.save()
 
         # This is a proposal that will require vetting
-        kwargs = {'vetted_by': None,
-                  'proposed_by': self.request.user.keystone_user_id,
-                  'enabled': True}
+        kwargs = {
+            'vetted_by': None,
+            'proposed_by': self.request.user.keystone_user_id,
+            'enabled': True,
+        }
         self._check_unique_proposal(serializer)
         return serializer.save(**kwargs)

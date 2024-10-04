@@ -21,7 +21,6 @@ from nectar_dashboard import rest_auth
 
 
 class AllocationRelatedSerializer(serializers.ModelSerializer):
-
     def validate(self, data):
         user = None
         request = self.context.get("request")
@@ -42,11 +41,14 @@ class AllocationRelatedSerializer(serializers.ModelSerializer):
         except models.AllocationRequest.DoesNotExist:
             raise serializers.ValidationError("Allocation does not exist")
 
-        if allocation.status not in [models.AllocationRequest.SUBMITTED,
-                                     models.AllocationRequest.UPDATE_PENDING]:
+        if allocation.status not in [
+            models.AllocationRequest.SUBMITTED,
+            models.AllocationRequest.UPDATE_PENDING,
+        ]:
             raise serializers.ValidationError(
-                "Allocation in status '%s' can not be updated" %
-                allocation.get_status_display())
+                f"Allocation in status '{allocation.get_status_display()}' "
+                "can not be updated"
+            )
 
         return data
 
@@ -60,12 +62,14 @@ class AllocationRelatedViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
             return self.queryset
         elif self.request.user.is_authenticated:
             return self.queryset.filter(
-                allocation__contact_email=self.request.user.username)
+                allocation__contact_email=self.request.user.username
+            )
 
 
 class ChiefInvestigatorSerializer(AllocationRelatedSerializer):
     primary_organisation = fields.PrimaryOrganisationField(
-        many=False, queryset=models.Organisation.objects.all())
+        many=False, queryset=models.Organisation.objects.all()
+    )
 
     class Meta:
         model = models.ChiefInvestigator

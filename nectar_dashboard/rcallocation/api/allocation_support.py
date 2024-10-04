@@ -18,7 +18,6 @@ from nectar_dashboard.rcallocation import models
 
 
 class ARDCSupportSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.ARDCSupport
         fields = '__all__'
@@ -30,7 +29,6 @@ class ARDCSupportViewSet(base.NoDestroyViewSet):
 
 
 class NCRISFacilitySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.NCRISFacility
         fields = '__all__'

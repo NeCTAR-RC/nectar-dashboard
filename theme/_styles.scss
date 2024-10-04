@@ -45,11 +45,11 @@ nav a, .nav a, a img {
   text-decoration: none !important;
 }
 
-h6, .h6, 
-h5, .h5, 
-h4, .h4, 
-h3, .h3, 
-h2, .h2, 
+h6, .h6,
+h5, .h5,
+h4, .h4,
+h3, .h3,
+h2, .h2,
 h1, .h1 {
   font-family: 'Figtree', sans-serif;
   margin-top: 0;
@@ -117,7 +117,7 @@ ul.list-bullet {
   }
 }
 
-.table_actions button, 
+.table_actions button,
 .table_actions input,
 .table_actions a {
   margin-bottom: 3px;
@@ -183,7 +183,7 @@ input {
   &:focus-visible {
     outline: none !important;
   }
-  &.disabled, 
+  &.disabled,
   &[disabled]{
     background-color: $gray-light;
     border-color: $gray-light;
@@ -271,7 +271,7 @@ input {
     display: flex;
     flex-wrap: wrap;
   }
-  .row.equal > div[class*='col-'] {  
+  .row.equal > div[class*='col-'] {
     display: flex;
     flex-direction: column;
   }

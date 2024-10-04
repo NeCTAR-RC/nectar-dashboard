@@ -50,12 +50,11 @@ STATIC_URL = '/static/'
 WEBROOT = '/'
 
 SECRET_KEY = secret_key.generate_or_read_from_file(
-    os.path.join(tempfile.gettempdir(), '.secret_key_store'))
+    os.path.join(tempfile.gettempdir(), '.secret_key_store')
+)
 ROOT_URLCONF = 'nectar_dashboard.test.urls'
 
-TEMPLATES[0]['DIRS'] = [
-    os.path.join(TEST_DIR, 'templates')
-]
+TEMPLATES[0]['DIRS'] = [os.path.join(TEST_DIR, 'templates')]
 
 TEMPLATES[0]['OPTIONS']['context_processors'].append(
     'openstack_dashboard.context_processors.openstack'
@@ -68,15 +67,17 @@ AVAILABLE_THEMES = [
     (
         'default',
         pgettext_lazy('Default style theme', 'Default'),
-        'themes/default'
-    ), (
+        'themes/default',
+    ),
+    (
         'material',
         pgettext_lazy("Google's Material Design style theme", "Material"),
-        'themes/material'
+        'themes/material',
     ),
 ]
-AVAILABLE_THEMES, SELECTABLE_THEMES, DEFAULT_THEME = \
+AVAILABLE_THEMES, SELECTABLE_THEMES, DEFAULT_THEME = (
     theme_settings.get_available_themes(AVAILABLE_THEMES, 'default', None)
+)
 
 # Theme Static Directory
 THEME_COLLECTION_DIR = 'themes'
@@ -106,13 +107,15 @@ SITE_BRANDING = 'OpenStack'
 HORIZON_CONFIG = {
     "password_validator": {
         "regex": '^.{8,18}$',
-        "help_text": "Password must be between 8 and 18 characters."
+        "help_text": "Password must be between 8 and 18 characters.",
     },
     'user_home': None,
     'help_url': "https://docs.openstack.org/",
-    'exceptions': {'recoverable': exceptions.RECOVERABLE,
-                   'not_found': exceptions.NOT_FOUND,
-                   'unauthorized': exceptions.UNAUTHORIZED},
+    'exceptions': {
+        'recoverable': exceptions.RECOVERABLE,
+        'not_found': exceptions.NOT_FOUND,
+        'unauthorized': exceptions.UNAUTHORIZED,
+    },
     'angular_modules': [],
     'js_files': [],
 }
@@ -130,7 +133,9 @@ STATICFILES_DIRS = settings_utils.get_xstatic_dirs(
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
 settings_utils.update_dashboards(
     [
-        enabled, nectar_enabled, nectar_usage,
+        enabled,
+        nectar_enabled,
+        nectar_usage,
     ],
     HORIZON_CONFIG,
     INSTALLED_APPS,
@@ -138,8 +143,9 @@ settings_utils.update_dashboards(
 
 OPENSTACK_PROFILER = {'enabled': False}
 
-settings_utils.find_static_files(HORIZON_CONFIG, AVAILABLE_THEMES,
-                                 THEME_COLLECTION_DIR, ROOT_PATH)
+settings_utils.find_static_files(
+    HORIZON_CONFIG, AVAILABLE_THEMES, THEME_COLLECTION_DIR, ROOT_PATH
+)
 
 # Set to 'legacy' or 'direct' to allow users to upload images to glance via
 # Horizon server. When enabled, a file form field will appear on the create
@@ -153,10 +159,7 @@ AVAILABLE_REGIONS = [
     ('http://remote:5000/v3', 'remote'),
 ]
 
-OPENSTACK_API_VERSIONS = {
-    "identity": 3,
-    "image": 2
-}
+OPENSTACK_API_VERSIONS = {"identity": 3, "image": 2}
 
 OPENSTACK_KEYSTONE_URL = "http://localhost:5000/v3"
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = "_member_"
@@ -171,7 +174,7 @@ OPENSTACK_KEYSTONE_BACKEND = {
     'can_edit_group': True,
     'can_edit_project': True,
     'can_edit_domain': True,
-    'can_edit_role': True
+    'can_edit_role': True,
 }
 
 OPENSTACK_CINDER_FEATURES = {
@@ -201,7 +204,7 @@ OPENSTACK_IMAGE_BACKEND = {
         ('raw', 'Raw'),
         ('vdi', 'VDI'),
         ('vhd', 'VHD'),
-        ('vmdk', 'VMDK')
+        ('vmdk', 'VMDK'),
     ]
 }
 
@@ -264,7 +267,7 @@ SECURITY_GROUP_RULES = {
 POLICY_FILES_PATH = os.path.join(ROOT_PATH, "conf")
 POLICY_FILES = {
     'identity': 'keystone_policy.json',
-    'compute': 'nova_policy.json'
+    'compute': 'nova_policy.json',
 }
 
 # The openstack_auth.user.Token object isn't JSON-serializable ATM
@@ -288,54 +291,74 @@ ALLOWED_PRIVATE_SUBNET_CIDR = {'ipv4': [], 'ipv6': []}
 # are optional and passed to mock.patch().
 TEST_GLOBAL_MOCKS_ON_PANELS = {
     'aggregates': {
-        'method': ('openstack_dashboard.dashboards.admin'
-                   '.aggregates.panel.Aggregates.can_access'),
+        'method': (
+            'openstack_dashboard.dashboards.admin'
+            '.aggregates.panel.Aggregates.can_access'
+        ),
         'return_value': True,
     },
     'domains': {
-        'method': ('openstack_dashboard.dashboards.identity'
-                   '.domains.panel.Domains.can_access'),
+        'method': (
+            'openstack_dashboard.dashboards.identity'
+            '.domains.panel.Domains.can_access'
+        ),
         'return_value': True,
     },
     'qos': {
-        'method': ('openstack_dashboard.dashboards.project'
-                   '.network_qos.panel.NetworkQoS.can_access'),
+        'method': (
+            'openstack_dashboard.dashboards.project'
+            '.network_qos.panel.NetworkQoS.can_access'
+        ),
         'return_value': True,
     },
     'rbac_policies': {
-        'method': ('openstack_dashboard.dashboards.admin'
-                   '.rbac_policies.panel.RBACPolicies.can_access'),
+        'method': (
+            'openstack_dashboard.dashboards.admin'
+            '.rbac_policies.panel.RBACPolicies.can_access'
+        ),
         'return_value': True,
     },
     'server_groups': {
-        'method': ('openstack_dashboard.dashboards.project'
-                   '.server_groups.panel.ServerGroups.can_access'),
+        'method': (
+            'openstack_dashboard.dashboards.project'
+            '.server_groups.panel.ServerGroups.can_access'
+        ),
         'return_value': True,
     },
     'trunk-project': {
-        'method': ('openstack_dashboard.dashboards.project'
-                   '.trunks.panel.Trunks.can_access'),
+        'method': (
+            'openstack_dashboard.dashboards.project'
+            '.trunks.panel.Trunks.can_access'
+        ),
         'return_value': True,
     },
     'trunk-admin': {
-        'method': ('openstack_dashboard.dashboards.admin'
-                   '.trunks.panel.Trunks.can_access'),
+        'method': (
+            'openstack_dashboard.dashboards.admin'
+            '.trunks.panel.Trunks.can_access'
+        ),
         'return_value': True,
     },
     'volume_groups': {
-        'method': ('openstack_dashboard.dashboards.project'
-                   '.volume_groups.panel.VolumeGroups.allowed'),
+        'method': (
+            'openstack_dashboard.dashboards.project'
+            '.volume_groups.panel.VolumeGroups.allowed'
+        ),
         'return_value': True,
     },
     'vg_snapshots': {
-        'method': ('openstack_dashboard.dashboards.project'
-                   '.vg_snapshots.panel.GroupSnapshots.allowed'),
+        'method': (
+            'openstack_dashboard.dashboards.project'
+            '.vg_snapshots.panel.GroupSnapshots.allowed'
+        ),
         'return_value': True,
     },
     'application_credentials': {
-        'method': ('openstack_dashboard.dashboards.identity'
-                   '.application_credentials.panel'
-                   '.ApplicationCredentialsPanel.can_access'),
+        'method': (
+            'openstack_dashboard.dashboards.identity'
+            '.application_credentials.panel'
+            '.ApplicationCredentialsPanel.can_access'
+        ),
         'return_value': True,
     },
 }
@@ -343,10 +366,14 @@ TEST_GLOBAL_MOCKS_ON_PANELS = {
 # NeCTAR Stuff
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = 'Member'
 
-USER_INFO_LOOKUP_ROLES = [('openstack.roles.allocationadmin',
-                           'openstack.roles.operator',
-                           'openstack.roles.helpdesk',
-                           'openstack.roles.admin')]
+USER_INFO_LOOKUP_ROLES = [
+    (
+        'openstack.roles.allocationadmin',
+        'openstack.roles.operator',
+        'openstack.roles.helpdesk',
+        'openstack.roles.admin',
+    )
+]
 
 # Allocation notifier choices: 'freshdesk' and 'smtp'
 ALLOCATION_NOTIFIER = 'freshdesk'
@@ -399,9 +426,18 @@ ALLOCATION_HOME_STORAGE_ZONE_MAPPINGS = {
 SITE_MEMBERS_MAPPING = {
     'ardc': ['ardc.edu.au'],
     'monash': ['monash.edu', 'rmit.edu.au'],
-    'qcif': ['uq.edu.au', 'qut.edu.au', 'griffith.edu.au',
-             'cqu.edu.au', 'usq.edu.au', 'usc.edu.au', 'jcu.edu.au',
-             'bond.edu.au', 'qcif.edu.au', 'csiro.au'],
+    'qcif': [
+        'uq.edu.au',
+        'qut.edu.au',
+        'griffith.edu.au',
+        'cqu.edu.au',
+        'usq.edu.au',
+        'usc.edu.au',
+        'jcu.edu.au',
+        'bond.edu.au',
+        'qcif.edu.au',
+        'csiro.au',
+    ],
     'uom': ['unimelb.edu.au', 'florey.edu.au', 'csiro.au'],
 }
 
@@ -410,95 +446,130 @@ SITE_MEMBERS_MAPPING = {
 ALLOCATION_FOR_CODE_SERIES = "ANZSRC_2020"
 
 
-HORIZON_CONFIG['WARNING_INFO_URL'] = \
+HORIZON_CONFIG['WARNING_INFO_URL'] = (
     "https://support.ehelp.edu.au/support/home"
+)
 HORIZON_CONFIG['FRESHDECK_SEARCH_URL'] = (
     "https://support.ehelp.edu.au/a/tickets/filters/search"
-    "?orderBy=updated_at&orderType=desc&ref=_created")
+    "?orderBy=updated_at&orderType=desc&ref=_created"
+)
 HORIZON_CONFIG['OUTAGE_BASE_URL'] = "https://status.rc.nectar.org.au/outages/"
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS':
-    'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
-    'DEFAULT_FILTER_BACKENDS':
-    ('django_filters.rest_framework.DjangoFilterBackend',),
-    'DEFAULT_AUTHENTICATION_CLASSES':
-    (
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'nectar_dashboard.rest_auth.CsrfExemptSessionAuthentication',
         'nectar_dashboard.rest_auth.KeystoneAuthentication',
     ),
 }
 
 REST_VIEW_SETS = (
-    ('versions',
-     'nectar_dashboard.rcallocation.api.versions.VersionsViewSet',
-     'versions'),
-    ('allocations',
-     'nectar_dashboard.rcallocation.api.allocations.AllocationViewSet',
-     None),
-    ('quotas',
-     'nectar_dashboard.rcallocation.api.quotas.QuotaViewSet',
-     None),
-    ('bundles',
-     'nectar_dashboard.rcallocation.api.bundles.BundleViewSet',
-     None),
-    ('chiefinvestigators',
-     'nectar_dashboard.rcallocation.api.allocation_extra.ChiefInvestigatorViewSet',  # noqa
-     None),
-    ('organisations',
-     'nectar_dashboard.rcallocation.api.organisations.OrganisationViewSet',
-     None),
-    ('publications',
-     'nectar_dashboard.rcallocation.api.allocation_extra.PublicationViewSet',
-     None),
-    ('grants',
-     'nectar_dashboard.rcallocation.api.allocation_extra.GrantViewSet',
-     None),
-    ('resources',
-     'nectar_dashboard.rcallocation.api.resources.ResourceViewSet',
-     None),
-    ('sites',
-     'nectar_dashboard.rcallocation.api.resources.SiteViewSet',
-     None),
-    ('zones',
-     'nectar_dashboard.rcallocation.api.resources.ZoneViewSet',
-     None),
-    ('service-types',
-     'nectar_dashboard.rcallocation.api.resources.ServiceTypeViewSet',
-     None),
-    ('ncris-facilities',
-     'nectar_dashboard.rcallocation.api.allocation_support.NCRISFacilityViewSet',  # noqa
-     None),
-    ('ardc-projects',
-     'nectar_dashboard.rcallocation.api.allocation_support.ARDCSupportViewSet',
-     None),
-    ('approvers',
-     'nectar_dashboard.rcallocation.api.approvers.ApproverViewSet',
-     None),
-    ('for-codes',
-     'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet',
-     'for-codes'),
-    ('for-codes-2008',
-     'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet',
-     'for-codes-2008'),
-    ('for-codes-2020',
-     'nectar_dashboard.rcallocation.api.for.FOR2020ViewSet',
-     'for-codes-2020'),
-    ('for-codes-all',
-     'nectar_dashboard.rcallocation.api.for.FORAllViewSet',
-     'for-codes-all'),
-    ('for-tree',
-     'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet',
-     'for-tree'),
-    ('for-tree-2008',
-     'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet',
-     'for-tree-2008'),
-    ('for-tree-2020',
-     'nectar_dashboard.rcallocation.api.for.AllocationTree2020ViewSet',
-     'for-tree-2020'),
-    ('for-tree-all',
-     'nectar_dashboard.rcallocation.api.for.AllocationTreeAllViewSet',
-     'for-tree-all'),
+    (
+        'versions',
+        'nectar_dashboard.rcallocation.api.versions.VersionsViewSet',
+        'versions',
+    ),
+    (
+        'allocations',
+        'nectar_dashboard.rcallocation.api.allocations.AllocationViewSet',
+        None,
+    ),
+    ('quotas', 'nectar_dashboard.rcallocation.api.quotas.QuotaViewSet', None),
+    (
+        'bundles',
+        'nectar_dashboard.rcallocation.api.bundles.BundleViewSet',
+        None,
+    ),
+    (
+        'chiefinvestigators',
+        'nectar_dashboard.rcallocation.api.allocation_extra.ChiefInvestigatorViewSet',  # noqa
+        None,
+    ),
+    (
+        'organisations',
+        'nectar_dashboard.rcallocation.api.organisations.OrganisationViewSet',
+        None,
+    ),
+    (
+        'publications',
+        'nectar_dashboard.rcallocation.api.allocation_extra.PublicationViewSet',
+        None,
+    ),
+    (
+        'grants',
+        'nectar_dashboard.rcallocation.api.allocation_extra.GrantViewSet',
+        None,
+    ),
+    (
+        'resources',
+        'nectar_dashboard.rcallocation.api.resources.ResourceViewSet',
+        None,
+    ),
+    ('sites', 'nectar_dashboard.rcallocation.api.resources.SiteViewSet', None),
+    ('zones', 'nectar_dashboard.rcallocation.api.resources.ZoneViewSet', None),
+    (
+        'service-types',
+        'nectar_dashboard.rcallocation.api.resources.ServiceTypeViewSet',
+        None,
+    ),
+    (
+        'ncris-facilities',
+        'nectar_dashboard.rcallocation.api.allocation_support.NCRISFacilityViewSet',  # noqa
+        None,
+    ),
+    (
+        'ardc-projects',
+        'nectar_dashboard.rcallocation.api.allocation_support.ARDCSupportViewSet',
+        None,
+    ),
+    (
+        'approvers',
+        'nectar_dashboard.rcallocation.api.approvers.ApproverViewSet',
+        None,
+    ),
+    (
+        'for-codes',
+        'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet',
+        'for-codes',
+    ),
+    (
+        'for-codes-2008',
+        'nectar_dashboard.rcallocation.api.for.FOR2008ViewSet',
+        'for-codes-2008',
+    ),
+    (
+        'for-codes-2020',
+        'nectar_dashboard.rcallocation.api.for.FOR2020ViewSet',
+        'for-codes-2020',
+    ),
+    (
+        'for-codes-all',
+        'nectar_dashboard.rcallocation.api.for.FORAllViewSet',
+        'for-codes-all',
+    ),
+    (
+        'for-tree',
+        'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet',
+        'for-tree',
+    ),
+    (
+        'for-tree-2008',
+        'nectar_dashboard.rcallocation.api.for.AllocationTree2008ViewSet',
+        'for-tree-2008',
+    ),
+    (
+        'for-tree-2020',
+        'nectar_dashboard.rcallocation.api.for.AllocationTree2020ViewSet',
+        'for-tree-2020',
+    ),
+    (
+        'for-tree-all',
+        'nectar_dashboard.rcallocation.api.for.AllocationTreeAllViewSet',
+        'for-tree-all',
+    ),
 )

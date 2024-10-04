@@ -22,8 +22,7 @@ from nectar_dashboard.rcallocation import utils
 LOG = logging.getLogger(__name__)
 
 FOR_CODES = forcodes.FOR_CODES[forcodes.FOR_SERIES]
-FOR_CHOICES = tuple((k, "%s %s" % (k, v))
-                    for k, v in FOR_CODES.items())
+FOR_CHOICES = tuple((k, f"{k} {v}") for k, v in FOR_CODES.items())
 
 
 class FORValidationError(Exception):
@@ -35,11 +34,14 @@ class FoRChoiceField(select2_forms.ChoiceField):
         super().__init__(
             label=label,
             choices=FOR_CHOICES,
-            widget_kwargs={'choices': FOR_CHOICES,
-                           'attrs': {'class': 'col-md-2'}},
+            widget_kwargs={
+                'choices': FOR_CHOICES,
+                'attrs': {'class': 'col-md-2'},
+            },
             overlay=f"Enter a 2, 4 or 6 digit {forcodes.FOR_SERIES} FoR code",
             sortable=True,
-            required=False)
+            required=False,
+        )
 
 
 class UsageFieldWidget(forms.CheckboxSelectMultiple):
@@ -47,9 +49,8 @@ class UsageFieldWidget(forms.CheckboxSelectMultiple):
 
 
 class NCRISChoiceField(select2_fields.ModelMultipleChoiceField):
-
     def label_from_instance(self, facility):
-        return "%s - %s" % (facility.short_name, facility.name)
+        return f"{facility.short_name} - {facility.name}"
 
 
 # This is used in the ARDCChoiceField's superclass to map the simple
@@ -59,9 +60,8 @@ class NCRISChoiceField(select2_fields.ModelMultipleChoiceField):
 #
 # Refer to the django documentation for details.
 class ARDCSupportChoiceIterator(ModelChoiceIterator):
-
     def label_from_instance(self, support):
-        return "%s - %s" % (support.short_name, support.name)
+        return f"{support.short_name} - {support.name}"
 
     def __iter__(self):
         # In the results of this iteration, the choices are assembled
@@ -86,21 +86,22 @@ class ARDCSupportChoiceIterator(ModelChoiceIterator):
 
 
 class ARDCChoiceField(select2_fields.ModelMultipleChoiceField):
-
     def __init__(self, *args, **kwargs):
-        super().__init__(*args,
-                         queryset=models.ARDCSupport.objects.filter(
-                             enabled=True),
-                         choice_iterator_cls=ARDCSupportChoiceIterator,
-                         **kwargs)
+        super().__init__(
+            *args,
+            queryset=models.ARDCSupport.objects.filter(enabled=True),
+            choice_iterator_cls=ARDCSupportChoiceIterator,
+            **kwargs,
+        )
 
 
 class BaseAllocationForm(forms.ModelForm):
     has_quotas = False
     error_css_class = 'has-error'
 
-    ignore_warnings = forms.BooleanField(widget=forms.HiddenInput(),
-                                         required=False)
+    ignore_warnings = forms.BooleanField(
+        widget=forms.HiddenInput(), required=False
+    )
     field_of_research_1 = FoRChoiceField("First Field Of Research")
     field_of_research_2 = FoRChoiceField("Second Field Of Research")
     field_of_research_3 = FoRChoiceField("Third Field Of Research")
@@ -114,7 +115,8 @@ class BaseAllocationForm(forms.ModelForm):
         error_messages={'required': 'Please check one or more of the above'},
         queryset=models.UsageType.objects.filter(enabled=True),
         widget=UsageFieldWidget(attrs={'class': 'form-inline list-unstyled'}),
-        to_field_name='name')
+        to_field_name='name',
+    )
 
     ardc_support = ARDCChoiceField(
         name='ardc_support',
@@ -130,7 +132,8 @@ class BaseAllocationForm(forms.ModelForm):
         """,
         required=False,
         overlay="Enter an ARDC project or program name",
-        to_field_name='short_name')
+        to_field_name='short_name',
+    )
 
     ncris_facilities = NCRISChoiceField(
         name='ncris_facilities',
@@ -148,40 +151,63 @@ class BaseAllocationForm(forms.ModelForm):
         required=False,
         queryset=models.NCRISFacility.objects.all(),
         overlay="Enter an NCRIS Facility name",
-        to_field_name='short_name')
+        to_field_name='short_name',
+    )
 
     class Meta:
         model = models.AllocationRequest
-        exclude = ('status', 'created_by', 'submit_date', 'approver_email',
-                   'start_date', 'end_date', 'modified_time', 'parent_request',
-                   'associated_site', 'special_approval', 'provisioned',
-                   'managed', 'project_id', 'notes', 'notifications',
-                   'ncris_support', 'nectar_support',
+        exclude = (
+            'status',
+            'created_by',
+            'submit_date',
+            'approver_email',
+            'start_date',
+            'end_date',
+            'modified_time',
+            'parent_request',
+            'associated_site',
+            'special_approval',
+            'provisioned',
+            'managed',
+            'project_id',
+            'notes',
+            'notifications',
+            'ncris_support',
+            'nectar_support',
         )
 
         widgets = {
             'status_explanation': forms.Textarea(),
             'estimated_project_duration': forms.Select(
-                attrs={'class': 'col-md-6'}),
+                attrs={'class': 'col-md-6'}
+            ),
             'convert_trial_project': forms.Select(
                 attrs={'class': 'col-md-6'},
                 choices=[
                     (False, 'No, start with a blank project.'),
-                    (True, 'Yes, move resources from my pt- project to '
-                           'this new project.'),
-                ]),
+                    (
+                        True,
+                        'Yes, move resources from my pt- project to '
+                        'this new project.',
+                    ),
+                ],
+            ),
             'project_name': forms.TextInput(attrs={'class': 'col-md-12'}),
             'contact_email': forms.TextInput(attrs={'readonly': 'readonly'}),
             'use_case': forms.Textarea(),
             'usage_patterns': forms.Textarea(),
             'direct_access_user_estimate': forms.NumberInput(
-                attrs={'class': 'w-auto'}),
+                attrs={'class': 'w-auto'}
+            ),
             'estimated_service_count': forms.NumberInput(
-                attrs={'class': 'w-auto'}),
+                attrs={'class': 'w-auto'}
+            ),
             'estimated_service_active_users': forms.NumberInput(
-                attrs={'class': 'w-auto'}),
+                attrs={'class': 'w-auto'}
+            ),
             'associated_site': forms.CheckboxInput(
-                attrs={'class': 'col-md-6'}),
+                attrs={'class': 'col-md-6'}
+            ),
             'national': forms.CheckboxInput(attrs={'class': 'col-md-6'}),
             'geographic_requirements': forms.Textarea(),
             'for_percentage_1': forms.Select(attrs={'class': 'col-md-2'}),
@@ -192,16 +218,25 @@ class BaseAllocationForm(forms.ModelForm):
             'multiple_allocations_check': forms.Select(
                 attrs={'class': 'w-auto'},
                 choices=[
-                         (False, 'No, this is the only allocation for '
-                                 'this project.'),
-                         (True, 'Yes, usage numbers have already been '
-                                'provided.'),]),
+                    (
+                        False,
+                        'No, this is the only allocation for ' 'this project.',
+                    ),
+                    (
+                        True,
+                        'Yes, usage numbers have already been ' 'provided.',
+                    ),
+                ],
+            ),
             'direct_access_user_past_year': forms.NumberInput(
-                attrs={'class': 'w-auto'}),
+                attrs={'class': 'w-auto'}
+            ),
             'active_service_count': forms.NumberInput(
-                attrs={'class': 'w-auto'}),
+                attrs={'class': 'w-auto'}
+            ),
             'service_active_users_past_year': forms.NumberInput(
-                attrs={'class': 'w-auto'}),
+                attrs={'class': 'w-auto'}
+            ),
             'users_figure_type': forms.Select(attrs={'class': 'w-auto'}),
         }
 
@@ -216,7 +251,8 @@ class BaseAllocationForm(forms.ModelForm):
         for field in self.fields.values():
             if field != self.fields['usage_types']:
                 field.widget.attrs['class'] = (
-                   'form-control ' + field.widget.attrs.get('class', ''))
+                    'form-control ' + field.widget.attrs.get('class', '')
+                )
         self.warnings = []
 
     def _in_groups(self, field):
@@ -226,9 +262,11 @@ class BaseAllocationForm(forms.ModelForm):
         return False
 
     def visible_fields(self):
-        return [field for field in self
-                if (not field.is_hidden
-                    and not self._in_groups(field))]
+        return [
+            field
+            for field in self
+            if (not field.is_hidden and not self._in_groups(field))
+        ]
 
     def grouped_fields(self):
         grouped_fields = []
@@ -253,7 +291,8 @@ class BaseAllocationForm(forms.ModelForm):
         data = self.cleaned_data['project_name']
         if data and data.startswith('pt-'):
             raise forms.ValidationError(
-                "Project names cannot start with 'pt-'")
+                "Project names cannot start with 'pt-'"
+            )
         return data
 
     def clean_supported_organisations(self):
@@ -262,7 +301,8 @@ class BaseAllocationForm(forms.ModelForm):
         if len(orgs) > 1 and models.ORG_ALL_FULL_NAME in names:
             raise forms.ValidationError(
                 f"'{models.ORG_ALL_FULL_NAME}' should not be used "
-                "with any other organisation")
+                "with any other organisation"
+            )
         return orgs
 
     def clean(self):
@@ -273,26 +313,34 @@ class BaseAllocationForm(forms.ModelForm):
         facilities = self.cleaned_data['ncris_facilities']
 
         if ardc_explanation and not len(supports):
-            self.add_error('ardc_explanation',
-                           "No ARDC projects or programs have been selected: "
-                           "choose one or more, or remove the explanation "
-                           "text.")
-        elif not ardc_explanation and \
-             any(s.explain for s in supports):
-            self.add_error('ardc_explanation',
-                           "Add details for the ARDC support that you "
-                           "are claiming for your request.")
+            self.add_error(
+                'ardc_explanation',
+                "No ARDC projects or programs have been selected: "
+                "choose one or more, or remove the explanation "
+                "text.",
+            )
+        elif not ardc_explanation and any(s.explain for s in supports):
+            self.add_error(
+                'ardc_explanation',
+                "Add details for the ARDC support that you "
+                "are claiming for your request.",
+            )
 
         if ncris_explanation and not len(facilities):
-            self.add_error('ncris_explanation',
-                           "No NCRIS Facilities have been selected: "
-                           "choose one or more, or remove the explanation "
-                           "text.")
-        elif not ncris_explanation and \
-             any(f.short_name in ('Other', 'Pilot') for f in facilities):
-            self.add_error('ncris_explanation',
-                           "More details are required when you include "
-                           "'Pilot' or 'Other' above.")
+            self.add_error(
+                'ncris_explanation',
+                "No NCRIS Facilities have been selected: "
+                "choose one or more, or remove the explanation "
+                "text.",
+            )
+        elif not ncris_explanation and any(
+            f.short_name in ('Other', 'Pilot') for f in facilities
+        ):
+            self.add_error(
+                'ncris_explanation',
+                "More details are required when you include "
+                "'Pilot' or 'Other' above.",
+            )
 
         fors = []
         for for_name, perc_name in self.groups:
@@ -302,17 +350,20 @@ class BaseAllocationForm(forms.ModelForm):
                 continue
             if FOR and perc == 0:
                 raise FORValidationError(
-                    "Percentage for Field Of Research '%s' cannot be 0" % FOR)
+                    f"Percentage for Field Of Research '{FOR}' cannot be 0"
+                )
 
             if not FOR and perc > 0:
                 raise FORValidationError(
-                    "Percentage set for unspecified Field Of Research")
+                    "Percentage set for unspecified Field Of Research"
+                )
             fors.append(perc)
 
         for_sum = sum(fors)
         if for_sum > 100:
             raise FORValidationError(
-                "Sum of Field Of Research percentages greater than 100")
+                "Sum of Field Of Research percentages greater than 100"
+            )
 
         return cleaned_data
 
@@ -325,8 +376,7 @@ class IntegerCheckboxInput(forms.CheckboxInput):
     """
 
     def __init__(self, attrs=None, check_test=None):
-        super().__init__(
-            attrs, check_test=self._int_bool_check)
+        super().__init__(attrs, check_test=self._int_bool_check)
 
     @staticmethod
     def _int_bool_check(v):
@@ -338,7 +388,6 @@ class IntegerCheckboxInput(forms.CheckboxInput):
 
 
 class QuotaIntegerField(forms.IntegerField):
-
     def __init__(self, resource, zone, *args, **kwargs):
         self.resource = resource
         self.zone = zone
@@ -351,7 +400,6 @@ class QuotaIntegerField(forms.IntegerField):
 
 
 class QuotaBooleanField(forms.BooleanField):
-
     widget = IntegerCheckboxInput
 
     def __init__(self, resource, zone, *args, **kwargs):
@@ -366,8 +414,7 @@ class QuotaBooleanField(forms.BooleanField):
         return attrs
 
 
-class QuotaMixin(object):
-
+class QuotaMixin:
     def generate_quota_fields(self):
         """Generates form fields based on available Resources
 
@@ -377,11 +424,13 @@ class QuotaMixin(object):
         for st in models.ServiceType.objects.filter(experimental=False):
             for resource in st.resource_set.filter(requestable=True):
                 for zone in st.zones.filter(enabled=True):
-                    key = "quota-%s__%s" % (resource.codename, zone.name)
-                    field_args = {'required': False,
-                                  'help_text': resource.help_text,
-                                  'resource': resource,
-                                  'zone': zone}
+                    key = f"quota-{resource.codename}__{zone.name}"
+                    field_args = {
+                        'required': False,
+                        'help_text': resource.help_text,
+                        'resource': resource,
+                        'zone': zone,
+                    }
                     if not self.instance.id:
                         field_args['initial'] = resource.default or 0
                     if st.is_multizone():
@@ -392,8 +441,8 @@ class QuotaMixin(object):
                         self.fields[key] = QuotaBooleanField(**field_args)
                     else:
                         self.fields[key] = QuotaIntegerField(
-                            **field_args,
-                            min_value=0)
+                            **field_args, min_value=0
+                        )
 
     def multi_zone_quota_fields(self):
         """Get all quota fields that are multi zone
@@ -429,28 +478,41 @@ class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
 
     project_name = forms.CharField(
         validators=[
-            RegexValidator(regex=r'^[a-zA-Z][-_a-zA-Z0-9]+$',
-                           message='Letters, numbers, underscore and '
-                                   'hyphens only. Must start with a letter.'),
-            RegexValidator(regex=r'^.{5,32}$',
-                           message='Between 5 and 32 characters required.'),
-            RegexValidator(regex=r'^pt[_-].*$',
-                           inverse_match=True, flags=re.I,
-                           message='Must not start with "pt-" or similar.')],
+            RegexValidator(
+                regex=r'^[a-zA-Z][-_a-zA-Z0-9]+$',
+                message='Letters, numbers, underscore and '
+                'hyphens only. Must start with a letter.',
+            ),
+            RegexValidator(
+                regex=r'^.{5,32}$',
+                message='Between 5 and 32 characters required.',
+            ),
+            RegexValidator(
+                regex=r'^pt[_-].*$',
+                inverse_match=True,
+                flags=re.I,
+                message='Must not start with "pt-" or similar.',
+            ),
+        ],
         max_length=32,
         label='Project Identifier',
         required=True,
         help_text='A short name used to identify your project. '
-                  'The name should contain letters, numbers, underscores and '
-                  'hyphens only, must start with a letter and be between than '
-                  '5 and 32 characters in length.',
-        widget=forms.TextInput(attrs={'autofocus': 'autofocus'}))
+        'The name should contain letters, numbers, underscores and '
+        'hyphens only, must start with a letter and be between than '
+        '5 and 32 characters in length.',
+        widget=forms.TextInput(attrs={'autofocus': 'autofocus'}),
+    )
 
     class Meta(BaseAllocationForm.Meta):
-        exclude = ('direct_access_user_past_year', 'active_service_count',
-                  'service_active_users_past_year', 'users_figure_type',
-                  'nectar_benefit_description', 'nectar_research_impact',
-                   ) + BaseAllocationForm.Meta.exclude
+        exclude = (
+            'direct_access_user_past_year',
+            'active_service_count',
+            'service_active_users_past_year',
+            'users_figure_type',
+            'nectar_benefit_description',
+            'nectar_research_impact',
+        ) + BaseAllocationForm.Meta.exclude
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -459,35 +521,50 @@ class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
     def clean(self):
         cleaned_data = super().clean()
         project_name = cleaned_data.get('project_name')
-        multiple_allocations_check = \
-            cleaned_data.get('multiple_allocations_check')
-        direct_access_user_estimate = \
-            cleaned_data.get('direct_access_user_estimate')
+        multiple_allocations_check = cleaned_data.get(
+            'multiple_allocations_check'
+        )
+        direct_access_user_estimate = cleaned_data.get(
+            'direct_access_user_estimate'
+        )
         estimated_service_count = cleaned_data.get('estimated_service_count')
-        estimated_service_active_users = \
-            cleaned_data.get('estimated_service_active_users')
+        estimated_service_active_users = cleaned_data.get(
+            'estimated_service_active_users'
+        )
 
         if project_name and (
-                not self.instance.id
-                or self.instance.status == models.AllocationRequest.SUBMITTED):
+            not self.instance.id
+            or self.instance.status == models.AllocationRequest.SUBMITTED
+        ):
             # Only want this restriction on new allocations only
             if len(project_name) < 5:
                 self.add_error(
                     'project_name',
-                    forms.ValidationError('Project identifier must be at '
-                                          'least 5 characters in length.'))
+                    forms.ValidationError(
+                        'Project identifier must be at '
+                        'least 5 characters in length.'
+                    ),
+                )
 
             if not utils.is_project_name_available(
-                    project_name, self.instance):
+                project_name, self.instance
+            ):
                 self.add_error(
-                   'project_name',
-                   forms.ValidationError(mark_safe(
-                        'That project identifier already exists. If your '
-                        'allocation has been approved already, please go'
-                        ' <a href="%s">here</a> '
-                        'to amend it. '
-                        'Otherwise, choose a different identifier.'
-                        % reverse('horizon:allocation:user_requests:index'))))
+                    'project_name',
+                    forms.ValidationError(
+                        mark_safe(
+                            'That project identifier already exists. If your '
+                            'allocation has been approved already, please go'
+                            ' <a href="{}">here</a> '
+                            'to amend it. '
+                            'Otherwise, choose a different identifier.'.format(
+                                reverse(
+                                    'horizon:allocation:user_requests:index'
+                                )
+                            )
+                        )
+                    ),
+                )
 
         if multiple_allocations_check:
             cleaned_data['direct_access_user_estimate'] = None
@@ -497,15 +574,18 @@ class AllocationRequestForm(BaseAllocationForm, QuotaMixin):
             if direct_access_user_estimate is None:
                 self.add_error(
                     'direct_access_user_estimate',
-                    forms.ValidationError('This field is required'))
+                    forms.ValidationError('This field is required'),
+                )
             if estimated_service_count is None:
                 self.add_error(
                     'estimated_service_count',
-                    forms.ValidationError('This field is required'))
+                    forms.ValidationError('This field is required'),
+                )
             if estimated_service_active_users is None:
                 self.add_error(
                     'estimated_service_active_users',
-                    forms.ValidationError('This field is required'))
+                    forms.ValidationError('This field is required'),
+                )
         return cleaned_data
 
 
@@ -513,9 +593,11 @@ class AllocationAmendRequestForm(BaseAllocationForm, QuotaMixin):
     has_quotas = True
 
     class Meta(BaseAllocationForm.Meta):
-        exclude = ('direct_access_user_estimate', 'estimated_service_count',
-                  'estimated_service_active_users',
-                   ) + BaseAllocationForm.Meta.exclude
+        exclude = (
+            'direct_access_user_estimate',
+            'estimated_service_count',
+            'estimated_service_active_users',
+        ) + BaseAllocationForm.Meta.exclude
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -523,13 +605,16 @@ class AllocationAmendRequestForm(BaseAllocationForm, QuotaMixin):
 
     def clean(self):
         cleaned_data = super().clean()
-        multiple_allocations_check = \
-            cleaned_data.get('multiple_allocations_check')
-        direct_access_user_past_year = \
-            cleaned_data.get('direct_access_user_past_year')
+        multiple_allocations_check = cleaned_data.get(
+            'multiple_allocations_check'
+        )
+        direct_access_user_past_year = cleaned_data.get(
+            'direct_access_user_past_year'
+        )
         active_service_count = cleaned_data.get('active_service_count')
-        service_active_users_past_year = \
-            cleaned_data.get('service_active_users_past_year')
+        service_active_users_past_year = cleaned_data.get(
+            'service_active_users_past_year'
+        )
 
         if multiple_allocations_check:
             cleaned_data['direct_access_user_past_year'] = None
@@ -539,15 +624,18 @@ class AllocationAmendRequestForm(BaseAllocationForm, QuotaMixin):
             if direct_access_user_past_year is None:
                 self.add_error(
                     'direct_access_user_past_year',
-                    forms.ValidationError('This field is required'))
+                    forms.ValidationError('This field is required'),
+                )
             if active_service_count is None:
                 self.add_error(
                     'active_service_count',
-                    forms.ValidationError('This field is required'))
+                    forms.ValidationError('This field is required'),
+                )
             if service_active_users_past_year is None:
                 self.add_error(
                     'service_active_users_past_year',
-                    forms.ValidationError('This field is required'))
+                    forms.ValidationError('This field is required'),
+                )
         return cleaned_data
 
 
@@ -563,7 +651,8 @@ class NectarBaseModelForm(forms.ModelForm):
         self.empty_permitted = False
         for field in self.fields.values():
             field.widget.attrs['class'] = (
-                field.widget.attrs.get('class', '') + ' form-control')
+                field.widget.attrs.get('class', '') + ' form-control'
+            )
 
 
 class ChiefInvestigatorForm(NectarBaseModelForm):
@@ -578,11 +667,15 @@ class ChiefInvestigatorForm(NectarBaseModelForm):
         if not data:
             raise ValidationError("This field is required.")
         if not data.enabled:
-            raise ValidationError("This organisation is not (or no longer) "
-                                  "valid: select an alternate one.")
+            raise ValidationError(
+                "This organisation is not (or no longer) "
+                "valid: select an alternate one."
+            )
         if data.full_name == models.ORG_ALL_FULL_NAME:
-            raise ValidationError(f"'{models.ORG_ALL_FULL_NAME}' is not "
-                                  "meaningful in this context")
+            raise ValidationError(
+                f"'{models.ORG_ALL_FULL_NAME}' is not "
+                "meaningful in this context"
+            )
         return data
 
 
@@ -596,7 +689,7 @@ class PublicationForm(NectarBaseModelForm):
         widgets = {
             'publication': forms.Textarea(),
             'doi': forms.TextInput(),
-            'crossref_metadata': forms.HiddenInput()
+            'crossref_metadata': forms.HiddenInput(),
         }
 
     def clean_doi(self):
@@ -620,22 +713,36 @@ class PublicationForm(NectarBaseModelForm):
         publication = cleaned_data.get('publication', '')
         crossref_metadata = cleaned_data.get('crossref_metadata', '')
         output_type = cleaned_data.get('output_type', '')
-        if output_type == output_type_choices.PEER_REVIEWED_JOURNAL_ARTICLE \
-           and not crossref_metadata:
-            self.add_error(None,
-                           ValidationError('A validated DOI is required for '
-                                           'a peer reviewed journal article.'))
+        if (
+            output_type == output_type_choices.PEER_REVIEWED_JOURNAL_ARTICLE
+            and not crossref_metadata
+        ):
+            self.add_error(
+                None,
+                ValidationError(
+                    'A validated DOI is required for '
+                    'a peer reviewed journal article.'
+                ),
+            )
         elif not doi and not publication:
-            self.add_error(None,
-                           ValidationError('No details about this research '
-                                           'output have been provided. '
-                                           'Provide either a DOI or citation '
-                                           'details, as appropriate.'))
+            self.add_error(
+                None,
+                ValidationError(
+                    'No details about this research '
+                    'output have been provided. '
+                    'Provide either a DOI or citation '
+                    'details, as appropriate.'
+                ),
+            )
         elif doi and not crossref_metadata and not publication:
-            self.add_error('publication',
-                           ValidationError('Since the DOI you provided has '
-                                           'not been validated, citation '
-                                           'details must be entered by hand.'))
+            self.add_error(
+                'publication',
+                ValidationError(
+                    'Since the DOI you provided has '
+                    'not been validated, citation '
+                    'details must be entered by hand.'
+                ),
+            )
         if crossref_metadata:
             # The field may hidden, but we still don't want it to be populated
             # with garbage, deliberately or by accident.  Make the errors
@@ -644,16 +751,24 @@ class PublicationForm(NectarBaseModelForm):
             try:
                 data = json.loads(crossref_metadata)
                 if not isinstance(data, dict) or not data.get('message'):
-                    self.add_error(None,
-                                   ValidationError('Crossref_metadata not a '
-                                                   'valid Crossref response. '
-                                                   'Please report this to '
-                                                   'Nectar support.'))
+                    self.add_error(
+                        None,
+                        ValidationError(
+                            'Crossref_metadata not a '
+                            'valid Crossref response. '
+                            'Please report this to '
+                            'Nectar support.'
+                        ),
+                    )
             except json.JSONDecodeError:
-                self.add_error(None,
-                               ValidationError('Crossref_metadata not JSON. '
-                                               'Please report this to Nectar '
-                                               'support.'))
+                self.add_error(
+                    None,
+                    ValidationError(
+                        'Crossref_metadata not JSON. '
+                        'Please report this to Nectar '
+                        'support.'
+                    ),
+                )
 
 
 class GrantForm(NectarBaseModelForm):
@@ -671,48 +786,70 @@ class GrantForm(NectarBaseModelForm):
                 self.add_error(
                     'grant_subtype',
                     ValidationError(
-                        'Select an ARC grant subtype for this grant'))
+                        'Select an ARC grant subtype for this grant'
+                    ),
+                )
             if not grant_subtype == 'arc-other' and not grant_id:
                 self.add_error(
                     'grant_id',
-                    ValidationError('Enter the ARC grant id for this grant'))
+                    ValidationError('Enter the ARC grant id for this grant'),
+                )
         elif grant_type == 'nhmrc':
             if not grant_subtype.startswith('nhmrc-'):
                 self.add_error(
                     'grant_subtype',
                     ValidationError(
-                        'Select an NHMRC grant subtype for this grant'))
+                        'Select an NHMRC grant subtype for this grant'
+                    ),
+                )
             if not grant_subtype == 'nhmrc-other' and not grant_id:
                 self.add_error(
                     'grant_id',
-                    ValidationError('Enter the NHMRC grant id for this grant'))
+                    ValidationError('Enter the NHMRC grant id for this grant'),
+                )
         elif grant_type == 'rdc':
             if not grant_subtype.startswith('rdc-'):
                 self.add_error(
                     'grant_subtype',
                     ValidationError(
-                        'Select an RDC grant subtype for this grant'))
+                        'Select an RDC grant subtype for this grant'
+                    ),
+                )
             if not funding_body_scheme and not grant_id:
                 self.add_error(
                     'funding_body_scheme',
-                    ValidationError('Provide details for this grant '
-                                    'or a grant id (below!)'))
+                    ValidationError(
+                        'Provide details for this grant '
+                        'or a grant id (below!)'
+                    ),
+                )
         elif grant_type == 'state':
-            if grant_subtype not in ['act', 'nsw', 'nt', 'qld',
-                                     'sa', 'tas', 'vic', 'wa']:
+            if grant_subtype not in [
+                'act',
+                'nsw',
+                'nt',
+                'qld',
+                'sa',
+                'tas',
+                'vic',
+                'wa',
+            ]:
                 self.add_error(
                     'grant_subtype',
-                    ValidationError('Select the State for this grant'))
+                    ValidationError('Select the State for this grant'),
+                )
         elif grant_type:
             if grant_subtype != 'unspecified':
                 self.add_error(
                     'grant_subtype',
-                    ValidationError('Inappropriate subtype for this grant'))
+                    ValidationError('Inappropriate subtype for this grant'),
+                )
 
-        if grant_type not in ['arc', 'nhmrc', 'rdc', ''] \
-           or (grant_type in ['arc', 'nhmrc']
-               and grant_subtype.endswith('-other')):
+        if grant_type not in ['arc', 'nhmrc', 'rdc', ''] or (
+            grant_type in ['arc', 'nhmrc'] and grant_subtype.endswith('-other')
+        ):
             if not funding_body_scheme:
                 self.add_error(
                     'funding_body_scheme',
-                    ValidationError('Provide details for this grant'))
+                    ValidationError('Provide details for this grant'),
+                )

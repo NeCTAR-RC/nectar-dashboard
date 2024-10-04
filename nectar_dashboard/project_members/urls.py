@@ -20,10 +20,8 @@ from nectar_dashboard.project_members import views
 
 
 urlpatterns = [
-    re_path(r'^$',
-            views.ManageMembersView.as_view(),
-            name='index'),
-    re_path(r'^add/$',
-            views.AddUserToProjectView.as_view(),
-            name='add_member'),
+    re_path(r'^$', views.ManageMembersView.as_view(), name='index'),
+    re_path(
+        r'^add/$', views.AddUserToProjectView.as_view(), name='add_member'
+    ),
 ]

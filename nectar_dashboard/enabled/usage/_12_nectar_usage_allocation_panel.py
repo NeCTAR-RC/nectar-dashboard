@@ -16,7 +16,6 @@ PANEL_DASHBOARD = 'project'
 PANEL = 'allocation_usage'
 
 # Python panel class of the PANEL to be added.
-ADD_PANEL = \
-    'nectar_dashboard.usage.allocation_usage.panel.AllocationUsage'
+ADD_PANEL = 'nectar_dashboard.usage.allocation_usage.panel.AllocationUsage'
 
 ADD_INSTALLED_APPS = ['nectar_dashboard.usage.allocation_usage']

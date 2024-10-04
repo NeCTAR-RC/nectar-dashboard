@@ -50,9 +50,11 @@ urlpatterns = [
     re_path(r'^api/', include(rest.urls)),
     re_path(r'^jasmine/(.*?)$', jasmine.dispatcher),
     re_path(r'', horizon.base._wrapped_include(horizon.urls)),
-    re_path(r'^ngdetails/',
+    re_path(
+        r'^ngdetails/',
         browsers_views.AngularDetailsView.as_view(),
-        name='ngdetails'),
+        name='ngdetails',
+    ),
     re_path(r'^rest_api/', include(router.urls)),
 ]
 

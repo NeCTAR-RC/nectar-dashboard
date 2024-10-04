@@ -20,15 +20,17 @@ from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import common
 
 
-@mock.patch('nectar_dashboard.rcallocation.notifier.FreshdeskNotifier',
-            new=base.FAKE_FD_NOTIFIER_CLASS)
+@mock.patch(
+    'nectar_dashboard.rcallocation.notifier.FreshdeskNotifier',
+    new=base.FAKE_FD_NOTIFIER_CLASS,
+)
 class RequestTestCase(base.BaseTestCase):
-
     def test_request_allocation(self):
         base.FAKE_FD_NOTIFIER.send_email.reset_mock()
 
         response = self.client.get(
-            reverse('horizon:allocation:request:request'))
+            reverse('horizon:allocation:request:request')
+        )
         self.assertStatusCode(response, 200)
 
         expected_model, form = common.request_allocation(user=self.user)
@@ -37,13 +39,14 @@ class RequestTestCase(base.BaseTestCase):
         # has fuzz'd quota values which tyically won't pass muster.)
         form['ignore_warnings'] = True
         response = self.client.post(
-            reverse('horizon:allocation:request:request'),
-            form)
+            reverse('horizon:allocation:request:request'), form
+        )
 
         self._assert_success(response)
         model = models.AllocationRequest.objects.get(
             project_description=form['project_description'],
-            parent_request_id=None)
+            parent_request_id=None,
+        )
         self.assert_allocation(model, **expected_model)
         self.assertTrue(model.managed)
         self.assertTrue(model.notifications)
@@ -52,7 +55,8 @@ class RequestTestCase(base.BaseTestCase):
         self.assertEqual("test_user", call_kwargs['email'])
         self.assertEqual(
             f"Allocation request [unassigned][{form['project_description']}]",
-            call_kwargs['subject'])
+            call_kwargs['subject'],
+        )
         # Not checking the expansion of the template body.
 
     def _assert_success(self, response):
@@ -60,9 +64,12 @@ class RequestTestCase(base.BaseTestCase):
         our requests.
         """
         self.assertStatusCode(response, 302)
-        self.assertTrue(response.get('location').endswith(
-            reverse('horizon:allocation:user_requests:index')),
-            msg="incorrect redirect location")
+        self.assertTrue(
+            response.get('location').endswith(
+                reverse('horizon:allocation:user_requests:index')
+            ),
+            msg="incorrect redirect location",
+        )
 
     def _test_allocation(self, errors={}, override_form=True, **kwargs):
         """The 'override_form' argument deals with the problem that the
@@ -70,10 +77,13 @@ class RequestTestCase(base.BaseTestCase):
         keyword args.
         """
         response = self.client.get(
-            reverse('horizon:allocation:request:request'))
+            reverse('horizon:allocation:request:request')
+        )
         expected_model, form = (
-            common.request_allocation(user=self.user) if override_form
-            else common.request_allocation(user=self.user, **kwargs))
+            common.request_allocation(user=self.user)
+            if override_form
+            else common.request_allocation(user=self.user, **kwargs)
+        )
 
         if override_form:
             for field, value in kwargs.items():
@@ -84,8 +94,8 @@ class RequestTestCase(base.BaseTestCase):
         form['ignore_warnings'] = True
 
         response = self.client.post(
-            reverse('horizon:allocation:request:request'),
-            form)
+            reverse('horizon:allocation:request:request'), form
+        )
 
         if errors:
             # No redirect invalid fields
@@ -105,20 +115,22 @@ class RequestTestCase(base.BaseTestCase):
 
         model = models.AllocationRequest.objects.get(
             project_description=form['project_description'],
-            parent_request_id=None)
+            parent_request_id=None,
+        )
         self.assert_allocation(model, **expected_model)
 
     def test_blank_project_name(self):
         self._test_allocation(
             project_name='',
-            errors={'form': {'project_name': [u'This field is required.']}}
+            errors={'form': {'project_name': ['This field is required.']}},
         )
 
     def test_blank_project_description(self):
         self._test_allocation(
             project_description='',
-            errors={'form': {'project_description':
-                             [u'This field is required.']}}
+            errors={
+                'form': {'project_description': ['This field is required.']}
+            },
         )
 
     def test_blank_geographic_requirements(self):
@@ -129,7 +141,7 @@ class RequestTestCase(base.BaseTestCase):
     def test_blank_use_case(self):
         self._test_allocation(
             use_case='',
-            errors={'form': {'use_case': [u'This field is required.']}}
+            errors={'form': {'use_case': ['This field is required.']}},
         )
 
     def test_inconsistent_supported_orgs(self):
@@ -137,35 +149,53 @@ class RequestTestCase(base.BaseTestCase):
             override_form=False,
             supported_organisations=[
                 models.Organisation.objects.get(short_name='Monash'),
-                models.Organisation.objects.get(short_name='all')],
-            errors={'form': {'supported_organisations': [
-                "'All Organisations' should not be used "
-                "with any other organisation"]}}
+                models.Organisation.objects.get(short_name='all'),
+            ],
+            errors={
+                'form': {
+                    'supported_organisations': [
+                        "'All Organisations' should not be used "
+                        "with any other organisation"
+                    ]
+                }
+            },
         )
 
     def test_supported_org_empty(self):
         self._test_allocation(
             override_form=False,
             supported_organisations=[],
-            errors={'form': {'supported_organisations': [
-                'This field is required.']}}
+            errors={
+                'form': {
+                    'supported_organisations': ['This field is required.']
+                }
+            },
         )
 
     def test_all_ci_all_organisations(self):
         self._test_allocation(
             override_form=False,
-            investigators=[{
-                'id': '',
-                'title': 'Prof.',
-                'given_name': 'Bradley',
-                'surname': 'Awl',
-                'email': 'brad@somewhere.edu.au',
-                'primary_organisation':
-                    models.Organisation.objects.get(short_name='all'),
-                'additional_researchers': 'None'
-            }],
-            errors={'investigator_formset': [{
-                'primary_organisation': [
-                    f"'{models.ORG_ALL_FULL_NAME}' is not meaningful "
-                    "in this context"]}]}
+            investigators=[
+                {
+                    'id': '',
+                    'title': 'Prof.',
+                    'given_name': 'Bradley',
+                    'surname': 'Awl',
+                    'email': 'brad@somewhere.edu.au',
+                    'primary_organisation': models.Organisation.objects.get(
+                        short_name='all'
+                    ),
+                    'additional_researchers': 'None',
+                }
+            ],
+            errors={
+                'investigator_formset': [
+                    {
+                        'primary_organisation': [
+                            f"'{models.ORG_ALL_FULL_NAME}' is not meaningful "
+                            "in this context"
+                        ]
+                    }
+                ]
+            },
         )

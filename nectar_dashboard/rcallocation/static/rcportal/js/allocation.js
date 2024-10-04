@@ -119,7 +119,7 @@
         } else if(duration > 1 && duration < 12) {
             durationStr = duration + " months";
         }
-        
+
         $('.bundle').each(function() {
             if($(this).data('suyear')) {
                 let budget = $(this).data('suyear') / 12 * duration;

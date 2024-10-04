@@ -21,7 +21,6 @@ from nectar_dashboard.rcallocation.tests import base
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class ApproverTest(base.AllocationAPITest):
-
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         self.qcif = models.Site.objects.get(name='qcif')
@@ -30,8 +29,8 @@ class ApproverTest(base.AllocationAPITest):
         models.Approver.objects.all().delete()
         self.assertEqual(models.Approver.objects.all().count(), 0)
         self.jim = models.Approver.objects.create(
-            username='jim.spriggs@uq.edu.au',
-            display_name='Jim Spriggs')
+            username='jim.spriggs@uq.edu.au', display_name='Jim Spriggs'
+        )
         self.jim.sites.add(self.qcif)
         self.jim.save()
 
@@ -52,9 +51,11 @@ class ApproverTest(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_approver(self):
-        data = {'username': 'joe.bloggs@uq.edu.au',
-                'display_name': 'Joseph Bloggs',
-                'sites': [self.qcif.id]}
+        data = {
+            'username': 'joe.bloggs@uq.edu.au',
+            'display_name': 'Joseph Bloggs',
+            'sites': [self.qcif.id],
+        }
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post('/rest_api/approvers/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -73,19 +74,24 @@ class ApproverTest(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_approver_duplicate(self):
-        data = {'username': 'jim.spriggs@uq.edu.au',
-                'display_name': 'Joseph Bloggs',
-                'sites': [self.qcif.id]}
+        data = {
+            'username': 'jim.spriggs@uq.edu.au',
+            'display_name': 'Joseph Bloggs',
+            'sites': [self.qcif.id],
+        }
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.post('/rest_api/approvers/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_approver(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'display_name': 'Adolphus Spriggs',
-                'sites': [self.qcif.id, self.uom.id]}
-        response = self.client.patch('/rest_api/approvers/%s/' % self.jim.id,
-                                     data)
+        data = {
+            'display_name': 'Adolphus Spriggs',
+            'sites': [self.qcif.id, self.uom.id],
+        }
+        response = self.client.patch(
+            f'/rest_api/approvers/{self.jim.id}/', data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         jim = models.Approver.objects.get(username='jim.spriggs@uq.edu.au')
         self.assertEqual(jim.username, 'jim.spriggs@uq.edu.au')
@@ -97,6 +103,7 @@ class ApproverTest(base.AllocationAPITest):
 
     def test_delete_approver(self):
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.delete('/rest_api/approvers/%s/' % self.jim.id)
-        self.assertEqual(response.status_code,
-                         status.HTTP_405_METHOD_NOT_ALLOWED)
+        response = self.client.delete(f'/rest_api/approvers/{self.jim.id}/')
+        self.assertEqual(
+            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
+        )

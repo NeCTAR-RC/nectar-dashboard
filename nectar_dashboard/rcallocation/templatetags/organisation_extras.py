@@ -21,8 +21,10 @@ register = Library()
 
 @register.filter()
 def org_status(organisation):
-    if (not organisation.ror_id
-            and organisation.full_name == models.ORG_ALL_FULL_NAME):
+    if (
+        not organisation.ror_id
+        and organisation.full_name == models.ORG_ALL_FULL_NAME
+    ):
         return ""
     elif organisation.enabled:
         if organisation.ror_id or organisation.vetted_by:

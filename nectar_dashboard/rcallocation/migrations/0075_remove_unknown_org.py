@@ -11,7 +11,6 @@ LOG = logging.getLogger(__name__)
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('rcallocation', '0074_bundles'),
     ]
@@ -28,14 +27,16 @@ class Migration(migrations.Migration):
             return
 
         cis = ChiefInvestigator.objects.filter(
-            primary_organisation=unknown_org)
+            primary_organisation=unknown_org
+        )
 
         for ci in cis:
             ci.primary_organisation = None
             ci.save()
 
         for a in AllocationRequest.objects.filter(
-                supported_organisations=unknown_org):
+            supported_organisations=unknown_org
+        ):
             a.supported_organisations.remove(unknown_org)
             LOG.info("Remove unknown org from %s", a)
 
@@ -46,10 +47,10 @@ class Migration(migrations.Migration):
         Organisation = apps.get_model('rcallocation', 'Organisation')
 
         unknown_org, created = Organisation.objects.get_or_create(
-            short_name='unknown', full_name='Unspecified Organisation')
-        
-        cis = ChiefInvestigator.objects.filter(
-            primary_organisation=None)
+            short_name='unknown', full_name='Unspecified Organisation'
+        )
+
+        cis = ChiefInvestigator.objects.filter(primary_organisation=None)
 
         for ci in cis:
             ci.primary_organisation = unknown_org
@@ -59,7 +60,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='chiefinvestigator',
             name='primary_organisation',
-            field=select2.fields.ForeignKey(help_text="The chief investigator's primary organisation.", null=True, on_delete=django.db.models.deletion.PROTECT, to='rcallocation.organisation'),
+            field=select2.fields.ForeignKey(
+                help_text="The chief investigator's primary organisation.",
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to='rcallocation.organisation',
+            ),
         ),
-        migrations.RunPython(remove_unknown_org_refs, add_unknown_org_refs)
+        migrations.RunPython(remove_unknown_org_refs, add_unknown_org_refs),
     ]

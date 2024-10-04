@@ -31,33 +31,46 @@ FAKE_FD_NOTIFIER_CLASS = mock.MagicMock(return_value=FAKE_FD_NOTIFIER)
 
 
 class BaseTestCase(helpers.TestCase):
-
     def setUp(self):
         super().setUp()
         common.factory_setup()
         self.maxDiff = None
 
-    def assert_allocation(self, model, quotas=[], supported_organisations=[],
-                          publications=[], grants=[], investigators=[],
-                          usage_types=[], **attributes):
+    def assert_allocation(
+        self,
+        model,
+        quotas=[],
+        supported_organisations=[],
+        publications=[],
+        grants=[],
+        investigators=[],
+        usage_types=[],
+        **attributes,
+    ):
         """Check that 'model' AllocationRequest and its dependents
         match the expected state as given by the keyword args.
         """
 
         for field, value in attributes.items():
-            self.assertEqual(getattr(model, field), value,
-                             "field that didn't match: %s" % field)
+            self.assertEqual(
+                getattr(model, field),
+                value,
+                f"field that didn't match: {field}",
+            )
         self.assertEqual(set(usage_types), set(model.usage_types.all()))
         self.assertEqual(model.contact_email, self.user.name)
 
-        self.assertEqual(set(model.supported_organisations.all()),
-                         set(supported_organisations))
+        self.assertEqual(
+            set(model.supported_organisations.all()),
+            set(supported_organisations),
+        )
 
         quotas_l = models.Quota.objects.filter(group__allocation=model)
 
         # Ignore 0 valued quotas, these mean no quota
-        quotas = [q for q in quotas if q['quota'] > 0
-                  or q['requested_quota'] > 0]
+        quotas = [
+            q for q in quotas if q['quota'] > 0 or q['requested_quota'] > 0
+        ]
 
         msg = ""
         if quotas_l.count() != len(quotas):
@@ -73,29 +86,36 @@ class BaseTestCase(helpers.TestCase):
         self.assertEqual(quotas_l.count(), len(quotas), msg=msg)
         # The order of the quotas don't need to match
         for qm in quotas_l:
-            matched = [q for q in quotas if q['resource'] == qm.resource.id
-                       and q['zone'] == qm.group.zone.name]
+            matched = [
+                q
+                for q in quotas
+                if q['resource'] == qm.resource.id
+                and q['zone'] == qm.group.zone.name
+            ]
             self.assertEqual(len(matched), 1)
             self.assertEqual(qm.group.zone.name, matched[0]['zone'])
-            self.assertEqual(qm.requested_quota,
-                             matched[0]['requested_quota'])
+            self.assertEqual(qm.requested_quota, matched[0]['requested_quota'])
             self.assertEqual(qm.quota, matched[0]['quota'])
 
         publications_l = model.publications.all()
         for i, pub_model in enumerate(publications_l):
-            self.assertEqual(pub_model.publication,
-                             publications[i]['publication'])
+            self.assertEqual(
+                pub_model.publication, publications[i]['publication']
+            )
 
         grants_l = model.grants.all()
         for i, g_model in enumerate(grants_l):
             self.assertEqual(g_model.grant_type, grants[i]['grant_type'])
-            self.assertEqual(g_model.funding_body_scheme, grants[i][
-                'funding_body_scheme'])
+            self.assertEqual(
+                g_model.funding_body_scheme, grants[i]['funding_body_scheme']
+            )
             self.assertEqual(g_model.grant_id, grants[i]['grant_id'])
-            self.assertEqual(g_model.first_year_funded,
-                             grants[i]['first_year_funded'])
-            self.assertEqual(g_model.last_year_funded,
-                             grants[i]['last_year_funded'])
+            self.assertEqual(
+                g_model.first_year_funded, grants[i]['first_year_funded']
+            )
+            self.assertEqual(
+                g_model.last_year_funded, grants[i]['last_year_funded']
+            )
             self.assertEqual(g_model.total_funding, grants[i]['total_funding'])
 
         investigators_l = model.investigators.all()
@@ -104,13 +124,16 @@ class BaseTestCase(helpers.TestCase):
             self.assertEqual(inv_m.given_name, investigators[i]['given_name'])
             self.assertEqual(inv_m.surname, investigators[i]['surname'])
             self.assertEqual(inv_m.email, investigators[i]['email'])
-            self.assertEqual(inv_m.additional_researchers, investigators[i][
-                'additional_researchers'])
+            self.assertEqual(
+                inv_m.additional_researchers,
+                investigators[i]['additional_researchers'],
+            )
 
     def assert_history(self, model, initial_state, initial_mod):
         # check historical allocation model
-        old_model = (models.AllocationRequest.objects.get(
-            parent_request_id=model.id))
+        old_model = models.AllocationRequest.objects.get(
+            parent_request_id=model.id
+        )
         old_state = common.allocation_to_dict(old_model)
 
         # check modification dates
@@ -123,8 +146,11 @@ class BaseTestCase(helpers.TestCase):
             del old_state[invalid_field]
             del initial_state[invalid_field]
 
-        self.assertEqual(old_state, initial_state,
-                         msg="allocation fields changed unexpectedly")
+        self.assertEqual(
+            old_state,
+            initial_state,
+            msg="allocation fields changed unexpectedly",
+        )
 
 
 class BaseApproverTestCase(helpers.BaseAdminViewTests):
@@ -139,11 +165,13 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
 
     def setActiveUser(self, *args, **kwargs):
         if "roles" not in kwargs:
-            allocation_admin_role_dict = {'id': '142',
-                                          'name': 'allocationadmin'}
-            allocation_admin_role = roles.Role(roles.RoleManager,
-                                               allocation_admin_role_dict,
-                                               loaded=True)
+            allocation_admin_role_dict = {
+                'id': '142',
+                'name': 'allocationadmin',
+            }
+            allocation_admin_role = roles.Role(
+                roles.RoleManager, allocation_admin_role_dict, loaded=True
+            )
             self.roles.add(allocation_admin_role)
             self.roles.allocation_admin = allocation_admin_role
             kwargs['roles'] = [self.roles.allocation_admin._info]
@@ -151,23 +179,27 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
 
 
 class AllocationAPITest(test.APITestCase):
-
     def setUp(self, *args, **kwargs):
         common.factory_setup()
-        self.user = utils.get_user(id='user1',
-                                   username='bob',
-                                   project_name='proj1')
-        self.user2 = utils.get_user(id='user2',
-                                    username='fred',
-                                    project_name='proj2')
-        self.approver_user = utils.get_user(id='approver',
-                                            username='approver',
-                                            project_name='proj3',
-                                            roles=['tenantmanager'])
-        self.admin_user = utils.get_user(id='admin',
-                                         username='admin',
-                                         project_name='admin-proj',
-                                         roles=['admin'])
+        self.user = utils.get_user(
+            id='user1', username='bob', project_name='proj1'
+        )
+        self.user2 = utils.get_user(
+            id='user2', username='fred', project_name='proj2'
+        )
+        self.approver_user = utils.get_user(
+            id='approver',
+            username='approver',
+            project_name='proj3',
+            roles=['tenantmanager'],
+        )
+        self.admin_user = utils.get_user(
+            id='admin',
+            username='admin',
+            project_name='admin-proj',
+            roles=['admin'],
+        )
         self.allocation = factories.AllocationFactory.create(
             contact_email=self.user.username,
-            status=models.AllocationRequest.SUBMITTED)
+            status=models.AllocationRequest.SUBMITTED,
+        )

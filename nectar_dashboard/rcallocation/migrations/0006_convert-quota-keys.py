@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import migrations, models
 
 
@@ -26,7 +23,6 @@ def convert_resource(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('rcallocation', '0005_add-service-type-zone-resource-tables'),
     ]
@@ -54,14 +50,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='quota',
             name='resource',
-            field=models.ForeignKey(to='rcallocation.Resource',
-                                    on_delete=models.CASCADE),
+            field=models.ForeignKey(
+                to='rcallocation.Resource', on_delete=models.CASCADE
+            ),
         ),
         migrations.AlterField(
             model_name='quota',
             name='zone',
-            field=models.ForeignKey(to='rcallocation.Zone',
-                                    on_delete=models.CASCADE),
+            field=models.ForeignKey(
+                to='rcallocation.Zone', on_delete=models.CASCADE
+            ),
         ),
         migrations.AlterField(
             model_name='zone',

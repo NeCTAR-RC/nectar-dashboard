@@ -25,21 +25,28 @@ def get_begin_end(request):
     return begin, end
 
 
-def get_summary(request, resource_type=None, groupby=None, begin=None,
-                end=None, detailed=False, filters={}):
-    """resource_type arg is deprecated, use filters['type']
-    """
+def get_summary(
+    request,
+    resource_type=None,
+    groupby=None,
+    begin=None,
+    end=None,
+    detailed=False,
+    filters={},
+):
+    """resource_type arg is deprecated, use filters['type']"""
     client = api.cloudkittyclient(request, version='2')
     if begin is None:
         begin, end = get_begin_end(request)
 
     groupby = request.GET.get('groupby', groupby)
-    kwargs = {'begin': begin,
-              'end': end,
-              'filters': filters,
-              'response_format': 'object',
-              'limit': 1000,
-              }
+    kwargs = {
+        'begin': begin,
+        'end': end,
+        'filters': filters,
+        'response_format': 'object',
+        'limit': 1000,
+    }
     if resource_type:
         kwargs['filters']['type'] = resource_type
     if groupby:
@@ -58,12 +65,16 @@ def get_summary(request, resource_type=None, groupby=None, begin=None,
 
 
 def most_used_resources(request, resource_type, begin=None, end=None):
-
     if resource_type == 'instance':
         data = instance_data(request)
     else:
-        data = get_summary(request, filters={'type': resource_type},
-                           groupby='id', begin=begin, end=end)
+        data = get_summary(
+            request,
+            filters={'type': resource_type},
+            groupby='id',
+            begin=begin,
+            end=end,
+        )
 
     data = sorted(data, key=itemgetter('rate'), reverse=True)
     count = 0
@@ -72,7 +83,8 @@ def most_used_resources(request, resource_type, begin=None, end=None):
     for d in data:
         if count < 5:
             most_used_data.append(
-                {d.get('display_name', d.get('id')): d.get('rate')})
+                {d.get('display_name', d.get('id')): d.get('rate')}
+            )
         else:
             other_total += d.get('rate', 0)
         count += 1
@@ -94,15 +106,21 @@ def instance_data(request):
 
     g_instances = gnocchi_client.resource.search(
         resource_type='instance',
-        query=(f'ended_at=null or ended_at >= "{begin}"')
+        query=(f'ended_at=null or ended_at >= "{begin}"'),
     )
     gnocchi_map = {i.get('id'): i for i in g_instances}
 
-    instance_data = get_summary(request, filters={'type': 'instance'},
-                                groupby='id')
+    instance_data = get_summary(
+        request, filters={'type': 'instance'}, groupby='id'
+    )
 
-    instance_attrs = ['display_name', 'availability_zone', 'flavor_name',
-                      'started_at', 'ended_at']
+    instance_attrs = [
+        'display_name',
+        'availability_zone',
+        'flavor_name',
+        'started_at',
+        'ended_at',
+    ]
     for i in instance_data:
         i['rate'] = round(i['rate'], 2)
         gnocchi_instance = gnocchi_map.get(i.get('id'))

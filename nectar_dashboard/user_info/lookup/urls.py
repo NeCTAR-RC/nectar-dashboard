@@ -14,14 +14,14 @@
 
 from django.urls import re_path
 
-from . import views
+from nectar_dashboard.user_info.lookup import views
 
 
 urlpatterns = [
-    re_path(r'^view/(?P<user_id>\w+)/$',
+    re_path(
+        r'^view/(?P<user_id>\w+)/$',
         views.UserDetailView.as_view(),
-        name='view'),
-    re_path(r'^$',
-        views.UserListView.as_view(),
-        name='list'),
+        name='view',
+    ),
+    re_path(r'^$', views.UserListView.as_view(), name='list'),
 ]

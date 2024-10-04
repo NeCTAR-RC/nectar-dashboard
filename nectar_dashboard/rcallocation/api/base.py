@@ -17,12 +17,13 @@ from rest_framework import viewsets
 from nectar_dashboard import rest_auth
 
 
-class NoDestroyViewSet(mixins.CreateModelMixin,
-                       mixins.RetrieveModelMixin,
-                       mixins.UpdateModelMixin,
-                       mixins.ListModelMixin,
-                       viewsets.GenericViewSet):
-
+class NoDestroyViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
     permission_classes = (rest_auth.ReadOrAdmin,)
 
     """

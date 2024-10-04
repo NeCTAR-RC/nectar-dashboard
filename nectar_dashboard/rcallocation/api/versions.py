@@ -20,7 +20,6 @@ from nectar_dashboard.rcallocation import api
 
 
 class VersionsViewSet(viewsets.GenericViewSet):
-
     def list(self, request, *args, **kwargs):
         version_info = {
             "versions": [

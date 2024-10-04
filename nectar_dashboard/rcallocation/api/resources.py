@@ -21,7 +21,6 @@ from nectar_dashboard.rcallocation import models
 
 
 class ZoneSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Zone
         fields = '__all__'
@@ -38,7 +37,6 @@ class ZoneViewSet(base.NoDestroyViewSet):
 
 
 class ResourceSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Resource
         fields = '__all__'
@@ -63,7 +61,6 @@ class ResourceViewSet(base.NoDestroyViewSet):
 
 
 class SiteSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Site
         fields = '__all__'

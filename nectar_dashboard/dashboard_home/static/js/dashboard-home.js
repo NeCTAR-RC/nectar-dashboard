@@ -8,7 +8,7 @@ var dashboardHome = (function() {
       hideWelcome();
     });
   }
-  
+
   function showWelcome() {
     $("#welcome").show();
   }

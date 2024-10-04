@@ -21,7 +21,6 @@ from nectar_dashboard.rcallocation.tests import base
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class ZoneTests(base.AllocationAPITest):
-
     def test_compute_homes(self):
         response = self.client.get('/rest_api/zones/compute_homes/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

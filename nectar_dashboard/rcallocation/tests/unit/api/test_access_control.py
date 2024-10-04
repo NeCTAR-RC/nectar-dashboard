@@ -20,9 +20,14 @@ from nectar_dashboard.rcallocation.tests import base
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class AccessControlTest(base.AllocationAPITest):
-
-    endpoints = ['ncris-facilities', 'zones', 'service-types', 'sites',
-                 'ardc-projects', 'resources']
+    endpoints = [
+        'ncris-facilities',
+        'zones',
+        'service-types',
+        'sites',
+        'ardc-projects',
+        'resources',
+    ]
 
     def test_list(self):
         self.client.force_authenticate(user=self.user)
@@ -51,12 +56,12 @@ class AccessControlTest(base.AllocationAPITest):
         self.client.force_authenticate(user=self.admin_user)
         for e in self.endpoints:
             response = self.client.delete(f'/rest_api/{e}/XXX/')
-            self.assertEqual(response.status_code,
-                             status.HTTP_405_METHOD_NOT_ALLOWED)
+            self.assertEqual(
+                response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
+            )
 
     def test_delete_no_permission(self):
         self.client.force_authenticate(user=self.user)
         for e in self.endpoints:
             response = self.client.delete(f'/rest_api/{e}/XXX/')
-            self.assertEqual(response.status_code,
-                             status.HTTP_403_FORBIDDEN)
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

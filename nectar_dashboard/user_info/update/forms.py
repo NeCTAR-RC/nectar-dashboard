@@ -36,32 +36,30 @@ AFFILIATE = 'affiliate'
 ALUM = 'alum'
 LIBRARY_WALK_IN = 'library-walk-in'
 
-AFFILIATION_CHOICES = [(FACULTY, 'Faculty'),
-                       (STUDENT, 'Student'),
-                       (STAFF, 'Staff'),
-                       (EMPLOYEE, 'Employee'),
-                       (MEMBER, 'Member'),
-                       (AFFILIATE, 'Affiliate'),
-                       (ALUM, 'Alumnus'),
-                       (LIBRARY_WALK_IN, 'Library walk-in')]
+AFFILIATION_CHOICES = [
+    (FACULTY, 'Faculty'),
+    (STUDENT, 'Student'),
+    (STAFF, 'Staff'),
+    (EMPLOYEE, 'Employee'),
+    (MEMBER, 'Member'),
+    (AFFILIATE, 'Affiliate'),
+    (ALUM, 'Alumnus'),
+    (LIBRARY_WALK_IN, 'Library walk-in'),
+]
 
 
 class UpdateForm(forms.SelfHandlingForm):
-
     affiliation = forms.ChoiceField(
         required=True,
         choices=AFFILIATION_CHOICES,
-        help_text="Your affiliation to your organisation.")
+        help_text="Your affiliation to your organisation.",
+    )
 
-    orcid = forms.CharField(max_length=64,
-                           label="ORCID",
-                           required=False)
+    orcid = forms.CharField(max_length=64, label="ORCID", required=False)
 
-    phone_number = forms.CharField(max_length=64,
-                           required=False)
+    phone_number = forms.CharField(max_length=64, required=False)
 
-    mobile_number = forms.CharField(max_length=64,
-                           required=False)
+    mobile_number = forms.CharField(max_length=64, required=False)
 
     def handle(self, request, data):
         user_id = self.initial['id']
@@ -70,11 +68,11 @@ class UpdateForm(forms.SelfHandlingForm):
             user = client.users.update(user_id, **data)
         except Exception:
             redirect = reverse("horizon:settings:my-details:edit-self")
-            exceptions.handle(request,
-                              'Unable to update user.',
-                              redirect=redirect)
+            exceptions.handle(
+                request, 'Unable to update user.', redirect=redirect
+            )
 
-        message = 'Updating user "%s"' % user.email
+        message = f'Updating user "{user.email}"'
         messages.info(request, message)
         return True
 
@@ -82,4 +80,5 @@ class UpdateForm(forms.SelfHandlingForm):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs['class'] = (
-                'form-control ' + field.widget.attrs.get('class', ''))
+                'form-control ' + field.widget.attrs.get('class', '')
+            )

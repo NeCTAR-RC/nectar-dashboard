@@ -6,8 +6,7 @@ PANEL_DASHBOARD = 'identity'
 PANEL_GROUP = 'default'
 
 # Python panel class of the PANEL to be added.
-ADD_PANEL = \
-    'nectar_dashboard.project_members.panel.Members'
+ADD_PANEL = 'nectar_dashboard.project_members.panel.Members'
 
 # A list of applications to be added to INSTALLED_APPS.
 ADD_INSTALLED_APPS = [

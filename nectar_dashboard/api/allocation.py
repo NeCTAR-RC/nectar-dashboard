@@ -6,9 +6,9 @@ from nectar_dashboard.rcallocation import models
 
 @memoized.memoized
 def get_current_allocation(request):
-    allocations = models.AllocationRequest.objects \
-        .filter(project_id=request.user.project_id) \
-        .filter(status=models.AllocationRequest.APPROVED)
+    allocations = models.AllocationRequest.objects.filter(
+        project_id=request.user.project_id
+    ).filter(status=models.AllocationRequest.APPROVED)
 
     no_parents = allocations.filter(parent_request__isnull=True)
     if no_parents:

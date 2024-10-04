@@ -17,8 +17,7 @@ from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import factories
 
 
-class FakeForm(object):
-
+class FakeForm:
     def __init__(self, values):
         self.cleaned_data = values
 
@@ -27,7 +26,6 @@ DUMMY_FORM = FakeForm({})
 
 
 class CheckerTest(base.BaseTestCase):
-
     def test_empty_checker(self):
         checker = checkers.Checker()
         self.assertIsNone(checker.allocation)

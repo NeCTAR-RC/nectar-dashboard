@@ -30,11 +30,13 @@ LOG = logging.getLogger(__name__)
 
 class UserFilterAction(tables.FilterAction):
     def filter(self, table, users, filter_string):
-        """Naive case-insensitive search """
+        """Naive case-insensitive search"""
         q = filter_string.lower()
-        return [user for user in users
-                if q in user.name.lower()
-                or q in user.email.lower()]
+        return [
+            user
+            for user in users
+            if q in user.name.lower() or q in user.email.lower()
+        ]
 
 
 class RemoveMembers(tables.DeleteAction):
@@ -52,29 +54,19 @@ class RemoveMembers(tables.DeleteAction):
     def action(self, request, obj_id):
         user_obj = self.table.get_object_by_id(obj_id)
         project_id = request.user.tenant_id
-        LOG.info('Removing user %s from project %s.' % (user_obj.id,
-                                                      project_id))
+        LOG.info(f'Removing user {user_obj.id} from project {project_id}.')
         role_id = getattr(settings, 'KEYSTONE_MEMBER_ROLE_ID', '1')
-        api.keystone.remove_tenant_user_role(request,
-                                             project=project_id,
-                                             user=user_obj.id,
-                                             role=role_id)
+        api.keystone.remove_tenant_user_role(
+            request, project=project_id, user=user_obj.id, role=role_id
+        )
 
     @staticmethod
     def action_present(count):
-        return ungettext_lazy(
-            u"Remove Member",
-            u"Remove Members",
-            count
-        )
+        return ungettext_lazy("Remove Member", "Remove Members", count)
 
     @staticmethod
     def action_past(count):
-        return ungettext_lazy(
-            u"Removed Member",
-            u"Removed Members",
-            count
-        )
+        return ungettext_lazy("Removed Member", "Removed Members", count)
 
 
 class AddMembersLink(tables.LinkAction):
@@ -91,13 +83,18 @@ class AddMembersLink(tables.LinkAction):
 
 
 class UsersTable(tables.DataTable):
-    name = tables.Column('name', verbose_name=_('User Name'),
-                         filters=[defaultfilters.urlize])
+    name = tables.Column(
+        'name', verbose_name=_('User Name'), filters=[defaultfilters.urlize]
+    )
 
 
 class ProjectMembersTable(UsersTable):
     class Meta:
         name = "project_members"
         verbose_name = _("Project Users")
-        table_actions = (UserFilterAction, AddMembersLink, RemoveMembers,)
+        table_actions = (
+            UserFilterAction,
+            AddMembersLink,
+            RemoveMembers,
+        )
         row_actions = (RemoveMembers,)

@@ -5,15 +5,15 @@ from nectar_dashboard.api.rest import usage
 
 
 class UsageRestTestCase(test.RestAPITestCase):
-
     @test.create_mocks({api.usage: ['get_summary']})
     def test_summary(self):
         request = self.mock_rest_request(**{'GET': {}})
         self.mock_get_summary.return_value = '{}'
         response = usage.Summary().get(request)
         self.assertStatusCode(response, 200)
-        self.mock_get_summary.assert_called_once_with(request, filters={},
-                                                      detailed=False)
+        self.mock_get_summary.assert_called_once_with(
+            request, filters={}, detailed=False
+        )
 
     @test.create_mocks({api.usage: ['get_summary']})
     def test_summary_detailed(self):
@@ -21,8 +21,9 @@ class UsageRestTestCase(test.RestAPITestCase):
         self.mock_get_summary.return_value = '{}'
         response = usage.Summary().get(request)
         self.assertStatusCode(response, 200)
-        self.mock_get_summary.assert_called_once_with(request, filters={},
-                                                      detailed=True)
+        self.mock_get_summary.assert_called_once_with(
+            request, filters={}, detailed=True
+        )
 
     @test.create_mocks({api.usage: ['get_summary']})
     def test_summary_type_filter(self):
@@ -31,7 +32,8 @@ class UsageRestTestCase(test.RestAPITestCase):
         response = usage.Summary().get(request)
         self.assertStatusCode(response, 200)
         self.mock_get_summary.assert_called_once_with(
-            request, filters={'type': 'instance'}, detailed=False)
+            request, filters={'type': 'instance'}, detailed=False
+        )
 
     @test.create_mocks({api.usage: ['get_summary']})
     def test_summary_by_type(self):
@@ -40,4 +42,5 @@ class UsageRestTestCase(test.RestAPITestCase):
         response = usage.SummaryByType().get(request, 'instance')
         self.assertStatusCode(response, 200)
         self.mock_get_summary.assert_called_once_with(
-            request, filters={'type': 'instance'}, detailed=False)
+            request, filters={'type': 'instance'}, detailed=False
+        )

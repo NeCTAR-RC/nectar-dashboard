@@ -15,28 +15,23 @@
 from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
-
 from openstack_dashboard import api
 
-from .constants import PROJECTS_ADD_MEMBER_AJAX_VIEW_TEMPLATE
-from .constants import PROJECTS_ADD_MEMBER_VIEW_TEMPLATE
-from .constants import PROJECTS_INDEX_URL
-from .constants import PROJECTS_INDEX_VIEW_TEMPLATE
-from .forms import AddUserToProjectForm
-from .tables import ProjectMembersTable
+from nectar_dashboard.project_members import constants
+from nectar_dashboard.project_members.forms import AddUserToProjectForm
+from nectar_dashboard.project_members.tables import ProjectMembersTable
 
 
-class User(object):
+class User:
     def __init__(self, user_dict):
         for k, v in user_dict.items():
             setattr(self, k, v)
 
 
-class ProjectManageMixin(object):
+class ProjectManageMixin:
     def _get_project(self):
         if not hasattr(self, "_project"):
             tenant_id = self.request.user.tenant_id
@@ -53,7 +48,8 @@ class ProjectManageMixin(object):
                 project=tenant_id,
                 role=member_role_id,
                 include_subtree=False,
-                include_names=True)
+                include_names=True,
+            )
             for a in assignments:
                 project_members.append(User(a.user))
             self._project_members = project_members
@@ -66,7 +62,7 @@ class ProjectManageMixin(object):
 
 class ManageMembersView(ProjectManageMixin, tables.DataTableView):
     table_class = ProjectMembersTable
-    template_name = PROJECTS_INDEX_VIEW_TEMPLATE
+    template_name = constants.PROJECTS_INDEX_VIEW_TEMPLATE
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,15 +74,16 @@ class ManageMembersView(ProjectManageMixin, tables.DataTableView):
         try:
             project_members = self._get_project_members()
         except Exception:
-            exceptions.handle(self.request,
-                              _('Unable to retrieve project users.'))
+            exceptions.handle(
+                self.request, _('Unable to retrieve project users.')
+            )
         return project_members
 
 
 class AddUserToProjectView(forms.ModalFormView):
     form_class = AddUserToProjectForm
-    template_name = PROJECTS_ADD_MEMBER_VIEW_TEMPLATE
-    ajax_template_name = PROJECTS_ADD_MEMBER_AJAX_VIEW_TEMPLATE
+    template_name = constants.PROJECTS_ADD_MEMBER_VIEW_TEMPLATE
+    ajax_template_name = constants.PROJECTS_ADD_MEMBER_AJAX_VIEW_TEMPLATE
 
     def get_success_url(self):
-        return reverse(PROJECTS_INDEX_URL)
+        return reverse(constants.PROJECTS_INDEX_URL)

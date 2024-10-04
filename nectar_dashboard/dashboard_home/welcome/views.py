@@ -14,7 +14,6 @@ LOG = logging.getLogger(__name__)
 
 
 class HomeView(horizon_views.HorizonTemplateView):
-
     template_name = 'dashboard_home/home.html'
     page_title = "Home"
 
@@ -42,11 +41,11 @@ class HomeView(horizon_views.HorizonTemplateView):
             end = timezone.now() + timedelta(days=14)
             outages = []
             for o in all_outages:
-                if ((o.scheduled
-                     and o.scheduled_end > start
-                     and o.scheduled_start < end)
-                    or (o.start and (
-                        not o.end or o.end >= start))):
+                if (
+                    o.scheduled
+                    and o.scheduled_end > start
+                    and o.scheduled_start < end
+                ) or (o.start and (not o.end or o.end >= start)):
                     outages.append(o)
             context['outages'] = outages
         except Exception as e:
@@ -59,8 +58,8 @@ class HomeView(horizon_views.HorizonTemplateView):
 
 @cache.cache_page(3600)
 def get_ardc_news(request):
-
     url = 'https://ardc.edu.au/feed/latest-articles/'
     req = requests.get(url=url)
-    return http.HttpResponse(req.text,
-                             content_type=req.headers['Content-Type'])
+    return http.HttpResponse(
+        req.text, content_type=req.headers['Content-Type']
+    )

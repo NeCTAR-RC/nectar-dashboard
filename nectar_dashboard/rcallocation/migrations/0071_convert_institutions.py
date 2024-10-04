@@ -4,10 +4,8 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('rcallocation', '0070_load_ror_dump'),
     ]
 
-    operations = [
-    ]
+    operations = []

@@ -48,8 +48,10 @@ GRANT_SUBTYPES = (
     ("nhmrc-pc", "NHMRC Partnership Centre"),
     ("nhmrc-pp", "NHMRC Partnership project"),
     ("nhmrc-tcr", "NHMRC Targeted Calls for Research"),
-    ("nhmrc-iriiss",
-     "NHMRC Independent Research Institute Infrastructure Support Scheme"),
+    (
+        "nhmrc-iriiss",
+        "NHMRC Independent Research Institute Infrastructure Support Scheme",
+    ),
     ("nhmrc-bdri", "NHMRC Boosting Dementia Research Initiatives (various)"),
     ("nhmrc-other", "Other NHMRC scheme"),
     # RDCs

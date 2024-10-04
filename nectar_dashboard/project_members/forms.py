@@ -31,8 +31,7 @@ LOG = logging.getLogger(__name__)
 
 
 class AddUserToProjectForm(forms.SelfHandlingForm):
-    email = forms.EmailField(label=mark_safe("Username"),
-                             required=True)
+    email = forms.EmailField(label=mark_safe("Username"), required=True)
 
     def handle(self, request, data):
         project_id = request.user.tenant_id
@@ -41,16 +40,16 @@ class AddUserToProjectForm(forms.SelfHandlingForm):
         try:
             email = data['email']
             user = api_ext.user_get_by_name(request, email)
-            api.keystone.add_tenant_user_role(request,
-                                              project=project_id,
-                                              user=user.id,
-                                              role=role_id)
-            messages.success(request,
-                             _('User added successfully.'))
+            api.keystone.add_tenant_user_role(
+                request, project=project_id, user=user.id, role=role_id
+            )
+            messages.success(request, _('User added successfully.'))
         except api_ext.UserNotFound:
-            exceptions.handle(request,
-                              'Unable to add user to project: there is no '
-                              'Nectar RC account registered for "%s"' % email)
+            exceptions.handle(
+                request,
+                'Unable to add user to project: there is no '
+                f'Nectar RC account registered for "{email}"',
+            )
             return False
         except Exception as e:
             LOG.exception(e)

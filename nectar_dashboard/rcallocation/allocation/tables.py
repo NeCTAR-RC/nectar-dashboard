@@ -16,15 +16,19 @@ def _dummy(dummy):
 
 
 def get_highlight_attribute(data):
-    '''Map an urgency string to a CSS class name for a color.
-    '''
+    '''Map an urgency string to a CSS class name for a color.'''
 
     if data[0] == '(':
         return {}
     if data == urgency.DANGER:
         css_class = 'pending_warn_level_4'
-    elif data in (urgency.STOPPED, urgency.ARCHIVED, urgency.EXPIRED,
-                  urgency.OVERDUE, urgency.UNKNOWN):
+    elif data in (
+        urgency.STOPPED,
+        urgency.ARCHIVED,
+        urgency.EXPIRED,
+        urgency.OVERDUE,
+        urgency.UNKNOWN,
+    ):
         css_class = 'pending_warn_level_3'
     elif data == urgency.WARNING:
         css_class = 'pending_warn_level_2'
@@ -41,8 +45,11 @@ class UrgencyColumn(horizon_tables.Column):
     # request to find out who the approver is.
 
     def __init__(self):
-        super().__init__(_dummy, verbose_name='Urgency',
-                       cell_attributes_getter=get_highlight_attribute)
+        super().__init__(
+            _dummy,
+            verbose_name='Urgency',
+            cell_attributes_getter=get_highlight_attribute,
+        )
 
     def get_raw_data(self, allocation):
         urgency_value = urgency.get_urgency(allocation)
@@ -70,8 +77,12 @@ class PendingAllocationListTable(tables.BaseAllocationListTable):
     class Meta:
         verbose_name = "Pending Requests"
         table_actions = (horizon_tables.NameFilterAction,)
-        row_actions = (tables.EditRequest, tables.ViewHistory,)
+        row_actions = (
+            tables.EditRequest,
+            tables.ViewHistory,
+        )
 
-    approver = horizon_tables.Column('approver_email',
-                                     verbose_name='Previous Approver')
+    approver = horizon_tables.Column(
+        'approver_email', verbose_name='Previous Approver'
+    )
     urgency = UrgencyColumn()

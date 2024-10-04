@@ -10,7 +10,6 @@ SU_CODENAME = 'rating.budget'
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('rcallocation', '0075_remove_unknown_org'),
     ]
@@ -52,31 +51,35 @@ class Migration(migrations.Migration):
         for bundle in Bundle.objects.all():
             su_budget = bundle.su_per_year
             BundleQuota.objects.create(
-                bundle=bundle, resource=resource, quota=su_budget)
+                bundle=bundle, resource=resource, quota=su_budget
+            )
 
     operations = [
         migrations.AlterModelManagers(
             name='resource',
             managers=[
-                ('objects',
-                 nectar_dashboard.rcallocation.models.ResourceManager()),
+                (
+                    'objects',
+                    nectar_dashboard.rcallocation.models.ResourceManager(),
+                ),
             ],
         ),
         migrations.AddField(
             model_name='bundle',
             name='su_per_year',
             field=models.IntegerField(
-                null=True, verbose_name='SU budget per year'),
+                null=True, verbose_name='SU budget per year'
+            ),
         ),
-
-        migrations.RunPython(populate_su_per_year,
-                             reverse_populate_su_per_year),
-
+        migrations.RunPython(
+            populate_su_per_year, reverse_populate_su_per_year
+        ),
         migrations.AlterField(
             model_name='bundle',
             name='su_per_year',
             field=models.IntegerField(
-                default=0, verbose_name='SU budget per year'),
+                default=0, verbose_name='SU budget per year'
+            ),
             preserve_default=False,
         ),
     ]

@@ -14,25 +14,30 @@
 from django.conf import settings
 
 
-class PermissionMixin(object):
-
+class PermissionMixin:
     def is_read_admin(self):
         if self.request.user.is_authenticated:
-            roles = set([role['name'].lower()
-                         for role in self.request.user.roles])
-            required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES
-                           + settings.ALLOCATION_APPROVER_ROLES
-                           + settings.ALLOCATION_GLOBAL_READ_ROLES)
+            roles = set(
+                [role['name'].lower() for role in self.request.user.roles]
+            )
+            required = set(
+                settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+                + settings.ALLOCATION_APPROVER_ROLES
+                + settings.ALLOCATION_GLOBAL_READ_ROLES
+            )
             if required & roles:
                 return True
         return False
 
     def is_write_admin(self):
         if self.request.user.is_authenticated:
-            roles = set([role['name'].lower()
-                         for role in self.request.user.roles])
-            required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES
-                           + settings.ALLOCATION_APPROVER_ROLES)
+            roles = set(
+                [role['name'].lower() for role in self.request.user.roles]
+            )
+            required = set(
+                settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+                + settings.ALLOCATION_APPROVER_ROLES
+            )
             if required & roles:
                 return True
         return False
@@ -40,10 +45,11 @@ class PermissionMixin(object):
 
 def is_write_admin(user):
     if user.is_authenticated:
-        roles = set([role['name'].lower()
-                     for role in user.roles])
-        required = set(settings.ALLOCATION_GLOBAL_ADMIN_ROLES
-                       + settings.ALLOCATION_APPROVER_ROLES)
+        roles = set([role['name'].lower() for role in user.roles])
+        required = set(
+            settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+            + settings.ALLOCATION_APPROVER_ROLES
+        )
         if required & roles:
             return True
     return False

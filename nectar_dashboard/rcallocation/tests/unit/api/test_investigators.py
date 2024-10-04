@@ -23,21 +23,27 @@ from nectar_dashboard.rcallocation.tests import factories
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class InvestigatorTests(base.AllocationAPITest):
-
     def setUp(self):
         super().setUp()
         self.ci = factories.InvestigatorFactory(
             allocation=self.allocation,
             primary_organisation=models.Organisation.objects.get(
-                short_name="Monash"))
+                short_name="Monash"
+            ),
+        )
 
     def test_list(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/rest_api/chiefinvestigators/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(models.ChiefInvestigator.objects.filter(
-            allocation__contact_email=self.user.username)),
-                         len(response.data['results']))
+        self.assertEqual(
+            len(
+                models.ChiefInvestigator.objects.filter(
+                    allocation__contact_email=self.user.username
+                )
+            ),
+            len(response.data['results']),
+        )
         self.assertEqual(1, len(response.data['results']))
 
     def test_list_unauthenticated(self):
@@ -60,34 +66,39 @@ class InvestigatorTests(base.AllocationAPITest):
 
     def test_get(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get('/rest_api/chiefinvestigators/%s/' %
-                                   self.ci.id)
+        response = self.client.get(
+            f'/rest_api/chiefinvestigators/{self.ci.id}/'
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.ci.id, response.data['id'])
 
     def test_get_unauthenticated(self):
-        response = self.client.get('/rest_api/chiefinvestigators/%s/' %
-                                   self.ci.id)
+        response = self.client.get(
+            f'/rest_api/chiefinvestigators/{self.ci.id}/'
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_other(self):
         self.client.force_authenticate(user=self.user2)
-        response = self.client.get('/rest_api/chiefinvestigators/%s/' %
-                                   self.ci.id)
+        response = self.client.get(
+            f'/rest_api/chiefinvestigators/{self.ci.id}/'
+        )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_admin(self):
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.get('/rest_api/chiefinvestigators/%s/' %
-                                   self.ci.id)
+        response = self.client.get(
+            f'/rest_api/chiefinvestigators/{self.ci.id}/'
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.ci.id, response.data['id'])
 
     def test_update(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.patch('/rest_api/chiefinvestigators/%s/' %
-                                     self.ci.id,
-                                     {'given_name': 'Cholmondely'})
+        response = self.client.patch(
+            f'/rest_api/chiefinvestigators/{self.ci.id}/',
+            {'given_name': 'Cholmondely'},
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual('Cholmondely', response.data['given_name'])
 
@@ -95,29 +106,33 @@ class InvestigatorTests(base.AllocationAPITest):
         self.client.force_authenticate(user=self.user)
         self.allocation.status = models.AllocationRequest.APPROVED
         self.allocation.save()
-        response = self.client.patch('/rest_api/chiefinvestigators/%s/' %
-                                     self.ci.id,
-                                     {'given_name': 'Maxwell'})
+        response = self.client.patch(
+            f'/rest_api/chiefinvestigators/{self.ci.id}/',
+            {'given_name': 'Maxwell'},
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete('/rest_api/chiefinvestigators/%s/' %
-                                      self.ci.id)
+        response = self.client.delete(
+            f'/rest_api/chiefinvestigators/{self.ci.id}/'
+        )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_invalid_state(self):
         self.client.force_authenticate(user=self.user)
         self.allocation.status = models.AllocationRequest.APPROVED
         self.allocation.save()
-        response = self.client.delete('/rest_api/chiefinvestigators/%s/' %
-                                      self.ci.id)
+        response = self.client.delete(
+            f'/rest_api/chiefinvestigators/{self.ci.id}/'
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_other_user(self):
         self.client.force_authenticate(user=self.user2)
-        response = self.client.delete('/rest_api/chiefinvestigators/%s/' %
-                                      self.ci.id)
+        response = self.client.delete(
+            f'/rest_api/chiefinvestigators/{self.ci.id}/'
+        )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def _make_data(self):
@@ -128,7 +143,8 @@ class InvestigatorTests(base.AllocationAPITest):
             'title': 'Mr',
             'email': 'joe@monash.edu',
             'primary_organisation': models.Organisation.objects.get(
-                short_name='Monash'),
+                short_name='Monash'
+            ),
         }
 
     def test_create(self):

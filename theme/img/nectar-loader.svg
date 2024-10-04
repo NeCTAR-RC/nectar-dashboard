@@ -7,5 +7,5 @@
   </polygon>
   <polygon id="polygon3" points="442.1 517.64 512 394.95 442.1 272.25 302.28 272.25 232.37 394.95 302.28 517.64 442.1 517.64" fill="#f5b01a" fill-opacity="0.5">
   	<animate id="polygon3-anim" attributeType="xml" attributeName="fill-opacity" begin="0s" values="0.5;0.5;0.5;1;0.5" dur="2s" repeatCount="indefinite" />
-  </polygon> 
+  </polygon>
 </svg>

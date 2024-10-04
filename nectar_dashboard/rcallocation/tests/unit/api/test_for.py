@@ -21,7 +21,6 @@ from nectar_dashboard.rcallocation.tests.factories import AllocationFactory
 
 
 class FORTests(base.AllocationAPITest):
-
     def test_for_codes(self):
         response = self.client.get('/rest_api/for-codes/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -64,7 +63,8 @@ class FORTests(base.AllocationAPITest):
                     field_of_research_3=codes[4],
                     for_percentage_3=int(codes[5]),
                     quota_value=1,
-                    status=models.AllocationRequest.APPROVED)
+                    status=models.AllocationRequest.APPROVED,
+                )
             )
         return res
 
@@ -89,20 +89,27 @@ class FORTests(base.AllocationAPITest):
         node_6 = self._find_child(node_4, code_6)
         self.assertIsNotNone(node_6)
         self.assertEqual(1, len(node_6["children"]))
-        self.assertEqual({'national': allocation.national,
-                          'instanceQuota': quota,
-                          'coreQuota': quota,
-                          'budgetQuota': quota,
-                          'id': allocation.id,
-                          'institution': 'example.com',
-                          'name': allocation.project_description},
-                         node_6["children"][0])
+        self.assertEqual(
+            {
+                'national': allocation.national,
+                'instanceQuota': quota,
+                'coreQuota': quota,
+                'budgetQuota': quota,
+                'id': allocation.id,
+                'institution': 'example.com',
+                'name': allocation.project_description,
+            },
+            node_6["children"][0],
+        )
 
     def test_for_tree(self):
         allocations = self._build_test_allocations(
-            [['01', 50, '02', 30, '03', 20],
-             ['0401', 70, '0402', 30, None, 0],
-             ['050102', 100, None, 0, None, 0]])
+            [
+                ['01', 50, '02', 30, '03', 20],
+                ['0401', 70, '0402', 30, None, 0],
+                ['050102', 100, None, 0, None, 0],
+            ]
+        )
         self.maxDiff = 10000
         response = self.client.get('/rest_api/for-tree/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

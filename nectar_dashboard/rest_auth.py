@@ -26,7 +26,6 @@ from nectar_dashboard.rcallocation import models
 
 
 class KeystoneAuthentication(authentication.BaseAuthentication):
-
     def authenticate(self, request):
         token = request.META.get('HTTP_X_AUTH_TOKEN')
         remote_addr = request.environ.get('REMOTE_ADDR', '')
@@ -36,11 +35,13 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
 
         try:
             auth_ref = auth_utils.validate_token(token, remote_addr)
-            request.user = auth.authenticate(request=request,
-                                             auth_url=None,
-                                             auth_ref=auth_ref,
-                                             token=auth_ref.auth_token,
-                                             project_id=auth_ref.project_id)
+            request.user = auth.authenticate(
+                request=request,
+                auth_url=None,
+                auth_ref=auth_ref,
+                token=auth_ref.auth_token,
+                project_id=auth_ref.project_id,
+            )
         except oa_exceptions.KeystoneAuthException:
             raise exceptions.AuthenticationFailed()
 
@@ -50,13 +51,11 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
 
 
 class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
-
     def enforce_csrf(self, request):
         return  # To not perform the csrf check previously happening
 
 
 class Permission(permissions.BasePermission):
-
     message = 'Permission denied or allocation in wrong state.'
     roles = []
     states = []
@@ -86,8 +85,9 @@ class Permission(permissions.BasePermission):
             return True
 
     def is_admin(self, request):
-        return self.has_role(request.user,
-                             settings.ALLOCATION_GLOBAL_ADMIN_ROLES)
+        return self.has_role(
+            request.user, settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+        )
 
     def get_allocation(self, obj):
         if hasattr(obj, 'created_by'):
@@ -102,13 +102,12 @@ class Permission(permissions.BasePermission):
 
 
 class IsAdmin(Permission):
-    """Global permission check for admins role
-    """
+    """Global permission check for admins role"""
+
     roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES
 
 
 class ApproverOrOwner(Permission):
-
     roles = settings.ALLOCATION_APPROVER_ROLES
 
     def has_permission(self, request, view):
@@ -123,8 +122,7 @@ class ApproverOrOwner(Permission):
         owner = False
 
         allocation = self.get_allocation(obj)
-        if allocation and \
-           allocation.contact_email == request.user.username:
+        if allocation and allocation.contact_email == request.user.username:
             owner = True
 
         if owner or self.has_role(request.user, self.roles):
@@ -133,7 +131,6 @@ class ApproverOrOwner(Permission):
 
 
 class ReadOrAdmin(Permission):
-
     roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES
 
     def has_permission(self, request, view):
@@ -143,7 +140,6 @@ class ReadOrAdmin(Permission):
 
 
 class ModifyPermission(Permission):
-
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
@@ -157,8 +153,10 @@ class ModifyPermission(Permission):
 
 class CanApprove(ModifyPermission):
     roles = settings.ALLOCATION_APPROVER_ROLES
-    states = [models.AllocationRequest.SUBMITTED,
-              models.AllocationRequest.UPDATE_PENDING]
+    states = [
+        models.AllocationRequest.SUBMITTED,
+        models.AllocationRequest.UPDATE_PENDING,
+    ]
 
 
 class CanDelete(ModifyPermission):
@@ -166,15 +164,21 @@ class CanDelete(ModifyPermission):
 
 
 class CanUpdate(ModifyPermission):
-    states = [models.AllocationRequest.SUBMITTED,
-              models.AllocationRequest.UPDATE_PENDING]
+    states = [
+        models.AllocationRequest.SUBMITTED,
+        models.AllocationRequest.UPDATE_PENDING,
+    ]
 
 
 class CanAmend(ModifyPermission):
-    states = [models.AllocationRequest.APPROVED,
-              models.AllocationRequest.DECLINED]
+    states = [
+        models.AllocationRequest.APPROVED,
+        models.AllocationRequest.DECLINED,
+    ]
 
 
 class IsAdminOrApprover(Permission):
-    roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES \
-            + settings.ALLOCATION_APPROVER_ROLES
+    roles = (
+        settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+        + settings.ALLOCATION_APPROVER_ROLES
+    )

@@ -6,7 +6,6 @@ import select2.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('rcallocation', '0072_check_institutions'),
     ]
@@ -19,12 +18,18 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='allocationrequest',
             name='supported_organisations',
-            field=select2.fields.ManyToManyField(sorted=False, to='rcallocation.Organisation'),
+            field=select2.fields.ManyToManyField(
+                sorted=False, to='rcallocation.Organisation'
+            ),
         ),
         migrations.AlterField(
             model_name='chiefinvestigator',
             name='primary_organisation',
-            field=select2.fields.ForeignKey(help_text="The chief investigator's primary organisation.", on_delete=django.db.models.deletion.PROTECT, to='rcallocation.Organisation'),
+            field=select2.fields.ForeignKey(
+                help_text="The chief investigator's primary organisation.",
+                on_delete=django.db.models.deletion.PROTECT,
+                to='rcallocation.Organisation',
+            ),
         ),
         migrations.DeleteModel(
             name='Institution',

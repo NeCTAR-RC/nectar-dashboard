@@ -14,14 +14,11 @@
 
 from django.urls import reverse
 from django.urls import reverse_lazy
-
 from horizon import exceptions
 from horizon import forms
 
-
 from nectar_dashboard.api import manuka
-
-from . import forms as user_forms
+from nectar_dashboard.user_info.update import forms as user_forms
 
 
 class UserEditSelfView(forms.ModalFormView):

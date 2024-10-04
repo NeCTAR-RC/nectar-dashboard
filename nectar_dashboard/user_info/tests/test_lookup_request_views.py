@@ -17,19 +17,18 @@ from unittest import mock
 from django.urls import reverse
 from nectarclient_lib import exceptions
 
-from . import base
+from nectar_dashboard.user_info.tests import base
 
 
 USER_ID = '123'
 
 
-class ListMixin(object):
+class ListMixin:
     url = reverse('horizon:identity:lookup:list')
 
 
 @mock.patch('nectar_dashboard.api.manuka.manukaclient')
 class AdminListUserTestCase(ListMixin, base.AdminViewTestCase):
-
     def test_get(self, mock_get_manuka):
         response = self.client.get(self.url)
         self.assertStatusCode(response, 200)
@@ -60,7 +59,6 @@ class AdminListUserTestCase(ListMixin, base.AdminViewTestCase):
 
 
 class ListUserTestCase(ListMixin, base.UserViewTestCase):
-
     def test_get(self):
         response = self.client.get(self.url)
         self.assertStatusCode(response, 403)
@@ -70,14 +68,12 @@ class ListUserTestCase(ListMixin, base.UserViewTestCase):
         self.assertStatusCode(response, 403)
 
 
-class ViewMixin(object):
+class ViewMixin:
     def get_url(self):
-        return reverse('horizon:identity:lookup:view',
-                       args=[USER_ID])
+        return reverse('horizon:identity:lookup:view', args=[USER_ID])
 
 
 class ViewUserTestCase(ViewMixin, base.UserViewTestCase):
-
     def test_get(self):
         response = self.client.get(self.get_url())
         self.assertStatusCode(response, 403)
@@ -89,7 +85,6 @@ class ViewUserTestCase(ViewMixin, base.UserViewTestCase):
 
 @mock.patch('nectar_dashboard.api.manuka.manukaclient')
 class AdminViewUserTestCase(ViewMixin, base.AdminViewTestCase):
-
     def test_get(self, mock_get_manuka):
         client = mock_get_manuka.return_value
         mock_user = mock.Mock()

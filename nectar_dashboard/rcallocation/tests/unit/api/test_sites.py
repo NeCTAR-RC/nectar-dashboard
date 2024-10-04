@@ -23,7 +23,6 @@ from nectar_dashboard.rcallocation import models
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class SiteTest(base.AllocationAPITest):
-
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         self.uom = models.Site.objects.get(name='uom')
@@ -32,14 +31,16 @@ class SiteTest(base.AllocationAPITest):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/rest_api/sites/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(factories.ALL_SITES),
-                         len(response.data['results']))
+        self.assertEqual(
+            len(factories.ALL_SITES), len(response.data['results'])
+        )
 
     def test_list_sites_unauthenticated(self):
         response = self.client.get('/rest_api/sites/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(factories.ALL_SITES),
-                         len(response.data['results']))
+        self.assertEqual(
+            len(factories.ALL_SITES), len(response.data['results'])
+        )
 
     def test_create_site_no_permission(self):
         self.client.force_authenticate(user=self.user)
@@ -55,19 +56,19 @@ class SiteTest(base.AllocationAPITest):
 
     def test_create_site(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'name': 'darwin',
-                'display_name': 'Darwin University'}
+        data = {'name': 'darwin', 'display_name': 'Darwin University'}
         response = self.client.post('/rest_api/sites/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_update_site(self):
         self.client.force_authenticate(user=self.admin_user)
         data = {'display_name': 'University of Darwin'}
-        response = self.client.patch('/rest_api/sites/%s/' % self.uom.id, data)
+        response = self.client.patch(f'/rest_api/sites/{self.uom.id}/', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_site(self):
         self.client.force_authenticate(user=self.admin_user)
-        response = self.client.delete('/rest_api/sites/%s/' % self.uom.id)
-        self.assertEqual(response.status_code,
-                         status.HTTP_405_METHOD_NOT_ALLOWED)
+        response = self.client.delete(f'/rest_api/sites/{self.uom.id}/')
+        self.assertEqual(
+            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
+        )

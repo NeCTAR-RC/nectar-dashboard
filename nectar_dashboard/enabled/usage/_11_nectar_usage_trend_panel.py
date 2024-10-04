@@ -16,7 +16,6 @@ PANEL_DASHBOARD = 'project'
 PANEL = 'trend'
 
 # Python panel class of the PANEL to be added.
-ADD_PANEL = \
-    'nectar_dashboard.usage.trend.panel.Trend'
+ADD_PANEL = 'nectar_dashboard.usage.trend.panel.Trend'
 
 ADD_INSTALLED_APPS = ['nectar_dashboard.usage.trend']

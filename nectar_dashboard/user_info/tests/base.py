@@ -23,14 +23,15 @@ class UserViewTestCase(helpers.TestCase):
 
 
 class AdminViewTestCase(helpers.BaseAdminViewTests):
-
     def setActiveUser(self, *args, **kwargs):
         if "roles" not in kwargs:
-            allocation_admin_role_dict = {'id': '142',
-                                          'name': 'allocationadmin'}
-            allocation_admin_role = roles.Role(roles.RoleManager,
-                                               allocation_admin_role_dict,
-                                               loaded=True)
+            allocation_admin_role_dict = {
+                'id': '142',
+                'name': 'allocationadmin',
+            }
+            allocation_admin_role = roles.Role(
+                roles.RoleManager, allocation_admin_role_dict, loaded=True
+            )
             self.roles.add(allocation_admin_role)
             self.roles.allocation_admin = allocation_admin_role
             kwargs['roles'] = [self.roles.allocation_admin._info]

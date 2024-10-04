@@ -16,12 +16,11 @@ from unittest import mock
 
 from django.urls import reverse
 
-from . import base
+from nectar_dashboard.user_info.tests import base
 
 
 @mock.patch('nectar_dashboard.api.manuka.manukaclient')
 class EditSelfViewTestCase(base.UserViewTestCase):
-
     url = reverse('horizon:settings:my-details:edit-self')
 
     def test_get(self, mock_get_manuka):
@@ -31,14 +30,19 @@ class EditSelfViewTestCase(base.UserViewTestCase):
         self.assertStatusCode(response, 200)
         self.assertEqual(manuka_user, response.context_data['object'])
         client.users.get.assert_called_once_with(
-            self.request.user.keystone_user_id)
+            self.request.user.keystone_user_id
+        )
 
     def test_post_bad_form(self, mock_get_manuka):
         client = mock_get_manuka.return_value
         manuka_user = client.users.get.return_value
 
-        form = {'affiliation': 'member', 'phone_number': '123',
-                'mobile_number': '456', 'orcid': 'rose'}
+        form = {
+            'affiliation': 'member',
+            'phone_number': '123',
+            'mobile_number': '456',
+            'orcid': 'rose',
+        }
 
         # Can't change displayname
         form['displayname'] = "Jim Spriggs"
@@ -48,16 +52,22 @@ class EditSelfViewTestCase(base.UserViewTestCase):
         self.assertStatusCode(response, 302)
         self.assertEqual(response.get('location'), self.url)
         client.users.update.assert_called_once_with(
-            manuka_user.to_dict()['id'], **form)
+            manuka_user.to_dict()['id'], **form
+        )
 
     def test_post_change(self, mock_get_manuka):
         client = mock_get_manuka.return_value
         manuka_user = client.users.get.return_value
 
-        form = {'affiliation': 'member', 'phone_number': '123',
-                'mobile_number': '456', 'orcid': 'rose'}
+        form = {
+            'affiliation': 'member',
+            'phone_number': '123',
+            'mobile_number': '456',
+            'orcid': 'rose',
+        }
         response = self.client.post(self.url, form)
         self.assertStatusCode(response, 302)
         self.assertEqual(response.get('location'), self.url)
         client.users.update.assert_called_once_with(
-            manuka_user.to_dict()['id'], **form)
+            manuka_user.to_dict()['id'], **form
+        )

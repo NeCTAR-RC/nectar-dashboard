@@ -10,8 +10,7 @@ DISABLED = False
 
 
 # Python panel class of the PANEL to be added.
-ADD_PANEL = \
-    'nectar_dashboard.user_info.lookup.panel.UserLookupPanel'
+ADD_PANEL = 'nectar_dashboard.user_info.lookup.panel.UserLookupPanel'
 
 # A list of applications to be added to INSTALLED_APPS.
 ADD_INSTALLED_APPS = [

@@ -31,12 +31,15 @@ class RestrictedAllocationsEditView(BaseAllocationUpdateView):
     def get_initial(self):
         initial = super().get_initial()
         if self.object.can_be_amended():
-            initial['direct_access_user_past_year'] = \
+            initial['direct_access_user_past_year'] = (
                 self.object.direct_access_user_estimate
-            initial['active_service_count'] = \
+            )
+            initial['active_service_count'] = (
                 self.object.estimated_service_count
-            initial['service_active_users_past_year'] = \
+            )
+            initial['service_active_users_past_year'] = (
                 self.object.estimated_service_active_users
+            )
         return initial
 
 
@@ -52,8 +55,10 @@ def check_tm_or_alloc_admin(request, object):
     if object:
         if object.is_history():
             return False
-        if not object.contact_email == request.user.username and \
-           not utils.user_is_allocation_admin(request.user):
+        if (
+            not object.contact_email == request.user.username
+            and not utils.user_is_allocation_admin(request.user)
+        ):
             managed_projects = get_managed_projects(request)
             if object.project_id not in managed_projects:
                 return False
@@ -70,6 +75,7 @@ class UserAllocationsListView(views.BaseAllocationsListView):
     status. Later we should perhaps add sortable columns, filterable
     by status?
     """
+
     context_object_name = "allocation_list"
     table_class = tables.UserAllocationListTable
     template_name = 'rcallocation/allocationrequest_user_list.html'
@@ -78,11 +84,14 @@ class UserAllocationsListView(views.BaseAllocationsListView):
     def get_data(self):
         contact_email = self.request.user.username
         managed_projects = get_managed_projects(self.request)
-        return models.AllocationRequest.objects.filter(
-            parent_request=None).filter(
+        return (
+            models.AllocationRequest.objects.filter(parent_request=None)
+            .filter(
                 Q(project_id__in=list(managed_projects))
                 | Q(contact_email__exact=contact_email)
-            ).order_by('status')
+            )
+            .order_by('status')
+        )
 
     def test_func(self):
         # Any user is allowed to list allocations.  The filter should

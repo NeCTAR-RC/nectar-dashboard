@@ -20,8 +20,8 @@ from nectar_dashboard import rest_auth
 
 class ApproverSerializer(serializers.ModelSerializer):
     sites = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=models.Site.objects.all())
+        many=True, queryset=models.Site.objects.all()
+    )
 
     class Meta:
         model = models.Approver

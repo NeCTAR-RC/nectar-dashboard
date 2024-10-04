@@ -25,9 +25,9 @@ def gnocchiclient(request):
     unscoped_token = request.user.unscoped_token
     endpoint = request.user.endpoint
     tenant_id = request.user.tenant_id
-    auth = utils.get_token_auth_plugin(auth_url=endpoint,
-                                       token=unscoped_token,
-                                       project_id=tenant_id)
+    auth = utils.get_token_auth_plugin(
+        auth_url=endpoint, token=unscoped_token, project_id=tenant_id
+    )
 
     keystone_session = session.Session(auth=auth)
 

@@ -37,7 +37,7 @@ percent = fuzzy.FuzzyInteger(1, 100)
 alloc_home = fuzzy.FuzzyChoice(ALLOCATION_HOMES.keys())
 grant_types = fuzzy.FuzzyChoice(GRANT_TYPES.keys())
 grant_subtypes = fuzzy.FuzzyChoice(GRANT_SUBTYPES.keys())
-site = fuzzy.FuzzyChoice((models.Site.objects.get(name=s) for s in ALL_SITES))
+site = fuzzy.FuzzyChoice(models.Site.objects.get(name=s) for s in ALL_SITES)
 
 
 def get_active_usage_types():
@@ -48,6 +48,7 @@ class ZoneFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Zone'
         django_get_or_create = ('name',)
+
     display_name = fuzzy.FuzzyText()
 
 
@@ -55,6 +56,7 @@ class ServiceTypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.ServiceType'
         django_get_or_create = ('catalog_name',)
+
     name = fuzzy.FuzzyText()
     description = fuzzy.FuzzyText()
 
@@ -74,6 +76,7 @@ class ResourceFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Resource'
         django_get_or_create = ('service_type', 'quota_name')
+
     name = fuzzy.FuzzyText()
     service_type = factory.SubFactory(ServiceTypeFactory)
     unit = fuzzy.FuzzyText()
@@ -87,6 +90,7 @@ class QuotaGroupFactory(factory.django.DjangoModelFactory):
 class QuotaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Quota'
+
     requested_quota = fuzzy.FuzzyInteger(1, 100000)
     quota = 0
 
@@ -94,6 +98,7 @@ class QuotaFactory(factory.django.DjangoModelFactory):
 class BundleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Bundle'
+
     name = fuzzy.FuzzyText()
     description = fuzzy.FuzzyText()
     order = fuzzy.FuzzyInteger(1, 100000)
@@ -102,12 +107,14 @@ class BundleFactory(factory.django.DjangoModelFactory):
 class BundleQuotaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.BundleQuota'
+
     quota = fuzzy.FuzzyInteger(1, 100000)
 
 
 class OrganisationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Organisation'
+
     short_name = fuzzy.FuzzyText()
     full_name = fuzzy.FuzzyText()
     enabled = True
@@ -120,12 +127,14 @@ class OrganisationFactory(factory.django.DjangoModelFactory):
 class PublicationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Publication'
+
     publication = 'publication testing'
 
 
 class GrantFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.Grant'
+
     grant_type = grant_types
     grant_subtype = grant_subtypes
     funding_body_scheme = 'ARC funding scheme'
@@ -138,6 +147,7 @@ class GrantFactory(factory.django.DjangoModelFactory):
 class ARDCSupportFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.ARDCSupport'
+
     name = fuzzy.FuzzyText()
     short_name = fuzzy.FuzzyText()
     project = fuzzy.FuzzyChoice([False, True])
@@ -149,6 +159,7 @@ class ARDCSupportFactory(factory.django.DjangoModelFactory):
 class NCRISFacilityFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'rcallocation.NCRISFacility'
+
     name = fuzzy.FuzzyText()
     short_name = fuzzy.FuzzyText()
 
@@ -185,25 +196,33 @@ class AllocationFactory(factory.django.DjangoModelFactory):
     associated_site = site
 
     @classmethod
-    def create(cls, create_quotas=True, only_requestable=True, quota_value=0,
-               modified_time=None, submit_date=None, **kwargs):
+    def create(
+        cls,
+        create_quotas=True,
+        only_requestable=True,
+        quota_value=0,
+        modified_time=None,
+        submit_date=None,
+        **kwargs,
+    ):
         usage_types = kwargs.pop('usage_types', None)
         ncris_facilities = kwargs.pop('ncris_facilities', [])
         ardc_support = kwargs.pop('ardc_support', [])
         supported_organisations = kwargs.pop(
-            'supported_organisations', ['Monash'])
+            'supported_organisations', ['Monash']
+        )
         attrs = cls.attributes(create=True, extra=kwargs)
         allocation = cls._generate(True, attrs)
 
         # Override the effects of the 'auto_*' updates on date / timestamps
         manager = models.AllocationRequest.objects
         if modified_time is not None:
-            manager.filter(id=allocation.id) \
-                   .update(modified_time=modified_time)
+            manager.filter(id=allocation.id).update(
+                modified_time=modified_time
+            )
             allocation.modified_time = modified_time
         if submit_date is not None:
-            manager.filter(id=allocation.id) \
-                   .update(submit_date=submit_date)
+            manager.filter(id=allocation.id).update(submit_date=submit_date)
             allocation.submit_date = submit_date
 
         if usage_types is None:
@@ -237,67 +256,90 @@ class AllocationFactory(factory.django.DjangoModelFactory):
             network_st = models.ServiceType.objects.get(catalog_name='network')
             rating_st = models.ServiceType.objects.get(catalog_name='rating')
 
-            objects = models.Resource.objects.get(quota_name='object',
-                                                  service_type=object_st)
-            volumes = models.Resource.objects.get(quota_name='gigabytes',
-                                                  service_type=volume_st)
-            cores = models.Resource.objects.get(quota_name='cores',
-                                                  service_type=compute_st)
-            instances = models.Resource.objects.get(quota_name='instances',
-                                                    service_type=compute_st)
-            ram = models.Resource.objects.get(quota_name='ram',
-                                              service_type=compute_st)
-            budget = models.Resource.objects.get(quota_name='budget',
-                                                 service_type=rating_st)
-            router = models.Resource.objects.get(quota_name='router',
-                                              service_type=network_st)
-            network = models.Resource.objects.get(quota_name='network',
-                                              service_type=network_st)
+            objects = models.Resource.objects.get(
+                quota_name='object', service_type=object_st
+            )
+            volumes = models.Resource.objects.get(
+                quota_name='gigabytes', service_type=volume_st
+            )
+            cores = models.Resource.objects.get(
+                quota_name='cores', service_type=compute_st
+            )
+            instances = models.Resource.objects.get(
+                quota_name='instances', service_type=compute_st
+            )
+            ram = models.Resource.objects.get(
+                quota_name='ram', service_type=compute_st
+            )
+            budget = models.Resource.objects.get(
+                quota_name='budget', service_type=rating_st
+            )
+            router = models.Resource.objects.get(
+                quota_name='router', service_type=network_st
+            )
+            network = models.Resource.objects.get(
+                quota_name='network', service_type=network_st
+            )
             loadbalancer = models.Resource.objects.get(
-                quota_name='loadbalancer', service_type=network_st)
-            floatingip = models.Resource.objects.get(quota_name='floatingip',
-                                                     service_type=network_st)
+                quota_name='loadbalancer', service_type=network_st
+            )
+            floatingip = models.Resource.objects.get(
+                quota_name='floatingip', service_type=network_st
+            )
 
-            group_volume_monash = QuotaGroupFactory(allocation=allocation,
-                                                    service_type=volume_st,
-                                                    zone=monash)
-            group_volume_melbourne = QuotaGroupFactory(allocation=allocation,
-                                                       service_type=volume_st,
-                                                       zone=melbourne)
-            group_object = QuotaGroupFactory(allocation=allocation,
-                                             service_type=object_st,
-                                             zone=nectar)
-            group_compute = QuotaGroupFactory(allocation=allocation,
-                                              service_type=compute_st,
-                                              zone=nectar)
-            group_rating = QuotaGroupFactory(allocation=allocation,
-                                             service_type=rating_st,
-                                             zone=nectar)
-            group_network = QuotaGroupFactory(allocation=allocation,
-                                              service_type=network_st,
-                                              zone=nectar)
-            QuotaFactory(group=group_object, resource=objects,
-                         quota=quota_value)
-            QuotaFactory(group=group_volume_monash, resource=volumes,
-                         quota=quota_value)
-            QuotaFactory(group=group_volume_melbourne, resource=volumes,
-                         quota=quota_value)
-            QuotaFactory(group=group_compute, resource=cores,
-                         quota=quota_value)
-            QuotaFactory(group=group_compute, resource=instances,
-                         quota=quota_value)
+            group_volume_monash = QuotaGroupFactory(
+                allocation=allocation, service_type=volume_st, zone=monash
+            )
+            group_volume_melbourne = QuotaGroupFactory(
+                allocation=allocation, service_type=volume_st, zone=melbourne
+            )
+            group_object = QuotaGroupFactory(
+                allocation=allocation, service_type=object_st, zone=nectar
+            )
+            group_compute = QuotaGroupFactory(
+                allocation=allocation, service_type=compute_st, zone=nectar
+            )
+            group_rating = QuotaGroupFactory(
+                allocation=allocation, service_type=rating_st, zone=nectar
+            )
+            group_network = QuotaGroupFactory(
+                allocation=allocation, service_type=network_st, zone=nectar
+            )
+            QuotaFactory(
+                group=group_object, resource=objects, quota=quota_value
+            )
+            QuotaFactory(
+                group=group_volume_monash, resource=volumes, quota=quota_value
+            )
+            QuotaFactory(
+                group=group_volume_melbourne,
+                resource=volumes,
+                quota=quota_value,
+            )
+            QuotaFactory(
+                group=group_compute, resource=cores, quota=quota_value
+            )
+            QuotaFactory(
+                group=group_compute, resource=instances, quota=quota_value
+            )
             if not only_requestable:
-                QuotaFactory(group=group_compute, resource=ram,
-                             quota=quota_value)
-            QuotaFactory(group=group_rating, resource=budget,
-                         quota=quota_value)
-            QuotaFactory(group=group_network, resource=router,
-                         quota=quota_value)
-            QuotaFactory(group=group_network, resource=network,
-                         quota=quota_value)
-            QuotaFactory(group=group_network, resource=loadbalancer,
-                         quota=quota_value)
-            QuotaFactory(group=group_network, resource=floatingip,
-                         quota=quota_value)
+                QuotaFactory(
+                    group=group_compute, resource=ram, quota=quota_value
+                )
+            QuotaFactory(
+                group=group_rating, resource=budget, quota=quota_value
+            )
+            QuotaFactory(
+                group=group_network, resource=router, quota=quota_value
+            )
+            QuotaFactory(
+                group=group_network, resource=network, quota=quota_value
+            )
+            QuotaFactory(
+                group=group_network, resource=loadbalancer, quota=quota_value
+            )
+            QuotaFactory(
+                group=group_network, resource=floatingip, quota=quota_value
+            )
 
         return allocation

@@ -60,7 +60,7 @@
        class="btn btn-danger btn-lg" id="allocation_reject_view">
       Decline changes
     </a>
-  {% endif %}  
+  {% endif %}
   {% if allocation.can_be_approved %}
     <a href="{% url 'horizon:allocation:requests:approve_request' allocation.pk %}"
        class="btn btn-success btn-lg" id="allocation_accept_view">
@@ -83,7 +83,7 @@
        target="_blank" class="btn btn-default btn-lg" id="allocation_project_usage">
       Project usage
     </a>
-  {% endif %}   
+  {% endif %}
   </div>
 </div>
 {% endblock %}

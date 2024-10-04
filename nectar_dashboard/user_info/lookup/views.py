@@ -17,23 +17,22 @@ import logging
 from django.conf import settings
 from django.contrib.auth import mixins
 from django.urls import reverse
-
 from horizon import exceptions
 from horizon import tables
 from horizon import views
 
-
 from nectar_dashboard.api import manuka
-
-from . import tables as user_tables
+from nectar_dashboard.user_info.lookup import tables as user_tables
 
 
 LOG = logging.getLogger('nectar_dashboard.user_info')
 
 
-class UserListView(tables.PagedTableMixin,
-                   mixins.PermissionRequiredMixin,
-                   tables.DataTableView):
+class UserListView(
+    tables.PagedTableMixin,
+    mixins.PermissionRequiredMixin,
+    tables.DataTableView,
+):
     table_class = user_tables.UsersTable
     page_title = "User Search"
     template_name = "user_info/list.html"
@@ -47,13 +46,13 @@ class UserListView(tables.PagedTableMixin,
             client = manuka.manukaclient(self.request)
             return client.users.search(q)
         except Exception:
-            exceptions.handle(self.request,
-                              'Unable to search users.')
+            exceptions.handle(self.request, 'Unable to search users.')
             return []
 
 
-class UserDetailView(mixins.PermissionRequiredMixin,
-                     views.HorizonTemplateView):
+class UserDetailView(
+    mixins.PermissionRequiredMixin, views.HorizonTemplateView
+):
     template_name = "user_info/view.html"
     page_title = "User Details"
     permission_required = settings.USER_INFO_LOOKUP_ROLES
@@ -71,9 +70,11 @@ class UserDetailView(mixins.PermissionRequiredMixin,
             user = client.users.get(user_id)
         except Exception:
             redirect = self.get_redirect_url()
-            exceptions.handle(self.request,
-                              'Unable to retrieve user details.',
-                              redirect=redirect)
+            exceptions.handle(
+                self.request,
+                'Unable to retrieve user details.',
+                redirect=redirect,
+            )
         return user
 
     def get_redirect_url(self):

@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('rcallocation', '0073_remove_institutions'),
     ]
@@ -15,11 +14,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Bundle',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('name', models.CharField(max_length=64, unique=True)),
                 ('description', models.CharField(max_length=255)),
                 ('order', models.IntegerField()),
-                ('zone', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='rcallocation.zone')),
+                (
+                    'zone',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to='rcallocation.zone',
+                    ),
+                ),
             ],
             options={
                 'ordering': ['order'],
@@ -28,15 +41,48 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='allocationrequest',
             name='bundle',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='rcallocation.bundle'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to='rcallocation.bundle',
+            ),
         ),
         migrations.CreateModel(
             name='BundleQuota',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quota', models.IntegerField(default=0, validators=[django.core.validators.MinValueValidator(-1)])),
-                ('bundle', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rcallocation.bundle')),
-                ('resource', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rcallocation.resource')),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'quota',
+                    models.IntegerField(
+                        default=0,
+                        validators=[
+                            django.core.validators.MinValueValidator(-1)
+                        ],
+                    ),
+                ),
+                (
+                    'bundle',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='rcallocation.bundle',
+                    ),
+                ),
+                (
+                    'resource',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='rcallocation.resource',
+                    ),
+                ),
             ],
             options={
                 'unique_together': {('bundle', 'resource')},

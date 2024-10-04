@@ -33,8 +33,7 @@ LOG = logging.getLogger(__name__)
 
 
 def _six_months_from_now():
-    return datetime.date.today() + datetime.timedelta(
-        days=30 * 6)
+    return datetime.date.today() + datetime.timedelta(days=30 * 6)
 
 
 class UsageType(models.Model):
@@ -48,10 +47,12 @@ class UsageType(models.Model):
 
 class NCRISFacility(models.Model):
     name = models.CharField(
-        'Full NCRIS facility name', max_length=200, unique=True)
+        'Full NCRIS facility name', max_length=200, unique=True
+    )
 
     short_name = models.CharField(
-        'Common short name or acronym', max_length=200, unique=True)
+        'Common short name or acronym', max_length=200, unique=True
+    )
 
     def __str__(self):
         return self.short_name
@@ -59,25 +60,26 @@ class NCRISFacility(models.Model):
 
 class ARDCSupport(models.Model):
     name = models.CharField(
-        'Full ARDC program or project name', max_length=200, unique=True)
+        'Full ARDC program or project name', max_length=200, unique=True
+    )
 
     short_name = models.CharField(
-        'Common short name or acronym', max_length=200, unique=True)
+        'Common short name or acronym', max_length=200, unique=True
+    )
 
     project = models.BooleanField(
         'Distinguishes projects from programs',
         default=True,
-        help_text='True for projects, false for programs')
+        help_text='True for projects, false for programs',
+    )
 
-    project_id = models.CharField(
-        'ARDC project ID',
-        blank=True,
-        max_length=20)
+    project_id = models.CharField('ARDC project ID', blank=True, max_length=20)
 
     enabled = models.BooleanField(
         'Determines if the user can choose this program or project',
         default=True,
-        help_text='False hides the program or project')
+        help_text='False hides the program or project',
+    )
 
     # Used by the allocation form to order these objects in a select
     # widget, if they have the same value they will be grouped together
@@ -85,14 +87,16 @@ class ARDCSupport(models.Model):
     rank = models.IntegerField(
         'Determines the primary ranking in menus',
         default=100,
-        help_text='Smaller values mean earlier.  Duplicates are OK.')
+        help_text='Smaller values mean earlier.  Duplicates are OK.',
+    )
 
     explain = models.BooleanField(
         'Determines if this program or project requires more details',
         default=False,
         help_text='When true, the ARDC Support Details field '
         'should provide details.  This is typically used for programs '
-        'rather than projects')
+        'rather than projects',
+    )
 
     def __str__(self):
         return self.short_name
@@ -108,6 +112,7 @@ class Bundle(models.Model):
     zone : The zone associated with all BundleQuotas
     order : The order of bundles when listed for display.
     """
+
     name = models.CharField(max_length=64, unique=True)
     description = models.CharField(max_length=255)
     zone = models.ForeignKey('Zone', on_delete=models.PROTECT)
@@ -153,55 +158,50 @@ class AllocationRequest(models.Model):
         # Request created but nothing else
         # User can: Submit
         (NEW, 'New'),
-
         # Request has been emailed
         # Admin can: Approve, Reject, Edit
         # User can: Edit
         (SUBMITTED, 'Submitted'),
-
         # Admin has approved the request
         # Admin can: Provision, Edit
         # User can: Amend, Extend
         (APPROVED, 'Approved'),
-
         # Admin has rejected the request
         # User can: Edit, Submit
         (DECLINED, 'Declined'),
-
         # User has requested an extension
         # Admin can: Approve, Reject, Edit
         # User can: Edit
         (UPDATE_PENDING, 'Update requested'),
-
         # Admin has rejected an extension
         # User can: Edit, Extend
         (UPDATE_DECLINED, 'Update declined'),
-
         # Requests in above status can be viewed by both user
         # and admin at all times.
-
         # Allocation has been deleted
         (DELETED, 'Deleted'),
     )
 
-    parent_request = models.ForeignKey('AllocationRequest', null=True,
-                                       blank=True, on_delete=models.SET_NULL)
+    parent_request = models.ForeignKey(
+        'AllocationRequest', null=True, blank=True, on_delete=models.SET_NULL
+    )
 
-    status = models.CharField(max_length=1,
-                              choices=REQUEST_STATUS_CHOICES,
-                              default=SUBMITTED)
+    status = models.CharField(
+        max_length=1, choices=REQUEST_STATUS_CHOICES, default=SUBMITTED
+    )
 
     status_explanation = models.TextField(
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name="Reason",
         help_text="A brief explanation of the reason the request has been "
-                  "sent back to the user for changes")
+        "sent back to the user for changes",
+    )
 
     # This is a keystone user id
     created_by = models.CharField(max_length=100)
 
-    submit_date = models.DateTimeField('Submission Date',
-                                       auto_now_add=True)
+    submit_date = models.DateTimeField('Submission Date', auto_now_add=True)
 
     modified_time = models.DateTimeField('Modified Date', auto_now=True)
 
@@ -213,35 +213,36 @@ class AllocationRequest(models.Model):
         blank=True,
         null=True,
         help_text='A short name used to identify your project.<br>'
-                  'Must contain only letters and numbers.<br>'
-                  '16 characters max.')
+        'Must contain only letters and numbers.<br>'
+        '16 characters max.',
+    )
 
     project_description = models.CharField(
         'Project allocation title',
         max_length=200,
         help_text='A human-friendly descriptive name for your research '
-                  'project.')
+        'project.',
+    )
 
     contact_email = models.EmailField(
-        'Contact e-mail', blank=True,
+        'Contact e-mail',
+        blank=True,
         help_text="""The e-mail address provided by your IdP which
                      will be used to communicate with you about this
                      allocation request.  <strong>Note:</strong> <i>if
                      this is not a valid e-mail address you will not
                      receive communications on any allocation request
                      you make</i>. If invalid please contact your IdP
-                     and ask them to correct your e-mail address!"""
+                     and ask them to correct your e-mail address!""",
     )
 
     start_date = models.DateField(
-        'Start date',
-        null=True,
-        help_text='The day when the allocation starts')
+        'Start date', null=True, help_text='The day when the allocation starts'
+    )
 
     end_date = models.DateField(
-        'End date',
-        null=True,
-        help_text='The day when the allocation ends.')
+        'End date', null=True, help_text='The day when the allocation ends.'
+    )
 
     estimated_project_duration = models.IntegerField(
         'Estimated project duration',
@@ -249,15 +250,17 @@ class AllocationRequest(models.Model):
         default=12,
         help_text="""Resources are approved for at most 12-months,
                     but projects can extend a request for resources
-                    once it has been approved.""")
+                    once it has been approved.""",
+    )
 
     convert_trial_project = models.BooleanField(
         'Convert trial project?',
         default=False,
         help_text='If selected, your existing trial project pt- will be '
-                  'renamed so any resources inside it will become part of '
-                  'this new allocation. A new trial project will be created '
-                  'in its place.')
+        'renamed so any resources inside it will become part of '
+        'this new allocation. A new trial project will be created '
+        'in its place.',
+    )
 
     approver_email = models.EmailField('Approver email', blank=True)
 
@@ -265,23 +268,26 @@ class AllocationRequest(models.Model):
         "Research project description",
         max_length=4096,
         help_text='This section should provide a brief overview of the '
-                  'Research Project or Projects that the requested '
-                  'allocation would directly support. We will use this '
-                  'information to help prioritize the allocation of '
-                  'resources to different projects.')
+        'Research Project or Projects that the requested '
+        'allocation would directly support. We will use this '
+        'information to help prioritize the allocation of '
+        'resources to different projects.',
+    )
 
     usage_patterns = models.TextField(
         "Justification and details of your Proposed Cloud Usage",
-        max_length=1024, blank=True,
+        max_length=1024,
+        blank=True,
         help_text='Explain why you need Nectar Research Cloud resources, '
-                  'and how they will be used to support your research. '
-                  'Include relevant technical information on your proposed '
-                  'use of the resources; e.g. software applications, '
-                  'characteristics of computational tasks, data quantities '
-                  'and access patterns, frequency and intensity of '
-                  'utilization, and so on.  We will use this information '
-                  'to help us decide if the resources that you are '
-                  'requesting are appropriate to the tasks to be performed.')
+        'and how they will be used to support your research. '
+        'Include relevant technical information on your proposed '
+        'use of the resources; e.g. software applications, '
+        'characteristics of computational tasks, data quantities '
+        'and access patterns, frequency and intensity of '
+        'utilization, and so on.  We will use this information '
+        'to help us decide if the resources that you are '
+        'requesting are appropriate to the tasks to be performed.',
+    )
 
     geographic_requirements = models.TextField(
         max_length=1024,
@@ -290,80 +296,105 @@ class AllocationRequest(models.Model):
         help_text="""Indicate to the allocations committee any special
                 geographic requirements that you may need; e.g. to run
                 at a specific node or at multiple nodes.  Please
-                include your reasons for these requirements.""")
+                include your reasons for these requirements.""",
+    )
 
     project_id = models.CharField(max_length=36, blank=True, null=True)
 
     estimated_number_users = models.IntegerField(
         'Estimated number of users',
-        validators=[MinValueValidator(1), ],
+        validators=[
+            MinValueValidator(1),
+        ],
         error_messages={
             'min_value': 'The estimated number of users must be greater '
-            'than 0'},
+            'than 0'
+        },
         help_text="""Estimated number of users, researchers and collaborators
         to be supported by the allocation.""",
-        editable=False, null=True)  # Read only field as this is no longer used
+        editable=False,
+        null=True,
+    )  # Read only field as this is no longer used
 
     direct_access_user_estimate = models.PositiveIntegerField(
         'Estimated number of users who will directly access the instances',
-        null=True, blank=True,
-        validators=[MinValueValidator(1), ],
+        null=True,
+        blank=True,
+        validators=[
+            MinValueValidator(1),
+        ],
         error_messages={
             'min_value': 'The estimated number of users must be greater '
-            'than 0'},
-        help_text= """Estimated number of users who will be creating virtual
-                machine instances or directly logging in to them.""")
+            'than 0'
+        },
+        help_text="""Estimated number of users who will be creating virtual
+                machine instances or directly logging in to them.""",
+    )
 
     estimated_service_count = models.PositiveIntegerField(
         'Estimated number of research services or platforms to be hosted '
         'using this allocation',
-        null=True, blank=True,
+        null=True,
+        blank=True,
         error_messages={
-            'min_value': 'The estimated number cannot be less than 0'},
-        help_text= """Estimate the number of research services or research
+            'min_value': 'The estimated number cannot be less than 0'
+        },
+        help_text="""Estimate the number of research services or research
                  platforms (also called virtual research environments or
                  virtual laboratories) you expect to be hosted on your
                  allocation. These could be web sites, web applications,
                  databases or data repositories. Do not include application
                  software that is run by users who log in to the virtual
                  machine instance and run the application themselves,
-                 e.g. from the command line.""")
+                 e.g. from the command line.""",
+    )
 
     estimated_service_active_users = models.PositiveIntegerField(
         'Estimated total number of unique active users of these services',
-        null=True, blank=True,
-        validators=[MinValueValidator(1), ],
+        null=True,
+        blank=True,
+        validators=[
+            MinValueValidator(1),
+        ],
         error_messages={
             'min_value': 'The estimated number of users must be greater '
-            'than 0'},
-        help_text= """Estimate the number of people you expect will use the
+            'than 0'
+        },
+        help_text="""Estimate the number of people you expect will use the
                  research services or platforms hosted on your allocation.
                  Note that when you renew your Nectar allocation we will ask
                  you to estimate the number of unique active users of these
-                 services over the previous year.""")
+                 services over the previous year.""",
+    )
 
     multiple_allocations_check = models.BooleanField(
         """Does the research project have more than one allocation
          on the Nectar Cloud where the number of users has already been
          provided in a separate allocation?""",
-        null=True, default=False)
+        null=True,
+        default=False,
+    )
 
     direct_access_user_past_year = models.PositiveIntegerField(
         'Number of users directly accessing instances over the past year',
-        null=True, blank=True,
-        validators=[MinValueValidator(1), ],
+        null=True,
+        blank=True,
+        validators=[
+            MinValueValidator(1),
+        ],
         error_messages={
-             'min_value': 'The number of users must be greater '
-             'than 0'},
+            'min_value': 'The number of users must be greater ' 'than 0'
+        },
         help_text="""Number of users who have created virtual machine
-                 instances or directly logged in to them in the last year.""")
+                 instances or directly logged in to them in the last year.""",
+    )
 
     active_service_count = models.PositiveIntegerField(
         'Number of active research services or platforms hosted using '
         'this allocation',
-        null=True, blank=True,
-        error_messages={
-             'min_value': 'The number cannot be less than 0'},
+        null=True,
+        blank=True,
+        error_messages={'min_value': 'The number cannot be less than 0'},
         help_text="""Estimate the number of research services or research
                  platforms (also called virtual research environments of
                  virtual laboratories) that were hosted on your allocation
@@ -371,23 +402,28 @@ class AllocationRequest(models.Model):
                  web sites, web applications, databases or data repositories.
                  Do not include application software that is run by users who
                  log in to the virtual machine instance and run the
-                 application themselves, e.g. from the command line.""")
+                 application themselves, e.g. from the command line.""",
+    )
 
     service_active_users_past_year = models.PositiveIntegerField(
         'Total number of unique active users of these services over '
         'the past year',
-        null=True, blank=True,
-        validators=[MinValueValidator(1), ],
+        null=True,
+        blank=True,
+        validators=[
+            MinValueValidator(1),
+        ],
         error_messages={
-             'min_value': 'The number of users must be greater '
-             'than 0'},
+            'min_value': 'The number of users must be greater ' 'than 0'
+        },
         help_text="""The number of individuals who have used the research
                  services or platforms hosted on your allocation in the last
                  year (or less if they have been operating for less than a
                  year). Specify if this number is measured (e.g. you can
                  accurately measure the number of individuals who have logged
                  in to your service in the last year) or estimated (please
-                 provide conservative, justifiable estimates).""")
+                 provide conservative, justifiable estimates).""",
+    )
 
     MEASURED = 'measured'
     ESTIMATED = 'estimated'
@@ -407,8 +443,9 @@ class AllocationRequest(models.Model):
 
     # At the model level, we need to represent both 2008 and 2020 code
     # indefinitely.
-    FOR_CHOICES = tuple((k, "%s %s" % (k, v))
-                        for k, v in forcodes.FOR_CODES_ALL.items())
+    FOR_CHOICES = tuple(
+        (k, f"{k} {v}") for k, v in forcodes.FOR_CODES_ALL.items()
+    )
     PERCENTAGE_CHOICES = (
         (0, '0%'),
         (10, '10%'),
@@ -428,35 +465,36 @@ class AllocationRequest(models.Model):
         choices=FOR_CHOICES,
         blank=True,
         null=True,
-        max_length=6
+        max_length=6,
     )
 
     for_percentage_1 = models.IntegerField(
-        choices=PERCENTAGE_CHOICES, default=100,
-        help_text="""The percentage""")
+        choices=PERCENTAGE_CHOICES, default=100, help_text="""The percentage"""
+    )
 
     field_of_research_2 = models.CharField(
         "Second Field Of Research",
         choices=FOR_CHOICES,
         blank=True,
         null=True,
-        max_length=6
+        max_length=6,
     )
 
     for_percentage_2 = models.IntegerField(
-        choices=PERCENTAGE_CHOICES, default=0,
-        help_text="""The percentage""")
+        choices=PERCENTAGE_CHOICES, default=0, help_text="""The percentage"""
+    )
 
     field_of_research_3 = models.CharField(
         "Third Field Of Research",
         choices=FOR_CHOICES,
         blank=True,
         null=True,
-        max_length=6
+        max_length=6,
     )
 
     for_percentage_3 = models.IntegerField(
-        choices=PERCENTAGE_CHOICES, default=0)
+        choices=PERCENTAGE_CHOICES, default=0
+    )
 
     # Legacy: remove when the ardc_support relation is populated
     # for all current and historical allocation records.  Until then
@@ -471,7 +509,8 @@ class AllocationRequest(models.Model):
         funded by ARDC or its predecessors (ANDS, Nectar, or RDS),
         and 2) where the project's management supports this request
         in furtherance of its goals, and 3) where this allocation
-        will provide resources that benefit the project.""")
+        will provide resources that benefit the project.""",
+    )
 
     ardc_support = models.ManyToManyField(ARDCSupport, blank=True)
 
@@ -480,7 +519,8 @@ class AllocationRequest(models.Model):
         blank=True,
         max_length=1024,
         help_text="""You can use this field to provide extra details for
-        the ARDC project(s) supporting this request.""")
+        the ARDC project(s) supporting this request.""",
+    )
 
     # Legacy: remove when the ncris_facility relation is populated
     # for all current and historical allocation records.  Until then
@@ -494,14 +534,16 @@ class AllocationRequest(models.Model):
         management supports this request in furtherance of its goals.
         For example, the requested resources may enable a project
         that the NCRIS facility is funding, or they may enable the
-        provision of infrastructure for the facility.""")
+        provision of infrastructure for the facility.""",
+    )
 
     ncris_explanation = models.CharField(
         'NCRIS Support details',
         blank=True,
         max_length=1024,
         help_text="""You can use this field to provide extra details for
-        the NCRIS Facility(s) supporting or supported by this request.""")
+        the NCRIS Facility(s) supporting or supported by this request.""",
+    )
 
     ncris_facilities = models.ManyToManyField(NCRISFacility, blank=True)
 
@@ -521,7 +563,8 @@ class AllocationRequest(models.Model):
         default=False,
         help_text="""If true, this indicates that the allocation
         was most recently assessed as meeting the criteria for Nectar
-        National funding""")
+        National funding""",
+    )
 
     special_approval = models.CharField(
         "Special RC-NAS approval reasons",
@@ -531,22 +574,26 @@ class AllocationRequest(models.Model):
         is approved as National despite not meeting the primary criteria;
         i.e. a current competitive, NCRIS support or ARDC support.
         See the RC-NAS policy for the possible reasons.  This is only
-        visible to allocation admins""")
+        visible to allocation admins""",
+    )
 
     provisioned = models.BooleanField(default=False)
 
     notes = models.TextField(
         "Private notes for admins",
-        null=True, blank=True,
-        help_text="These notes are only visible to allocation admins")
+        null=True,
+        blank=True,
+        help_text="These notes are only visible to allocation admins",
+    )
 
     notifications = models.BooleanField(
-        default=True,
-        help_text="Send notifications for this allocation")
+        default=True, help_text="Send notifications for this allocation"
+    )
 
     managed = models.BooleanField(
         default=True,
-        help_text="Whether the allocation is managed through the dashboard")
+        help_text="Whether the allocation is managed through the dashboard",
+    )
 
     usage_types = models.ManyToManyField(UsageType)
 
@@ -554,28 +601,41 @@ class AllocationRequest(models.Model):
         'Organisation',
         ajax=True,
         search_field=lambda q: (
-            (models.Q(short_name__icontains=q)
-             | models.Q(full_name__icontains=q))
-            & models.Q(enabled=True)),
-        js_options={'ajax_url': '/allocation/fetch_organisations/',
-                    'ajax_init_url': '/allocation/init_organisations/'},
+            (
+                models.Q(short_name__icontains=q)
+                | models.Q(full_name__icontains=q)
+            )
+            & models.Q(enabled=True)
+        ),
+        js_options={
+            'ajax_url': '/allocation/fetch_organisations/',
+            'ajax_init_url': '/allocation/init_organisations/',
+        },
         overlay="Enter one or more organisation names or acronyms...",
-        blank=False)
+        blank=False,
+    )
 
-    bundle = models.ForeignKey(Bundle, null=True, blank=True,
-                               on_delete=models.PROTECT)
+    bundle = models.ForeignKey(
+        Bundle, null=True, blank=True, on_delete=models.PROTECT
+    )
     nectar_benefit_description = models.TextField(
         "Benefits of Nectar",
-        max_length=4096, blank=True, null=True,
+        max_length=4096,
+        blank=True,
+        null=True,
         help_text='Briefly describe how the use of Nectar has benefited '
-                  'your research activity.')
+        'your research activity.',
+    )
 
     nectar_research_impact = models.TextField(
         "Research Impact",
-        max_length=4096, blank=True, null=True,
+        max_length=4096,
+        blank=True,
+        null=True,
         help_text='Briefly indicate the impact of your research activity '
-                  'that has been supported by Nectar, particularly '
-                  'translational impact (i.e. impact on society).')
+        'that has been supported by Nectar, particularly '
+        'translational impact (i.e. impact on society).',
+    )
 
     class Meta:
         ordering = ['-modified_time']
@@ -608,8 +668,9 @@ class AllocationRequest(models.Model):
         if self.bundle:
             if budget_quota is not None:
                 return budget_quota
-            return int(self.bundle.su_per_year / 12
-                       * self.estimated_project_duration)
+            return int(
+                self.bundle.su_per_year / 12 * self.estimated_project_duration
+            )
         return budget_quota
 
     @property
@@ -617,8 +678,9 @@ class AllocationRequest(models.Model):
         return self.parent_request.id if self.parent_request else self.id
 
     def get_absolute_url(self):
-        return reverse('horizon:allocation:requests:allocation_view',
-                       args=[str(self.id)])
+        return reverse(
+            'horizon:allocation:requests:allocation_view', args=[str(self.id)]
+        )
 
     def is_active(self):
         """Return True if the allocation has either been approved,
@@ -636,10 +698,11 @@ class AllocationRequest(models.Model):
         return self.status.upper() in (self.SUBMITTED, self.NEW)
 
     def amendment_requested(self):
-        """Return True if the user has requested an extention
-        """
-        return self.status.upper() in (self.UPDATE_PENDING,
-                                       self.UPDATE_DECLINED)
+        """Return True if the user has requested an extention"""
+        return self.status.upper() in (
+            self.UPDATE_PENDING,
+            self.UPDATE_DECLINED,
+        )
 
     def is_history(self):
         return self.parent_request is not None
@@ -651,13 +714,18 @@ class AllocationRequest(models.Model):
         return not self.is_active() and not self.is_history() and self.managed
 
     def can_user_edit(self):
-        return self.status.upper() in (self.SUBMITTED, self.DECLINED,
-                                       self.NEW) \
-            and not self.is_history() and self.managed
+        return (
+            self.status.upper() in (self.SUBMITTED, self.DECLINED, self.NEW)
+            and not self.is_history()
+            and self.managed
+        )
 
     def can_user_edit_amendment(self):
-        return self.amendment_requested() and not self.is_history() \
+        return (
+            self.amendment_requested()
+            and not self.is_history()
             and self.managed
+        )
 
     def can_be_rejected(self):
         return self.is_requested() and not self.is_history() and self.managed
@@ -672,19 +740,26 @@ class AllocationRequest(models.Model):
         return self.amendment_requested() and not self.is_history()
 
     def can_have_publications(self):
-        return self.status.upper() not in (self.SUBMITTED, self.DECLINED,
-                                           self.NEW)
+        return self.status.upper() not in (
+            self.SUBMITTED,
+            self.DECLINED,
+            self.NEW,
+        )
 
     def get_quotas_context(self):
         quotas = []
         for quota in Quota.objects.filter(group__allocation=self):
-            quotas.append({'service_type': quota.group.service_type.name,
-                           'resource': quota.resource.name,
-                           'resource_type': quota.resource.resource_type,
-                           'unit': quota.resource.unit,
-                           'zone': quota.group.zone.display_name,
-                           'quota': quota.quota,
-                           'requested_quota': quota.requested_quota})
+            quotas.append(
+                {
+                    'service_type': quota.group.service_type.name,
+                    'resource': quota.resource.name,
+                    'resource_type': quota.resource.resource_type,
+                    'unit': quota.resource.unit,
+                    'zone': quota.group.zone.display_name,
+                    'quota': quota.quota,
+                    'requested_quota': quota.requested_quota,
+                }
+            )
         return quotas
 
     def get_interested_sites(self):
@@ -711,20 +786,22 @@ class AllocationRequest(models.Model):
         context['allocation'] = self
         context['quotas'] = self.get_quotas_context()
         ar_previous = AllocationRequest.objects.filter(
-            parent_request=self, provisioned=True).first()
+            parent_request=self, provisioned=True
+        ).first()
         if ar_previous:
             context['quotas_previous'] = ar_previous.get_quotas_context()
         context['base_url'] = 'https://dashboard.rc.nectar.org.au'
         if 'request' in context:
             context['base_url'] = '{}://{}'.format(
-                context['request'].scheme, context['request'].get_host())
+                context['request'].scheme, context['request'].get_host()
+            )
 
         # Render template, separate body and subject, and send email
         text = render_to_string(template_name, context)
         subject, _, body = text.partition('\n\n')
-        notifier.send_email(email=self.contact_email,
-                            subject=subject,
-                            body=body)
+        notifier.send_email(
+            email=self.contact_email, subject=subject, body=body
+        )
 
     def send_notifications(self, extra_context={}):
         if self.status in [self.NEW, self.SUBMITTED, self.UPDATE_PENDING]:
@@ -744,13 +821,14 @@ class AllocationRequest(models.Model):
         utils.save_allocation_without_updating_timestamps(self)
 
     def __str__(self):
-        return '{0}: {1}'.format(self.id, self.project_name)
+        return f'{self.id}: {self.project_name}'
 
     def get_quota(self, resource_code):
         resource = Resource.objects.get_by_codename(resource_code)
         try:
-            quota = Quota.objects.get(group__allocation=self,
-                                      resource=resource)
+            quota = Quota.objects.get(
+                group__allocation=self, resource=resource
+            )
         except Quota.DoesNotExist:
             return None
         else:
@@ -761,25 +839,24 @@ class AllocationRequest(models.Model):
         if self.bundle:
             bundle_quotas = self.bundle.bundlequota_set.all()
             for bq in bundle_quotas:
-                quotas[
-                    f"{bq.resource.codename}-{bq.bundle.zone}"
-                ] = bq.quota_dict()
+                quotas[f"{bq.resource.codename}-{bq.bundle.zone}"] = (
+                    bq.quota_dict()
+                )
             quotas[f"rating.budget-{self.bundle.zone}"] = {
                 'zone': self.bundle.zone.name,
                 'resource': 'rating.budget',
-                'quota': self.su_budget
-                }
+                'quota': self.su_budget,
+            }
 
         overrides = self.quotas.all_quotas()
         for override in overrides:
-            quotas[
-                f"{override.resource.codename}-{override.group.zone}"
-            ] = override.quota_dict()
+            quotas[f"{override.resource.codename}-{override.group.zone}"] = (
+                override.quota_dict()
+            )
         return list(quotas.values())
 
 
 class SiteManager(models.Manager):
-
     def get_by_approver(self, username):
         # Get the sites for an approver, logging the cases which
         # require attention
@@ -790,8 +867,7 @@ class SiteManager(models.Manager):
             return []
         sites = approver.sites.all()
         if len(sites) == 0:
-            LOG.warning("Approver for '%s' has no associated sites",
-                        username)
+            LOG.warning("Approver for '%s' has no associated sites", username)
         return sites
 
 
@@ -883,10 +959,11 @@ class ResourceManager(models.Manager):
         """Finds the Resource for a 'service_name.resource_name' codename."""
         parts = codename.split(".")
         assert len(parts) == 2, "Invalid resource path syntax"
-        return self.get_queryset() \
-                   .filter(quota_name=parts[1],
-                           service_type__catalog_name=parts[0]) \
-                   .first()
+        return (
+            self.get_queryset()
+            .filter(quota_name=parts[1], service_type__catalog_name=parts[0])
+            .first()
+        )
 
 
 class Resource(models.Model):
@@ -908,14 +985,15 @@ class Resource(models.Model):
     unit = models.CharField(max_length=32)
     requestable = models.BooleanField(default=True)
     help_text = models.TextField(null=True, blank=True)
-    resource_type = models.CharField(max_length=10,
-                                     choices=RESOURCE_TYPES,
-                                     default=INTEGER)
+    resource_type = models.CharField(
+        max_length=10, choices=RESOURCE_TYPES, default=INTEGER
+    )
     default = models.IntegerField(
         null=True,
         help_text="This is used to set an initial value on quota forms if no "
         "quota is requested. Will also be used if existing is less "
-        "than this")
+        "than this",
+    )
 
     objects = ResourceManager()
 
@@ -924,7 +1002,7 @@ class Resource(models.Model):
 
     @property
     def codename(self):
-        return "%s.%s" % (self.service_type.catalog_name, self.quota_name)
+        return f"{self.service_type.catalog_name}.{self.quota_name}"
 
     class Meta:
         unique_together = ('service_type', 'quota_name')
@@ -932,7 +1010,6 @@ class Resource(models.Model):
 
 
 class QuotaGroupManager(models.Manager):
-
     def all_quotas(self):
         quotas = []
         for quota_group in self.all():
@@ -946,8 +1023,9 @@ class QuotaGroup(models.Model):
     one ServiceType) to a Zone and an AllocationRequest.
     """
 
-    allocation = models.ForeignKey(AllocationRequest, related_name='quotas',
-                                   on_delete=models.CASCADE)
+    allocation = models.ForeignKey(
+        AllocationRequest, related_name='quotas', on_delete=models.CASCADE
+    )
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
     objects = QuotaGroupManager()
@@ -956,24 +1034,25 @@ class QuotaGroup(models.Model):
         unique_together = ("allocation", "zone", "service_type")
 
     def __str__(self):
-        return '{0} {1} {2}'.format(self.allocation.id,
-                                    self.service_type, self.zone)
+        return f'{self.allocation.id} {self.service_type} {self.zone}'
 
 
 class BundleQuota(models.Model):
     """Defines a limit for a resource of a Bundle"""
+
     bundle = models.ForeignKey(Bundle, on_delete=models.CASCADE)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
-    quota = models.IntegerField(default=0,
-                                validators=[MinValueValidator(-1)])
+    quota = models.IntegerField(default=0, validators=[MinValueValidator(-1)])
 
     class Meta:
         unique_together = ("bundle", "resource")
 
     def quota_dict(self):
-        return {'zone': self.bundle.zone.name,
-                'resource': self.resource.codename,
-                'quota': self.quota}
+        return {
+            'zone': self.bundle.zone.name,
+            'resource': self.resource.codename,
+            'quota': self.quota,
+        }
 
 
 class Quota(models.Model):
@@ -985,69 +1064,74 @@ class Quota(models.Model):
     group = models.ForeignKey(QuotaGroup, on_delete=models.CASCADE)
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
     requested_quota = models.IntegerField(
-        'Requested quota',
-        default='0',
-        validators=[MinValueValidator(-1)])
+        'Requested quota', default='0', validators=[MinValueValidator(-1)]
+    )
     quota = models.IntegerField(
-        "Allocated quota",
-        default='0',
-        validators=[MinValueValidator(-1)])
+        "Allocated quota", default='0', validators=[MinValueValidator(-1)]
+    )
 
     class Meta:
         unique_together = ("group", "resource")
 
     def __str__(self):
-        return '{0} {1} {2}'.format(self.group.allocation.id,
-                                    self.resource, self.group.zone)
+        return f'{self.group.allocation.id} {self.resource} {self.group.zone}'
 
     def quota_dict(self):
-        return {'zone': self.group.zone.name,
-                'resource': self.resource.codename,
-                'quota': self.quota}
+        return {
+            'zone': self.group.zone.name,
+            'resource': self.resource.codename,
+            'quota': self.quota,
+        }
 
 
 class ChiefInvestigator(models.Model):
-    allocation = models.ForeignKey(AllocationRequest,
-                                   related_name='investigators',
-                                   on_delete=models.CASCADE)
+    allocation = models.ForeignKey(
+        AllocationRequest,
+        related_name='investigators',
+        on_delete=models.CASCADE,
+    )
 
     title = models.CharField(
-        'Title',
-        max_length=60,
-        help_text="""The chief investigator's title"""
+        'Title', max_length=60, help_text="""The chief investigator's title"""
     )
 
     given_name = models.CharField(
         'Given name',
         max_length=200,
-        help_text="""The chief investigator's given name"""
+        help_text="""The chief investigator's given name""",
     )
 
     surname = models.CharField(
         'Surname',
         max_length=200,
-        help_text="""The chief investigator's surname"""
+        help_text="""The chief investigator's surname""",
     )
 
     email = models.EmailField(
         'Institutional email address',
         help_text="""Email address must belong the university or
-            organisation for accountability."""
+            organisation for accountability.""",
     )
 
     primary_organisation = select2_fields.ForeignKey(
         'Organisation',
         ajax=True,
         search_field=lambda q: (
-            (models.Q(short_name__icontains=q)
-             | models.Q(full_name__icontains=q))
-            & models.Q(enabled=True)),
-        js_options={'ajax_url': '/allocation/fetch_organisations/',
-                    'ajax_init_url': '/allocation/init_organisations/'},
+            (
+                models.Q(short_name__icontains=q)
+                | models.Q(full_name__icontains=q)
+            )
+            & models.Q(enabled=True)
+        ),
+        js_options={
+            'ajax_url': '/allocation/fetch_organisations/',
+            'ajax_init_url': '/allocation/init_organisations/',
+        },
         overlay="Enter an organisation name or acronym...",
         on_delete=models.PROTECT,
         null=True,
-        help_text="""The chief investigator's primary organisation.""")
+        help_text="""The chief investigator's primary organisation.""",
+    )
 
     additional_researchers = models.TextField(
         'Please list all other primary investigators, partner investigators '
@@ -1056,11 +1140,11 @@ class ChiefInvestigator(models.Model):
         blank=True,
         default='',
         help_text="""Please list all other primary investigators, partner
-        investigators and other research collaborators"""
+        investigators and other research collaborators""",
     )
 
     def __str__(self):
-        return '{0} {1} {2}'.format(self.title, self.given_name, self.surname)
+        return f'{self.title} {self.given_name} {self.surname}'
 
 
 ORG_ALL_FULL_NAME = "All Organisations"
@@ -1085,32 +1169,43 @@ class Organisation(models.Model):
 
     ror_id = models.CharField(
         "Research Organization Registry id",
-        max_length=32, blank=True,
+        max_length=32,
+        blank=True,
         help_text="""This will be blank for organisations that don't
-        (yet) have an ROR id.""")
+        (yet) have an ROR id.""",
+    )
 
     full_name = models.CharField(
-        "Official name", max_length=200, blank=False,
+        "Official name",
+        max_length=200,
+        blank=False,
         help_text="""The official full name for the organisation.  This
         should be taken from the ROR record when available.
-        For example: 'The University of Queensland'""")
+        For example: 'The University of Queensland'""",
+    )
 
     short_name = models.CharField(
-        "Short name", max_length=16, blank=True,
+        "Short name",
+        max_length=16,
+        blank=True,
         help_text="""An optional short name or acronym for the organisation.
         This should be taken from the ROR record when available.
-        For example; 'UQ'""")
+        For example; 'UQ'""",
+    )
 
     url = models.CharField(
         "Organisation website",
-        max_length=64, blank=True,
-        help_text="Organisational website URL for disambiguation purposes.")
+        max_length=64,
+        blank=True,
+        help_text="Organisational website URL for disambiguation purposes.",
+    )
 
     country = country_fields.CountryField(
         "Country (ISO 2 letter)",
         blank=False,
         help_text="""Two character ISO country code for the organisation.
-        See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2""")
+        See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2""",
+    )
 
     parent = models.ForeignKey(
         'Organisation',
@@ -1118,25 +1213,30 @@ class Organisation(models.Model):
         null=True,
         related_name='children',
         help_text="""If not null, this denotes this organisation's
-        parent organisation.""")
+        parent organisation.""",
+    )
 
     precedes = models.ManyToManyField(
         'Organisation',
         related_name='supercedes',
         help_text="""This denotes this organisation was precede (or in the
-        reverse superceded) by these organisations.""")
+        reverse superceded) by these organisations.""",
+    )
 
     # Note: the ROR data dump uses a tri-state for this; 'active', 'inactive'
     # or 'withdrawn'.
     enabled = models.BooleanField(
         default=True,
         help_text="""If false, this organisation should no longer be used;
-        e.g. because the research organisation no longer exists.""")
+        e.g. because the research organisation no longer exists.""",
+    )
 
-    proposed_by = models.CharField(max_length=64,
+    proposed_by = models.CharField(
+        max_length=64,
         blank=True,
         help_text="""The keystone id of the person who proposed this
-                     ('type in') organisation.""")
+                     ('type in') organisation.""",
+    )
 
     # Note: currently, Organisation records can only be vetted by the subset
     # of approvers who are also allocation admins.  We may relax this.
@@ -1150,18 +1250,41 @@ class Organisation(models.Model):
         meets ROR and local criteria, 2) the full and short name are in the
         standard form, correctly spelled, etc, 3) the ISO country code
         is correct, and 4) the organisation hasn't already been recorded
-        here with a different name.""")
+        here with a different name.""",
+    )
 
     class Meta:
         indexes = [
-            models.Index(fields=['full_name', ]),
-            models.Index(fields=['short_name', ]),
-            models.Index(fields=['ror_id', ]),
-            models.Index(fields=['country', ]),
+            models.Index(
+                fields=[
+                    'full_name',
+                ]
+            ),
+            models.Index(
+                fields=[
+                    'short_name',
+                ]
+            ),
+            models.Index(
+                fields=[
+                    'ror_id',
+                ]
+            ),
+            models.Index(
+                fields=[
+                    'country',
+                ]
+            ),
         ]
         constraints = [
-            models.UniqueConstraint(fields=['full_name', 'ror_id', 'url', ],
-                                    name='unique_organisation')
+            models.UniqueConstraint(
+                fields=[
+                    'full_name',
+                    'ror_id',
+                    'url',
+                ],
+                name='unique_organisation',
+            )
         ]
         ordering = ["full_name"]
 
@@ -1170,14 +1293,17 @@ class Organisation(models.Model):
 
 
 DOI_PATTERN = re.compile("^10.\\d{4,9}/[^\x00-\x1f\x7f-\x9f\\s]+$")
-VALIDATE_DOI = RegexValidator(regex=DOI_PATTERN,
-                              message="""Invalid DOI.  A DOI looks like
+VALIDATE_DOI = RegexValidator(
+    regex=DOI_PATTERN,
+    message="""Invalid DOI.  A DOI looks like
                                       '10.<digits>/<characters>' with
                                       the restriction that there are no
                                       whitespace or control chars in
-                                      <characters>""")
-OUTPUT_TYPE_CHOICES = ((None, "Select an output type"),) \
-                      + output_type_choices.OUTPUT_TYPE_CHOICE
+                                      <characters>""",
+)
+OUTPUT_TYPE_CHOICES = (
+    (None, "Select an output type"),
+) + output_type_choices.OUTPUT_TYPE_CHOICE
 
 
 class Publication(models.Model):
@@ -1190,7 +1316,8 @@ class Publication(models.Model):
         help_text="""Select a publication type that best describes
                 the publication.  The 'Media publication' type is
                 intended to encompass traditional media and 'new'
-                media such as websites, blogs and social media.""")
+                media such as websites, blogs and social media.""",
+    )
 
     publication = models.CharField(
         'Details of Research Output',
@@ -1200,7 +1327,8 @@ class Publication(models.Model):
                 title and URI, Software product's name and website URL,
                 a Patent's title and number.  This field should not be
                 used for Research Outputs with DOIs known to CrossRef.""",
-        blank=True)
+        blank=True,
+    )
 
     # Required for 'AJ' publications for NCRIS
     doi = models.CharField(
@@ -1213,24 +1341,29 @@ class Publication(models.Model):
                letters, numbers and other characters.  For example:
                '10.23456/abc-123'.""",
         blank=True,
-        default='')
+        default='',
+    )
 
     # Cached results of a CrossRef lookup for the DOI.  JSON.  This will
     # be the source for the rendering the publication details.
     crossref_metadata = models.TextField(blank=True)
 
-    allocation = models.ForeignKey(AllocationRequest,
-                                   related_name='publications',
-                                   on_delete=models.CASCADE)
+    allocation = models.ForeignKey(
+        AllocationRequest,
+        related_name='publications',
+        on_delete=models.CASCADE,
+    )
 
     def __str__(self):
         return self.publication
 
 
-GRANT_TYPE_CHOICES = ((None, "Select a grant type"),) \
-                     + nectar_grant_type.GRANT_TYPES
-GRANT_SUBTYPE_CHOICES = ((None, "Select a grant subtype"),) \
-                        + nectar_grant_type.GRANT_SUBTYPES
+GRANT_TYPE_CHOICES = (
+    (None, "Select a grant type"),
+) + nectar_grant_type.GRANT_TYPES
+GRANT_SUBTYPE_CHOICES = (
+    (None, "Select a grant subtype"),
+) + nectar_grant_type.GRANT_SUBTYPES
 
 
 class Grant(models.Model):
@@ -1238,7 +1371,7 @@ class Grant(models.Model):
         "Grant Type",
         choices=GRANT_TYPE_CHOICES,
         max_length=128,
-        help_text="""Choose the grant type from the dropdown options."""
+        help_text="""Choose the grant type from the dropdown options.""",
     )
 
     grant_subtype = models.CharField(
@@ -1248,7 +1381,7 @@ class Grant(models.Model):
         help_text="""Choose an applicable grant subtype from the
                   dropdown options.  If no option is applicable,
                   choose 'unspecified' and then fill in the 'Other
-                  funding source details' field below."""
+                  funding source details' field below.""",
     )
 
     funding_body_scheme = models.CharField(
@@ -1256,14 +1389,14 @@ class Grant(models.Model):
         blank=True,
         max_length=255,
         help_text="""For example, details of a state government
-                  grant scheme, or an industry funding source."""
+                  grant scheme, or an industry funding source.""",
     )
 
     grant_id = models.CharField(
         'Grant ID',
         blank=True,
         max_length=200,
-        help_text="""Specify the grant id."""
+        help_text="""Specify the grant id.""",
     )
 
     first_year_funded = models.IntegerField(
@@ -1271,8 +1404,9 @@ class Grant(models.Model):
         validators=[MinValueValidator(1970), MaxValueValidator(3000)],
         error_messages={
             'min_value': 'Please input a year between 1970 ~ 3000',
-            'max_value': 'Please input a year between 1970 ~ 3000'},
-        help_text="""Specify the first year funded"""
+            'max_value': 'Please input a year between 1970 ~ 3000',
+        },
+        help_text="""Specify the first year funded""",
     )
 
     last_year_funded = models.IntegerField(
@@ -1280,24 +1414,32 @@ class Grant(models.Model):
         validators=[MinValueValidator(1970), MaxValueValidator(3000)],
         error_messages={
             'min_value': 'Please input a year between 1970 ~ 3000',
-            'max_value': 'Please input a year between 1970 ~ 3000'},
-        help_text="""Specify the last year funded"""
+            'max_value': 'Please input a year between 1970 ~ 3000',
+        },
+        help_text="""Specify the last year funded""",
     )
 
     total_funding = models.FloatField(
         'Total funding (AUD)',
         validators=[MinValueValidator(1)],
-        help_text="""Total funding amount in AUD"""
+        help_text="""Total funding amount in AUD""",
     )
 
-    allocation = models.ForeignKey(AllocationRequest, related_name='grants',
-                                   on_delete=models.CASCADE)
+    allocation = models.ForeignKey(
+        AllocationRequest, related_name='grants', on_delete=models.CASCADE
+    )
 
     class Meta:
-        unique_together = ("allocation", "grant_type",
-                           "grant_subtype", "funding_body_scheme",
-                           "grant_id", "first_year_funded", "total_funding")
+        unique_together = (
+            "allocation",
+            "grant_type",
+            "grant_subtype",
+            "funding_body_scheme",
+            "grant_id",
+            "first_year_funded",
+            "total_funding",
+        )
 
     def __str__(self):
-        return "Funding : {0} , total funding: {1}".format(
-            self.funding_body_scheme, self.total_funding)
+        return (f"Funding: {self.funding_body_scheme}, "
+                f"total funding: {self.total_funding}")

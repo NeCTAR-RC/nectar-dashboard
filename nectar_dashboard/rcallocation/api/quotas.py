@@ -54,11 +54,14 @@ class QuotaSerializer(serializers.ModelSerializer):
         except models.AllocationRequest.DoesNotExist:
             raise serializers.ValidationError("Allocation does not exist")
 
-        if allocation.status not in [models.AllocationRequest.SUBMITTED,
-                                     models.AllocationRequest.UPDATE_PENDING]:
+        if allocation.status not in [
+            models.AllocationRequest.SUBMITTED,
+            models.AllocationRequest.UPDATE_PENDING,
+        ]:
             raise serializers.ValidationError(
-                "Allocation quota in status '%s' can not be updated" %
-                allocation.get_status_display())
+                "Allocation quota in status "
+                f"'{allocation.get_status_display()}' can not be updated"
+            )
 
         try:
             zone = models.Zone.objects.get(name=self.initial_data['zone'])
@@ -67,18 +70,22 @@ class QuotaSerializer(serializers.ModelSerializer):
 
         if zone not in data['resource'].service_type.zones.all():
             raise serializers.ValidationError(
-                "Resource not available in this zone")
+                "Resource not available in this zone"
+            )
 
         try:
             group = models.QuotaGroup.objects.get(
-                allocation=allocation, zone=zone,
-                service_type=data['resource'].service_type)
+                allocation=allocation,
+                zone=zone,
+                service_type=data['resource'].service_type,
+            )
         except models.QuotaGroup.DoesNotExist:
             group = None
         if group:
             try:
-                models.Quota.objects.get(resource=data['resource'],
-                                         group=group)
+                models.Quota.objects.get(
+                    resource=data['resource'], group=group
+                )
             except models.Quota.DoesNotExist:
                 pass
             else:
@@ -87,11 +94,13 @@ class QuotaSerializer(serializers.ModelSerializer):
         if allocation.managed:
             if data['quota'] == -1:
                 raise serializers.ValidationError(
-                    "Unlimited quota not allowed for managed allocation")
+                    "Unlimited quota not allowed for managed allocation"
+                )
             if data['requested_quota'] == -1:
                 raise serializers.ValidationError(
                     "Unlimited requested quota not allowed for managed "
-                    "allocation")
+                    "allocation"
+                )
 
         return data
 
@@ -107,9 +116,12 @@ class QuotaViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     @property
     def filterset_fields(self):
         if self.request.user.is_authenticated:
-            return ['resource', 'group__allocation',
-                    'group__zone',
-                    'group__service_type']
+            return [
+                'resource',
+                'group__allocation',
+                'group__zone',
+                'group__service_type',
+            ]
         return None
 
     def get_queryset(self):
@@ -118,7 +130,8 @@ class QuotaViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
         if self.is_read_admin():
             return self.queryset
         return models.Quota.objects.filter(
-            group__allocation__contact_email=self.request.user.username)
+            group__allocation__contact_email=self.request.user.username
+        )
 
     def get_permissions(self):
         permission_classes = [permissions.IsAuthenticated]
@@ -134,11 +147,11 @@ class QuotaViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
         )
         zone = models.Zone.objects.get(name=serializer.initial_data['zone'])
         st = models.Resource.objects.get(
-            id=serializer.initial_data['resource']).service_type
+            id=serializer.initial_data['resource']
+        ).service_type
         group, created = models.QuotaGroup.objects.get_or_create(
-            allocation=allocation,
-            zone=zone,
-            service_type=st)
+            allocation=allocation, zone=zone, service_type=st
+        )
         serializer.save(group=group)
 
     def update(self, request, *args, **kwargs):

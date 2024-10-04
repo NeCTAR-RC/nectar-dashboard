@@ -14,13 +14,15 @@ class Command(base.BaseCommand):
     to put them in one"""
 
     def add_arguments(self, parser):
-        parser.add_argument('--dry-run',
-                            default=False,
-                            action='store_true',
-                            help="Only print actions")
-        parser.add_argument('--allocation',
-                            default=None,
-                            help="Run on 1 allocation")
+        parser.add_argument(
+            '--dry-run',
+            default=False,
+            action='store_true',
+            help="Only print actions",
+        )
+        parser.add_argument(
+            '--allocation', default=None, help="Run on 1 allocation"
+        )
 
     def handle(self, **options):
         dry_run = options.get('dry_run')
@@ -36,35 +38,43 @@ class Command(base.BaseCommand):
             if allocation_id:
                 allocations = models.AllocationRequest.objects.filter(
                     id=allocation_id,
-                    bundle__isnull=True, parent_request__isnull=True)
+                    bundle__isnull=True,
+                    parent_request__isnull=True,
+                )
             else:
                 allocations = models.AllocationRequest.objects.filter(
-                    bundle__isnull=True, parent_request__isnull=True,
-                    managed=True)
+                    bundle__isnull=True,
+                    parent_request__isnull=True,
+                    managed=True,
+                )
                 allocations = allocations.exclude(
-                    status=models.AllocationRequest.DELETED)
+                    status=models.AllocationRequest.DELETED
+                )
                 if dry_run:
                     allocations = allocations.exclude(id__in=ids_with_bundle)
 
             for allocation in allocations:
                 quota_valid = True
                 for quota in allocation.quotas.all_quotas():
-
                     try:
                         bq = bundle.bundlequota_set.get(
-                            resource=quota.resource)
+                            resource=quota.resource
+                        )
                     except models.BundleQuota.DoesNotExist:
                         if quota.resource.service_type.is_multizone():
                             continue
                         quota_valid = False
-                        LOG.info(f"{allocation.id}: Resource {quota.resource} "
-                                 "does not exist in this bundle")
+                        LOG.info(
+                            f"{allocation.id}: Resource {quota.resource} "
+                            "does not exist in this bundle"
+                        )
 
                     if quota.quota > bq.quota:
                         quota_valid = False
                         LOG.info(
                             f"{allocation.id}: {quota.resource}={quota.quota} "
-                            f"bigger than bundle {bq.quota}")
+                            f"bigger than bundle {bq.quota}"
+                        )
 
                 if quota_valid:
                     LOG.info(f"Allocation {allocation} bundle={bundle}")
@@ -73,7 +83,8 @@ class Command(base.BaseCommand):
                         allocation.bundle = bundle
                         allocation.save_without_updating_timestamps()
                         qg_list = models.QuotaGroup.objects.filter(
-                            allocation=allocation, zone=bundle.zone)
+                            allocation=allocation, zone=bundle.zone
+                        )
                         for qg in qg_list:
                             for q in qg.quota_set.all():
                                 q.delete()
@@ -85,12 +96,13 @@ class Command(base.BaseCommand):
             LOG.info(f"Bundle {bundle} - {count}")
             totals[bundle] = count
         allocations = models.AllocationRequest.objects.filter(
-            bundle__isnull=True, parent_request__isnull=True,
-            managed=True)
+            bundle__isnull=True, parent_request__isnull=True, managed=True
+        )
         allocations = allocations.exclude(
-            status=models.AllocationRequest.DELETED)
+            status=models.AllocationRequest.DELETED
+        )
         if dry_run:
             allocations = allocations.exclude(id__in=ids_with_bundle)
-        LOG.info("No Bundle - %s" % allocations.count())
+        LOG.info(f"No Bundle - {allocations.count()}")
         for b, c in totals.items():
             LOG.info(f"{b}: {c}")

@@ -22,7 +22,6 @@ from nectar_dashboard.rcallocation import models
 
 @mock.patch('openstack_auth.utils.is_token_valid', new=lambda x, y=None: True)
 class BundleTest(base.AllocationAPITest):
-
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         self.bundle = models.Bundle.objects.get(name='gold')
@@ -52,11 +51,13 @@ class BundleTest(base.AllocationAPITest):
 
     def test_create_bundle(self):
         self.client.force_authenticate(user=self.admin_user)
-        data = {'name': 'platinum',
-                'description': 'lots and lots',
-                'zone': 'nectar',
-                'su_per_year': 20000,
-                'order': 10}
+        data = {
+            'name': 'platinum',
+            'description': 'lots and lots',
+            'zone': 'nectar',
+            'su_per_year': 20000,
+            'order': 10,
+        }
         response = self.client.post('/rest_api/bundles/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         b = models.Bundle.objects.get(name='platinum')
@@ -68,8 +69,9 @@ class BundleTest(base.AllocationAPITest):
     def test_update_bundle(self):
         self.client.force_authenticate(user=self.admin_user)
         data = {'description': 'Very good'}
-        response = self.client.patch(f'/rest_api/bundles/{self.bundle.id}/',
-                                     data)
+        response = self.client.patch(
+            f'/rest_api/bundles/{self.bundle.id}/', data
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         b = models.Bundle.objects.get(id=self.bundle.id)
         self.assertEqual(data['description'], b.description)
@@ -77,5 +79,6 @@ class BundleTest(base.AllocationAPITest):
     def test_delete_bundle(self):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.delete(f'/rest_api/bundles/{self.bundle.id}/')
-        self.assertEqual(response.status_code,
-                         status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(
+            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
+        )
