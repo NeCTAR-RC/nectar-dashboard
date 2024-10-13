@@ -4,7 +4,7 @@ A resource bundle is a collection of resource quotas. An `Allocation` can
 have a bundle which means it receives all the resource quotas of a bundle.
 
 Alternatively an allocation can have no bundle and specify a quota for each
-resource seperatly. It can also have a mix of the 2 with specific quota
+resource separately. It can also have a mix of the 2 with specific quota
 overriding any resource specified in a bundle.
 
 ## Attributes
@@ -13,7 +13,7 @@ overriding any resource specified in a bundle.
 * order - In what order should the bundle appear in a list of form selection
 * zone - The `Zone` to which quota applies to all resources in a bundle
 * su_per_year - The amount of SU budget granted to allocation. Allocations less
-                than a year will receive a propotional amount
+                than a year will receive a proportional amount
 
 
 ### POST /bundles/

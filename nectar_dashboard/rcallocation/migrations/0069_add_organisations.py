@@ -104,8 +104,8 @@ class Migration(migrations.Migration):
                 (
                     'precedes',
                     models.ManyToManyField(
-                        help_text='This denotes this organisation was precede (or in the\n        reverse superceded) by these organisations.',
-                        related_name='supercedes',
+                        help_text='This denotes this organisation was precede (or in the\n        reverse superseded) by these organisations.',
+                        related_name='supersedes',
                         to='rcallocation.Organisation',
                     ),
                 ),

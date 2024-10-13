@@ -272,7 +272,7 @@ def get_groups(service_type, allocation=None):
         for resource in resources:
             if allocation:
                 # If this is an existing allocation, set the initial quota to
-                # zero for resources it doesn't have an exising quota for. This
+                # zero for resources it doesn't have an existing quota for. This
                 # essentially means when submitting the form we don't ask for
                 # any extra resources.
                 requested_quota = 0

@@ -75,7 +75,7 @@
         else if(isExistingRequest || isNewWithErrors) {
             // If no bundle previously selected, and
             // it's an existing request or the page has
-            // relaoded with errors, show custom selected
+            // reloaded with errors, show custom selected
             $('.bundle:last').addClass('active');
         }
         else {
@@ -234,7 +234,7 @@ function get_dns_service_name(project_name) {
   var domain_name = 'cloud.edu.au';
   var zone;
 
-  // Setting an arbitary length for new project names to >=5
+  // Setting an arbitrary length for new project names to >=5
   if (project_name.length < 5) {
     zone = '';
   } else {
@@ -317,7 +317,7 @@ $(function(){
             [["", "---------"],
              ["arc", "Australian Research Council"],
              ["nhmrc", "NHMRC"],
-             ["rdc", "Rural Research and Developmemt Corporation"],
+             ["rdc", "Rural Research and Development Corporation"],
              ["comp", "Other Australian Federal Govt competitive grant"],
              ["govt", "Australian Federal Govt non-competitive funding"],
              ["state", "Australian State / Territory Govt funding"],
@@ -836,7 +836,7 @@ $(function(){
         var doi_input = current_tr.find('input[id$=-doi]');
         var doi = doi_input.val();
         if (! doi) {
-            // Treat this as a mis-click
+            // Treat this as a miss-click
             return;
         }
         if (! doi.match(/^10\.[0-9]+\//)) {

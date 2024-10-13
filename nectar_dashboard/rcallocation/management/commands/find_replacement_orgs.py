@@ -13,7 +13,7 @@ class Command(BaseCommand):
     help = (
         "Scan for active local (non-ROR) Organisation records that seem "
         "to be subsumed by records from the ROR.  For each potential hit, "
-        "print the details of the local Organisation folllowed by the "
+        "print the details of the local Organisation followed by the "
         "ROR Organisations that seem to match."
     )
 

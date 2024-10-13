@@ -95,7 +95,7 @@ def format_author_name(author):
 
 
 def format_authors(msg):
-    # Limit to the first 5 authors with elipsis
+    # Limit to the first 5 authors with ellipsis
     authors = msg.get('author')
     if authors:
         str = "; ".join(map(format_author_name, authors[:5]))

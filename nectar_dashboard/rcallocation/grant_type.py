@@ -12,7 +12,7 @@ GRANT_TYPES = (
 )
 
 GRANT_SUBTYPES = (
-    # ARC grants from "An overview of ARC grant oportunities"
+    # ARC grants from "An overview of ARC grant opportunities"
     # Dec 2020 edition
     ("arc-discovery", "ARC Discovery project"),
     ("arc-indigenous", "ARC Discovery Indigenous"),

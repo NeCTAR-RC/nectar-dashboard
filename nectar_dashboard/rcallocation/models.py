@@ -698,7 +698,7 @@ class AllocationRequest(models.Model):
         return self.status.upper() in (self.SUBMITTED, self.NEW)
 
     def amendment_requested(self):
-        """Return True if the user has requested an extention"""
+        """Return True if the user has requested an extension"""
         return self.status.upper() in (
             self.UPDATE_PENDING,
             self.UPDATE_DECLINED,
@@ -1218,9 +1218,9 @@ class Organisation(models.Model):
 
     precedes = models.ManyToManyField(
         'Organisation',
-        related_name='supercedes',
+        related_name='supersedes',
         help_text="""This denotes this organisation was precede (or in the
-        reverse superceded) by these organisations.""",
+        reverse superseded) by these organisations.""",
     )
 
     # Note: the ROR data dump uses a tri-state for this; 'active', 'inactive'

@@ -119,7 +119,7 @@ class Loader:
                 successor = models.Organisation.objects.get(ror_id=s)
                 for p in pl:
                     predecessor = models.Organisation.objects.get(ror_id=p)
-                    successor.supercedes.add(predecessor)
+                    successor.supersedes.add(predecessor)
                     count += 1
                 successor.save()
             LOG.info(f"Added {count} predecessor relationships")
