@@ -1441,5 +1441,7 @@ class Grant(models.Model):
         )
 
     def __str__(self):
-        return (f"Funding: {self.funding_body_scheme}, "
-                f"total funding: {self.total_funding}")
+        return (
+            f"Funding: {self.funding_body_scheme}, "
+            f"total funding: {self.total_funding}"
+        )

@@ -1,0 +1,2 @@
+[files]
+extend-exclude = ["nectar_dashboard/usage/static/js/DataTables/*"]
