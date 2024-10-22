@@ -35,11 +35,14 @@ Instructions for approving an allocation:
     {% if form.instance.bundle %}
     <div class="row">
       <div class="col-md-6">
-	{% include "rcallocation/field.html" with field=form.bundle %}
+	      {% include "rcallocation/field.html" with field=form.bundle %}
       </div>
     </div>
+    <p class="mb-4">
+      <strong>Is this a suitable bundle?</strong> Review the <a href="#" onclick="event.preventDefault();FreshworksWidget('open', 'article', { id: 6000271206 });">Resource Bundle Table</a> before approving.
+    </p>
     {% else %}
-    <p>Custom Bundle Selected</p>
+      <p>Custom Bundle Selected</p>
     {% endif %}
 
     {% if not form.instance.bundle %}

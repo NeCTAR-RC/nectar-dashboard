@@ -45,6 +45,10 @@ nav a, .nav a, a img {
   text-decoration: none !important;
 }
 
+.text-danger {
+  color: darken($brand-danger, 4%) !important;
+}
+
 h6, .h6,
 h5, .h5,
 h4, .h4,
@@ -88,6 +92,13 @@ ul.list-bullet {
   /* Hack to show row actions dropdown without scroll */
   padding-bottom: 520px;
   margin-bottom: -520px;
+}
+
+.dropdown-menu > li > a {
+  text-decoration: none;
+  &:hover {
+    background: #f5f5f5;
+  }
 }
 
 .modal {
@@ -326,7 +337,18 @@ input {
     span:not(.sr-only, .fa-bars) {
       display: none;
     }
+    @media (min-width: 992px) {
+      display: none;
+    }
   }
+}
+
+.wizard-help {
+  position: absolute;
+  top: unset;
+  bottom: 0px;
+  right: 8px;
+  z-index: 2;
 }
 
 .badge {
@@ -479,8 +501,9 @@ input {
  */
 nav {
   &.navbar {
-    background-color: #eeeeee;
-    border-color: #eeeeee;
+    background-color: #f3f3f3;
+    border: none;
+    border-bottom: 1px solid #e6e6e6;
     color: rgba(32, 32, 32, .8);
     .navbar-toggle {
       line-height: 1;

@@ -105,7 +105,7 @@
 
           <table class="table table-hover">
 	    <tr>
-	      <th>Bundle</th>
+	      <th>Bundle&nbsp;&nbsp;<small style="font-weight: normal;"><a href="#" onclick="event.preventDefault();FreshworksWidget('open', 'article', { id: 6000271206 });"><i class="fa fa-info-circle mr-2"></i>Details</a></small></th>
 	      <td>{{ allocation.bundle|default:"Custom" }}</td>
 	    </tr>
             {% for quotagroup in allocation.quotas.all %}
@@ -134,7 +134,7 @@
           <table class="table table-hover">
             {% if approved_allocation %}
 	    <tr>
-	      <th>Bundle</th>
+	      <th>Bundle&nbsp;&nbsp;<small style="font-weight: normal;"><a href="#" onclick="event.preventDefault();FreshworksWidget('open', 'article', { id: 6000271206 });"><i class="fa fa-info-circle mr-2"></i>Details</a></small></th>
 	      <td>{{ allocation.bundle|default:"Custom" }}</td>
 	    </tr>
             {% for quotagroup in approved_allocation.quotas.all %}
