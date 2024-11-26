@@ -5,6 +5,8 @@ extend-exclude = ["nectar_dashboard/usage/static/js/DataTables/*", "nectar_dashb
 [default.extend-words]
 ACN = "ACN"
 ANDS = "ANDS"
-# This is for the FoR spelling see https://github.com/crate-ci/typos/issues/1122
-Fo = "Fo"
 HASS = "HASS"
+
+[default.extend-identifiers]
+FoR = "FoR"
+FoRChoiceField = "FoRChoiceField"
