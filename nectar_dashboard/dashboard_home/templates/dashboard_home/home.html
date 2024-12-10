@@ -32,6 +32,13 @@
           {% endif %}
         {% endfor %}
       {% endif %}
+      {% if security_risks|length > 0 %}
+        <div class="alert {% if security_risks|length >= 3 %}alert-danger{% else %}alert-warning{% endif %}">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          Your project currently has <strong>{{ security_risks|length }}</strong> security risks requiring action.
+          <a href="{% url 'horizon:project:security:index' %}" class="alert-link">View Security Risks<i class="fa fa-chevron-right ml-2"></i></a>
+        </div>
+      {% endif %}
       <div id="welcome" class="panel panel-primary position-relative">
         <div class="panel-body p-5">
           <div class="row">
@@ -74,8 +81,9 @@
               <h3>Learn</h3>
               <ul class="list-unstyled">
                 <li><a href="https://tutorials.rc.nectar.org.au/cloud-starter/01-overview">Tutorial: Cloud Starter Series</a></li>
-                <li><a href="https://support.ehelp.edu.au/support/solutions/articles/6000171494-project-allocation-expiry-and-renewal">Learn about allocations</a></li>
-                <li><a href="https://support.ehelp.edu.au/support/solutions/articles/6000156761-learning-and-training-resources">Register for live training</a></li>
+                <li><a href="https://support.ehelp.edu.au/support/solutions/articles/6000171494">Learn about allocations</a></li>
+                <li><a href="https://support.ehelp.edu.au/support/solutions/articles/6000156761">Register for live training</a></li>
+                <li><a href="https://tutorials.rc.nectar.org.au/security_nectar_cloud/01-overview">Tutorial: Security Practices on the Nectar Cloud</a></li>
               </ul>
             </div>
             <div class="col-xs-6 col-md-3">

@@ -114,7 +114,7 @@ var dashboardHome = (function() {
                       <h6 class="news-meta">${pub_date.toDateString()}</h6>
                       <h3 class="news-title">${$(this).find("title").html()}</h3>
                     </div>
-                    <p class="btn btn-link news-link">Read more <i class="fa fa-chevron-right"></i></p>
+                    <p class="news-link"><span class="btn btn-link">Read more</span></p>
                   </a>
                 </div>
               `;

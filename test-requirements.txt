@@ -14,3 +14,4 @@ cloudkitty-dashboard~=17.0
 trove-dashboard @ git+https://github.com/NeCTAR-RC/trove-dashboard@nectar/2023.2
 murano-dashboard @ git+https://github.com/NeCTAR-RC/murano-dashboard@nectar/2023.2
 warre-dashboard @ git+https://github.com/NeCTAR-RC/warre-dashboard@nectar/2023.2
+varroa-dashboard @ git+https://github.com/NeCTAR-RC/varroa-dashboard@nectar/2023.2

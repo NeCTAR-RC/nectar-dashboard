@@ -9,6 +9,7 @@ import requests
 
 from nectar_dashboard.api import langstroth
 from nectar_dashboard.api import manuka
+from varroa_dashboard.api import security
 
 LOG = logging.getLogger(__name__)
 
@@ -51,6 +52,13 @@ class HomeView(horizon_views.HorizonTemplateView):
         except Exception as e:
             LOG.error("Langstroth outage lookup failed", exc_info=e)
             context['outages'] = []
+
+        try:
+            security_risks = security.get_security_risks(self.request)
+            context['security_risks'] = security_risks
+        except Exception as e:
+            LOG.error("Cannot get security risks", exc_info=e)
+            context['security_risks'] = []
 
         LOG.debug("Home page context is %s", context)
         return context

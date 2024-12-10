@@ -49,6 +49,10 @@ nav a, .nav a, a img {
   color: darken($brand-danger, 4%) !important;
 }
 
+.text-decoration-none {
+  text-decoration: none !important;
+}
+
 h6, .h6,
 h5, .h5,
 h4, .h4,
@@ -236,9 +240,49 @@ input {
 }
 
 .btn-link {
+  color: $gray-darker;
+  font-weight: 600;
   text-decoration: none;
+  position: relative;
+  padding: 0;
+  &:before {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 1px;
+    width: 0;
+    background-color: $ardc-purple;
+    transition: all 0.3s ease-in-out 0s;
+  }
+  &:after {
+    color: $ardc-blue;
+    margin-left: 10px;
+    vertical-align: initial;
+    text-rendering: auto;
+    font-family: FontAwesome;
+    content: "\f054";
+    font-weight: 900;
+    -webkit-font-smoothing: antialiased;
+    transition: all 0.15s ease-in-out 0s;
+  }
   &:hover {
+    color: $gray-darker;
+    font-weight: 600;
     text-decoration: none;
+    &:before {
+      width: calc(100% - 20px);
+    }
+    &:after {
+      color: $ardc-purple;
+      margin-left: 12px;
+      vertical-align: initial;
+      text-rendering: auto;
+      font-family: FontAwesome;
+      content: "\f054";
+      font-weight: 900;
+      -webkit-font-smoothing: antialiased;
+    }
   }
 }
 
@@ -577,7 +621,7 @@ nav {
           // vertical-align: middle;
           // border: none;
           // text-rendering: auto;
-          // font-family: "Font Awesome 5 Free";
+          // font-family: FontAwesome;
           // content: "\f078";
           // font-weight: 900;
           // -webkit-font-smoothing: antialiased;
