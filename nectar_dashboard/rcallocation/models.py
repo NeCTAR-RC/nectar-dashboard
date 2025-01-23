@@ -227,13 +227,10 @@ class AllocationRequest(models.Model):
     contact_email = models.EmailField(
         'Contact e-mail',
         blank=True,
-        help_text="""The e-mail address provided by your IdP which
-                     will be used to communicate with you about this
-                     allocation request.  <strong>Note:</strong> <i>if
-                     this is not a valid e-mail address you will not
-                     receive communications on any allocation request
-                     you make</i>. If invalid please contact your IdP
-                     and ask them to correct your e-mail address!""",
+        help_text="""The e-mail address provided by your organisation which
+        will be used to communicate with you about this allocation request.
+        If invalid please contact your organisation and ask them to correct
+        your e-mail address""",
     )
 
     start_date = models.DateField(
