@@ -154,6 +154,33 @@ class BaseAllocationForm(forms.ModelForm):
         to_field_name='short_name',
     )
 
+    has_sensitive_data = forms.ChoiceField(
+        label='Does your project contain sensitive data?',
+        required=True,
+        choices=models.AllocationRequest.SENSITIVE_DATA_CHOICES,
+        widget=forms.Select(attrs={'class': 'w-auto'}),
+    )
+
+    data_classification_level = forms.ChoiceField(
+        label=mark_safe(
+            'How would data used in the project be classified according '
+            'to <a href="#" onclick="event.preventDefault();'
+            'FreshworksWidget(\'open\', \'article\', { id: 6000277743 });">'
+            'The Data Classification Framework</a>?'
+        ),
+        required=True,
+        choices=models.AllocationRequest.DATA_CLASSIFICATION_CHOICES,
+        widget=forms.Select(attrs={'class': 'w-auto'}),
+    )
+
+    institutional_data_review = forms.ChoiceField(
+        label='I have discussed the use of sensitive data on the '
+        'Nectar Research Cloud with my institution.',
+        required=False,
+        choices=models.AllocationRequest.INSTITUTIONAL_REVIEW_CHOICES,
+        widget=forms.Select(attrs={'class': 'w-auto'}),
+    )
+
     class Meta:
         model = models.AllocationRequest
         exclude = (
@@ -364,6 +391,40 @@ class BaseAllocationForm(forms.ModelForm):
             raise FORValidationError(
                 "Sum of Field Of Research percentages greater than 100"
             )
+
+        has_sensitive_data = cleaned_data.get('has_sensitive_data')
+        data_classification_level = cleaned_data.get(
+            'data_classification_level'
+        )
+        institutional_data_review = cleaned_data.get(
+            'institutional_data_review'
+        )
+
+        if has_sensitive_data == 'no_sensitive':
+            if data_classification_level != 'green':
+                self.add_error(
+                    'data_classification_level',
+                    'Data classification must be Green when project has no sensitive data',
+                )
+            cleaned_data['institutional_data_review'] = None
+        elif has_sensitive_data == 'unknown':
+            if data_classification_level != 'not_sure':
+                self.add_error(
+                    'data_classification_level',
+                    'Data classification must be Not Sure when unsure about sensitive data',
+                )
+            cleaned_data['institutional_data_review'] = None
+        elif has_sensitive_data == 'sensitive':
+            if data_classification_level == 'green':
+                self.add_error(
+                    'data_classification_level',
+                    'Data classification cannot be Green when project has sensitive data',
+                )
+            if not institutional_data_review:
+                self.add_error(
+                    'institutional_data_review',
+                    'This field is required when the project involves sensitive data',
+                )
 
         return cleaned_data
 

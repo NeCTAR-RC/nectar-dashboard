@@ -39,6 +39,7 @@ APPROVER_DISABLED_ORGANISATION = 'APPROVER_DISABLED_ORGANISATION'
 APPROVER_UNVETTED_ORGANISATION = 'APPROVER_UNVETTED_ORGANISATION'
 NO_VALID_GRANTS = 'NO_VALID_GRANTS'
 REENTER_FOR_CODES = 'REENTER_FOR_CODES'
+DATA_SENSITIVITY = 'DATA_SENSITIVITY'
 
 
 def storage_zone_to_home(zone):
@@ -379,6 +380,25 @@ def for_check(checker):
             ]
 
 
+def data_sensitivity_check(context):
+    """Checks if a renewal request has 'not_sure' data classification.
+
+    For renewal requests, the data classification level should be
+    clearly specified and not 'not_sure'.
+    """
+    if context.allocation and context.allocation.can_have_publications():
+        classification_level = context.get_field('data_classification_level')
+        if classification_level == 'not_sure':
+            return (
+                DATA_SENSITIVITY,
+                'This is a renewal request. The data sensitivity should be '
+                'classified as Green, Yellow, Orange, or Red based on the '
+                'Data Classification Framework.',
+            )
+
+    return None
+
+
 class NagChecker(Checker):
     CHECKS = [
         survey_check,
@@ -387,4 +407,5 @@ class NagChecker(Checker):
         grant_check,
         output_checks,
         for_check,
+        data_sensitivity_check,
     ]

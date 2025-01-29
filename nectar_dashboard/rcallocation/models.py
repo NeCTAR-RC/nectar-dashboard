@@ -435,6 +435,73 @@ class AllocationRequest(models.Model):
         null=True,
     )
 
+    NO_SENSITIVE = 'no_sensitive'
+    SENSITIVE = 'sensitive'
+    UNKNOWN = 'unknown'
+
+    SENSITIVE_DATA_CHOICES = [
+        ('', 'Please select...'),
+        (NO_SENSITIVE, 'No, the project does not involve sensitive data.'),
+        (SENSITIVE, 'Yes, the project involves sensitive data.'),
+        (UNKNOWN, 'I am unsure if my project contains sensitive data.'),
+    ]
+
+    has_sensitive_data = models.CharField(
+        verbose_name="Sensitive Data",
+        max_length=20,
+        choices=SENSITIVE_DATA_CHOICES,
+        null=True,
+        blank=False,
+        help_text="""<a href="https://support.ehelp.edu.au/support/
+                 solutions/articles/6000277743" target="_blank">
+                 Sensitive data</a> is data that can be used to identify
+                 an individual, species, object, process, or location
+                 that introduces a risk of discrimination, harm, or
+                 unwanted attention. Examples could include identifiable
+                 personal and health/medical data, Indigenous data,
+                 ecological data, and commercial-in-confidence data""",
+    )
+
+    GREEN = 'green'
+    YELLOW = 'yellow'
+    ORANGE = 'orange'
+    RED = 'red'
+    NOT_SURE = 'not_sure'
+
+    DATA_CLASSIFICATION_CHOICES = [
+        ('', 'Please select...'),
+        (GREEN, 'Green'),
+        (YELLOW, 'Yellow'),
+        (ORANGE, 'Orange'),
+        (RED, 'Red'),
+        (NOT_SURE, 'Not Sure'),
+    ]
+
+    data_classification_level = models.CharField(
+        verbose_name="Data Classification Level",
+        max_length=10,
+        choices=DATA_CLASSIFICATION_CHOICES,
+        null=True,
+        blank=False,
+    )
+
+    YES = 'yes'
+    NOT_YET = 'not_yet'
+
+    INSTITUTIONAL_REVIEW_CHOICES = [
+        ('', 'Please select...'),
+        (YES, 'Yes'),
+        (NOT_YET, 'Not yet'),
+    ]
+
+    institutional_data_review = models.CharField(
+        verbose_name="Institutional Data Review",
+        max_length=10,
+        choices=INSTITUTIONAL_REVIEW_CHOICES,
+        null=True,
+        blank=True,
+    )
+
     # At the model level, we need to represent both 2008 and 2020 code
     # indefinitely.
     FOR_CHOICES = tuple(

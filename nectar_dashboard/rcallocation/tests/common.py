@@ -433,6 +433,8 @@ def request_allocation(
         'use_case': fuzzy.FuzzyText().fuzz(),
         'users_figure_type': 'measured',
         'multiple_allocations_check': False,
+        'has_sensitive_data': 'no_sensitive',
+        'data_classification_level': 'green',
         'geographic_requirements': fuzzy.FuzzyText().fuzz(),
         'associated_site': site,
         'bundle': bundle,

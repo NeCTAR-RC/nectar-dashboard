@@ -269,6 +269,54 @@ class AllocationModelTestCase(base.BaseTestCase):
         allocation = factories.AllocationFactory.create()
         self.assertEqual(0, allocation.get_quota('rating.budget'))
 
+    def test_has_sensitive_data_choices(self):
+        """Test that has_sensitive_data field only accepts valid choices"""
+        allocation = factories.AllocationFactory.create(create_quotas=False)
+
+        # Test valid choices
+        valid_choices = ['no_sensitive', 'sensitive', 'unknown']
+        for choice in valid_choices:
+            allocation.has_sensitive_data = choice
+            allocation.save()
+            self.assertEqual(allocation.has_sensitive_data, choice)
+
+        # Test invalid choice
+        with self.assertRaises(ValidationError):
+            allocation.has_sensitive_data = 'invalid_choice'
+            allocation.full_clean()
+
+    def test_has_sensitive_data_blank(self):
+        """Test that has_sensitive_data cannot be blank"""
+        allocation = factories.AllocationFactory.create(create_quotas=False)
+        # Test empty string is not allowed
+        with self.assertRaises(ValidationError):
+            allocation.has_sensitive_data = ''
+            allocation.full_clean()
+
+    def test_data_classification_choices(self):
+        """Test that data_classification_level field only accepts valid choices"""
+        allocation = factories.AllocationFactory.create(create_quotas=False)
+
+        # Test valid choices
+        valid_choices = ['green', 'yellow', 'orange', 'red', 'not_sure']
+        for choice in valid_choices:
+            allocation.data_classification_level = choice
+            allocation.save()
+            self.assertEqual(allocation.data_classification_level, choice)
+
+        # Test invalid choice
+        with self.assertRaises(ValidationError):
+            allocation.data_classification_level = 'invalid_choice'
+            allocation.full_clean()
+
+    def test_data_classification_blank(self):
+        """Test that data_classification_level cannot be blank"""
+        allocation = factories.AllocationFactory.create(create_quotas=False)
+        # Test empty string is not allowed
+        with self.assertRaises(ValidationError):
+            allocation.data_classification_level = ''
+            allocation.full_clean()
+
 
 class QuotaGroupModelTestCase(base.BaseTestCase):
     def setUp(self, *args, **kwargs):

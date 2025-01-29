@@ -115,6 +115,18 @@
                      <div class="col-sm-12 col-md-8">
                        {% include "rcallocation/field.html" with field=form.use_case %}
                      </div>
+                     <div class="col-sm-12 col-md-8">
+                        {% include "rcallocation/field.html" with field=form.has_sensitive_data %}
+                     </div>
+                     <div class="col-sm-12 col-md-8">
+                        {% include "rcallocation/field.html" with field=form.data_classification_level %}
+                        <input type="hidden" id="id_data_classification_level_hidden" name="data_classification_level" value="{{ form.data_classification_level.value }}">
+                        <span class="col-sm-12 col-md-4" id="data-classification-box" style="flex: 1; max-width: fit-content; padding: 5px; margin-bottom: 15px; border-radius: 5px; font-size: 1em; font-weight: bold; background-color: transparent;">
+                        </span>
+                     </div>
+                     <div class="col-sm-12 col-md-8" id="institutional_data_review_container" style="display: none;">
+                      {% include "rcallocation/field.html" with field=form.institutional_data_review %}
+                     </div>
                    </div>
                 </div>
               </div>

@@ -27,6 +27,9 @@ DUMMY_ALLOC_DATA = {
     'use_case': 'dummy',
     'multiple_allocations_check': True,
     'users_figure_type': 'measured',
+    'has_sensitive_data': 'no_sensitive',
+    'data_classification_level': 'green',
+    'institutional_data_review': 'not_yet',
     'for_percentage_1': 0,
     'for_percentage_2': 0,
     'for_percentage_3': 0,
@@ -65,6 +68,9 @@ class BaseAllocationFormTestCase(FormsTestCase):
                 'service_active_users_past_year',
                 'users_figure_type',
                 'multiple_allocations_check',
+                'has_sensitive_data',
+                'data_classification_level',
+                'institutional_data_review',
                 'field_of_research_1',
                 'for_percentage_1',
                 'field_of_research_2',
@@ -94,6 +100,8 @@ class BaseAllocationFormTestCase(FormsTestCase):
             'estimated_project_duration',
             'use_case',
             'users_figure_type',
+            'has_sensitive_data',
+            'data_classification_level',
             'for_percentage_1',
             'for_percentage_2',
             'for_percentage_3',
@@ -156,6 +164,102 @@ class BaseAllocationFormTestCase(FormsTestCase):
         form = forms.BaseAllocationForm(data=data)
         self.assertTrue(form.is_valid())
 
+    def test_sensitive_data_classification_validation(self):
+        """Test validation rules between sensitive data and classification level"""
+        data = DUMMY_ALLOC_DATA.copy()
+
+        # Test when has_sensitive_data is 'no_sensitive'
+        data['data_classification_level'] = 'yellow'  # Should fail
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('data_classification_level', form.errors)
+        self.assertIn(
+            'must be Green', form.errors['data_classification_level'][0]
+        )
+
+        # Test valid no_sensitive case
+        data['data_classification_level'] = 'green'
+        form = forms.BaseAllocationForm(data=data)
+        self.assertTrue(form.is_valid())
+
+        # Test when has_sensitive_data is 'unknown'
+        data['has_sensitive_data'] = 'unknown'
+        data['data_classification_level'] = 'green'  # Should fail
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('data_classification_level', form.errors)
+        self.assertIn(
+            'must be Not Sure', form.errors['data_classification_level'][0]
+        )
+
+        # Test valid unknown case
+        data['data_classification_level'] = 'not_sure'
+        form = forms.BaseAllocationForm(data=data)
+        self.assertTrue(form.is_valid())
+
+        # Test when has_sensitive_data is 'sensitive'
+        data['has_sensitive_data'] = 'sensitive'
+        data['data_classification_level'] = 'green'  # Should fail
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('data_classification_level', form.errors)
+        self.assertIn(
+            'cannot be Green', form.errors['data_classification_level'][0]
+        )
+
+        # Test valid sensitive cases
+        valid_classifications = ['yellow', 'orange', 'red', 'not_sure']
+        for classification in valid_classifications:
+            data['data_classification_level'] = classification
+            form = forms.BaseAllocationForm(data=data)
+            self.assertTrue(form.is_valid())
+
+    def test_institutional_data_review_validation(self):
+        """Test validation rules between sensitive data and institutional review"""
+        data = DUMMY_ALLOC_DATA.copy()
+
+        # Test when has_sensitive_data is 'no_sensitive'
+        data['institutional_data_review'] = 'yes'  # Should be cleared
+        form = forms.BaseAllocationForm(data=data)
+        self.assertTrue(form.is_valid())
+        self.assertIsNone(form.cleaned_data['institutional_data_review'])
+
+        # Test when has_sensitive_data is 'unknown'
+        data['has_sensitive_data'] = 'unknown'
+        data['data_classification_level'] = 'not_sure'
+        data['institutional_data_review'] = 'not_yet'  # Should be cleared
+        form = forms.BaseAllocationForm(data=data)
+        self.assertTrue(form.is_valid())
+        self.assertIsNone(form.cleaned_data['institutional_data_review'])
+
+        # Test when has_sensitive_data is 'sensitive' but no review status
+        data['has_sensitive_data'] = 'sensitive'
+        data['institutional_data_review'] = ''  # Should fail validation
+        data['data_classification_level'] = 'yellow'  # Valid for sensitive
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('institutional_data_review', form.errors)
+        self.assertIn(
+            'This field is required when the project involves sensitive data',
+            form.errors['institutional_data_review'][0],
+        )
+
+        # Test valid sensitive data cases
+        valid_review_choices = ['yes', 'not_yet']
+        for review in valid_review_choices:
+            data['institutional_data_review'] = review
+            form = forms.BaseAllocationForm(data=data)
+            self.assertTrue(form.is_valid())
+            self.assertEqual(
+                review, form.cleaned_data['institutional_data_review']
+            )
+
+        # Test invalid review choice
+        data['institutional_data_review'] = 'invalid_choice'
+        form = forms.BaseAllocationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('institutional_data_review', form.errors)
+
 
 class AllocationRequestFormTestCase(FormsTestCase):
     def test_fields(self):
@@ -175,6 +279,9 @@ class AllocationRequestFormTestCase(FormsTestCase):
                 'direct_access_user_estimate',
                 'estimated_service_count',
                 'estimated_service_active_users',
+                'has_sensitive_data',
+                'data_classification_level',
+                'institutional_data_review',
                 'field_of_research_1',
                 'for_percentage_1',
                 'field_of_research_2',

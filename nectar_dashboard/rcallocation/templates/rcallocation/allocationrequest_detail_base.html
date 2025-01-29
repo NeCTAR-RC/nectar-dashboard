@@ -102,12 +102,11 @@
         {% if not allocation.is_active %}
         <div class="col-md-6">
           <h3>Requested Resources</h3>
-
           <table class="table table-hover">
-	    <tr>
-	      <th>Bundle&nbsp;&nbsp;<small style="font-weight: normal;"><a href="#" onclick="event.preventDefault();FreshworksWidget('open', 'article', { id: 6000271206 });"><i class="fa fa-info-circle mr-2"></i>Details</a></small></th>
-	      <td>{{ allocation.bundle|default:"Custom" }}</td>
-	    </tr>
+            <tr>
+              <th>Bundle&nbsp;&nbsp;<small style="font-weight: normal;"><a href="#" onclick="event.preventDefault();FreshworksWidget('open', 'article', { id: 6000271206 });"><i class="fa fa-info-circle mr-2"></i>Details</a></small></th>
+              <td>{{ allocation.bundle|default:"Custom" }}</td>
+            </tr>
             {% for quotagroup in allocation.quotas.all %}
             {% for quota in quotagroup.quota_set.all %}
             <tr>
@@ -133,21 +132,21 @@
           </h3>
           <table class="table table-hover">
             {% if approved_allocation %}
-	    <tr>
-	      <th>Bundle&nbsp;&nbsp;<small style="font-weight: normal;"><a href="#" onclick="event.preventDefault();FreshworksWidget('open', 'article', { id: 6000271206 });"><i class="fa fa-info-circle mr-2"></i>Details</a></small></th>
-	      <td>{{ allocation.bundle|default:"Custom" }}</td>
-	    </tr>
-            {% for quotagroup in approved_allocation.quotas.all %}
-                {% for quota in quotagroup.quota_set.all %}
-                  <tr>
-                    <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
-                    {% if quota.resource.resource_type == 'boolean' %}
-                    <td>Enabled</td>
-                    {% else %}
-                    <td>{{ quota.quota }} {{ quota.resource.unit }}</td>
-                    {% endif %}
-                  </tr>
-                {% endfor %}
+              <tr>
+                <th>Bundle&nbsp;&nbsp;<small style="font-weight: normal;"><a href="#" onclick="event.preventDefault();FreshworksWidget('open', 'article', { id: 6000271206 });"><i class="fa fa-info-circle mr-2"></i>Details</a></small></th>
+                <td>{{ allocation.bundle|default:"Custom" }}</td>
+              </tr>
+              {% for quotagroup in approved_allocation.quotas.all %}
+                  {% for quota in quotagroup.quota_set.all %}
+                    <tr>
+                      <th>{{ quota.resource.service_type }} {{ quota.resource }} <span class="label label-primary">{{ quota.group.zone }}</span></th>
+                      {% if quota.resource.resource_type == 'boolean' %}
+                      <td>Enabled</td>
+                      {% else %}
+                      <td>{{ quota.quota }} {{ quota.resource.unit }}</td>
+                      {% endif %}
+                    </tr>
+                  {% endfor %}
               {% endfor %}
             {% else %}
               <tr>
@@ -197,7 +196,7 @@
           {% endif %}
           <h3>Usage Information</h3>
           {% if allocation.estimated_number_users %}
-          <h4>Estimated Number of Users</>
+          <h4>Estimated Number of Users</h4>
              <p>
                 {{ allocation.estimated_number_users }}
              </p>
@@ -234,10 +233,63 @@
                     </p>
                <h4>Are the above figures measured or estimated?</h4>
                     <p>
-                       {{ allocation.users_figure_type }}
+                       {{ allocation.get_users_figure_type_display }}
                     </p>
             {% endif %}
           {% endif %}
+          <h4>Data Sensitivity Information</h4>
+          <div class="row">
+            <div class="col-md-6">
+              {% if not approved_allocation or allocation.is_active %}
+                <h5>Current Values:</h5>
+              {% else %}
+                <h5>Requested Changes:</h5>
+              {% endif %}
+              <table class="table table-hover">
+                <tr>
+                  <th width="200">Contains sensitive data?</th>
+                  <td>{{ allocation.get_has_sensitive_data_display }}</td>
+                </tr>
+                <tr>
+                  <th>Data classification Level&nbsp;&nbsp;<small style="font-weight: normal;"><a href="#" onclick="event.preventDefault(); FreshworksWidget('open', 'article', { id: 6000277743 });"><i class="fa fa-info-circle mr-2"></i>Framework details</a></small></th>
+                  <td>{{ allocation.get_data_classification_level_display }}</td>
+                </tr>
+                <tr>
+                  <th width="200">Discussed the use of sensitive data on the Nectar Research Cloud with your institution?</th>
+                  <td>{{ allocation.get_institutional_data_review_display }}</td>
+                </tr>
+              </table>
+              <div class="col-sm-12 col-md-8 data-classification-box"
+                   data-value="{{ allocation.data_classification_level }}"
+                   style="flex: 1; max-width: fit-content; padding: 5px; margin-bottom: 15px; border-radius: 5px; font-size: 1em; font-weight: bold; background-color: transparent;">
+              </div>
+            </div>
+            {% if approved_allocation %}
+              {% if allocation.has_sensitive_data != approved_allocation.has_sensitive_data or allocation.data_classification_level != approved_allocation.data_classification_level or allocation.institutional_data_review != approved_allocation.institutional_data_review %}
+                <div class="col-md-6">
+                  <h5>Current Values:</h5>
+                  <table class="table table-hover">
+                    <tr>
+                      <th width="200">Contains sensitive data?</th>
+                      <td>{{ approved_allocation.get_has_sensitive_data_display }}</td>
+                    </tr>
+                    <tr>
+                      <th>Data classification Level&nbsp;&nbsp;<small style="font-weight: normal;"><a href="#" onclick="event.preventDefault(); FreshworksWidget('open', 'article', { id: 6000277743 });"><i class="fa fa-info-circle mr-2"></i>Framework details</a></small></th>
+                      <td>{{ approved_allocation.get_data_classification_level_display }}</td>
+                    </tr>
+                    <tr>
+                      <th width="200">Discussed the use of sensitive data on the Nectar Research Cloud with your institution?</th>
+                      <td>{{ approved_allocation.get_institutional_data_review_display }}</td>
+                    </tr>
+                  </table>
+                  <div class="col-sm-12 col-md-8 data-classification-box"
+                       data-value="{{ approved_allocation.data_classification_level }}"
+                       style="flex: 1; max-width: fit-content; padding: 5px; margin-bottom: 15px; border-radius: 5px; font-size: 1em; font-weight: bold; background-color: transparent;">
+                  </div>
+                </div>
+              {% endif %}
+            {% endif %}
+          </div>
         </div>
       </div>
       <div class="row">

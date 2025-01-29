@@ -177,3 +177,34 @@ class NagChecksTest(base.BaseTestCase):
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual([], res)
+
+    def test_data_sensitivity_check_good(self):
+        """Test when data classification is properly specified for renewal"""
+        allocation = factories.AllocationFactory.create()
+        # Mock can_have_publications to return True for renewal request
+        allocation.can_have_publications = lambda: True
+        allocation.data_classification_level = 'yellow'
+        checker = checkers.NagChecker(allocation=allocation)
+        res = checker.do_checks()
+        self.assertEqual([], res)
+
+    def test_data_sensitivity_check_bad(self):
+        """Test when data classification is uncertain for renewal"""
+        allocation = factories.AllocationFactory.create()
+        # Mock can_have_publications to return True for renewal request
+        allocation.can_have_publications = lambda: True
+        allocation.data_classification_level = 'not_sure'
+        checker = checkers.NagChecker(allocation=allocation)
+        res = checker.do_checks()
+        self.assertEqual(1, len(res))
+        self.assertEqual(checkers.DATA_SENSITIVITY, res[0][0])
+
+    def test_data_sensitivity_check_not_renewal(self):
+        """Test when request is not a renewal"""
+        allocation = factories.AllocationFactory.create()
+        # Mock can_have_publications to return False for non-renewal request
+        allocation.can_have_publications = lambda: False
+        allocation.data_classification_level = 'not_sure'
+        checker = checkers.NagChecker(allocation=allocation)
+        res = checker.do_checks()
+        self.assertEqual([], res)
