@@ -458,6 +458,10 @@ HORIZON_CONFIG['OUTAGE_BASE_URL'] = "https://status.rc.nectar.org.au/outages/"
 KEYSTONE_MEMBER_ROLE_ID = '2'
 KEYSTONE_TENANTMANAGER_ROLE_ID = '14'
 
+ORCID_URL = 'https://orcid.org'
+ORCID_LINK_URL = 'https://ocid-link.fake.nectar.org.au'
+ORCID_UNLINK_URL = 'https://ocid-unlink.fake.nectar.org.au'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',

@@ -28,7 +28,7 @@ class EditSelfViewTestCase(base.UserViewTestCase):
         manuka_user = client.users.get.return_value
         response = self.client.get(self.url)
         self.assertStatusCode(response, 200)
-        self.assertEqual(manuka_user, response.context_data['object'])
+        self.assertEqual(manuka_user, response.context_data['user'])
         client.users.get.assert_called_once_with(
             self.request.user.keystone_user_id
         )

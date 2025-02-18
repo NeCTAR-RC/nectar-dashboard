@@ -12,6 +12,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import urllib
+
+from django.conf import settings
 from django.urls import reverse
 from django.urls import reverse_lazy
 from horizon import exceptions
@@ -37,15 +40,18 @@ class UserEditSelfView(forms.ModalFormView):
                 self._object = client.users.get(keystone_user_id)
             except Exception:
                 msg = 'Unable to retrieve user.'
-                url = reverse('horizon:settings')
+                url = reverse('horizon:settings:user:index')
                 exceptions.handle(self.request, msg, redirect=url)
         return self._object
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.get_object()
-        context['submit_url'] = reverse(self.submit_url)
-        context['object'] = self.get_object()
+        context['orcid_url'] = settings.ORCID_URL
+        my_url = urllib.parse.quote(self.request.build_absolute_uri())
+        context['orcid_oauth_url'] = f"{settings.ORCID_LINK_URL}?next={my_url}"
+        context['orcid_unlink_url'] = settings.ORCID_UNLINK_URL
+        context['my_url'] = self.request.build_absolute_uri()
         return context
 
     def get_initial(self):
