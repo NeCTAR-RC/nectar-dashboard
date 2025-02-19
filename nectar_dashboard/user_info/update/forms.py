@@ -55,8 +55,6 @@ class UpdateForm(forms.SelfHandlingForm):
         help_text="Your affiliation to your organisation.",
     )
 
-    orcid = forms.CharField(max_length=64, label="ORCID", required=False)
-
     phone_number = forms.CharField(max_length=64, required=False)
 
     mobile_number = forms.CharField(max_length=64, required=False)

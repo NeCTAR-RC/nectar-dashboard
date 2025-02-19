@@ -41,7 +41,6 @@ class EditSelfViewTestCase(base.UserViewTestCase):
             'affiliation': 'member',
             'phone_number': '123',
             'mobile_number': '456',
-            'orcid': 'rose',
         }
 
         # Can't change displayname
@@ -63,7 +62,6 @@ class EditSelfViewTestCase(base.UserViewTestCase):
             'affiliation': 'member',
             'phone_number': '123',
             'mobile_number': '456',
-            'orcid': 'rose',
         }
         response = self.client.post(self.url, form)
         self.assertStatusCode(response, 302)
