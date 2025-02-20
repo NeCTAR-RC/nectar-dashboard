@@ -220,11 +220,11 @@ class BaseAllocationForm(forms.ModelForm):
                 choices=[
                     (
                         False,
-                        'No, this is the only allocation for ' 'this project.',
+                        'No, this is the only allocation for this project.',
                     ),
                     (
                         True,
-                        'Yes, usage numbers have already been ' 'provided.',
+                        'Yes, usage numbers have already been provided.',
                     ),
                 ],
             ),
@@ -819,8 +819,7 @@ class GrantForm(NectarBaseModelForm):
                 self.add_error(
                     'funding_body_scheme',
                     ValidationError(
-                        'Provide details for this grant '
-                        'or a grant id (below!)'
+                        'Provide details for this grant or a grant id (below!)'
                     ),
                 )
         elif grant_type == 'state':

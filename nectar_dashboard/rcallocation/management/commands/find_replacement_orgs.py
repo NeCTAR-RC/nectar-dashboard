@@ -44,8 +44,7 @@ class Command(BaseCommand):
                 print("========================")
             elif verbose:
                 print(
-                    f"Local Organisation {o.id} ({o.full_name}) "
-                    "does not match"
+                    f"Local Organisation {o.id} ({o.full_name}) does not match"
                 )
                 print("========================")
 

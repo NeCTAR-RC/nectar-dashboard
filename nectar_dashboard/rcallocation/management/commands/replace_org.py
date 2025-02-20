@@ -27,7 +27,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--disable',
             action="store_true",
-            help="Disable the original Organisation after " "replacing it",
+            help="Disable the original Organisation after replacing it",
         )
         parser.add_argument(
             '--no-dry-run',

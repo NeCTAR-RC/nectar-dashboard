@@ -556,7 +556,7 @@ class GrantFormTestCase(FormsTestCase):
         self.assertIsNone(form.errors.get('grant_subtype'))
         self.assertIsNone(form.errors.get('grant_id'))
         self.assertEqual(
-            ['Provide details for this grant ' 'or a grant id (below!)'],
+            ['Provide details for this grant or a grant id (below!)'],
             form.errors.get('funding_body_scheme'),
         )
 

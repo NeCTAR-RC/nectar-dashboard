@@ -1049,7 +1049,7 @@ class AllocationTests(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data['error'],
-            "The associated_site attribute must be set " "before approving",
+            "The associated_site attribute must be set before approving",
         )
 
     def test_approve_invalid_role(self):

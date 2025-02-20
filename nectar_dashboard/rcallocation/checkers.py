@@ -96,7 +96,7 @@ def manila_local_check(context):
             national = context.get_field('national')
             return (
                 MANILA_NOT_LOCAL,
-                '{} approved {} allocation requests shares ' 'in {}'.format(
+                '{} approved {} allocation requests shares in {}'.format(
                     associated_site.name,
                     'national' if national else 'local',
                     zone,

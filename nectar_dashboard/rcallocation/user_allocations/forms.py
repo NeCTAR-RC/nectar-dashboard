@@ -63,11 +63,11 @@ class UserAllocationRequestAmendForm(base_forms.AllocationAmendRequestForm):
                 choices=[
                     (
                         False,
-                        'No, this is the only allocation for ' 'this project.',
+                        'No, this is the only allocation for this project.',
                     ),
                     (
                         True,
-                        'Yes, usage numbers have already been ' 'provided.',
+                        'Yes, usage numbers have already been provided.',
                     ),
                 ],
             ),

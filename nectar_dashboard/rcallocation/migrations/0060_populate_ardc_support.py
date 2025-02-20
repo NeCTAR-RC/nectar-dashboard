@@ -60,7 +60,7 @@ PLATFORM_PROJECTS = [
     ),
     (
         "FishID",
-        "Transforming Australian aquatic ecosystem monitoring " "using AI",
+        "Transforming Australian aquatic ecosystem monitoring using AI",
         "PL071",
     ),
     (

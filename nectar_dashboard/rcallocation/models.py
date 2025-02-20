@@ -304,8 +304,7 @@ class AllocationRequest(models.Model):
             MinValueValidator(1),
         ],
         error_messages={
-            'min_value': 'The estimated number of users must be greater '
-            'than 0'
+            'min_value': 'The estimated number of users must be greater than 0'
         },
         help_text="""Estimated number of users, researchers and collaborators
         to be supported by the allocation.""",
@@ -321,8 +320,7 @@ class AllocationRequest(models.Model):
             MinValueValidator(1),
         ],
         error_messages={
-            'min_value': 'The estimated number of users must be greater '
-            'than 0'
+            'min_value': 'The estimated number of users must be greater than 0'
         },
         help_text="""Estimated number of users who will be creating virtual
                 machine instances or directly logging in to them.""",
@@ -354,8 +352,7 @@ class AllocationRequest(models.Model):
             MinValueValidator(1),
         ],
         error_messages={
-            'min_value': 'The estimated number of users must be greater '
-            'than 0'
+            'min_value': 'The estimated number of users must be greater than 0'
         },
         help_text="""Estimate the number of people you expect will use the
                  research services or platforms hosted on your allocation.
@@ -380,7 +377,7 @@ class AllocationRequest(models.Model):
             MinValueValidator(1),
         ],
         error_messages={
-            'min_value': 'The number of users must be greater ' 'than 0'
+            'min_value': 'The number of users must be greater than 0'
         },
         help_text="""Number of users who have created virtual machine
                  instances or directly logged in to them in the last year.""",
@@ -411,7 +408,7 @@ class AllocationRequest(models.Model):
             MinValueValidator(1),
         ],
         error_messages={
-            'min_value': 'The number of users must be greater ' 'than 0'
+            'min_value': 'The number of users must be greater than 0'
         },
         help_text="""The number of individuals who have used the research
                  services or platforms hosted on your allocation in the last

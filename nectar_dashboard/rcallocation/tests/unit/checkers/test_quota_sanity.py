@@ -132,7 +132,7 @@ class QuotaSanityChecksTest(base.BaseTestCase):
             checkers.MANILA_NOT_LOCAL, checkers.manila_local_check(checker)[0]
         )
         self.assertEqual(
-            'uom approved local allocation requests shares ' 'in QRIScloud',
+            'uom approved local allocation requests shares in QRIScloud',
             checkers.manila_local_check(checker)[1],
         )
 
@@ -143,7 +143,7 @@ class QuotaSanityChecksTest(base.BaseTestCase):
             checkers.MANILA_NOT_LOCAL, checkers.manila_local_check(checker)[0]
         )
         self.assertEqual(
-            'uom approved national allocation requests shares ' 'in QRIScloud',
+            'uom approved national allocation requests shares in QRIScloud',
             checkers.manila_local_check(checker)[1],
         )
 

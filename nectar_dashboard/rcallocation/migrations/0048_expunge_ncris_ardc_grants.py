@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
 
         if errors > 0:
             raise Exception(
-                'Abandoning migration: see earlier output ' 'for the errors'
+                'Abandoning migration: see earlier output for the errors'
             )
 
     dependencies = [

@@ -83,7 +83,8 @@ class BaseAllocationListTable(tables.DataTable):
 
 def delta_quota(allocation, want, have):
     if allocation.status in ('X', 'J'):
-        return "%+d" % (int(want) - int(have))
+        diff = int(want) - int(have)
+        return str(diff)
     elif allocation.status == 'A':
         return have or '-'
     elif allocation.status in ('E', 'R'):

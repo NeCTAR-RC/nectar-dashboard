@@ -156,7 +156,7 @@ class PublicationExtrasTestCase(base.BaseTestCase):
             "<i>Publication</i>: Not recorded, "
             "<i>Year</i>: Not recorded",
             publication_extras.crossref_summary(
-                '{"message": ' ' {"author": [{"family": "<tag>&"}]}}'
+                '{"message":  {"author": [{"family": "<tag>&"}]}}'
             ),
         )
 
@@ -166,7 +166,7 @@ class PublicationExtrasTestCase(base.BaseTestCase):
             "<i>Publication</i>: Some Journal, "
             "<i>Year</i>: Not recorded",
             publication_extras.crossref_summary(
-                '{"message": ' '  {"container-title": ["Some Journal"]}}'
+                '{"message":   {"container-title": ["Some Journal"]}}'
             ),
         )
         # Prevent injection via the title
@@ -176,7 +176,7 @@ class PublicationExtrasTestCase(base.BaseTestCase):
             "<i>Publication</i>: &lt;beep&gt;, "
             "<i>Year</i>: Not recorded",
             publication_extras.crossref_summary(
-                '{"message": ' '  {"container-title": ["<beep>"]}}'
+                '{"message":   {"container-title": ["<beep>"]}}'
             ),
         )
 
