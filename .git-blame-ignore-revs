@@ -2,3 +2,4 @@
 # git config --global blame.ignoreRevsFile .git-blame-ignore-revs
 
 a2d3b529b59660ad06fa592d604e407e17f9135a  # ruff format code
+4a9d8aa2352f2f61cf994828ae936ce23e77ee65  # update ruff
