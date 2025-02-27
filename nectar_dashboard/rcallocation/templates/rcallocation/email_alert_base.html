@@ -1,4 +1,4 @@
-{% block subject %}Allocation request [{{ allocation.allocation_home }}][{{ allocation.project_description }}]{% endblock %}
+{% block subject %}Allocation request [{% if allocation.get_interested_sites %}{% for site in allocation.get_interested_sites %}{{ site.display_name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}ARDC{% endif %}][{{ allocation.project_description }}]{% endblock %}
 
 <html>
 <body>

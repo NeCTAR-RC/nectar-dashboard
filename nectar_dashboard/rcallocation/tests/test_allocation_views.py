@@ -140,8 +140,7 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
         call_kwargs = base.FAKE_FD_NOTIFIER.send_email.mock_calls[0].kwargs
         self.assertEqual("test_user", call_kwargs['email'])
         self.assertEqual(
-            "Allocation request [unassigned]"
-            f"[{allocation.project_description}]",
+            f"Allocation request [ARDC][{allocation.project_description}]",
             call_kwargs['subject'],
         )
         # Not checking the expansion of the template body.
@@ -213,8 +212,7 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
         call_kwargs = base.FAKE_FD_NOTIFIER.send_email.mock_calls[0].kwargs
         self.assertEqual("test_user", call_kwargs['email'])
         self.assertEqual(
-            "Allocation request [unassigned]"
-            f"[{allocation.project_description}]",
+            f"Allocation request [ARDC][{allocation.project_description}]",
             call_kwargs['subject'],
         )
         self.assertIn(
