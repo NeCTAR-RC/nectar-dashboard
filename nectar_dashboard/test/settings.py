@@ -455,6 +455,9 @@ HORIZON_CONFIG['FRESHDECK_SEARCH_URL'] = (
 )
 HORIZON_CONFIG['OUTAGE_BASE_URL'] = "https://status.rc.nectar.org.au/outages/"
 
+KEYSTONE_MEMBER_ROLE_ID = '2'
+KEYSTONE_TENANTMANAGER_ROLE_ID = '14'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',

@@ -29,16 +29,27 @@ from nectar_dashboard.project_members import api as api_ext
 
 LOG = logging.getLogger(__name__)
 
+ROLE_CHOICES = [
+    (settings.KEYSTONE_MEMBER_ROLE_ID, 'member'),
+    (settings.KEYSTONE_TENANTMANAGER_ROLE_ID, 'tenantmanager'),
+]
+
 
 class AddUserToProjectForm(forms.SelfHandlingForm):
     email = forms.EmailField(label=mark_safe("Username"), required=True)
+    role_id = forms.ChoiceField(
+        label=mark_safe("Role"),
+        choices=ROLE_CHOICES,
+        required=True,
+        initial=settings.KEYSTONE_MEMBER_ROLE_ID,
+    )
 
     def handle(self, request, data):
         project_id = request.user.tenant_id
-        role_id = getattr(settings, 'KEYSTONE_MEMBER_ROLE_ID', '1')
 
         try:
             email = data['email']
+            role_id = data['role_id']
             user = api_ext.user_get_by_name(request, email)
             api.keystone.add_tenant_user_role(
                 request, project=project_id, user=user.id, role=role_id

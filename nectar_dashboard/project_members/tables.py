@@ -14,7 +14,6 @@
 
 import logging
 
-from django.conf import settings
 from django.template import defaultfilters
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -48,21 +47,28 @@ class RemoveMembers(tables.DeleteAction):
         if not api.keystone.keystone_can_edit_project():
             return False
         if user:
-            return user.id != request.user.id
+            if user.id == request.user.id:
+                return False
+            if user.role_name.lower() not in ['member', 'tenantmanager']:
+                return False
         return True
 
     def action(self, request, obj_id):
         user_obj = self.table.get_object_by_id(obj_id)
         project_id = request.user.tenant_id
-        LOG.info(f'Removing user {user_obj.id} from project {project_id}.')
-        role_id = getattr(settings, 'KEYSTONE_MEMBER_ROLE_ID', '1')
+        LOG.info(
+            f'Removing role {user_obj.role_id} from user {user_obj.user_id} for project {project_id}.'
+        )
         api.keystone.remove_tenant_user_role(
-            request, project=project_id, user=user_obj.id, role=role_id
+            request,
+            project=project_id,
+            user=user_obj.user_id,
+            role=user_obj.role_id,
         )
 
     @staticmethod
     def action_present(count):
-        return ungettext_lazy("Remove Member", "Remove Members", count)
+        return ungettext_lazy("Remove", "Remove", count)
 
     @staticmethod
     def action_past(count):
@@ -85,6 +91,9 @@ class AddMembersLink(tables.LinkAction):
 class UsersTable(tables.DataTable):
     name = tables.Column(
         'name', verbose_name=_('User Name'), filters=[defaultfilters.urlize]
+    )
+    role = tables.Column(
+        'role_name', verbose_name=_('Role'), filters=[defaultfilters.urlize]
     )
 
 

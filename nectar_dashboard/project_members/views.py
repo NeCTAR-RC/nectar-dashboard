@@ -12,7 +12,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from horizon import exceptions
@@ -26,9 +25,16 @@ from nectar_dashboard.project_members.tables import ProjectMembersTable
 
 
 class User:
-    def __init__(self, user_dict):
+    def __init__(self, user_dict, role_dict):
         for k, v in user_dict.items():
             setattr(self, k, v)
+        self.role_name = role_dict.get('name')
+        self.role_id = role_dict.get('id')
+        # We need unique ids so combo of user id and role id.
+        # Store user id in different field so to use in remove stage
+        # in tables.py
+        self.user_id = self.id
+        self.id = f"{self.id}-{self.role_id}"
 
 
 class ProjectManageMixin:
@@ -41,17 +47,17 @@ class ProjectManageMixin:
     def _get_project_members(self):
         if not hasattr(self, "_project_members"):
             tenant_id = self.request.user.tenant_id
-            member_role_id = getattr(settings, 'KEYSTONE_MEMBER_ROLE_ID', '1')
             project_members = []
             assignments = api.keystone.role_assignments_list(
                 self.request,
                 project=tenant_id,
-                role=member_role_id,
                 include_subtree=False,
                 include_names=True,
             )
+
             for a in assignments:
-                project_members.append(User(a.user))
+                if a.role.get('name').lower() in ['member', 'tenantmanager']:
+                    project_members.append(User(a.user, a.role))
             self._project_members = project_members
 
         return self._project_members
