@@ -47,7 +47,7 @@ class RemoveMembers(tables.DeleteAction):
         if not api.keystone.keystone_can_edit_project():
             return False
         if user:
-            if user.id == request.user.id:
+            if user.user_id == request.user.id:
                 return False
             if user.role_name.lower() not in ['member', 'tenantmanager']:
                 return False
