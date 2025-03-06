@@ -17,11 +17,11 @@
 {% block main %}
   <div class="dash_block">
     {% if 'history' in request.META.HTTP_REFERER %}
-      <a href="{% url 'horizon:allocation:requests:allocation_history' allocation.pk %}" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back to History</a>
+      <a href="{% url 'horizon:allocation:requests:allocation_history' allocation.pk %}" class="btn btn-back mb-3">Back to History</a>
     {% elif 'approved_requests' in request.META.HTTP_REFERER %}
-      <a href="/allocation/approved_requests/" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back to Approved Requests</a>
+      <a href="/allocation/approved_requests/" class="btn btn-back mb-3">Back to Approved Requests</a>
     {% elif 'user_requests' in request.META.HTTP_REFERER %}
-      <a href="/allocation/user_requests/" class="btn btn-link"><i class="fa fa-arrow-left"></i> Back to My Requests</a>
+      <a href="/allocation/user_requests/" class="btn btn-back mb-3">Back to My Requests</a>
     {% endif %}
     <div class="allocation">
       <h2>{{ allocation.project_description }}</h2>
