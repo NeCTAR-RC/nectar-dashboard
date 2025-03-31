@@ -47,6 +47,12 @@
   </a>
   <ul id="editor_list" class="dropdown-menu dropdown-menu-right selection-menu">
     <li>
+      <a href="{% url 'horizon:settings:my-details:edit-self' %}" target="_self">
+        <span class="fa fa-user"></span>
+        {% trans "My Details" %}
+      </a>
+    </li>
+    <li>
       <a href="{% url 'horizon:settings:user:index' %}" target="_self">
         <span class="fa fa-cog"></span>
         {% trans "Settings" %}
