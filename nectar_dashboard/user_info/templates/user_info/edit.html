@@ -49,30 +49,30 @@
 					<div class="panel panel-default">
 						<div class="panel-body">
 							<h2>ORCID</h2>
-							<p>ORCID is a free, unique, persistent identifier (PID) for individuals to use as they engage in research, scholarship, and innovation activities. To continue using cloud resources you must have an ORCID profile connected to your ARDC Nectar profile.</p>
-							<p>To connect your account, either sign in to your existing ORCID profile or create a new profile at <a href="#" target="_blank">orcid.org</a> and then click the button below to authorize the ARDC as a "trusted organisation".</p>
+							<p><a href="https://orcid.org/" target="_blank">ORCID</a> is a free, unique, persistent identifier (PID) for individuals to use as they engage in research, scholarship, and innovation activities. To continue using cloud resources you must have an ORCID profile connected to your ARDC Nectar profile.</p>
 							<div id="connect-to-orcid" class="mb-3">
 							  {% if user.orcid %}
-							  <!-- If access token IS set show the following... -->
-							  <blockquote class="border-success">
-							    <h4 class="text-success"><i class="fa fa-check"></i> Connected</h4>
-							    <p>
-							      <a href="{{ orcid_url }}/{{ user.orcid }}" aria-label="View ORCID record">
-								<img class="mr-2" src="{% themable_asset 'img/ORCID-iD_icon_vector.svg' %}" alt="ORCID iD" />{{ user.orcid }}
-							      </a>
-							    </p>
-							    <form onsubmit="return confirm('Are you sure you want to disconnect this ORCID?');" action="{{ orcid_unlink_url }}" method="POST" >
-							          <input type="hidden" name="next" value="{{ my_url }}" />
-								  <button type="submit" value="submit" class="btn btn-secondary btn-sm" aria-label="Disconnect this ORCID"><i class="fa fa-close"></i> Disconnect ORCID</button>
-								</form>
-							  </blockquote>
+								<!-- If access token IS set show the following... -->
+								<blockquote class="border-success">
+									<h4 class="text-success"><i class="fa fa-check"></i> Connected</h4>
+									<p>
+									<a href="{{ orcid_url }}/{{ user.orcid }}" aria-label="View ORCID record">
+									<img class="mr-2" src="{% themable_asset 'img/ORCID-iD_icon_vector.svg' %}" alt="ORCID iD" />{{ user.orcid }}
+									</a>
+									</p>
+									<form onsubmit="return confirm('Are you sure you want to disconnect this ORCID?');" action="{{ orcid_unlink_url }}" method="POST">
+										<input type="hidden" name="next" value="{{ my_url }}" />
+									<button type="submit" value="submit" class="btn btn-secondary btn-sm" aria-label="Disconnect this ORCID"><i class="fa fa-close"></i> Disconnect ORCID</button>
+									</form>
+								</blockquote>
 							  {% else %}
-							  <!-- If access token NOT set show the following... -->
-							  <a class="btn btn-primary" href="{{ orcid_oauth_url }}">Connect to ORCID</a>
-							  <br /><br />
+							  	<p>To connect your account, either sign in to your existing ORCID profile or create a new profile at <a href="{{ orcid_url }}/signin" target="_blank">orcid.org/signin</a> and then click the button below to authorise the ARDC Nectar Research Cloud as a trusted organisation.</p>
+								<!-- If access token NOT set show the following... -->
+								<a class="btn btn-primary" href="{{ orcid_oauth_url }}">Connect to ORCID</a>
+								<br /><br />
 							  {% endif %}
 							</div>
-							<p>It is recommended that you keep all your research project information up to date in your ORCID profile to streamline the allocation request/renewal process. To learn more about how the ARDC uses your ORCID information, read the <a href="#" target="_blank">Connecting Nectar with ORCID support article</a>.</p>
+							<p>It is recommended that you keep all your research project information up to date in your ORCID profile to streamline the allocation request/renewal process. To learn more about how the ARDC uses your ORCID information, read the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000277260" target="_blank">Using ORCIDs in the ARDC Nectar Research Cloud support article</a>.</p>
 						</div>
 					</div>
         		</div>
