@@ -344,13 +344,28 @@ body {
     right: 20px;
   }
   ul.features {
-    margin: 20px 0;
+    margin-top: 20px;
     list-style: none;
     padding-left: 25px;
     li {
       &:before {
         content: "\f00c";
         color: $brand-success;
+        font-family: FontAwesome;
+        display: inline-block;
+        margin-left: -25px;
+        width: 24px;
+      }
+    }
+  }
+  ul.not-features {
+    margin-bottom: 20px;
+    list-style: none;
+    padding-left: 25px;
+    li {
+      &:before {
+        content: "\f00d";
+        color: $brand-danger;
         font-family: FontAwesome;
         display: inline-block;
         margin-left: -25px;

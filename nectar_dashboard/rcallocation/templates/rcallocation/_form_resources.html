@@ -30,7 +30,10 @@
                                     <ul class="features">
                                         <li>Runs {% bundle_quota bundle "compute.cores" 0.25 %} VCPUs continuously (max {% bundle_quota bundle "compute.cores" %} VCPUs at one time)</li>
                                         <li>Up to {% bundle_quota bundle "compute.instances" %} instances</li>
-                                        <li>{% bundle_quota bundle "object.object" %} GB Object Storage</li>
+                                        <li>{% bundle_quota bundle "object.object" %} GB <a href="https://support.ehelp.edu.au/support/solutions/articles/6000061932" target="_blank">Object Storage</a></li>
+                                    </ul>
+                                    <ul class="not-features">
+                                        <li>No <a href="https://support.ehelp.edu.au/support/solutions/articles/6000216075" target="_blank">Volume Storage</a></li>
                                     </ul>
                                     <p class="mb-4">
                                         <small>
@@ -58,7 +61,8 @@
                     <div class="hidden">{{ form.bundle }}</div>
                     <div class="row mt-4">
                         <div class="col-sm-12 text-center">
-                            <p>For more details on the limits included in each Resource Bundle, please read our <a href="https://support.ehelp.edu.au/support/solutions/articles/6000271206" target="_blank">Resource Bundle Table support article</a>. Nectar resources are bundled with a Service Unit budget and limits for each resource. A <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023" target="_blank">Service Unit (SU)</a> is a measure of the cost of using Nectar compute resources, e.g. <strong>1000 SU = 1 m3.medium 4 core instance for 1 year</strong>. Consuming resources to the maximum limit for the full allocation period does not equate to the bundle SU budget. For more details, checkout <a href="https://support.ehelp.edu.au/support/solutions/articles/6000205341" target="_blank">Nectar Flavors support article</a>.</p>
+                            <p>Resource Bundles do not include <a href="https://support.ehelp.edu.au/support/solutions/articles/6000216075" target="_blank">Persistent Volume Storage</a>, but it can be requested in the next section under "Location Specific Resources". For more details on the limits included in each Resource Bundle, please read our <a href="https://support.ehelp.edu.au/support/solutions/articles/6000271206" target="_blank">Resource Bundle Table support article</a>.</p>
+                            <p>Nectar resources are bundled with a Service Unit budget and limits for each resource. A <a href="https://support.ehelp.edu.au/support/solutions/articles/6000257023" target="_blank">Service Unit (SU)</a> is a measure of the cost of using Nectar compute resources, e.g. <strong>1000 SU = 1 m3.medium 4 core instance for 1 year</strong>. Consuming resources to the maximum limit for the full allocation period does not equate to the bundle SU budget. For more details, checkout <a href="https://support.ehelp.edu.au/support/solutions/articles/6000205341" target="_blank">Nectar Flavors support article</a>.</p>
                         </div>
                     </div>
                     <div class="row step-nav">
