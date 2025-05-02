@@ -452,14 +452,6 @@ class AllocationRequest(models.Model):
         choices=SENSITIVE_DATA_CHOICES,
         null=True,
         blank=False,
-        help_text="""<a href="https://support.ehelp.edu.au/support/
-                 solutions/articles/6000277743" target="_blank">
-                 Sensitive data</a> is data that can be used to identify
-                 an individual, species, object, process, or location
-                 that introduces a risk of discrimination, harm, or
-                 unwanted attention. Examples could include identifiable
-                 personal and health/medical data, Indigenous data,
-                 ecological data, and commercial-in-confidence data""",
     )
 
     GREEN = 'green'

@@ -156,6 +156,14 @@ class BaseAllocationForm(forms.ModelForm):
 
     has_sensitive_data = forms.ChoiceField(
         label='Does your project contain sensitive data?',
+        help_text='<a href="https://support.ehelp.edu.au/support/solutions/'
+        'articles/6000277743" target="_blank">Sensitive data</a> '
+        'is data that can be used to identify an individual, '
+        'species, object, process, or location that introduces a '
+        'risk of discrimination, harm, or unwanted attention. '
+        'Examples could include identifiable personal and '
+        'health/medical data, Indigenous data, ecological data, '
+        'and commercial-in-confidence data',
         required=True,
         choices=models.AllocationRequest.SENSITIVE_DATA_CHOICES,
         widget=forms.Select(attrs={'class': 'w-auto'}),
