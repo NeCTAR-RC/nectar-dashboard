@@ -8,6 +8,15 @@ from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
 
 
+def mock_get_user(self):
+    mock_user = mock.Mock()
+    return mock_user
+
+
+@mock.patch(
+    'nectar_dashboard.rcallocation.views.BaseAllocationView.get_user',
+    new=mock_get_user,
+)
 class ApproverRequestTestCase(base.BaseApproverTestCase):
     def test_edit_allocation_note_request(self):
         allocation = factories.AllocationFactory.create(

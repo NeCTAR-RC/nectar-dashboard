@@ -20,6 +20,15 @@ from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import common
 
 
+def mock_get_user(self):
+    mock_user = mock.Mock()
+    return mock_user
+
+
+@mock.patch(
+    'nectar_dashboard.rcallocation.views.BaseAllocationView.get_user',
+    new=mock_get_user,
+)
 @mock.patch(
     'nectar_dashboard.rcallocation.notifier.FreshdeskNotifier',
     new=base.FAKE_FD_NOTIFIER_CLASS,

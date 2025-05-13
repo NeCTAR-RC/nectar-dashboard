@@ -1,6 +1,8 @@
 import logging
 from operator import methodcaller
+from urllib.parse import quote
 
+from django.conf import settings
 from django.contrib.auth import mixins
 from django.db.models import Q
 from django.db import transaction
@@ -13,6 +15,7 @@ from django.views.generic.edit import UpdateView
 from horizon import tables as horizon_tables
 from horizon import views as horizon_views
 
+from nectar_dashboard.api import manuka
 from nectar_dashboard.rcallocation import checkers
 from nectar_dashboard.rcallocation import forcodes
 from nectar_dashboard.rcallocation import forms
@@ -278,8 +281,22 @@ class BaseAllocationView(
             )
         return formsets
 
+    def get_user(self):
+        try:
+            keystone_user_id = self.request.user.keystone_user_id
+            client = manuka.manukaclient(self.request)
+            manuka_user = client.users.get(keystone_user_id)
+        except Exception as e:
+            LOG.error(f"Failed to retrieve user: {str(e)}")
+            manuka_user = None
+        return manuka_user
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['user'] = self.get_user()
+        context['orcid_url'] = settings.ORCID_URL
+        my_url = quote(self.request.build_absolute_uri())
+        context['orcid_oauth_url'] = f"{settings.ORCID_LINK_URL}?next={my_url}"
         context['for_series'] = forcodes.FOR_SERIES.replace('_', ' ')
         context['bundles'] = models.Bundle.objects.all()
         return context

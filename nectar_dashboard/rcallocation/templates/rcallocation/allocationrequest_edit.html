@@ -1,6 +1,7 @@
 {% extends 'rcallocation/base.html' %}
 
 {% load static %}
+{% load themes %}
 {% load publication_extras %}
 {% load countries %}
 
@@ -24,15 +25,6 @@
 
 {% block breadcrumb_nav %}
     {{ block.super }}
-{% endblock %}
-
-{% block js %}
-<script>
-  function isNewAllocationRequest() {
-    return {% if object %} false; {% else %} true; {% endif %}
-  }
-</script>
-{{ block.super }}
 {% endblock %}
 
 {% block main %}
@@ -61,11 +53,26 @@
               </p>
             {% endblock %}
           </div>
+
+          {% if user.orcid %}
+            <!-- If ORCID is set show the following... -->
+            <blockquote class="border-success">
+              <h4 class="text-success"><i class="fa fa-check"></i> ORCID Connected</h4>
+              <p>
+                <a href="{{ orcid_url }}/{{ user.orcid }}" aria-label="View ORCID record">
+                  <img class="mr-2" src="{% themable_asset 'img/ORCID-iD_icon_vector.svg' %}" alt="ORCID iD" />{{ user.orcid }}
+                </a>
+              </p>
+              <small><strong>Is this ORCID incorrect?</strong> Sign out at <a href="{{ orcid_url }}" target="_blank">orcid.org</a> and then go to the <a href="{% url 'horizon:settings:my-details:edit-self' %}" target="_blank">My Details</a> page to disconnect.</small>
+            </blockquote>
+          {% endif %}
+
           <blockquote>
             <p><strong>INFO:</strong>
             Required fields are marked with an <span class="glyphicon glyphicon-asterisk text-secondary"></span>
             sign.</p>
           </blockquote>
+
           {% if form.errors or investigator_formset.errors|first or publication_formset.errors|first or grant_formset.errors|first or grant_formset.non_form_errors %}
             <div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Please fix the errors highlighted below and resubmit.</div>
           {% endif %}
@@ -88,7 +95,7 @@
               <p>Before requesting an allocation, please ensure that you:</p>
               <ul>
                 <li>meet the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000226889" target="_blank">Eligibility Requirements</a> for a national or local allocation</li>
-                <li>have an ORCID and it is connected to your Nectar account, as shown on the <a href="{% url 'horizon:settings:my-details:edit-self' %}" target="_blank">My Details</a> page</li>
+                <li>have an ORCID and it is connected to your Nectar account</li>
                 <li>have the Project Information ready</li>
                 <li>know the Chief Investigator name and contact details</li>
                 <li>can provide the Research Grant information</li>
@@ -289,17 +296,7 @@
     </div>
   </div>
 
-    {% if nags|length > 0 %}
-    <script>
-      function show_nags() {
-          $('#modal-nags').modal('show');
-      }
-      $(window).on('load',
-                   function() {
-                       var delayMs = 1000;
-                       setTimeout(show_nags, delayMs);
-                   });
-    </script>
+  {% if nags|length > 0 %}
     <!-- Nags modal dialog -->
     <div id="modal-nags" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
@@ -327,14 +324,9 @@
         </div>
       </div>
     </div>
-    {% endif %}
+  {% endif %}
 
   <!-- Organisation proposer modal dialog -->
-  <script>
-    function show_propose() {
-        $('#modal-propose').modal('show');
-    }
-  </script>
   <div id="modal-propose" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -503,7 +495,82 @@
     </div>
   </div>
 
+  <div id="orcid_modal" class="modal modal-bordered" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center">Action Required!</h4>
+        </div>
+        <div class="modal-body py-5">
+          <div class="text-center">
+            <h3>You must connect to ORCID to proceed.</h3>
+            <p>Our records indicate that you have not connected your Nectar profile to your ORCID profile, which is required before requesting or renewing an allocation. If you don't have an ORCID, you will need to register.</p>
+            <p><small><a href="{{ orcid_url }}" target="_blank" rel="noopener noreferrer">ORCID</a> is a free, unique, persistent identifier (PID) for individuals to use as they engage in research, scholarship, and innovation activities. To learn more about how the ARDC uses your ORCID information, read the <a href="https://support.ehelp.edu.au/support/solutions/articles/6000277260" target="_blank" rel="noopener noreferrer">Using ORCIDs in the ARDC Nectar Research Cloud support article</a>.</small></p>
+          </div>
+          <div class="text-center my-4">
+            <a class="btn btn-primary" href="{{ orcid_oauth_url }}">Connect to ORCID now</a>
+          </div>
+          <p class="text-center">Or <a href="{% url 'horizon:dashboard_home:welcome:welcome' %}">cancel allocation request</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+{{ form.media.js }}
+{% endblock %}
+
+{% block js %}
   <script>
+    function isNewAllocationRequest() {
+      return {% if object %} false; {% else %} true; {% endif %}
+    }
+  </script>
+
+  {% comment %}Load all end of body scripts{% endcomment %}
+  {{ block.super }}
+
+  <script>
+    /* JS for {{ page_title }} page */
+    function show_propose() {
+        $('#modal-propose').modal('show');
+    }
+
+    {% if nags|length > 0 %}
+
+      function show_nags() {
+          $('#modal-nags').modal('show');
+      }
+      $(document).ready(function() {
+        show_nags();
+      });
+    {% endif %}
+
+    {% if user.orcid is None %}
+      $(document).ready(function() {
+        setTimeout(function() {
+          // Are there any modals currently shown?
+          if($('.modal').hasClass('in')) {
+            // Close all open modals
+            $('.modal').modal('hide');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+          }
+
+          // Show the orcid modal
+          $('#orcid_modal').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: true
+          });
+        }, 500); // 500ms = 0.5 second delay
+      });
+    {% endif %}
+
     /* For browsers that don't recognize the autofocus attribute... */
     if (!("autofocus" in document.createElement("input"))) {
       document.getElementById("id_project_description").focus();
@@ -526,10 +593,4 @@
       });
     });
   </script>
-</div>
-{% endblock %}
-
-{% block footer %}
-{{ block.super }}
-{{ form.media.js }}
 {% endblock %}
