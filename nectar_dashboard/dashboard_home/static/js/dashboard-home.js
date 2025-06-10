@@ -95,34 +95,44 @@ var dashboardHome = (function() {
       $.ajax({
         url: RSS_URL,
         type: 'GET',
-        dataType: "xml",
+        dataType: "text",
         success: function(data) {
           // Is data object empty?
           if(data) {
-            //console.log(data);
-            let news_html = "";
-            $(data).find("item").each(function() {
-              var pub_date = new Date($(this).find("pubDate").html());
-              var img_url = $(this).find("image url").html() ? $(this).find("image url").html() : "/static/dashboard_home/img/news-thumb.jpg";
-              news_html += `
-                <div class="news-slide">
-                  <a href="${$(this).find("link").html()}" target="_blank">
-                    <div class="news-thumbnail">
-                      <img src="${img_url}" />
-                    </div>
-                    <div class="news-content">
-                      <h6 class="news-meta">${pub_date.toDateString()}</h6>
-                      <h3 class="news-title">${$(this).find("title").html()}</h3>
-                    </div>
-                    <p class="news-link"><span class="btn btn-link">Read more</span></p>
-                  </a>
-                </div>
-              `;
-            });
-            resolve(news_html);
+            try {
+              let news_xml = $.parseXML(data) || (() => { throw new Error("Failed to parse XML. Check RSS feed is valid and does not contain special characters.") })();
+              // Validate if has news items
+              if(!$(news_xml).find("item").length) {
+                throw new Error("Invalid RSS feed format: no items found");
+              }
+
+              let news_html = "";
+              $(news_xml).find("item").each(function() {
+                var pub_date = new Date($(this).find("pubDate").html());
+                var img_url = $(this).find("image url").html() ? $(this).find("image url").html() : "/static/dashboard_home/img/news-thumb.jpg";
+                news_html += `
+                  <div class="news-slide">
+                    <a href="${$(this).find("link").html()}" target="_blank">
+                      <div class="news-thumbnail">
+                        <img src="${img_url}" />
+                      </div>
+                      <div class="news-content">
+                        <h6 class="news-meta">${pub_date.toDateString()}</h6>
+                        <h3 class="news-title">${$(this).find("title").html()}</h3>
+                      </div>
+                      <p class="news-link"><span class="btn btn-link">Read more</span></p>
+                    </a>
+                  </div>
+                `;
+              });
+              resolve(news_html);
+            }
+            catch (parseError) {
+              reject(parseError);
+            }
           }
           else {
-            reject("Data empty!");
+            reject("News feed data is empty");
           }
         },
         error: function (error) {
