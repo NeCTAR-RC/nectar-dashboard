@@ -13,7 +13,9 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-md-6">
-                    {% include "rcallocation/field.html" with field=form.project_name %}
+                    <div class="form-group">
+                      {% include "rcallocation/field.html" with field=form.project_description %}
+                    </div>
                   </div>
                   <div class="col-md-6">
                     {% include "rcallocation/field.html" with field=form.contact_email %}
@@ -21,9 +23,7 @@
                 </div>
                 <div class="row">
                   <div class="col-md-6">
-                    <div class="form-group">
-                      {% include "rcallocation/field.html" with field=form.project_description %}
-                    </div>
+                    {% include "rcallocation/field.html" with field=form.project_name note="Project identifier cannot be changed after allocation is approved." %}
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">

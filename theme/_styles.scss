@@ -347,6 +347,12 @@ input {
   }
 }
 
+blockquote footer:before,
+blockquote small:before,
+blockquote .small:before {
+  content: ""; /* Override bootstrap styles removing "–" */
+}
+
 .btn-dismiss {
   position: absolute;
   top: 0;
