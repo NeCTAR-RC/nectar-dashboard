@@ -86,5 +86,24 @@
     <div id="modal_wrapper"></div>
     {% load tz_detect %}
     {% tz_detect %}
+    <script>
+      /* Survey Monkey popup invitation widget */
+      document.addEventListener('DOMContentLoaded', function () {
+        {% if request.user.is_authenticated %}
+            var userIsLoggedIn = true;
+        {% else %}
+            var userIsLoggedIn = false;
+        {% endif %}
+
+        if(userIsLoggedIn && !sessionStorage.getItem('surveyMonkeyPopupShown')) {
+          const script = document.createElement('script');
+          script.innerHTML = '(function(t,e,s,o){var n,a,c;t.SMCX=t.SMCX||[],e.getElementById(o)||(n=e.getElementsByTagName(s),a=n[n.length-1],c=e.createElement(s),c.type="text/javascript",c.async=!0,c.id=o,c.src="https://widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdxw93uuEr6cpWdl45rr9kR9MXRH2h_2BFx348FrD9tQXab.js",a.parentNode.insertBefore(c,a))})(window,document,"script","smcx-sdk");';
+          script.async = true;
+
+          document.body.appendChild(script);
+          sessionStorage.setItem('surveyMonkeyPopupShown', 'true');
+        }
+      });
+    </script>
   </body>
 </html>
