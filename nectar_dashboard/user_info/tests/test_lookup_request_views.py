@@ -28,7 +28,7 @@ class ListMixin:
 
 
 @mock.patch('nectar_dashboard.api.manuka.manukaclient')
-class AdminListUserTestCase(ListMixin, base.AdminViewTestCase):
+class AdminListUserTestCase(base.AdminViewTestCase, ListMixin):
     def test_get(self, mock_get_manuka):
         response = self.client.get(self.url)
         self.assertStatusCode(response, 200)
@@ -104,4 +104,5 @@ class AdminViewUserTestCase(ViewMixin, base.AdminViewTestCase):
 
     def test_post(self, mock_get_manuka):
         response = self.client.post(self.get_url())
+        # self.assertEqual(response.url, 'ss')
         self.assertStatusCode(response, 405)

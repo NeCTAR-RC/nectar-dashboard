@@ -32,6 +32,13 @@ $theme-colors: map-merge((
 
 // Mixins
 
+@mixin hover-focus() {
+  &:hover,
+  &:focus {
+    @content;
+  }
+}
+
 @mixin bg-variant($parent, $color) {
   #{$parent} {
     background-color: $color !important;

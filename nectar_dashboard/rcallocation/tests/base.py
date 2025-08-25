@@ -164,18 +164,20 @@ class BaseApproverTestCase(helpers.BaseAdminViewTests):
         common.factory_setup()
 
     def setActiveUser(self, *args, **kwargs):
+        allocation_admin_role_dict = {
+            'id': '142',
+            'name': 'allocationadmin',
+        }
+        allocation_admin_role = roles.Role(
+            roles.RoleManager, allocation_admin_role_dict, loaded=True
+        )
+        self.roles.add(allocation_admin_role)
+        self.roles.allocation_admin = allocation_admin_role
         if "roles" not in kwargs:
-            allocation_admin_role_dict = {
-                'id': '142',
-                'name': 'allocationadmin',
-            }
-            allocation_admin_role = roles.Role(
-                roles.RoleManager, allocation_admin_role_dict, loaded=True
-            )
-            self.roles.add(allocation_admin_role)
-            self.roles.allocation_admin = allocation_admin_role
             kwargs['roles'] = [self.roles.allocation_admin._info]
-            super().setActiveUser(*args, **kwargs)
+        else:
+            kwargs['roles'].append(self.roles.allocation_admin._info)
+        super().setActiveUser(*args, **kwargs)
 
 
 class AllocationAPITest(test.APITestCase):
