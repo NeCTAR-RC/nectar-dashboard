@@ -88,22 +88,40 @@
     {% tz_detect %}
     <script>
       /* Survey Monkey popup invitation widget */
+
+      /* Check if the survey has been shown today */
+      function isSurveyShownToday(today) {
+        const lastShown = sessionStorage.getItem('surveyMonkeyPopupShown');
+        return lastShown === today;
+      }
+
+      /* Set the survey as shown today */
+      function setSurveyShownToday(today) {
+        sessionStorage.setItem('surveyMonkeyPopupShown', today);
+      }
+
+      /* Check if the survey should be shown */
       document.addEventListener('DOMContentLoaded', function () {
-        {% if request.user.is_authenticated %}
+          {% if request.user.is_authenticated %}
             var userIsLoggedIn = true;
-        {% else %}
+          {% else %}
             var userIsLoggedIn = false;
-        {% endif %}
+          {% endif %}
 
-        if(userIsLoggedIn && !sessionStorage.getItem('surveyMonkeyPopupShown')) {
-          const script = document.createElement('script');
-          script.innerHTML = '(function(t,e,s,o){var n,a,c;t.SMCX=t.SMCX||[],e.getElementById(o)||(n=e.getElementsByTagName(s),a=n[n.length-1],c=e.createElement(s),c.type="text/javascript",c.async=!0,c.id=o,c.src="https://widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdxw93uuEr6cpWdl45rr9kR9MXRH2h_2BFx348FrD9tQXab.js",a.parentNode.insertBefore(c,a))})(window,document,"script","smcx-sdk");';
-          script.async = true;
+          /* Check if today's date is before or equal to 2025-09-15 */
+          const cutoffDate = new Date('2025-09-15');
+          const today = new Date();
+          const todayString = today.toDateString();
 
-          document.body.appendChild(script);
-          sessionStorage.setItem('surveyMonkeyPopupShown', 'true');
-        }
-      });
+          if(today <= cutoffDate && userIsLoggedIn && !isSurveyShownToday(todayString)) {
+            const script = document.createElement('script');
+            script.innerHTML = '(function(t,e,s,o){var n,a,c;t.SMCX=t.SMCX||[],e.getElementById(o)||(n=e.getElementsByTagName(s),a=n[n.length-1],c=e.createElement(s),c.type="text/javascript",c.async=!0,c.id=o,c.src="https://widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdxw93uuEr6cpWdl45rr9kR9MXRH2h_2BFx348FrD9tQXab.js",a.parentNode.insertBefore(c,a))})(window,document,"script","smcx-sdk");';
+            script.async = true;
+
+            document.body.appendChild(script);
+            setSurveyShownToday(todayString);
+          }
+        });
     </script>
   </body>
 </html>
