@@ -1,4 +1,4 @@
-horizon @ git+https://github.com/Nectar-RC/horizon.git@nectar/2025.1#egg=horizon
+horizon>=25.0.0
 mysqlclient
 django-cors-headers
 djangorestframework
