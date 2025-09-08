@@ -17,7 +17,7 @@ import logging
 from django.template import defaultfilters
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import gettext_lazy
+from django.utils.translation import ngettext_lazy
 from horizon import tables
 from openstack_dashboard import api
 
@@ -68,11 +68,11 @@ class RemoveMembers(tables.DeleteAction):
 
     @staticmethod
     def action_present(count):
-        return gettext_lazy("Remove", "Remove", count)
+        return ngettext_lazy("Remove", "Remove", count)
 
     @staticmethod
     def action_past(count):
-        return gettext_lazy("Removed Member", "Removed Members", count)
+        return ngettext_lazy("Removed Member", "Removed Members", count)
 
 
 class AddMembersLink(tables.LinkAction):
