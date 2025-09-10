@@ -69,6 +69,72 @@ function getCurrentBundle() {
   });
 }
 
+/* Survey Monkey popup invitation */
+
+/* Check if the survey has been shown today */
+function isSurveyShownToday(today) {
+const lastShown = sessionStorage.getItem('surveyMonkeyPopupShown');
+return lastShown === today;
+}
+
+/* Set the survey as shown today */
+function setSurveyShownToday(today) {
+  sessionStorage.setItem('surveyMonkeyPopupShown', today);
+}
+
+/* Set that user has clicked the survey link */
+function setSurveyLinkClicked() {
+  sessionStorage.setItem('surveyLinkClicked', 'true');
+}
+
+/* Check if user has NOT clicked the survey link */
+function surveyNotClicked() {
+  return sessionStorage.getItem('surveyLinkClicked') !== 'true';
+}
+
+/* Calculate time remaining until 11:45pm on September 15, 2025 */
+function getTimeUntilCutoff() {
+  const cutoffDate = new Date('2025-09-15T23:45:00+10:00');
+  const today = new Date();
+  const timeDiff = cutoffDate.getTime() - today.getTime();
+
+  if (timeDiff <= 0) {
+    return { days: 0, hours: 0, minutes: 0 };
+  }
+
+  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+  return { days, hours, minutes };
+}
+
+function showSurveyInviteModal(userIsLoggedIn) {
+
+  /* Check if today's date is before or equal to 2025-09-15 */
+  const cutoffDate = new Date('2025-09-15');
+  const today = new Date();
+  const todayString = today.toDateString();
+
+  if(today <= cutoffDate && userIsLoggedIn && !isSurveyShownToday(todayString) && surveyNotClicked()) {
+    // Update countdown display
+    const timeLeft = getTimeUntilCutoff();
+    $('#countdown-days').text(timeLeft.days);
+    $('#countdown-hours').text(timeLeft.hours);
+    $('#countdown-minutes').text(timeLeft.minutes);
+
+    $('#survey_invite_modal').modal('show');
+      $('#survey_invite_yes_button').on('click', function() {
+        setSurveyLinkClicked();
+        window.open('https://www.surveymonkey.com/r/Nectar2025', '_blank');
+      });
+    $('#survey_invite_no_button').on('click', function() {
+      $('#survey_invite_modal').modal('hide');
+    });
+    setSurveyShownToday(todayString);
+  }
+}
+
 $(document).ready(function() {
 
   // Add slideDown animation to Bootstrap dropdown when expanding.
