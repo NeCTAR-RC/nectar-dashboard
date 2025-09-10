@@ -65,6 +65,38 @@
           </div>
         </div>
       </div>
+
+      <!-- Survey Invite Modal -->
+      <div id="survey_invite_modal" class="modal modal-bordered" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title text-center">User Experience Survey</h4>
+            </div>
+            <div class="modal-body text-center">
+              <h2>We care about your experience!</h2>
+              <p>We would like to invite you to participate in a short survey to help us improve the Nectar Dashboard.</p>
+
+              <div id="countdown-container" class="my-5">
+                <h5>Survey closes in:</h5>
+                <div class="d-flex justify-content-center align-items-center">
+                  <div class="text-center p-3 border border-dark mx-2 w-25"><span id="countdown-days" class="h2 mb-1 d-block">-</span><span class="h6 text-muted">days</span></div>
+                  <p class="h1">:</p>
+                  <div class="text-center p-3 border border-dark mx-2 w-25"><span id="countdown-hours" class="h2 mb-1 d-block">-</span><span class="h6 text-muted">hours</span></div>
+                  <p class="h1">:</p>
+                  <div class="text-center p-3 border border-dark mx-2 w-25"><span id="countdown-minutes" class="h2 mb-1 d-block">-</span><span class="h6 text-muted">minutes</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="survey_invite_no_button" type="button" class="btn btn-default pull-left" data-dismiss="modal">Not right now</button>
+              <button id="survey_invite_yes_button" type="button" class="btn btn-primary pull-right" data-dismiss="modal">Take the survey</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Survey Invite Modal -->
     {% endblock %}
     {% block js %}
       {% include "horizon/_scripts.html" %}
@@ -86,42 +118,16 @@
     <div id="modal_wrapper"></div>
     {% load tz_detect %}
     {% tz_detect %}
-    <script>
-      /* Survey Monkey popup invitation widget */
 
-      /* Check if the survey has been shown today */
-      function isSurveyShownToday(today) {
-        const lastShown = sessionStorage.getItem('surveyMonkeyPopupShown');
-        return lastShown === today;
-      }
-
-      /* Set the survey as shown today */
-      function setSurveyShownToday(today) {
-        sessionStorage.setItem('surveyMonkeyPopupShown', today);
-      }
-
-      /* Check if the survey should be shown */
-      document.addEventListener('DOMContentLoaded', function () {
-          {% if request.user.is_authenticated %}
-            var userIsLoggedIn = true;
-          {% else %}
-            var userIsLoggedIn = false;
-          {% endif %}
-
-          /* Check if today's date is before or equal to 2025-09-15 */
-          const cutoffDate = new Date('2025-09-15');
-          const today = new Date();
-          const todayString = today.toDateString();
-
-          if(today <= cutoffDate && userIsLoggedIn && !isSurveyShownToday(todayString)) {
-            const script = document.createElement('script');
-            script.innerHTML = '(function(t,e,s,o){var n,a,c;t.SMCX=t.SMCX||[],e.getElementById(o)||(n=e.getElementsByTagName(s),a=n[n.length-1],c=e.createElement(s),c.type="text/javascript",c.async=!0,c.id=o,c.src="https://widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdxw93uuEr6cpWdl45rr9kR9MXRH2h_2BFx348FrD9tQXab.js",a.parentNode.insertBefore(c,a))})(window,document,"script","smcx-sdk");';
-            script.async = true;
-
-            document.body.appendChild(script);
-            setSurveyShownToday(todayString);
-          }
-        });
+    <script type="text/javascript" defer>
+      // Check if the user is logged in
+      {% if request.user.is_authenticated %}
+        var userIsLoggedIn = true;
+      {% else %}
+        var userIsLoggedIn = false;
+      {% endif %}
+      // Show the survey invite modal
+      showSurveyInviteModal(userIsLoggedIn);
     </script>
   </body>
 </html>

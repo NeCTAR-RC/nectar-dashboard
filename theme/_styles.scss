@@ -407,6 +407,14 @@ blockquote .small:before {
   }
 }
 
+#survey_invite_modal {
+  .modal-dialog {
+    @media (min-width: 768px) {
+      width: 500px;
+    }
+  }
+}
+
 // Modal header
 // Top section of the modal w/ title and dismiss
 .modal-header {
