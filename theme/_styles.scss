@@ -105,6 +105,12 @@ ul.list-bullet {
   margin-bottom: -520px;
 }
 
+.themable-spinner {
+  // Hack to override horizon spinner display: none; since epoxy update
+  // TODO: Remove this if duplicate stylesheet / order bug is fixed
+  display: flex;
+}
+
 .dropdown-menu > li > a {
   text-decoration: none;
   &:hover {
@@ -449,11 +455,13 @@ blockquote .small:before {
 }
 
 .wizard-help {
-  position: absolute;
-  top: unset;
-  bottom: 0px;
-  right: 8px;
-  z-index: 2;
+  // Removed absolute position and top: unset; bottom: 0px; since epoxy update
+  // Added help-toggle styles to override horizon styles
+  .help-toggle {
+    font-size: 20px;
+    border-radius: 0;
+    border-right: none;
+  }
 }
 
 .badge {
@@ -623,9 +631,11 @@ nav {
       }
     }
     .navbar-brand {
+      padding: 0 10px;
       font-size: 16px;
       color: rgba(32, 32, 32, .8);
       img {
+        display: inline-block;
         margin-right: 10px;
         height: 40px;
       }
@@ -724,44 +734,6 @@ nav {
     }
   }
 }
-// .navbar {
-//   font-size: 16px;
-//   background-color: $gray-lighter;
-//   color: rgba(32, 32, 32, .8);
-//   .navbar-brand {
-//     font-size: 20px;
-//     img {
-//       margin-right: 10px;
-//     }
-//   }
-//   .navbar-nav {
-//     margin: 0;
-//     .nectar-menu {
-//       > a {
-//         color: rgba(32, 32, 32, .8);
-//         padding-right: 10px;
-//         padding-left: 10px;
-//         &:hover {
-//           color: #000;
-//         }
-//       }
-//       span.user-name {
-//         @media(min-width: 992px) and (max-width: 1200px) {
-//           display: none;
-//         }
-//       }
-//     }
-//   }
-//   .navbar-toggle {
-//     color: #fff;
-//     line-height: 1;
-//     &#sidebar-toggle {
-//       @media (min-width: 768px) {
-//         display: none;
-//       }
-//     }
-//   }
-// }
 
 /*
  * Sidebar
@@ -1181,6 +1153,7 @@ body#splash #footer {
     background: none;
     box-shadow: none;
     .modal-body {
+      text-align: center;
       color: #fff;
       .loader {
         -webkit-animation: unset;
