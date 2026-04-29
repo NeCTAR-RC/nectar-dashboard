@@ -22,23 +22,10 @@
   <div class="row mt-4">
     <div class="col-xs-12">
       <h1 id="home_greeting">Hello and Welcome!</h1>
-      {% if outages|length > 0 %}
-        {% for outage in outages %}
-          {% if outage.severity >= 2 and outage.end is None %}
-            <div class="alert {% if outage.severity == 2 %} alert-warning {% else %} alert-danger {% endif %} fade in">
-              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-              <i class="fa fa-exclamation-circle fa-2x" style="vertical-align: middle;"></i>&nbsp;&nbsp;{{ outage.title }} <a href="{{ HORIZON_CONFIG.OUTAGE_BASE_URL }}{{ outage.id }}" target="_blank" class="alert-link">View Announcement <i class="fa fa-external-link"></i></a>
-            </div>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-      {% if security_risks|length > 0 %}
-        <div class="alert {% if security_risks|length >= 3 %}alert-danger{% else %}alert-warning{% endif %}">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          Your project currently has <strong>{{ security_risks|length }}</strong> security risks requiring action.
-          <a href="{% url 'horizon:project:security:index' %}" class="alert-link">View Security Risks<i class="fa fa-chevron-right ml-2"></i></a>
-        </div>
-      {% endif %}
+      <div id="outage_alerts"
+           data-outage-base-url="{{ HORIZON_CONFIG.OUTAGE_BASE_URL }}"></div>
+      <div id="security_risks_alert"
+           data-security-url="{% url 'horizon:project:security:index' %}"></div>
       <div id="welcome" class="panel panel-primary position-relative">
         <div class="panel-body p-5">
           <div class="row">
@@ -139,53 +126,18 @@
     </div>
   </div>
   <div class="row">
-    {% if outages|length > 0 %}
-      <div class="col-xs-12 col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading text-uppercase d-md-flex align-items-center justify-content-between">
-            Service Announcements
-            <a class="btn btn-sm btn-default" href="https://status.rc.nectar.org.au/" target="_blank">Nectar System Status <i class="fa fa-external-link"></i></a>
-          </div>
-          <div class="panel-body p-5">
-            <ul id="announcements" class="list-unstyled">
-              {% for outage in outages %}
-              <li class="d-flex py-4">
-                <div class="announcement-severity">
-                  <img class="severity-dial" src='{% static "img/severity" %}{{ outage.severity }}.svg' />
-                </div>
-                <div class="announcement-details pl-4">
-                  <h5 class="text-uppercase">
-                    {% if outage.status_display == "Resolved" %}(Resolved)&nbsp;{% elif outage.status_display == "Completed" %}(Completed)&nbsp;{% endif %}
-                    {{ outage.scheduled_display }} Outage
-                  </h5>
-                  <h4>
-                    {{ outage.title }}
-                  </h4>
-                  <p>
-                    <strong>Status:</strong> {{ outage.status_display }}
-                    {% if outage.start %}
-                      <strong>Start:</strong> {{ outage.start|date:"r" }}
-                    {% elif outage.scheduled and outage.schedule_start %}
-                      <strong>Start:</strong> {{ outage.schedule_start|date:"r" }} (scheduled)
-                    {% endif %}
-                    {% if outage.end %}
-                      <strong>End:</strong> {{ outage.end|date:"r" }}
-                    {% elif outage.scheduled and outage.schedule_end %}
-                      <strong>End:</strong> {{ outage.schedule_end|date:"r" }} (scheduled).</p>
-                    {% endif %}
-                  </p>
-                  <a href="{{ HORIZON_CONFIG.OUTAGE_BASE_URL }}{{ outage.id }}" target="_blank">View Announcement <i class="fa fa-external-link"></i></a>
-                </div>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
+    <div id="announcements_panel" class="col-xs-12 col-sm-6" style="display: none;">
+      <div class="panel panel-default">
+        <div class="panel-heading text-uppercase d-md-flex align-items-center justify-content-between">
+          Service Announcements
+          <a class="btn btn-sm btn-default" href="https://status.rc.nectar.org.au/" target="_blank">Nectar System Status <i class="fa fa-external-link"></i></a>
+        </div>
+        <div class="panel-body p-5">
+          <ul id="announcements" class="list-unstyled"></ul>
         </div>
       </div>
-      <div class="col-xs-12 col-sm-6">
-    {% else %}
-      <div class="col-xs-12">
-    {% endif %}
+    </div>
+    <div id="news_panel" class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading text-uppercase d-md-flex align-items-center justify-content-between">
           ARDC News
@@ -211,5 +163,7 @@
     dashboardHome.showNews();
     dashboardHome.showGreeting("{{ first_name }}");
     dashboardHome.showBanner();
+    dashboardHome.showOutages();
+    dashboardHome.showSecurityRisks();
   </script>
 {% endblock %}

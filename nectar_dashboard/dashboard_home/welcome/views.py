@@ -1,15 +1,11 @@
-from datetime import timedelta
 import logging
 
 from django import http
-from django.utils import timezone
 from django.views.decorators import cache
 from horizon import views as horizon_views
 import requests
 
-from nectar_dashboard.api import langstroth
 from nectar_dashboard.api import manuka
-from varroa_dashboard.api import security
 
 LOG = logging.getLogger(__name__)
 
@@ -32,33 +28,6 @@ class HomeView(horizon_views.HorizonTemplateView):
             context['first_name'] = ""
             context['surname'] = ""
             context['displayname'] = ""
-
-        try:
-            client = langstroth.langstrothclient(self.request)
-            all_outages = client.outages.list()
-            # TODO(SC): make the start and end deltas Dashboardsettings, and
-            # do the filtering in the Langstroth Outages API.
-            start = timezone.now() - timedelta(days=1)
-            end = timezone.now() + timedelta(days=14)
-            outages = []
-            for o in all_outages:
-                if (
-                    o.scheduled
-                    and o.scheduled_end > start
-                    and o.scheduled_start < end
-                ) or (o.start and (not o.end or o.end >= start)):
-                    outages.append(o)
-            context['outages'] = outages
-        except Exception as e:
-            LOG.error("Langstroth outage lookup failed", exc_info=e)
-            context['outages'] = []
-
-        try:
-            security_risks = security.get_security_risks(self.request)
-            context['security_risks'] = security_risks
-        except Exception as e:
-            LOG.error("Cannot get security risks", exc_info=e)
-            context['security_risks'] = []
 
         LOG.debug("Home page context is %s", context)
         return context

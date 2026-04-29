@@ -263,6 +263,146 @@ var dashboardHome = (function() {
     }
   };
 
+  function escapeHtml(value) {
+    if (value === null || value === undefined) {
+      return "";
+    }
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function formatRfc2822(dateString) {
+    if (!dateString) {
+      return "";
+    }
+    var d = new Date(dateString);
+    if (isNaN(d.getTime())) {
+      return "";
+    }
+    return d.toString();
+  }
+
+  function renderOutages(outages) {
+    var $alerts = $("#outage_alerts");
+    var outageBaseUrl = $alerts.data("outage-base-url") || "";
+    $alerts.empty();
+
+    var topAlerts = "";
+    outages.forEach(function(outage) {
+      if (outage.severity >= 2 && !outage.end) {
+        var alertClass = outage.severity === 2 ? "alert-warning" : "alert-danger";
+        topAlerts += `
+          <div class="alert ${alertClass} fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <i class="fa fa-exclamation-circle fa-2x" style="vertical-align: middle;"></i>&nbsp;&nbsp;${escapeHtml(outage.title)}
+            <a href="${escapeHtml(outageBaseUrl + outage.id)}" target="_blank" class="alert-link">View Announcement <i class="fa fa-external-link"></i></a>
+          </div>
+        `;
+      }
+    });
+    $alerts.html(topAlerts);
+
+    if (!outages.length) {
+      return;
+    }
+
+    var $list = $("#announcements");
+    var listHtml = "";
+    outages.forEach(function(outage) {
+      var resolvedPrefix = "";
+      if (outage.status_display === "Resolved") {
+        resolvedPrefix = "(Resolved)&nbsp;";
+      } else if (outage.status_display === "Completed") {
+        resolvedPrefix = "(Completed)&nbsp;";
+      }
+
+      var timesHtml = "";
+      if (outage.start) {
+        timesHtml += `<strong>Start:</strong> ${escapeHtml(formatRfc2822(outage.start))}`;
+      } else if (outage.scheduled && outage.scheduled_start) {
+        timesHtml += `<strong>Start:</strong> ${escapeHtml(formatRfc2822(outage.scheduled_start))} (scheduled)`;
+      }
+      if (outage.end) {
+        timesHtml += ` <strong>End:</strong> ${escapeHtml(formatRfc2822(outage.end))}`;
+      } else if (outage.scheduled && outage.scheduled_end) {
+        timesHtml += ` <strong>End:</strong> ${escapeHtml(formatRfc2822(outage.scheduled_end))} (scheduled).`;
+      }
+
+      listHtml += `
+        <li class="d-flex py-4">
+          <div class="announcement-severity">
+            <img class="severity-dial" src="/static/img/severity${escapeHtml(outage.severity)}.svg" />
+          </div>
+          <div class="announcement-details pl-4">
+            <h5 class="text-uppercase">
+              ${resolvedPrefix}${escapeHtml(outage.scheduled_display)} Outage
+            </h5>
+            <h4>${escapeHtml(outage.title)}</h4>
+            <p>
+              <strong>Status:</strong> ${escapeHtml(outage.status_display)}
+              ${timesHtml}
+            </p>
+            <a href="${escapeHtml(outageBaseUrl + outage.id)}" target="_blank">View Announcement <i class="fa fa-external-link"></i></a>
+          </div>
+        </li>
+      `;
+    });
+    $list.html(listHtml);
+    $("#announcements_panel").show();
+    $("#news_panel").addClass("col-sm-6");
+  }
+
+  function renderSecurityRisks(risks) {
+    var $alert = $("#security_risks_alert");
+    var securityUrl = $alert.data("security-url") || "#";
+    if (!risks || !risks.length) {
+      $alert.empty();
+      return;
+    }
+    var alertClass = risks.length >= 3 ? "alert-danger" : "alert-warning";
+    $alert.html(`
+      <div class="alert ${alertClass}">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        Your project currently has <strong>${risks.length}</strong> security risks requiring action.
+        <a href="${escapeHtml(securityUrl)}" class="alert-link">View Security Risks<i class="fa fa-chevron-right ml-2"></i></a>
+      </div>
+    `);
+  }
+
+  /* Public function to fetch and render service outages */
+  home.showOutages = function() {
+    $.ajax({
+      url: "/api/nectar/outages/",
+      type: "GET",
+      dataType: "json",
+      success: function(data) {
+        renderOutages((data && data.items) || []);
+      },
+      error: function(error) {
+        console.error("Failed to fetch outages", error);
+      }
+    });
+  };
+
+  /* Public function to fetch and render security risks */
+  home.showSecurityRisks = function() {
+    $.ajax({
+      url: "/api/varroa/security-risks/",
+      type: "GET",
+      dataType: "json",
+      success: function(data) {
+        renderSecurityRisks((data && data.items) || []);
+      },
+      error: function(error) {
+        console.error("Failed to fetch security risks", error);
+      }
+    });
+  };
+
   // Return public functions
   return home;
 }());
