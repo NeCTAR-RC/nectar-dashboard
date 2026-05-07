@@ -138,6 +138,25 @@ class QuotaFormMixin:
     def get_quotas_initial(self):
         initial = {}
         if self.object:
+            # Seed single-zone fields from the bundle so they aren't empty
+            # when the user opens the "Custom" form on a bundle allocation.
+            # Without this, fields with no Quota row (which is every
+            # single-zone resource on a bundle allocation, since
+            # set_quotas() deletes those rows when a bundle is set) render
+            # blank and silently zero out on save.
+            if self.object.bundle:
+                zone_name = self.object.bundle.zone.name
+                for bq in self.object.bundle.bundlequota_set.select_related(
+                    'resource'
+                ):
+                    key = f"quota-{bq.resource.codename}__{zone_name}"
+                    initial[key] = bq.quota
+                # rating.budget isn't a BundleQuota; the su_budget property
+                # already prefers an admin override and falls back to the
+                # bundle's prorated annual SUs.
+                initial[f"quota-rating.budget__{zone_name}"] = (
+                    self.object.su_budget
+                )
             quotas = self.object.quotas.all_quotas()
             for quota in quotas:
                 key = (
