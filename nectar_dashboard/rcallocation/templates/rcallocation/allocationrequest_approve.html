@@ -47,7 +47,7 @@ Instructions for approving an allocation:
 
     {% if not form.instance.bundle %}
     <h3>Cloud Wide Resources</h3>
-    {% for st, fields in form.single_zone_quota_fields %}
+    {% for st, fields in form.non_location_specific_quota_fields %}
     <fieldset>
       <legend>{{ st }}</legend>
       <div class="row">
@@ -64,7 +64,7 @@ Instructions for approving an allocation:
     {% endif %}
 
     <h3>Availability Zone Resources</h3>
-    {% for st, zones in form.multi_zone_quota_fields %}
+    {% for st, zones in form.location_specific_quota_fields %}
     <fieldset>
       <legend>{{ st }}</legend>
       {% for zone, fields in zones.items %}

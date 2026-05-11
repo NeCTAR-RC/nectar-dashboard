@@ -61,7 +61,7 @@ class Command(base.BaseCommand):
                             resource=quota.resource
                         )
                     except models.BundleQuota.DoesNotExist:
-                        if quota.resource.service_type.is_multizone():
+                        if quota.resource.service_type.location_specific:
                             continue
                         quota_valid = False
                         LOG.info(

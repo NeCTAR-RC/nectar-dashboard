@@ -308,6 +308,7 @@ class AllocationRequestFormTestCase(FormsTestCase):
                 'quota-volume.gigabytes__monash',
                 'quota-volume.gigabytes__melbourne',
                 'quota-volume.gigabytes__tas',
+                'quota-ls-service-type.object__pawsey',
             ],
             list(form.fields.keys()),
         )
@@ -913,32 +914,40 @@ class QuotaMixinTestCase(FormsTestCase):
     def test_generate_quota_fields(self):
         form = forms.AllocationRequestForm()
         quota_fields = [f for f in form.fields if f.startswith('quota-')]
-        self.assertEqual(11, len(quota_fields))
+        self.assertEqual(12, len(quota_fields))
 
-    def test_multi_zone_quota_fields(self):
+    def test_location_specific_quota_fields(self):
         form = forms.AllocationRequestForm()
-        items = form.multi_zone_quota_fields()
-        self.assertEqual(1, len(items))
-        service_type, zones = list(items)[0]
-        self.assertEqual('volume', service_type.catalog_name)
-        # 3 zones (melbourne, monash and tas) so should be 3 fields
-        self.assertEqual(3, len(zones))
+        items = list(form.location_specific_quota_fields())
+        self.assertEqual(2, len(items))
+        items_by_name = {st.catalog_name: zones for st, zones in items}
+        self.assertEqual(
+            {'volume', 'ls-service-type'}, set(items_by_name.keys())
+        )
 
-        all_zones = [zone.name for zone in zones.keys()]
-        all_zones.sort()
-        self.assertEqual(['melbourne', 'monash', 'tas'], all_zones)
-        all_fields = []
-        for zone, fields in zones.items():
-            all_fields += fields
-        for f in all_fields:
-            self.assertEqual(
-                models.Resource.objects.get(quota_name='gigabytes'),
-                f.field.resource,
-            )
+        # volume has 3 enabled zones (melbourne, monash, tas); disabled-zone
+        # is excluded by generate_quota_fields.
+        volume_zones = items_by_name['volume']
+        self.assertEqual(3, len(volume_zones))
+        self.assertEqual(
+            ['melbourne', 'monash', 'tas'],
+            sorted(z.name for z in volume_zones.keys()),
+        )
+        gigabytes = models.Resource.objects.get(quota_name='gigabytes')
+        for fields in volume_zones.values():
+            for f in fields:
+                self.assertEqual(gigabytes, f.field.resource)
 
-    def test_single_zone_quota_fields(self):
+        # ls-service-type renders as location-specific despite having a
+        # single zone; this is the behaviour the location_specific flag
+        # gives us.
+        ls_zones = items_by_name['ls-service-type']
+        self.assertEqual(1, len(ls_zones))
+        self.assertEqual(['pawsey'], [z.name for z in ls_zones.keys()])
+
+    def test_non_location_specific_quota_fields(self):
         form = forms.AllocationRequestForm()
-        items = form.single_zone_quota_fields()
+        items = form.non_location_specific_quota_fields()
         self.assertEqual(4, len(items))
         service_types = [d[0].catalog_name for d in items]
         service_types.sort()

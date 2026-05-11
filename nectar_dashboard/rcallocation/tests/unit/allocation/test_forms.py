@@ -40,6 +40,7 @@ class AllocationApproveFormTestCase(base.BaseTestCase):
                 'quota-volume.gigabytes__monash',
                 'quota-volume.gigabytes__melbourne',
                 'quota-volume.gigabytes__tas',
+                'quota-ls-service-type.object__pawsey',
             ],
             list(form.fields.keys()),
         )

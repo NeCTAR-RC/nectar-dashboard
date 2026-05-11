@@ -502,10 +502,7 @@ class QuotaMixin:
                     }
                     if not self.instance.id:
                         field_args['initial'] = resource.default or 0
-                    if st.is_multizone():
-                        field_args['label'] = resource.name
-                    else:
-                        field_args['label'] = resource.name
+                    field_args['label'] = resource.name
                     if resource.resource_type == 'boolean':
                         self.fields[key] = QuotaBooleanField(**field_args)
                     else:
@@ -513,32 +510,37 @@ class QuotaMixin:
                             **field_args, min_value=0
                         )
 
-    def multi_zone_quota_fields(self):
-        """Get all quota fields that are multi zone
+    def location_specific_quota_fields(self):
+        """Get quota fields for location-specific services
 
-        Returns a list of tuples of (service_type, fields)
+        Returns a list of tuples of (service_type, fields). A service
+        is location-specific when its ``location_specific`` flag is
+        True; these render in the Location Specific Resources panel
+        grouped by zone.
         """
         fields = defaultdict(lambda: defaultdict(list))
         for field in self:
             if field.name.startswith('quota-'):
-                if field.field.resource.service_type.is_multizone():
-                    service_type = field.field.resource.service_type
+                service_type = field.field.resource.service_type
+                if service_type.location_specific:
                     zone = field.field.zone
                     fields[service_type][zone].append(field)
         for field in fields.values():
             field.default_factory = None
         return fields.items()
 
-    def single_zone_quota_fields(self):
-        """Get all quota fields that are single zone
+    def non_location_specific_quota_fields(self):
+        """Get quota fields for non-location-specific services
 
-        Returns a list of tuples of (service_type, fields)
+        Returns a list of tuples of (service_type, fields). These
+        render in the Custom Bundle modal.
         """
         fields = defaultdict(list)
         for field in self:
             if field.name.startswith('quota-'):
-                if not field.field.resource.service_type.is_multizone():
-                    fields[field.field.resource.service_type].append(field)
+                service_type = field.field.resource.service_type
+                if not service_type.location_specific:
+                    fields[service_type].append(field)
         return fields.items()
 
 

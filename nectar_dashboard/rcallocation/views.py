@@ -187,7 +187,10 @@ class QuotaFormMixin:
             zone = field.zone
             resource = field.resource
             value = form.cleaned_data[field_name]
-            if not allocation.bundle or resource.service_type.is_multizone():
+            if (
+                not allocation.bundle
+                or resource.service_type.location_specific
+            ):
                 if value:
                     # Purposely test for 0 or None which means the same thing
                     group, created = models.QuotaGroup.objects.get_or_create(

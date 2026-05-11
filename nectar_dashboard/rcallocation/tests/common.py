@@ -95,15 +95,21 @@ def factory_setup():
     monash = factories.ZoneFactory(name='monash')
     tas = factories.ZoneFactory(name='tas')
     nectar = factories.ZoneFactory(name='nectar')
+    pawsey = factories.ZoneFactory(name='pawsey')
     disabled_zone = factories.ZoneFactory(name='disabled-zone', enabled=False)
     # Needed for checker tests as we use this zone
     factories.ZoneFactory(name='QRIScloud')
 
-    volume_st = factories.ServiceTypeFactory(catalog_name='volume')
+    volume_st = factories.ServiceTypeFactory(
+        catalog_name='volume', location_specific=True
+    )
     object_st = factories.ServiceTypeFactory(catalog_name='object')
     compute_st = factories.ServiceTypeFactory(catalog_name='compute')
     network_st = factories.ServiceTypeFactory(catalog_name='network')
     rating_st = factories.ServiceTypeFactory(catalog_name='rating')
+    ls_st = factories.ServiceTypeFactory(
+        catalog_name='ls-service-type', location_specific=True
+    )
     volume_st.zones.add(melbourne)
     volume_st.zones.add(monash)
     volume_st.zones.add(tas)
@@ -112,11 +118,13 @@ def factory_setup():
     compute_st.zones.add(nectar)
     network_st.zones.add(nectar)
     rating_st.zones.add(nectar)
+    ls_st.zones.add(pawsey)
 
     factories.ResourceFactory(quota_name='gigabytes', service_type=volume_st)
     objects = factories.ResourceFactory(
         quota_name='object', service_type=object_st
     )
+    factories.ResourceFactory(quota_name='object', service_type=ls_st)
     cores = factories.ResourceFactory(
         quota_name='cores', service_type=compute_st
     )
@@ -606,7 +614,7 @@ def request_allocation(
         for q in all_quotas:
             resource_id = q['resource']
             resource = models.Resource.objects.get(id=resource_id)
-            if resource.service_type.is_multizone():
+            if resource.service_type.location_specific:
                 quotas.append(q)
         model_dict['quotas'] = quotas
     else:

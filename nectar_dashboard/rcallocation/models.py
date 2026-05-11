@@ -994,15 +994,13 @@ class ServiceType(models.Model):
     notes = models.TextField(null=True, blank=True)
     order = models.PositiveIntegerField(null=True)
     experimental = models.BooleanField(default=False)
+    location_specific = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
     class Meta:
         ordering = ['order', 'name']
-
-    def is_multizone(self):
-        return self.zones.count() > 1
 
 
 class ResourceManager(models.Manager):
