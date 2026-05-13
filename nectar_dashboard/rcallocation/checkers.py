@@ -40,6 +40,7 @@ APPROVER_UNVETTED_ORGANISATION = 'APPROVER_UNVETTED_ORGANISATION'
 NO_VALID_GRANTS = 'NO_VALID_GRANTS'
 REENTER_FOR_CODES = 'REENTER_FOR_CODES'
 DATA_SENSITIVITY = 'DATA_SENSITIVITY'
+NO_PUBLICATIONS = 'NO_PUBLICATIONS'
 
 
 def storage_zone_to_home(zone):
@@ -399,6 +400,19 @@ def data_sensitivity_check(context):
     return None
 
 
+def publications_check(context):
+    """Remind renewing users to capture publications and impact statement."""
+    if context.allocation and context.allocation.can_have_publications():
+        return (
+            NO_PUBLICATIONS,
+            'Please provide an impact and benefit statement for your '
+            'project. Also include any publications which have occurred '
+            'since your last renewal. Providing this information supports '
+            'the ongoing sustainability of the ARDC Nectar Research Cloud.',
+        )
+    return None
+
+
 class NagChecker(Checker):
     CHECKS = [
         survey_check,
@@ -408,4 +422,5 @@ class NagChecker(Checker):
         output_checks,
         for_check,
         data_sensitivity_check,
+        publications_check,
     ]
