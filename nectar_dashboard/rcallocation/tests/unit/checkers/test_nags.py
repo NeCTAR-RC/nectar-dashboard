@@ -186,7 +186,7 @@ class NagChecksTest(base.BaseTestCase):
         allocation.data_classification_level = 'yellow'
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
-        self.assertEqual([], res)
+        self.assertNotIn(checkers.DATA_SENSITIVITY, [r[0] for r in res])
 
     def test_data_sensitivity_check_bad(self):
         """Test when data classification is uncertain for renewal"""
@@ -196,8 +196,7 @@ class NagChecksTest(base.BaseTestCase):
         allocation.data_classification_level = 'not_sure'
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
-        self.assertEqual(1, len(res))
-        self.assertEqual(checkers.DATA_SENSITIVITY, res[0][0])
+        self.assertIn(checkers.DATA_SENSITIVITY, [r[0] for r in res])
 
     def test_data_sensitivity_check_not_renewal(self):
         """Test when request is not a renewal"""
@@ -208,3 +207,30 @@ class NagChecksTest(base.BaseTestCase):
         checker = checkers.NagChecker(allocation=allocation)
         res = checker.do_checks()
         self.assertEqual([], res)
+
+    def test_publications_check_renewal_with_pubs(self):
+        """Renewal with publications still gets the reminder."""
+        allocation = factories.AllocationFactory.create()
+        factories.PublicationFactory.create(
+            allocation=allocation, output_type=output_type_choices.DATASET
+        )
+        allocation.can_have_publications = lambda: True
+        checker = checkers.NagChecker(allocation=allocation)
+        res = checker.do_checks()
+        self.assertIn(checkers.NO_PUBLICATIONS, [r[0] for r in res])
+
+    def test_publications_check_renewal_no_pubs(self):
+        """Renewal without publications gets the reminder."""
+        allocation = factories.AllocationFactory.create()
+        allocation.can_have_publications = lambda: True
+        checker = checkers.NagChecker(allocation=allocation)
+        res = checker.do_checks()
+        self.assertIn(checkers.NO_PUBLICATIONS, [r[0] for r in res])
+
+    def test_publications_check_not_renewal(self):
+        """Initial submission does not get the reminder."""
+        allocation = factories.AllocationFactory.create()
+        allocation.can_have_publications = lambda: False
+        checker = checkers.NagChecker(allocation=allocation)
+        res = checker.do_checks()
+        self.assertNotIn(checkers.NO_PUBLICATIONS, [r[0] for r in res])
