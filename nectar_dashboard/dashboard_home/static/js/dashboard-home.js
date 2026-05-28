@@ -321,15 +321,16 @@ var dashboardHome = (function() {
       }
 
       var timesHtml = "";
+      var startDate = outage.start ? new Date(outage.start) : null;
+      var hasStarted = startDate && !isNaN(startDate.getTime()) && startDate <= new Date();
       if (outage.start) {
-        timesHtml += `<strong>Start:</strong> ${escapeHtml(formatRfc2822(outage.start))}`;
-      } else if (outage.scheduled && outage.scheduled_start) {
-        timesHtml += `<strong>Start:</strong> ${escapeHtml(formatRfc2822(outage.scheduled_start))} (scheduled)`;
+        var startSuffix = hasStarted ? "" : " (scheduled)";
+        timesHtml += `<strong>Start:</strong> ${escapeHtml(formatRfc2822(outage.start))}${startSuffix}`;
       }
       if (outage.end) {
         timesHtml += ` <strong>End:</strong> ${escapeHtml(formatRfc2822(outage.end))}`;
-      } else if (outage.scheduled && outage.scheduled_end) {
-        timesHtml += ` <strong>End:</strong> ${escapeHtml(formatRfc2822(outage.scheduled_end))} (scheduled).`;
+      } else if (outage.planned_end) {
+        timesHtml += ` <strong>End:</strong> ${escapeHtml(formatRfc2822(outage.planned_end))} (scheduled).`;
       }
 
       listHtml += `

@@ -16,16 +16,11 @@ def _serialize_outage(outage):
         'scheduled': outage.scheduled,
         'scheduled_display': outage.scheduled_display,
         'status_display': outage.status_display,
-        'scheduled_start': (
-            outage.scheduled_start.isoformat()
-            if outage.scheduled_start
-            else None
-        ),
-        'scheduled_end': (
-            outage.scheduled_end.isoformat() if outage.scheduled_end else None
-        ),
-        'start': outage.start.isoformat() if outage.start else None,
+        'start': outage.start.isoformat(),
         'end': outage.end.isoformat() if outage.end else None,
+        'planned_end': (
+            outage.planned_end.isoformat() if outage.planned_end else None
+        ),
     }
 
 
@@ -39,20 +34,31 @@ class Outages(generic.View):
     def get(self, request):
         """List current and upcoming outages.
 
-        Returns outages that are currently in progress or scheduled within
-        the next 14 days, plus any unresolved active outages from the past
-        day.
+        Returns outages that are currently in progress, scheduled to start
+        within the next 14 days, or resolved within the past day.
+
+        The langstroth API can't express the "ongoing OR recently-ended"
+        set in a single filtered query (there is no ``end__isnull``
+        lookup), so we issue three disjoint server-side queries rather than
+        fetching every outage and filtering in Python.
         """
         client = langstroth.langstrothclient(request)
-        all_outages = client.outages.list()
-        start = timezone.now() - timedelta(days=1)
-        end = timezone.now() + timedelta(days=14)
-        outages = []
-        for o in all_outages:
-            if (
-                o.scheduled
-                and o.scheduled_end > start
-                and o.scheduled_start < end
-            ) or (o.start and (not o.end or o.end >= start)):
-                outages.append(_serialize_outage(o))
-        return {'items': outages}
+        now = timezone.now()
+        window_start = (now - timedelta(days=1)).isoformat()
+        window_end = (now + timedelta(days=14)).isoformat()
+
+        # In progress now (started, not yet ended, not cancelled).
+        active = client.outages.list(activity='active')
+        # Scheduled to start within the next 14 days.
+        upcoming = client.outages.list(
+            activity='upcoming', start__lte=window_end
+        )
+        # Ended within the past day.
+        recent = client.outages.list(cancelled=False, end__gte=window_start)
+
+        # The three queries are disjoint by construction, but dedupe by id
+        # to be safe against any overlap in edge-case data.
+        outages = {}
+        for o in [*active, *upcoming, *recent]:
+            outages.setdefault(o.id, o)
+        return {'items': [_serialize_outage(o) for o in outages.values()]}
