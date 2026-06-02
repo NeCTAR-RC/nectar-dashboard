@@ -18,30 +18,29 @@
 
 #home_featured_banner {
   .banner-text {
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+    padding: 40px;
+    background: #fff;
     @media(min-width: 1200px) {
-      padding-top: 10rem;
-      padding-bottom: 10rem;
+      margin-top: 10rem;
+      margin-bottom: 10rem;
     }
   }
-  .banner-title,
-  .banner-subtitle,
-  .banner-info {
-    color: #fff;
-    margin: 15px 0;
-    a {
-      &:link,
-      &:visited {
-        color: #fff;
-        text-decoration: underline;
-      }
-      &:hover {
-        color: #fff;
-        text-decoration: none;
-      }
-    }
-    .banner-btn {
-      margin: 15px 0;
-    }
+  .banner-title {
+    font-size: 35px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    padding-right: 30px;
+    line-height: 1.2;
+    color: #16161d;
+  }
+  .banner-subtitle {
+    font-size: 20px;
+    color: rgba(32, 32, 32, 0.8);
+  }
+  .banner-btn {
+    margin-top: 20px;
   }
 }
 #announcements {

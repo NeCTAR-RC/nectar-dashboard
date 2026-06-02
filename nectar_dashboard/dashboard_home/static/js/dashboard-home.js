@@ -223,8 +223,8 @@ var dashboardHome = (function() {
         <div class="col-xs-12">
           <div id="home_featured_banner" class="panel panel-default panel-bg-image" style="background-image: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0, 0, 0, 0)), url(${result.bg_image});">
             <div class="panel-body py-5">
-              <div class="row">
-                <div class="col-xs-12 col-sm-6 col-lg-4 banner-text">
+              <div class="row-fluid">
+                <div class="col-xs-12 col-sm-6 banner-text">
                   <h2 class="banner-title h1">${result.title}</h2>
                   <h4 class="banner-subtitle">${result.subtitle}</h4>
                 </div>
