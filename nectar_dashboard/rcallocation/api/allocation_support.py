@@ -11,6 +11,7 @@
 #   under the License.
 #
 
+from django_filters import rest_framework as filters
 from rest_framework import serializers
 
 from nectar_dashboard.rcallocation.api import base
@@ -23,9 +24,19 @@ class ARDCSupportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ARDCSupportFilter(filters.FilterSet):
+    class Meta:
+        model = models.ARDCSupport
+        fields = {
+            'enabled': ['exact'],
+            'project': ['exact'],
+        }
+
+
 class ARDCSupportViewSet(base.NoDestroyViewSet):
     queryset = models.ARDCSupport.objects.all()
     serializer_class = ARDCSupportSerializer
+    filterset_class = ARDCSupportFilter
 
 
 class NCRISFacilitySerializer(serializers.ModelSerializer):

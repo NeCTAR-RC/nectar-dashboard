@@ -38,6 +38,17 @@ class SupportsTest(base.AllocationAPITest):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(78, len(response.data['results']))
 
+    def test_list_projects_filter_enabled(self):
+        self.cvl.enabled = False
+        self.cvl.save()
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get('/rest_api/ardc-projects/?enabled=true')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(77, len(response.data['results']))
+        response = self.client.get('/rest_api/ardc-projects/?enabled=false')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(1, len(response.data['results']))
+
     def test_create_project_no_permission(self):
         self.client.force_authenticate(user=self.user)
         data = {'name': 'Applied Magic Project'}
