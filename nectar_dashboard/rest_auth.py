@@ -11,8 +11,14 @@
 #   under the License.
 #
 
+import re
+
 from django.conf import settings
 from django.contrib import auth
+
+from keystoneauth1 import access
+from keystoneauth1 import exceptions as keystone_exceptions
+from keystoneauth1 import token_endpoint
 
 from openstack_auth import exceptions as oa_exceptions
 from openstack_auth import utils as auth_utils
@@ -24,6 +30,78 @@ from rest_framework import permissions
 from nectar_dashboard.rcallocation import models
 
 
+ACCESS_RULES_VERSION = '1.0'
+
+
+def validate_token(token, remote_addr):
+    """Validate a Keystone token, declaring access rules support.
+
+    Unlike openstack_auth's validate_token, this sends the
+    OpenStack-Identity-Access-Rules header, without which Keystone
+    refuses to validate tokens issued from application credentials
+    that have access rules. Sending the header obliges us to enforce
+    the rules ourselves (see check_access_rules).
+    """
+    auth_url = settings.OPENSTACK_KEYSTONE_URL
+    token_auth = token_endpoint.Token(endpoint=auth_url, token=token)
+    sess = auth_utils.get_session(auth=token_auth, original_ip=remote_addr)
+    client = auth_utils.get_keystone_client().Client(
+        session=sess, debug=settings.DEBUG
+    )
+    try:
+        token_data = client.tokens.get_token_data(
+            token, access_rules_support=ACCESS_RULES_VERSION
+        )
+        return access.AccessInfoV3(token_data, token)
+    except keystone_exceptions.ClientException:
+        raise oa_exceptions.KeystoneAuthException('Token validation failed')
+
+
+def path_matches(request_path, path_pattern):
+    # Ported from keystonemiddleware so access rules match the same
+    # way here as on other OpenStack services. The fnmatch module
+    # doesn't provide the ability to match * versus **, so convert
+    # to regex.
+    token_regex = (
+        r'(?P<tag>{[^}]*})|'  # {tag}
+        r'(?P<wild>\*(?=$|[^\*]))|'  # *
+        r'(?P<rec_wild>\*\*)|'  # **
+        r'(?P<literal>[^{}\*])'  # anything else
+    )
+    path_regex = ''
+    for match in re.finditer(token_regex, path_pattern):
+        token = match.groupdict()
+        if token['tag'] or token['wild']:
+            path_regex += r'[^\/]+'
+        if token['rec_wild']:
+            path_regex += '.*'
+        if token['literal']:
+            path_regex += token['literal']
+    path_regex = rf'^{path_regex}$'
+    return re.match(path_regex, request_path) is not None
+
+
+def check_access_rules(request, auth_ref):
+    """Enforce application credential access rules, if any.
+
+    Allows the request if the token carries no access rules, or if at
+    least one rule matches the request's service, method and path.
+    Matching follows keystonemiddleware semantics: '*' matches a
+    single path segment, '**' matches any remainder.
+    """
+    access_rules = auth_ref.application_credential_access_rules
+    if access_rules is None:
+        return True
+    for rule in access_rules:
+        if (
+            rule.get('service') == settings.ALLOCATION_API_SERVICE_TYPE
+            and rule.get('method') == request.method
+            and path_matches(request.path, rule.get('path', ''))
+        ):
+            return True
+    return False
+
+
 class KeystoneAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         token = request.META.get('HTTP_X_AUTH_TOKEN')
@@ -33,7 +111,9 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
             return None
 
         try:
-            auth_ref = auth_utils.validate_token(token, remote_addr)
+            auth_ref = validate_token(token, remote_addr)
+            if not check_access_rules(request, auth_ref):
+                raise exceptions.AuthenticationFailed()
             user = auth.authenticate(
                 request=request,
                 auth_url=None,
@@ -52,7 +132,9 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
         # session cookie.  Clients built on keystoneauth keep cookies for the
         # life of the process and would then be authenticated by that session
         # rather than by the token they send, which leaves them silently
-        # unauthenticated once the token held in the session expires.
+        # unauthenticated once the token held in the session expires.  It
+        # also means a token's access rules are enforced on every request,
+        # rather than being bypassed by a session not bound to them.
         request.user = user
         return (user, None)
 

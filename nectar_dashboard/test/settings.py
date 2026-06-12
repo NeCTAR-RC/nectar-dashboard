@@ -397,6 +397,10 @@ ALLOCATION_GLOBAL_READ_ROLES = ['read_only']
 ALLOCATION_GLOBAL_ADMIN_ROLES = ['admin']
 ALLOCATION_APPROVER_ROLES = ['tenantmanager']
 
+# The service type the allocation API is registered as in the Keystone
+# catalogue. Application credential access rules are matched against this.
+ALLOCATION_API_SERVICE_TYPE = 'allocations'
+
 # Mappings for compute zones
 ALLOCATION_HOME_ZONE_MAPPINGS = {
     'auckland': ['auckland'],

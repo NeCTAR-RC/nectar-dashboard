@@ -41,6 +41,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # as opposed to referrer.
 WEBSSO_USE_HTTP_REFERER = False
 
+# The service type the allocation API is registered as in the Keystone
+# catalogue. Application credential access rules are matched against this.
+ALLOCATION_API_SERVICE_TYPE = 'allocations'
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',  # noqa
     'PAGE_SIZE': 1000,
