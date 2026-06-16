@@ -267,3 +267,46 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
         )
         response = self.client.get(url)
         self.assertStatusCode(response, 200)
+
+    def test_allocation_view_current_resources_shows_approved_bundle(self):
+        """Regression test for NECTAR-15383.
+
+        When viewing a pending amendment, the "Current Resources" column
+        must show the previously-approved bundle, not the newly-requested
+        one.  Before the fix the Bundle row rendered ``allocation.bundle``
+        (the requested bundle) instead of ``approved_allocation.bundle``.
+        """
+        gold = models.Bundle.objects.get(name='gold')
+        silver = models.Bundle.objects.get(name='silver')
+
+        # The live record the operator is viewing: a pending update that
+        # now requests the 'gold' bundle (cf. "Extreme" in the ticket).
+        pending = factories.AllocationFactory.create(
+            contact_email=self.user.name,
+            status=models.AllocationRequest.UPDATE_PENDING,
+            bundle=gold,
+            modified_time='2026-05-20 02:52:00+00:00',
+        )
+        # The previously-approved revision (a history record), with the
+        # 'silver' bundle (cf. "Powerful" in the ticket).
+        factories.AllocationFactory.create(
+            contact_email=self.user.name,
+            status=models.AllocationRequest.APPROVED,
+            bundle=silver,
+            parent_request=pending,
+            modified_time='2026-05-13 04:40:00+00:00',
+        )
+
+        url = reverse(
+            'horizon:allocation:requests:allocation_view',
+            args=(pending.id,),
+        )
+        response = self.client.get(url)
+        self.assertStatusCode(response, 200)
+
+        # The view should resolve the previously-approved revision as the
+        # "current" allocation, and its bundle is what must be displayed.
+        approved_allocation = response.context['approved_allocation']
+        self.assertEqual(approved_allocation.bundle, silver)
+        self.assertContains(response, 'Current Resources')
+        self.assertContains(response, silver.name)
