@@ -1,7 +1,7 @@
 GRANT_TYPES = (
     ("arc", "Australian Research Council"),
     ("nhmrc", "NHMRC"),
-    ("rdc", "Rural Research and Development Corporation"),
+    ("rdc", "Rural Research and Development Corporations (RDCs)"),
     ("comp", "Other Australian Federal Govt competitive grant"),
     ("govt", "Australian Federal Govt non-competitive funding"),
     ("state", "Australian State / Territory Govt funding"),
