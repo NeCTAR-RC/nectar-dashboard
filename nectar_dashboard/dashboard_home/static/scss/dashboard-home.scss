@@ -18,13 +18,13 @@
 
 #home_featured_banner {
   .banner-text {
-    margin-top: 5rem;
-    margin-bottom: 5rem;
+    margin-top: 50px;
+    margin-bottom: 50px;
     padding: 40px;
     background: #fff;
     @media(min-width: 1200px) {
-      margin-top: 10rem;
-      margin-bottom: 10rem;
+      margin-top: 100px;
+      margin-bottom: 100px;
     }
   }
   .banner-title {
