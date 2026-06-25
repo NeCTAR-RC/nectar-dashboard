@@ -9,7 +9,7 @@
   display: block;
   z-index: 1;
   height: 100%;
-  width: 10rem;
+  width: 100px;
   line-height: 0px;
   font-size: 0px;
   cursor: pointer;
@@ -176,8 +176,8 @@
 
 @media (min-width: 1200px) {
    #home_featured_banner .banner-text {
-     padding-top: 10rem;
-     padding-bottom: 10rem;
+     padding-top: 100px;
+     padding-bottom: 100px;
    }
 }
 
