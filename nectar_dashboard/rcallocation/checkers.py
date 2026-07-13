@@ -170,7 +170,7 @@ def grant_checks(context):
         return None
     for g in context.allocation.grants.get_queryset():
         if (
-            g.grant_type in ('arc', 'nhmrc', 'comp', 'govt', 'rdc')
+            g.grant_type in ('arc', 'nhmrc', 'mrff', 'comp', 'govt', 'rdc')
             and g.last_year_funded >= this_year
         ):
             return None

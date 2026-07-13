@@ -649,6 +649,47 @@ class GrantFormTestCase(FormsTestCase):
             form.errors.get('funding_body_scheme'),
         )
 
+        # Retired 'nhmrc-mrff' subtype: not a valid choice unless the
+        # grant already has it
+        form = forms.GrantForm(
+            data={'grant_type': 'nhmrc', 'grant_subtype': 'nhmrc-mrff'}
+        )
+        self.assertIsNotNone(form.errors.get('grant_subtype'))
+
+        form = forms.GrantForm(
+            data={'grant_type': 'nhmrc', 'grant_subtype': 'nhmrc-mrff'},
+            instance=models.Grant(grant_subtype='nhmrc-mrff'),
+        )
+        self.assertIsNone(form.errors.get('grant_subtype'))
+
+        # MRFF grant conditionality
+        form = forms.GrantForm(
+            data={'grant_type': 'mrff', 'grant_subtype': 'unspecified'}
+        )
+        self.assertEqual(
+            ['Select an MRFF grant subtype for this grant'],
+            form.errors['grant_subtype'],
+        )
+
+        form = forms.GrantForm(
+            data={'grant_type': 'mrff', 'grant_subtype': 'mrff-genomics'}
+        )
+        self.assertIsNone(form.errors.get('grant_subtype'))
+        self.assertEqual(
+            ['Enter the MRFF grant id for this grant'],
+            form.errors.get('grant_id'),
+        )
+
+        form = forms.GrantForm(
+            data={'grant_type': 'mrff', 'grant_subtype': 'mrff-other'}
+        )
+        self.assertIsNone(form.errors.get('grant_subtype'))
+        self.assertIsNone(form.errors.get('grant_id'))
+        self.assertEqual(
+            ['Provide details for this grant'],
+            form.errors.get('funding_body_scheme'),
+        )
+
         # RDCC grant conditionality
         form = forms.GrantForm(
             data={'grant_type': 'rdc', 'grant_subtype': 'unspecified'}
@@ -671,6 +712,10 @@ class GrantFormTestCase(FormsTestCase):
         # State grant conditionality
         STATES = ['act', 'nsw', 'nt', 'qld', 'sa', 'tas', 'vic', 'wa']
         for subtype in GRANT_SUBTYPES:
+            if subtype[0] == 'nhmrc-mrff':
+                # retired: also fails the choice check, so the error
+                # list differs
+                continue
             form = forms.GrantForm(
                 data={'grant_type': 'state', 'grant_subtype': subtype[0]}
             )
@@ -689,7 +734,7 @@ class GrantFormTestCase(FormsTestCase):
 
         # Other grant conditionality
         for type in GRANT_TYPES:
-            if type[0] in ['arc', 'nhmrc', 'rdc', 'state']:
+            if type[0] in ['arc', 'nhmrc', 'mrff', 'rdc', 'state']:
                 continue
             form = forms.GrantForm(
                 data={'grant_type': type[0], 'grant_subtype': 'unspecified'}
@@ -708,11 +753,18 @@ class GrantFormTestCase(FormsTestCase):
                 )
                 allowed = (
                     (type[0] == 'arc' and subtype[0].startswith('arc-'))
-                    or (type[0] == 'nhmrc' and subtype[0].startswith('nhmrc-'))
+                    # nhmrc-mrff is retired: only valid on existing
+                    # grants, and these forms are all new grants
+                    or (
+                        type[0] == 'nhmrc'
+                        and subtype[0].startswith('nhmrc-')
+                        and subtype[0] != 'nhmrc-mrff'
+                    )
+                    or (type[0] == 'mrff' and subtype[0].startswith('mrff-'))
                     or (type[0] == 'rdc' and subtype[0].startswith('rdc-'))
                     or (type[0] == 'state' and subtype[0] in STATES)
                     or (
-                        type[0] not in ['arc', 'nhmrc', 'state', 'rdc']
+                        type[0] not in ['arc', 'nhmrc', 'mrff', 'state', 'rdc']
                         and subtype[0] == 'unspecified'
                     )
                 )

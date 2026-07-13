@@ -317,7 +317,8 @@ $(function(){
             [["", "---------"],
              ["arc", "Australian Research Council"],
              ["nhmrc", "NHMRC"],
-             ["rdc", "Rural Research and Development Corporation"],
+             ["mrff", "Medical Research Future Fund (MRFF)"],
+             ["rdc", "Rural Research and Development Corporations (RDCs)"],
              ["comp", "Other Australian Federal Govt competitive grant"],
              ["govt", "Australian Federal Govt non-competitive funding"],
              ["state", "Australian State / Territory Govt funding"],
@@ -359,13 +360,35 @@ $(function(){
              ["nhmrc-equipment", "NHMRC Equipment grant"],
              ["nhmrc-ctcs", "NHMRC Clinical Trial and Cohort Studies grant"],
              ["nhmrc-ics", "NHMRC International Collaborations (various)"],
-             ["nhmrc-mrff", "NHMRC Medical Research Future Fund"],
              ["nhmrc-pc", "NHMRC Partnership Centre"],
              ["nhmrc-pp", "NHMRC Partnership project"],
              ["nhmrc-tcr", "NHMRC Targeted Calls for Research"],
              ["nhmrc-iriiss", "NHMRC Independent Research Institute Infrastructure Support Scheme"],
              ["nhmrc-bdri", "NHMRC Boosting Dementia Research Initiatives (various)"],
              ["nhmrc-other", "Other NHMRC scheme"],
+             ["mrff-brain-cancer", "MRFF Australian Brain Cancer Mission"],
+             ["mrff-cardiovascular", "MRFF Cardiovascular Health Mission"],
+             ["mrff-clinical-trials", "MRFF Clinical Trials Activity"],
+             ["mrff-clinician-researchers", "MRFF Clinician Researchers"],
+             ["mrff-coronavirus", "MRFF Coronavirus Research Response"],
+             ["mrff-dementia-ageing", "MRFF Dementia, Ageing and Aged Care Mission"],
+             ["mrff-emcr", "MRFF Early to Mid-Career Researchers"],
+             ["mrff-epcdr", "MRFF Emerging Priorities and Consumer Driven Research"],
+             ["mrff-frontier", "MRFF Frontier Health and Medical Research"],
+             ["mrff-genomics", "MRFF Genomics Health Futures Mission"],
+             ["mrff-global-health", "MRFF Global Health"],
+             ["mrff-indigenous", "MRFF Indigenous Health Research Fund"],
+             ["mrff-commercialisation", "MRFF Medical Research Commercialisation"],
+             ["mrff-million-minds", "MRFF Million Minds Mental Health Research Mission"],
+             ["mrff-ncri", "MRFF National Critical Research Infrastructure"],
+             ["mrff-preventive", "MRFF Preventive and Public Health Research"],
+             ["mrff-primary-care", "MRFF Primary Health Care Research"],
+             ["mrff-rart", "MRFF Rapid Applied Research Translation"],
+             ["mrff-rdi", "MRFF Research Data Infrastructure"],
+             ["mrff-redi", "MRFF Researcher Exchange and Development Within Industry"],
+             ["mrff-stem-cell", "MRFF Stem Cell Therapies Mission"],
+             ["mrff-tbi", "MRFF Traumatic Brain Injury Mission"],
+             ["mrff-other", "Other MRFF initiative"],
              ["rdc-wa", "Wine Australia"],
              ["rdc-crdc", "Cotton RDC"],
              ["rdc-frdc", "Fisheries RDC"],
@@ -582,6 +605,8 @@ $(function(){
             pattern = /^arc-.*$/;
         } else if (type == 'nhmrc') {
             pattern = /^nhmrc-.*$/;
+        } else if (type == 'mrff') {
+            pattern = /^mrff-.*$/;
         } else if (type == 'rdc') {
             pattern = /^rdc-.*$/;
         } else if (type == 'state') {

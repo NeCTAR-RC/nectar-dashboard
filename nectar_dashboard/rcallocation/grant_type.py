@@ -1,6 +1,7 @@
 GRANT_TYPES = (
     ("arc", "Australian Research Council"),
     ("nhmrc", "NHMRC"),
+    ("mrff", "Medical Research Future Fund (MRFF)"),
     ("rdc", "Rural Research and Development Corporations (RDCs)"),
     ("comp", "Other Australian Federal Govt competitive grant"),
     ("govt", "Australian Federal Govt non-competitive funding"),
@@ -54,6 +55,35 @@ GRANT_SUBTYPES = (
     ),
     ("nhmrc-bdri", "NHMRC Boosting Dementia Research Initiatives (various)"),
     ("nhmrc-other", "Other NHMRC scheme"),
+    # MRFF initiatives from the "MRFF Initiative" column of the MRFF
+    # grant recipients document (as at 11 June 2026):
+    # https://www.health.gov.au/resources/publications/medical-research-future-fund-mrff-grant-recipients
+    ("mrff-brain-cancer", "MRFF Australian Brain Cancer Mission"),
+    ("mrff-cardiovascular", "MRFF Cardiovascular Health Mission"),
+    ("mrff-clinical-trials", "MRFF Clinical Trials Activity"),
+    ("mrff-clinician-researchers", "MRFF Clinician Researchers"),
+    ("mrff-coronavirus", "MRFF Coronavirus Research Response"),
+    ("mrff-dementia-ageing", "MRFF Dementia, Ageing and Aged Care Mission"),
+    ("mrff-emcr", "MRFF Early to Mid-Career Researchers"),
+    ("mrff-epcdr", "MRFF Emerging Priorities and Consumer Driven Research"),
+    ("mrff-frontier", "MRFF Frontier Health and Medical Research"),
+    ("mrff-genomics", "MRFF Genomics Health Futures Mission"),
+    ("mrff-global-health", "MRFF Global Health"),
+    ("mrff-indigenous", "MRFF Indigenous Health Research Fund"),
+    ("mrff-commercialisation", "MRFF Medical Research Commercialisation"),
+    (
+        "mrff-million-minds",
+        "MRFF Million Minds Mental Health Research Mission",
+    ),
+    ("mrff-ncri", "MRFF National Critical Research Infrastructure"),
+    ("mrff-preventive", "MRFF Preventive and Public Health Research"),
+    ("mrff-primary-care", "MRFF Primary Health Care Research"),
+    ("mrff-rart", "MRFF Rapid Applied Research Translation"),
+    ("mrff-rdi", "MRFF Research Data Infrastructure"),
+    ("mrff-redi", "MRFF Researcher Exchange and Development Within Industry"),
+    ("mrff-stem-cell", "MRFF Stem Cell Therapies Mission"),
+    ("mrff-tbi", "MRFF Traumatic Brain Injury Mission"),
+    ("mrff-other", "Other MRFF initiative"),
     # RDCs
     ("rdc-wa", "Wine Australia"),
     ("rdc-crdc", "Cotton RDC"),
