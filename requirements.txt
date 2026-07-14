@@ -16,3 +16,4 @@ django-maintenance-mode
 django-tz-detect @ git+https://github.com/sorrison/django-tz-detect@develop
 django-health-check
 pymemcache
+sentry-sdk>=2.0,<3.0
