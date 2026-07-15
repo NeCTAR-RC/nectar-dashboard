@@ -1,2 +1,5 @@
-"manage_public_package": "rule:admin_api"
-"admin_api": "role:admin or is_admin:True"
+'admin_api': 'role:admin or is_admin:True'
+'cloud_admin': 'role:cloud_admin'
+'manage_public_package': 'rule:operator_or_admin'
+'operator_or_admin': 'rule:cloud_admin or rule:admin_api'
+'upload_package': 'rule:operator_or_admin'

@@ -1,5 +1,3 @@
-"cloud_admin": "role:cloud_admin"
-"read_only":   "role:monitoring or role:read_only or role:helpdesk"
-
-"admin_or_monitoring": "rule:admin_required or rule:read_only or rule:cloud_admin"
-"stacks:global_index": "rule:admin_or_monitoring"
+'admin_or_monitoring': 'role:admin or rule:read_only or role:cloud_admin'
+'read_only': 'role:monitoring or role:read_only or role:helpdesk'
+'stacks:global_index': 'rule:admin_or_monitoring'
