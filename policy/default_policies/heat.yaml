@@ -1,0 +1,6 @@
+# STUB: replace with the real heat default policies.
+# Generate on a host with heat installed:
+#   python manage.py dump_default_policies --namespace heat \
+#     --output-file heat.yaml
+# Must remain a YAML list ([] when empty) - Horizon iterates over it.
+[]

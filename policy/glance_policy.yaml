@@ -1,0 +1,3 @@
+# Nectar overrides for glance policy.
+# Empty: defaults from default_policies/glance.yaml apply.
+# Add "rule_name": "check_str" entries here to override.

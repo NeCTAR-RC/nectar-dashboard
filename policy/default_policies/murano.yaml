@@ -1,0 +1,6 @@
+# STUB: replace with the real murano default policies.
+# Generate on a host with murano installed:
+#   python manage.py dump_default_policies --namespace murano \
+#     --output-file murano.yaml
+# Must remain a YAML list ([] when empty) - Horizon iterates over it.
+[]

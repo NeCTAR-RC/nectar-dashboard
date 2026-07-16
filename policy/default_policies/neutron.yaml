@@ -1,0 +1,3896 @@
+- check_str: role:admin
+  description: Rule for cloud admin access
+  name: context_is_admin
+  operations: []
+  scope_types: null
+- check_str: role:service
+  description: Default rule for the service-to-service APIs.
+  name: service_api
+  operations: []
+  scope_types: null
+- check_str: tenant_id:%(tenant_id)s
+  description: Rule for resource owner access
+  name: owner
+  operations: []
+  scope_types: null
+- check_str: rule:context_is_admin or rule:owner
+  description: Rule for admin or owner access
+  name: admin_or_owner
+  operations: []
+  scope_types: null
+- check_str: role:advsvc
+  description: Rule for advsvc role access
+  name: context_is_advsvc
+  operations: []
+  scope_types: null
+- check_str: rule:context_is_admin or tenant_id:%(network:tenant_id)s
+  description: Rule for admin or network owner access
+  name: admin_or_network_owner
+  operations: []
+  scope_types: null
+- check_str: rule:owner or rule:admin_or_network_owner
+  description: Rule for resource owner, admin or network owner access
+  name: admin_owner_or_network_owner
+  operations: []
+  scope_types: null
+- check_str: tenant_id:%(network:tenant_id)s
+  description: Rule for network owner access
+  name: network_owner
+  operations: []
+  scope_types: null
+- check_str: rule:context_is_admin
+  description: Rule for admin-only access
+  name: admin_only
+  operations: []
+  scope_types: null
+- check_str: ''
+  description: Rule for regular user access
+  name: regular_user
+  operations: []
+  scope_types: null
+- check_str: field:networks:shared=True
+  description: Rule of shared network
+  name: shared
+  operations: []
+  scope_types: null
+- check_str: rule:admin_or_owner
+  description: Default access rule
+  name: default
+  operations: []
+  scope_types: null
+- check_str: rule:context_is_admin or tenant_id:%(ext_parent:tenant_id)s
+  description: Rule for common parent owner check
+  name: admin_or_ext_parent_owner
+  operations: []
+  scope_types: null
+- check_str: tenant_id:%(ext_parent:tenant_id)s
+  description: Rule for common parent owner check
+  name: ext_parent_owner
+  operations: []
+  scope_types: null
+- check_str: tenant_id:%(security_group:tenant_id)s
+  description: Rule for security group owner access
+  name: sg_owner
+  operations: []
+  scope_types: null
+- check_str: field:address_groups:shared=True
+  description: Definition of a shared address group
+  name: shared_address_groups
+  operations: []
+  scope_types: null
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:shared_address_groups
+  deprecated_rule:
+    check_str: rule:admin_or_owner or rule:shared_address_groups
+    deprecated_reason: The Address scope API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: get_address_group
+  description: Get an address group
+  name: get_address_group
+  operations:
+  - method: GET
+    path: /address-groups
+  - method: GET
+    path: /address-groups/{id}
+  scope_types:
+  - project
+- check_str: field:address_scopes:shared=True
+  description: Definition of a shared address scope
+  name: shared_address_scopes
+  operations: []
+  scope_types: null
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The Address scope API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: create_address_scope
+  description: Create an address scope
+  name: create_address_scope
+  operations:
+  - method: POST
+    path: /address-scopes
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Address scope API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: create_address_scope:shared
+  description: Create a shared address scope
+  name: create_address_scope:shared
+  operations:
+  - method: POST
+    path: /address-scopes
+  scope_types:
+  - project
+- check_str: rule:admin_only or role:reader and project_id:%(project_id)s or rule:shared_address_scopes
+  deprecated_rule:
+    check_str: rule:admin_or_owner or rule:shared_address_scopes
+    deprecated_reason: The Address scope API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: get_address_scope
+  description: Get an address scope
+  name: get_address_scope
+  operations:
+  - method: GET
+    path: /address-scopes
+  - method: GET
+    path: /address-scopes/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Address scope API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: update_address_scope
+  description: Update an address scope
+  name: update_address_scope
+  operations:
+  - method: PUT
+    path: /address-scopes/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Address scope API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: update_address_scope:shared
+  description: Update ``shared`` attribute of an address scope
+  name: update_address_scope:shared
+  operations:
+  - method: PUT
+    path: /address-scopes/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Address scope API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: delete_address_scope
+  description: Delete an address scope
+  name: delete_address_scope
+  operations:
+  - method: DELETE
+    path: /address-scopes/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_agent
+  description: Get an agent
+  name: get_agent
+  operations:
+  - method: GET
+    path: /agents
+  - method: GET
+    path: /agents/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_agent
+  description: Update an agent
+  name: update_agent
+  operations:
+  - method: PUT
+    path: /agents/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: delete_agent
+  description: Delete an agent
+  name: delete_agent
+  operations:
+  - method: DELETE
+    path: /agents/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_dhcp-network
+  description: Add a network to a DHCP agent
+  name: create_dhcp-network
+  operations:
+  - method: POST
+    path: /agents/{agent_id}/dhcp-networks
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_dhcp-networks
+  description: List networks on a DHCP agent
+  name: get_dhcp-networks
+  operations:
+  - method: GET
+    path: /agents/{agent_id}/dhcp-networks
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: delete_dhcp-network
+  description: Remove a network from a DHCP agent
+  name: delete_dhcp-network
+  operations:
+  - method: DELETE
+    path: /agents/{agent_id}/dhcp-networks/{network_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_l3-router
+  description: Add a router to an L3 agent
+  name: create_l3-router
+  operations:
+  - method: POST
+    path: /agents/{agent_id}/l3-routers
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_l3-routers
+  description: List routers on an L3 agent
+  name: get_l3-routers
+  operations:
+  - method: GET
+    path: /agents/{agent_id}/l3-routers
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: delete_l3-router
+  description: Remove a router from an L3 agent
+  name: delete_l3-router
+  operations:
+  - method: DELETE
+    path: /agents/{agent_id}/l3-routers/{router_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_dhcp-agents
+  description: List DHCP agents hosting a network
+  name: get_dhcp-agents
+  operations:
+  - method: GET
+    path: /networks/{network_id}/dhcp-agents
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Agent API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_l3-agents
+  description: List L3 agents hosting a router
+  name: get_l3-agents
+  operations:
+  - method: GET
+    path: /routers/{router_id}/l3-agents
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Auto allocated topology API now supports system scope and
+      default roles.
+    deprecated_since: W
+    name: get_auto_allocated_topology
+  description: Get a project's auto-allocated topology
+  name: get_auto_allocated_topology
+  operations:
+  - method: GET
+    path: /auto-allocated-topology/{project_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Auto allocated topology API now supports system scope and
+      default roles.
+    deprecated_since: W
+    name: delete_auto_allocated_topology
+  description: Delete a project's auto-allocated topology
+  name: delete_auto_allocated_topology
+  operations:
+  - method: DELETE
+    path: /auto-allocated-topology/{project_id}
+  scope_types:
+  - project
+- check_str: role:reader
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The Availability Zone API now supports project scope and default
+      roles.
+    deprecated_since: W
+    name: get_availability_zone
+  description: List availability zones
+  name: get_availability_zone
+  operations:
+  - method: GET
+    path: /availability_zones
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The default security group rules API supports system scope
+      and default roles.
+    deprecated_since: '2023.2'
+    name: create_default_security_group_rule
+  description: Create a templated of the security group rule
+  name: create_default_security_group_rule
+  operations:
+  - method: POST
+    path: /default-security-group-rules
+  scope_types:
+  - project
+- check_str: role:reader
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The default security group rules API supports system scope
+      and default roles.
+    deprecated_since: '2023.2'
+    name: get_default_security_group_rule
+  description: Get a templated of the security group rule
+  name: get_default_security_group_rule
+  operations:
+  - method: GET
+    path: /default-security-group-rules
+  - method: GET
+    path: /default-security-group-rules/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The default security group rules API supports system scope
+      and default roles.
+    deprecated_since: '2023.2'
+    name: delete_default_security_group_rule
+  description: Delete a templated of the security group rule
+  name: delete_default_security_group_rule
+  operations:
+  - method: DELETE
+    path: /default-security-group-rules/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_flavor
+  description: Create a flavor
+  name: create_flavor
+  operations:
+  - method: POST
+    path: /flavors
+  scope_types:
+  - project
+- check_str: role:reader
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_flavor
+  description: Get a flavor
+  name: get_flavor
+  operations:
+  - method: GET
+    path: /flavors
+  - method: GET
+    path: /flavors/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_flavor
+  description: Update a flavor
+  name: update_flavor
+  operations:
+  - method: PUT
+    path: /flavors/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: delete_flavor
+  description: Delete a flavor
+  name: delete_flavor
+  operations:
+  - method: DELETE
+    path: /flavors/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_service_profile
+  description: Create a service profile
+  name: create_service_profile
+  operations:
+  - method: POST
+    path: /service_profiles
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_service_profile
+  description: Get a service profile
+  name: get_service_profile
+  operations:
+  - method: GET
+    path: /service_profiles
+  - method: GET
+    path: /service_profiles/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_service_profile
+  description: Update a service profile
+  name: update_service_profile
+  operations:
+  - method: PUT
+    path: /service_profiles/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: delete_service_profile
+  description: Delete a service profile
+  name: delete_service_profile
+  operations:
+  - method: DELETE
+    path: /service_profiles/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_flavor_service_profile
+  description: Get a flavor associated with a given service profiles. There is no
+    corresponding GET operations in API currently. This rule is currently referred
+    only in the DELETE of flavor_service_profile.
+  name: get_flavor_service_profile
+  operations: []
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_flavor_service_profile
+  description: Associate a flavor with a service profile
+  name: create_flavor_service_profile
+  operations:
+  - method: POST
+    path: /flavors/{flavor_id}/service_profiles
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The flavor API now supports project scope and default roles.
+    deprecated_since: W
+    name: delete_flavor_service_profile
+  description: Disassociate a flavor with a service profile
+  name: delete_flavor_service_profile
+  operations:
+  - method: DELETE
+    path: /flavors/{flavor_id}/service_profiles/{profile_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The Floating IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_floatingip
+  description: Create a floating IP
+  name: create_floatingip
+  operations:
+  - method: POST
+    path: /floatingips
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The Floating IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_floatingip:floating_ip_address
+  description: Create a floating IP with a specific IP address
+  name: create_floatingip:floating_ip_address
+  operations:
+  - method: POST
+    path: /floatingips
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Floating IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_floatingip
+  description: Get a floating IP
+  name: get_floatingip
+  operations:
+  - method: GET
+    path: /floatingips
+  - method: GET
+    path: /floatingips/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  description: Get the floating IP tags
+  name: get_floatingips_tags
+  operations:
+  - method: GET
+    path: /floatingips/{id}/tags
+  - method: GET
+    path: /floatingips/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Floating IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_floatingip
+  description: Update a floating IP
+  name: update_floatingip
+  operations:
+  - method: PUT
+    path: /floatingips/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Update the floating IP tags
+  name: update_floatingips_tags
+  operations:
+  - method: PUT
+    path: /floatingips/{id}/tags
+  - method: PUT
+    path: /floatingips/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Floating IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: delete_floatingip
+  description: Delete a floating IP
+  name: delete_floatingip
+  operations:
+  - method: DELETE
+    path: /floatingips/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Delete the floating IP tags
+  name: delete_floatingips_tags
+  operations:
+  - method: DELETE
+    path: /floatingips/{id}/tags
+  - method: DELETE
+    path: /floatingips/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The Floating IP Pool API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: get_floatingip_pool
+  description: Get floating IP pools
+  name: get_floatingip_pool
+  operations:
+  - method: GET
+    path: /floatingip_pools
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: '
+
+      The floating IP port forwarding API now supports system scope and default
+
+      roles.
+
+      '
+    deprecated_since: W
+    name: create_floatingip_port_forwarding
+  description: Create a floating IP port forwarding
+  name: create_floatingip_port_forwarding
+  operations:
+  - method: POST
+    path: /floatingips/{floatingip_id}/port_forwardings
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: '
+
+      The floating IP port forwarding API now supports system scope and default
+
+      roles.
+
+      '
+    deprecated_since: W
+    name: get_floatingip_port_forwarding
+  description: Get a floating IP port forwarding
+  name: get_floatingip_port_forwarding
+  operations:
+  - method: GET
+    path: /floatingips/{floatingip_id}/port_forwardings
+  - method: GET
+    path: /floatingips/{floatingip_id}/port_forwardings/{port_forwarding_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: '
+
+      The floating IP port forwarding API now supports system scope and default
+
+      roles.
+
+      '
+    deprecated_since: W
+    name: update_floatingip_port_forwarding
+  description: Update a floating IP port forwarding
+  name: update_floatingip_port_forwarding
+  operations:
+  - method: PUT
+    path: /floatingips/{floatingip_id}/port_forwardings/{port_forwarding_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: '
+
+      The floating IP port forwarding API now supports system scope and default
+
+      roles.
+
+      '
+    deprecated_since: W
+    name: delete_floatingip_port_forwarding
+  description: Delete a floating IP port forwarding
+  name: delete_floatingip_port_forwarding
+  operations:
+  - method: DELETE
+    path: /floatingips/{floatingip_id}/port_forwardings/{port_forwarding_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s) or rule:ext_parent_owner
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: '
+
+      The router conntrack API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_router_conntrack_helper
+  description: Create a router conntrack helper
+  name: create_router_conntrack_helper
+  operations:
+  - method: POST
+    path: /routers/{router_id}/conntrack_helpers
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:ext_parent_owner
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: '
+
+      The router conntrack API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_router_conntrack_helper
+  description: Get a router conntrack helper
+  name: get_router_conntrack_helper
+  operations:
+  - method: GET
+    path: /routers/{router_id}/conntrack_helpers
+  - method: GET
+    path: /routers/{router_id}/conntrack_helpers/{conntrack_helper_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s) or rule:ext_parent_owner
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: '
+
+      The router conntrack API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_router_conntrack_helper
+  description: Update a router conntrack helper
+  name: update_router_conntrack_helper
+  operations:
+  - method: PUT
+    path: /routers/{router_id}/conntrack_helpers/{conntrack_helper_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s) or rule:ext_parent_owner
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: '
+
+      The router conntrack API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_router_conntrack_helper
+  description: Delete a router conntrack helper
+  name: delete_router_conntrack_helper
+  operations:
+  - method: DELETE
+    path: /routers/{router_id}/conntrack_helpers/{conntrack_helper_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The Local IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_local_ip
+  description: Create a Local IP
+  name: create_local_ip
+  operations:
+  - method: POST
+    path: /local-ips
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Local IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_local_ip
+  description: Get a Local IP
+  name: get_local_ip
+  operations:
+  - method: GET
+    path: /local-ips
+  - method: GET
+    path: /local-ips/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Local IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_local_ip
+  description: Update a Local IP
+  name: update_local_ip
+  operations:
+  - method: PUT
+    path: /local-ips/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The Local IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: delete_local_ip
+  description: Delete a Local IP
+  name: delete_local_ip
+  operations:
+  - method: DELETE
+    path: /local-ips/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s) or rule:ext_parent_owner
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: The Local IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_local_ip_port_association
+  description: Create a Local IP port association
+  name: create_local_ip_port_association
+  operations:
+  - method: POST
+    path: /local_ips/{local_ip_id}/port_associations
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:ext_parent_owner
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: The Local IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_local_ip_port_association
+  description: Get a Local IP port association
+  name: get_local_ip_port_association
+  operations:
+  - method: GET
+    path: /local_ips/{local_ip_id}/port_associations
+  - method: GET
+    path: /local_ips/{local_ip_id}/port_associations/{fixed_port_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s) or rule:ext_parent_owner
+  deprecated_rule:
+    check_str: rule:admin_or_ext_parent_owner
+    deprecated_reason: The Local IP API now supports system scope and default roles.
+    deprecated_since: W
+    name: delete_local_ip_port_association
+  description: Delete a Local IP port association
+  name: delete_local_ip_port_association
+  operations:
+  - method: DELETE
+    path: /local_ips/{local_ip_id}/port_associations/{fixed_port_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The logging API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_loggable_resource
+  description: Get loggable resources
+  name: get_loggable_resource
+  operations:
+  - method: GET
+    path: /log/loggable-resources
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The logging API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_log
+  description: Create a network log
+  name: create_log
+  operations:
+  - method: POST
+    path: /log/logs
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The logging API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_log
+  description: Get a network log
+  name: get_log
+  operations:
+  - method: GET
+    path: /log/logs
+  - method: GET
+    path: /log/logs/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The logging API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_log
+  description: Update a network log
+  name: update_log
+  operations:
+  - method: PUT
+    path: /log/logs/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The logging API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_log
+  description: Delete a network log
+  name: delete_log
+  operations:
+  - method: DELETE
+    path: /log/logs/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The metering API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_metering_label
+  description: Create a metering label
+  name: create_metering_label
+  operations:
+  - method: POST
+    path: /metering/metering-labels
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The metering API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_metering_label
+  description: Get a metering label
+  name: get_metering_label
+  operations:
+  - method: GET
+    path: /metering/metering-labels
+  - method: GET
+    path: /metering/metering-labels/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The metering API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_metering_label
+  description: Delete a metering label
+  name: delete_metering_label
+  operations:
+  - method: DELETE
+    path: /metering/metering-labels/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The metering API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_metering_label_rule
+  description: Create a metering label rule
+  name: create_metering_label_rule
+  operations:
+  - method: POST
+    path: /metering/metering-label-rules
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The metering API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_metering_label_rule
+  description: Get a metering label rule
+  name: get_metering_label_rule
+  operations:
+  - method: GET
+    path: /metering/metering-label-rules
+  - method: GET
+    path: /metering/metering-label-rules/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The metering API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_metering_label_rule
+  description: Delete a metering label rule
+  name: delete_metering_label_rule
+  operations:
+  - method: DELETE
+    path: /metering/metering-label-rules/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The ndp proxy API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_ndp_proxy
+  description: Create a ndp proxy
+  name: create_ndp_proxy
+  operations:
+  - method: POST
+    path: /ndp_proxies
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The ndp proxy API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_ndp_proxy
+  description: Get a ndp proxy
+  name: get_ndp_proxy
+  operations:
+  - method: GET
+    path: /ndp_proxies
+  - method: GET
+    path: /ndp_proxies/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The ndp proxy API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_ndp_proxy
+  description: Update a ndp proxy
+  name: update_ndp_proxy
+  operations:
+  - method: PUT
+    path: /ndp_proxies/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The ndp proxy API now supports system scope and default roles.
+    deprecated_since: W
+    name: delete_ndp_proxy
+  description: Delete a ndp proxy
+  name: delete_ndp_proxy
+  operations:
+  - method: DELETE
+    path: /ndp_proxies/{id}
+  scope_types:
+  - project
+- check_str: field:networks:router:external=True
+  description: Definition of an external network
+  name: external
+  operations: []
+  scope_types: null
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network
+  description: Create a network
+  name: create_network
+  operations: &id001
+  - method: POST
+    path: /networks
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network:shared
+  description: Create a shared network
+  name: create_network:shared
+  operations: *id001
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network:router:external
+  description: Create an external network
+  name: create_network:router:external
+  operations: *id001
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network:is_default
+  description: Specify ``is_default`` attribute when creating a network
+  name: create_network:is_default
+  operations: *id001
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network:port_security_enabled
+  description: Specify ``port_security_enabled`` attribute when creating a network
+  name: create_network:port_security_enabled
+  operations: *id001
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network:segments
+  description: Specify ``segments`` attribute when creating a network
+  name: create_network:segments
+  operations: *id001
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network:provider:network_type
+  description: Specify ``provider:network_type`` when creating a network
+  name: create_network:provider:network_type
+  operations: *id001
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network:provider:physical_network
+  description: Specify ``provider:physical_network`` when creating a network
+  name: create_network:provider:physical_network
+  operations: *id001
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network:provider:segmentation_id
+  description: Specify ``provider:segmentation_id`` when creating a network
+  name: create_network:provider:segmentation_id
+  operations: *id001
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:service_api
+    or rule:shared or rule:external or rule:context_is_advsvc
+  deprecated_rule:
+    check_str: rule:admin_or_owner or rule:shared or rule:external or rule:context_is_advsvc
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_network
+  description: Get a network
+  name: get_network
+  operations: &id002
+  - method: GET
+    path: /networks
+  - method: GET
+    path: /networks/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_network:segments
+  description: Get ``segments`` attribute of a network
+  name: get_network:segments
+  operations: *id002
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_network:provider:network_type
+  description: Get ``provider:network_type`` attribute of a network
+  name: get_network:provider:network_type
+  operations: *id002
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_network:provider:physical_network
+  description: Get ``provider:physical_network`` attribute of a network
+  name: get_network:provider:physical_network
+  operations: *id002
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_network:provider:segmentation_id
+  description: Get ``provider:segmentation_id`` attribute of a network
+  name: get_network:provider:segmentation_id
+  operations: *id002
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:shared
+    or rule:external or rule:context_is_advsvc
+  description: Get the network tags
+  name: get_networks_tags
+  operations:
+  - method: GET
+    path: /networks/{id}/tags
+  - method: GET
+    path: /networks/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network
+  description: Update a network
+  name: update_network
+  operations: &id003
+  - method: PUT
+    path: /networks/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network:segments
+  description: Update ``segments`` attribute of a network
+  name: update_network:segments
+  operations: *id003
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network:shared
+  description: Update ``shared`` attribute of a network
+  name: update_network:shared
+  operations: *id003
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network:provider:network_type
+  description: Update ``provider:network_type`` attribute of a network
+  name: update_network:provider:network_type
+  operations: *id003
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network:provider:physical_network
+  description: Update ``provider:physical_network`` attribute of a network
+  name: update_network:provider:physical_network
+  operations: *id003
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network:provider:segmentation_id
+  description: Update ``provider:segmentation_id`` attribute of a network
+  name: update_network:provider:segmentation_id
+  operations: *id003
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network:router:external
+  description: Update ``router:external`` attribute of a network
+  name: update_network:router:external
+  operations: *id003
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network:is_default
+  description: Update ``is_default`` attribute of a network
+  name: update_network:is_default
+  operations: *id003
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network:port_security_enabled
+  description: Update ``port_security_enabled`` attribute of a network
+  name: update_network:port_security_enabled
+  operations: *id003
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Update the network tags
+  name: update_networks_tags
+  operations:
+  - method: PUT
+    path: /networks/{id}/tags
+  - method: PUT
+    path: /networks/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: '
+
+      The network API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_network
+  description: Delete a network
+  name: delete_network
+  operations:
+  - method: DELETE
+    path: /networks/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Delete the network tags
+  name: delete_networks_tags
+  operations:
+  - method: DELETE
+    path: /networks/{id}/tags
+  - method: DELETE
+    path: /networks/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network IP availability API now support project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_network_ip_availability
+  description: Get network IP availability
+  name: get_network_ip_availability
+  operations:
+  - method: GET
+    path: /network-ip-availabilities
+  - method: GET
+    path: /network-ip-availabilities/{network_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network segment range API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_network_segment_range
+  description: Create a network segment range
+  name: create_network_segment_range
+  operations:
+  - method: POST
+    path: /network_segment_ranges
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network segment range API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_network_segment_range
+  description: Get a network segment range
+  name: get_network_segment_range
+  operations:
+  - method: GET
+    path: /network_segment_ranges
+  - method: GET
+    path: /network_segment_ranges/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Get the network segment range tags
+  name: get_network_segment_ranges_tags
+  operations:
+  - method: GET
+    path: /network_segment_ranges/{id}/tags
+  - method: GET
+    path: /network_segment_ranges/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network segment range API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_network_segment_range
+  description: Update a network segment range
+  name: update_network_segment_range
+  operations:
+  - method: PUT
+    path: /network_segment_ranges/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Update the network segment range tags
+  name: update_network_segment_ranges_tags
+  operations:
+  - method: PUT
+    path: /network_segment_ranges/{id}/tags
+  - method: PUT
+    path: /network_segment_ranges/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The network segment range API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_network_segment_range
+  description: Delete a network segment range
+  name: delete_network_segment_range
+  operations:
+  - method: DELETE
+    path: /network_segment_ranges/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Delete the network segment range tags
+  name: delete_network_segment_ranges_tags
+  operations:
+  - method: DELETE
+    path: /network_segment_ranges/{id}/tags
+  - method: DELETE
+    path: /network_segment_ranges/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api)
+  description: Get port binding information
+  name: get_port_binding
+  operations:
+  - method: GET
+    path: /ports/{port_id}/bindings/
+  scope_types:
+  - project
+- check_str: rule:service_api
+  description: Create port binding on the host
+  name: create_port_binding
+  operations:
+  - method: POST
+    path: /ports/{port_id}/bindings/
+  scope_types:
+  - project
+- check_str: rule:service_api
+  description: Delete port binding on the host
+  name: delete_port_binding
+  operations:
+  - method: DELETE
+    path: /ports/{port_id}/bindings/
+  scope_types:
+  - project
+- check_str: rule:service_api
+  description: Activate port binding on the host
+  name: activate
+  operations:
+  - method: PUT
+    path: /ports/{port_id}/bindings/{host}
+  scope_types:
+  - project
+- check_str: 'field:port:device_owner=~^network:'
+  description: Definition of port with network device_owner
+  name: network_device
+  operations: []
+  scope_types: null
+- check_str: rule:context_is_admin or role:data_plane_integrator
+  description: Rule for data plane integration
+  name: admin_or_data_plane_int
+  operations: []
+  scope_types: null
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s) or rule:service_api
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port
+  description: Create a port
+  name: create_port
+  operations: &id004
+  - method: POST
+    path: /ports
+  scope_types:
+  - project
+- check_str: not rule:network_device or (rule:admin_only) or (rule:service_api) or
+    role:member and rule:network_owner
+  deprecated_rule:
+    check_str: not rule:network_device or rule:context_is_advsvc or rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:device_owner
+  description: Specify ``device_owner`` attribute when creating a port
+  name: create_port:device_owner
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:mac_address
+  description: Specify ``mac_address`` attribute when creating a port
+  name: create_port:mac_address
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+    or rule:shared
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_or_network_owner or rule:shared
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:fixed_ips
+  description: Specify ``fixed_ips`` information when creating a port
+  name: create_port:fixed_ips
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:fixed_ips:ip_address
+  description: Specify IP address in ``fixed_ips`` when creating a port
+  name: create_port:fixed_ips:ip_address
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+    or rule:shared
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_or_network_owner or rule:shared
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:fixed_ips:subnet_id
+  description: Specify subnet ID in ``fixed_ips`` when creating a port
+  name: create_port:fixed_ips:subnet_id
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:port_security_enabled
+  description: Specify ``port_security_enabled`` attribute when creating a port
+  name: create_port:port_security_enabled
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api)
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:binding:host_id
+  description: Specify ``binding:host_id`` attribute when creating a port
+  name: create_port:binding:host_id
+  operations: *id004
+  scope_types:
+  - project
+- check_str: rule:service_api
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:binding:profile
+  description: Specify ``binding:profile`` attribute when creating a port
+  name: create_port:binding:profile
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s) or rule:service_api
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:binding:vnic_type
+  description: Specify ``binding:vnic_type`` attribute when creating a port
+  name: create_port:binding:vnic_type
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:allowed_address_pairs
+  description: Specify ``allowed_address_pairs`` attribute when creating a port
+  name: create_port:allowed_address_pairs
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:allowed_address_pairs:mac_address
+  description: Specify ``mac_address` of `allowed_address_pairs`` attribute when creating
+    a port
+  name: create_port:allowed_address_pairs:mac_address
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_port:allowed_address_pairs:ip_address
+  description: Specify ``ip_address`` of ``allowed_address_pairs`` attribute when
+    creating a port
+  name: create_port:allowed_address_pairs:ip_address
+  operations: *id004
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Specify ``hints`` attribute when creating a port
+  name: create_port:hints
+  operations: *id004
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:reader and rule:network_owner
+    or role:reader and project_id:%(project_id)s
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_owner_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_port
+  description: Get a port
+  name: get_port
+  operations: &id005
+  - method: GET
+    path: /ports
+  - method: GET
+    path: /ports/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api)
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_port:binding:vif_type
+  description: Get ``binding:vif_type`` attribute of a port
+  name: get_port:binding:vif_type
+  operations: *id005
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api)
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_port:binding:vif_details
+  description: Get ``binding:vif_details`` attribute of a port
+  name: get_port:binding:vif_details
+  operations: *id005
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api)
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_port:binding:host_id
+  description: Get ``binding:host_id`` attribute of a port
+  name: get_port:binding:host_id
+  operations: *id005
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api)
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_port:binding:profile
+  description: Get ``binding:profile`` attribute of a port
+  name: get_port:binding:profile
+  operations: *id005
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_port:resource_request
+  description: Get ``resource_request`` attribute of a port
+  name: get_port:resource_request
+  operations: *id005
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Get ``hints`` attribute of a port
+  name: get_port:hints
+  operations: *id005
+  scope_types:
+  - project
+- check_str: rule:context_is_advsvc or (rule:admin_only) or (role:reader and rule:network_owner)
+    or role:reader and project_id:%(project_id)s
+  description: Get the port tags
+  name: get_ports_tags
+  operations:
+  - method: GET
+    path: /ports/{id}/tags
+  - method: GET
+    path: /ports/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and project_id:%(project_id)s
+  deprecated_rule:
+    check_str: rule:admin_or_owner or rule:context_is_advsvc
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port
+  description: Update a port
+  name: update_port
+  operations: &id006
+  - method: PUT
+    path: /ports/{id}
+  scope_types:
+  - project
+- check_str: not rule:network_device or (rule:admin_only) or (rule:service_api) or
+    role:member and rule:network_owner
+  deprecated_rule:
+    check_str: not rule:network_device or rule:context_is_advsvc or rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:device_owner
+  description: Update ``device_owner`` attribute of a port
+  name: update_port:device_owner
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api)
+  deprecated_rule:
+    check_str: rule:admin_only or rule:context_is_advsvc
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:mac_address
+  description: Update ``mac_address`` attribute of a port
+  name: update_port:mac_address
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:fixed_ips
+  description: Specify ``fixed_ips`` information when updating a port
+  name: update_port:fixed_ips
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:fixed_ips:ip_address
+  description: Specify IP address in ``fixed_ips`` information when updating a port
+  name: update_port:fixed_ips:ip_address
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+    or rule:shared
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_or_network_owner or rule:shared
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:fixed_ips:subnet_id
+  description: Specify subnet ID in ``fixed_ips`` information when updating a port
+  name: update_port:fixed_ips:subnet_id
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:port_security_enabled
+  description: Update ``port_security_enabled`` attribute of a port
+  name: update_port:port_security_enabled
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api)
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:binding:host_id
+  description: Update ``binding:host_id`` attribute of a port
+  name: update_port:binding:host_id
+  operations: *id006
+  scope_types:
+  - project
+- check_str: rule:service_api
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:binding:profile
+  description: Update ``binding:profile`` attribute of a port
+  name: update_port:binding:profile
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and project_id:%(project_id)s
+  deprecated_rule:
+    check_str: rule:admin_or_owner or rule:context_is_advsvc
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:binding:vnic_type
+  description: Update ``binding:vnic_type`` attribute of a port
+  name: update_port:binding:vnic_type
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:allowed_address_pairs
+  description: Update ``allowed_address_pairs`` attribute of a port
+  name: update_port:allowed_address_pairs
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:allowed_address_pairs:mac_address
+  description: Update ``mac_address`` of ``allowed_address_pairs`` attribute of a
+    port
+  name: update_port:allowed_address_pairs:mac_address
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:allowed_address_pairs:ip_address
+  description: Update ``ip_address`` of ``allowed_address_pairs`` attribute of a port
+  name: update_port:allowed_address_pairs:ip_address
+  operations: *id006
+  scope_types:
+  - project
+- check_str: rule:admin_only or role:data_plane_integrator
+  deprecated_rule:
+    check_str: rule:admin_or_data_plane_int
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_port:data_plane_status
+  description: Update ``data_plane_status`` attribute of a port
+  name: update_port:data_plane_status
+  operations: *id006
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Update ``hints`` attribute of a port
+  name: update_port:hints
+  operations: *id006
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s) or rule:context_is_advsvc
+  description: Update the port tags
+  name: update_ports_tags
+  operations:
+  - method: PUT
+    path: /ports/{id}/tags
+  - method: PUT
+    path: /ports/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (rule:service_api) or role:member and rule:network_owner
+    or role:member and project_id:%(project_id)s
+  deprecated_rule:
+    check_str: rule:context_is_advsvc or rule:admin_owner_or_network_owner
+    deprecated_reason: The port API now supports project scope and default roles.
+    deprecated_since: W
+    name: delete_port
+  description: Delete a port
+  name: delete_port
+  operations:
+  - method: DELETE
+    path: /ports/{id}
+  scope_types:
+  - project
+- check_str: rule:context_is_advsvc or role:member and project_id:%(project_id)s or
+    (rule:admin_only) or (role:member and rule:network_owner)
+  description: Delete the port tags
+  name: delete_ports_tags
+  operations:
+  - method: DELETE
+    path: /ports/{id}/tags
+  - method: DELETE
+    path: /ports/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: field:policies:shared=True
+  description: Rule of shared qos policy
+  name: shared_qos_policy
+  operations: []
+  scope_types: null
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:shared_qos_policy
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_policy
+  description: Get QoS policies
+  name: get_policy
+  operations:
+  - method: GET
+    path: /qos/policies
+  - method: GET
+    path: /qos/policies/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_policy
+  description: Create a QoS policy
+  name: create_policy
+  operations:
+  - method: POST
+    path: /qos/policies
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_policy
+  description: Update a QoS policy
+  name: update_policy
+  operations:
+  - method: PUT
+    path: /qos/policies/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_policy
+  description: Delete a QoS policy
+  name: delete_policy
+  operations:
+  - method: DELETE
+    path: /qos/policies/{id}
+  scope_types:
+  - project
+- check_str: role:reader
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_rule_type
+  description: Get available QoS rule types
+  name: get_rule_type
+  operations:
+  - method: GET
+    path: /qos/rule-types
+  - method: GET
+    path: /qos/rule-types/{rule_type}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_policy_bandwidth_limit_rule
+  description: Get a QoS bandwidth limit rule
+  name: get_policy_bandwidth_limit_rule
+  operations:
+  - method: GET
+    path: /qos/policies/{policy_id}/bandwidth_limit_rules
+  - method: GET
+    path: /qos/policies/{policy_id}/bandwidth_limit_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_policy_bandwidth_limit_rule
+  description: Create a QoS bandwidth limit rule
+  name: create_policy_bandwidth_limit_rule
+  operations:
+  - method: POST
+    path: /qos/policies/{policy_id}/bandwidth_limit_rules
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_policy_bandwidth_limit_rule
+  description: Update a QoS bandwidth limit rule
+  name: update_policy_bandwidth_limit_rule
+  operations:
+  - method: PUT
+    path: /qos/policies/{policy_id}/bandwidth_limit_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_policy_bandwidth_limit_rule
+  description: Delete a QoS bandwidth limit rule
+  name: delete_policy_bandwidth_limit_rule
+  operations:
+  - method: DELETE
+    path: /qos/policies/{policy_id}/bandwidth_limit_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and rule:ext_parent_owner)
+  description: Get a QoS packet rate limit rule
+  name: get_policy_packet_rate_limit_rule
+  operations:
+  - method: GET
+    path: /qos/policies/{policy_id}/packet_rate_limit_rules
+  - method: GET
+    path: /qos/policies/{policy_id}/packet_rate_limit_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Create a QoS packet rate limit rule
+  name: create_policy_packet_rate_limit_rule
+  operations:
+  - method: POST
+    path: /qos/policies/{policy_id}/packet_rate_limit_rules
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Update a QoS packet rate limit rule
+  name: update_policy_packet_rate_limit_rule
+  operations:
+  - method: PUT
+    path: /qos/policies/{policy_id}/packet_rate_limit_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Delete a QoS packet rate limit rule
+  name: delete_policy_packet_rate_limit_rule
+  operations:
+  - method: DELETE
+    path: /qos/policies/{policy_id}/packet_rate_limit_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_policy_dscp_marking_rule
+  description: Get a QoS DSCP marking rule
+  name: get_policy_dscp_marking_rule
+  operations:
+  - method: GET
+    path: /qos/policies/{policy_id}/dscp_marking_rules
+  - method: GET
+    path: /qos/policies/{policy_id}/dscp_marking_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_policy_dscp_marking_rule
+  description: Create a QoS DSCP marking rule
+  name: create_policy_dscp_marking_rule
+  operations:
+  - method: POST
+    path: /qos/policies/{policy_id}/dscp_marking_rules
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_policy_dscp_marking_rule
+  description: Update a QoS DSCP marking rule
+  name: update_policy_dscp_marking_rule
+  operations:
+  - method: PUT
+    path: /qos/policies/{policy_id}/dscp_marking_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_policy_dscp_marking_rule
+  description: Delete a QoS DSCP marking rule
+  name: delete_policy_dscp_marking_rule
+  operations:
+  - method: DELETE
+    path: /qos/policies/{policy_id}/dscp_marking_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_policy_minimum_bandwidth_rule
+  description: Get a QoS minimum bandwidth rule
+  name: get_policy_minimum_bandwidth_rule
+  operations:
+  - method: GET
+    path: /qos/policies/{policy_id}/minimum_bandwidth_rules
+  - method: GET
+    path: /qos/policies/{policy_id}/minimum_bandwidth_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_policy_minimum_bandwidth_rule
+  description: Create a QoS minimum bandwidth rule
+  name: create_policy_minimum_bandwidth_rule
+  operations:
+  - method: POST
+    path: /qos/policies/{policy_id}/minimum_bandwidth_rules
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_policy_minimum_bandwidth_rule
+  description: Update a QoS minimum bandwidth rule
+  name: update_policy_minimum_bandwidth_rule
+  operations:
+  - method: PUT
+    path: /qos/policies/{policy_id}/minimum_bandwidth_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_policy_minimum_bandwidth_rule
+  description: Delete a QoS minimum bandwidth rule
+  name: delete_policy_minimum_bandwidth_rule
+  operations:
+  - method: DELETE
+    path: /qos/policies/{policy_id}/minimum_bandwidth_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and rule:ext_parent_owner)
+  description: Get a QoS minimum packet rate rule
+  name: get_policy_minimum_packet_rate_rule
+  operations:
+  - method: GET
+    path: /qos/policies/{policy_id}/minimum_packet_rate_rules
+  - method: GET
+    path: /qos/policies/{policy_id}/minimum_packet_rate_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Create a QoS minimum packet rate rule
+  name: create_policy_minimum_packet_rate_rule
+  operations:
+  - method: POST
+    path: /qos/policies/{policy_id}/minimum_packet_rate_rules
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Update a QoS minimum packet rate rule
+  name: update_policy_minimum_packet_rate_rule
+  operations:
+  - method: PUT
+    path: /qos/policies/{policy_id}/minimum_packet_rate_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Delete a QoS minimum packet rate rule
+  name: delete_policy_minimum_packet_rate_rule
+  operations:
+  - method: DELETE
+    path: /qos/policies/{policy_id}/minimum_packet_rate_rules/{rule_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_alias_bandwidth_limit_rule
+  description: Get a QoS bandwidth limit rule through alias
+  name: get_alias_bandwidth_limit_rule
+  operations:
+  - method: GET
+    path: /qos/alias_bandwidth_limit_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_alias_bandwidth_limit_rule
+  description: Update a QoS bandwidth limit rule through alias
+  name: update_alias_bandwidth_limit_rule
+  operations:
+  - method: PUT
+    path: /qos/alias_bandwidth_limit_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_alias_bandwidth_limit_rule
+  description: Delete a QoS bandwidth limit rule through alias
+  name: delete_alias_bandwidth_limit_rule
+  operations:
+  - method: DELETE
+    path: /qos/alias_bandwidth_limit_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_alias_dscp_marking_rule
+  description: Get a QoS DSCP marking rule through alias
+  name: get_alias_dscp_marking_rule
+  operations:
+  - method: GET
+    path: /qos/alias_dscp_marking_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_alias_dscp_marking_rule
+  description: Update a QoS DSCP marking rule through alias
+  name: update_alias_dscp_marking_rule
+  operations:
+  - method: PUT
+    path: /qos/alias_dscp_marking_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_alias_dscp_marking_rule
+  description: Delete a QoS DSCP marking rule through alias
+  name: delete_alias_dscp_marking_rule
+  operations:
+  - method: DELETE
+    path: /qos/alias_dscp_marking_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and rule:ext_parent_owner)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_alias_minimum_bandwidth_rule
+  description: Get a QoS minimum bandwidth rule through alias
+  name: get_alias_minimum_bandwidth_rule
+  operations:
+  - method: GET
+    path: /qos/alias_minimum_bandwidth_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_alias_minimum_bandwidth_rule
+  description: Update a QoS minimum bandwidth rule through alias
+  name: update_alias_minimum_bandwidth_rule
+  operations:
+  - method: PUT
+    path: /qos/alias_minimum_bandwidth_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The QoS API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_alias_minimum_bandwidth_rule
+  description: Delete a QoS minimum bandwidth rule through alias
+  name: delete_alias_minimum_bandwidth_rule
+  operations:
+  - method: DELETE
+    path: /qos/alias_minimum_bandwidth_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:get_policy_minimum_packet_rate_rule
+  description: Get a QoS minimum packet rate rule through alias
+  name: get_alias_minimum_packet_rate_rule
+  operations:
+  - method: GET
+    path: /qos/alias_minimum_packet_rate_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:update_policy_minimum_packet_rate_rule
+  description: Update a QoS minimum packet rate rule through alias
+  name: update_alias_minimum_packet_rate_rule
+  operations:
+  - method: PUT
+    path: /qos/alias_minimum_packet_rate_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:delete_policy_minimum_packet_rate_rule
+  description: Delete a QoS minimum packet rate rule through alias
+  name: delete_alias_minimum_packet_rate_rule
+  operations:
+  - method: DELETE
+    path: /qos/alias_minimum_packet_rate_rules/{rule_id}/
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The quotas API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_quota
+  description: Get a resource quota
+  name: get_quota
+  operations:
+  - method: GET
+    path: /quota
+  - method: GET
+    path: /quota/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The quotas API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_quota
+  description: Update a resource quota
+  name: update_quota
+  operations:
+  - method: PUT
+    path: /quota/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: '
+
+      The quotas API now supports project scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_quota
+  description: Delete a resource quota
+  name: delete_quota
+  operations:
+  - method: DELETE
+    path: /quota/{id}
+  scope_types:
+  - project
+- check_str: (not field:rbac_policy:target_tenant=* and not field:rbac_policy:target_project=*)
+    or rule:admin_only
+  description: Definition of a wildcard target_project
+  name: restrict_wildcard
+  operations: []
+  scope_types: null
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: '
+
+      The RBAC API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_rbac_policy
+  description: Create an RBAC policy
+  name: create_rbac_policy
+  operations:
+  - method: POST
+    path: /rbac-policies
+  scope_types:
+  - project
+- check_str: rule:admin_only or (not field:rbac_policy:target_tenant=* and not field:rbac_policy:target_project=*)
+  deprecated_rule:
+    check_str: rule:restrict_wildcard
+    deprecated_reason: '
+
+      The RBAC API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: create_rbac_policy:target_tenant
+  description: Specify ``target_tenant`` when creating an RBAC policy
+  name: create_rbac_policy:target_tenant
+  operations:
+  - method: POST
+    path: /rbac-policies
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: '
+
+      The RBAC API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_rbac_policy
+  description: Update an RBAC policy
+  name: update_rbac_policy
+  operations:
+  - method: PUT
+    path: /rbac-policies/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only or (not field:rbac_policy:target_tenant=* and not field:rbac_policy:target_project=*)
+  deprecated_rule:
+    check_str: rule:restrict_wildcard and rule:admin_or_owner
+    deprecated_reason: '
+
+      The RBAC API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: update_rbac_policy:target_tenant
+  description: Update ``target_tenant`` attribute of an RBAC policy
+  name: update_rbac_policy:target_tenant
+  operations:
+  - method: PUT
+    path: /rbac-policies/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: '
+
+      The RBAC API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: get_rbac_policy
+  description: Get an RBAC policy
+  name: get_rbac_policy
+  operations:
+  - method: GET
+    path: /rbac-policies
+  - method: GET
+    path: /rbac-policies/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: '
+
+      The RBAC API now supports system scope and default roles.
+
+      '
+    deprecated_since: W
+    name: delete_rbac_policy
+  description: Delete an RBAC policy
+  name: delete_rbac_policy
+  operations:
+  - method: DELETE
+    path: /rbac-policies/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_router
+  description: Create a router
+  name: create_router
+  operations: &id007
+  - method: POST
+    path: /routers
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_router:distributed
+  description: Specify ``distributed`` attribute when creating a router
+  name: create_router:distributed
+  operations: *id007
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_router:ha
+  description: Specify ``ha`` attribute when creating a router
+  name: create_router:ha
+  operations: *id007
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_router:external_gateway_info
+  description: Specify ``external_gateway_info`` information when creating a router
+  name: create_router:external_gateway_info
+  operations: *id007
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_router:external_gateway_info:network_id
+  description: Specify ``network_id`` in ``external_gateway_info`` information when
+    creating a router
+  name: create_router:external_gateway_info:network_id
+  operations: *id007
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_router:external_gateway_info:enable_snat
+  description: Specify ``enable_snat`` in ``external_gateway_info`` information when
+    creating a router
+  name: create_router:external_gateway_info:enable_snat
+  operations: *id007
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_router:external_gateway_info:external_fixed_ips
+  description: Specify ``external_fixed_ips`` in ``external_gateway_info`` information
+    when creating a router
+  name: create_router:external_gateway_info:external_fixed_ips
+  operations: *id007
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Specify ``enable_default_route_bfd`` attribute when creating a router
+  name: create_router:enable_default_route_bfd
+  operations: *id007
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Specify ``enable_default_route_ecmp`` attribute when creating a router
+  name: create_router:enable_default_route_ecmp
+  operations: *id007
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_router
+  description: Get a router
+  name: get_router
+  operations: &id008
+  - method: GET
+    path: /routers
+  - method: GET
+    path: /routers/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_router:distributed
+  description: Get ``distributed`` attribute of a router
+  name: get_router:distributed
+  operations: *id008
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_router:ha
+  description: Get ``ha`` attribute of a router
+  name: get_router:ha
+  operations: *id008
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  description: Get the router tags
+  name: get_routers_tags
+  operations:
+  - method: GET
+    path: /routers/{id}/tags
+  - method: GET
+    path: /routers/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_router
+  description: Update a router
+  name: update_router
+  operations: &id009
+  - method: PUT
+    path: /routers/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_router:distributed
+  description: Update ``distributed`` attribute of a router
+  name: update_router:distributed
+  operations: *id009
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_router:ha
+  description: Update ``ha`` attribute of a router
+  name: update_router:ha
+  operations: *id009
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_router:external_gateway_info
+  description: Update ``external_gateway_info`` information of a router
+  name: update_router:external_gateway_info
+  operations: *id009
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_router:external_gateway_info:network_id
+  description: Update ``network_id`` attribute of ``external_gateway_info`` information
+    of a router
+  name: update_router:external_gateway_info:network_id
+  operations: *id009
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_router:external_gateway_info:enable_snat
+  description: Update ``enable_snat`` attribute of ``external_gateway_info`` information
+    of a router
+  name: update_router:external_gateway_info:enable_snat
+  operations: *id009
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_router:external_gateway_info:external_fixed_ips
+  description: Update ``external_fixed_ips`` attribute of ``external_gateway_info``
+    information of a router
+  name: update_router:external_gateway_info:external_fixed_ips
+  operations: *id009
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Specify ``enable_default_route_bfd`` attribute when updating a router
+  name: update_router:enable_default_route_bfd
+  operations: *id007
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Specify ``enable_default_route_ecmp`` attribute when updating a router
+  name: update_router:enable_default_route_ecmp
+  operations: *id007
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Update the router tags
+  name: update_routers_tags
+  operations:
+  - method: PUT
+    path: /routers/{id}/tags
+  - method: PUT
+    path: /routers/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: delete_router
+  description: Delete a router
+  name: delete_router
+  operations:
+  - method: DELETE
+    path: /routers/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Delete the router tags
+  name: delete_routers_tags
+  operations:
+  - method: DELETE
+    path: /routers/{id}/tags
+  - method: DELETE
+    path: /routers/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: add_router_interface
+  description: Add an interface to a router
+  name: add_router_interface
+  operations:
+  - method: PUT
+    path: /routers/{id}/add_router_interface
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: W
+    name: remove_router_interface
+  description: Remove an interface from a router
+  name: remove_router_interface
+  operations:
+  - method: PUT
+    path: /routers/{id}/remove_router_interface
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: Xena
+    name: add_extraroutes
+  description: Add extra route to a router
+  name: add_extraroutes
+  operations:
+  - method: PUT
+    path: /routers/{id}/add_extraroutes
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The router API now supports system scope and default roles.
+    deprecated_since: Xena
+    name: remove_extraroutes
+  description: Remove extra route from a router
+  name: remove_extraroutes
+  operations:
+  - method: PUT
+    path: /routers/{id}/remove_extraroutes
+  scope_types:
+  - project
+- check_str: rule:context_is_admin or tenant_id:%(security_group:tenant_id)s
+  description: Rule for admin or security group owner access
+  name: admin_or_sg_owner
+  operations: []
+  scope_types: null
+- check_str: rule:owner or rule:admin_or_sg_owner
+  description: Rule for resource owner, admin or security group owner access
+  name: admin_owner_or_sg_owner
+  operations: []
+  scope_types: null
+- check_str: field:security_groups:shared=True
+  description: Definition of a shared security group
+  name: shared_security_group
+  operations: []
+  scope_types: null
+- check_str: field:security_group_rules:belongs_to_default_sg=True
+  description: Definition of a security group rule that belongs to the project default
+    security group
+  name: rule_default_sg
+  operations: []
+  scope_types: null
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The security group API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: create_security_group
+  description: Create a security group
+  name: create_security_group
+  operations:
+  - method: POST
+    path: /security-groups
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:shared_security_group
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The security group API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: get_security_group
+  description: Get a security group
+  name: get_security_group
+  operations:
+  - method: GET
+    path: /security-groups
+  - method: GET
+    path: /security-groups/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:shared_security_group
+  description: Get the security group tags
+  name: get_security_groups_tags
+  operations:
+  - method: GET
+    path: /security-groups/{id}/tags
+  - method: GET
+    path: /security-groups/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The security group API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: update_security_group
+  description: Update a security group
+  name: update_security_group
+  operations:
+  - method: PUT
+    path: /security-groups/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Update the security group tags
+  name: update_security_groups_tags
+  operations:
+  - method: PUT
+    path: /security-groups/{id}/tags
+  - method: PUT
+    path: /security-groups/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The security group API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: delete_security_group
+  description: Delete a security group
+  name: delete_security_group
+  operations:
+  - method: DELETE
+    path: /security-groups/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Delete the security group tags
+  name: delete_security_groups_tags
+  operations:
+  - method: DELETE
+    path: /security-groups/{id}/tags
+  - method: DELETE
+    path: /security-groups/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The security group API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: create_security_group_rule
+  description: Create a security group rule
+  name: create_security_group_rule
+  operations:
+  - method: POST
+    path: /security-group-rules
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:sg_owner
+  deprecated_rule:
+    check_str: rule:admin_owner_or_sg_owner
+    deprecated_reason: The security group API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: get_security_group_rule
+  description: Get a security group rule
+  name: get_security_group_rule
+  operations:
+  - method: GET
+    path: /security-group-rules
+  - method: GET
+    path: /security-group-rules/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The security group API now supports system scope and default
+      roles.
+    deprecated_since: W
+    name: delete_security_group_rule
+  description: Delete a security group rule
+  name: delete_security_group_rule
+  operations:
+  - method: DELETE
+    path: /security-group-rules/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The segment API now supports project scope and default roles.
+    deprecated_since: W
+    name: create_segment
+  description: Create a segment
+  name: create_segment
+  operations:
+  - method: POST
+    path: /segments
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The segment API now supports project scope and default roles.
+    deprecated_since: W
+    name: get_segment
+  description: Get a segment
+  name: get_segment
+  operations:
+  - method: GET
+    path: /segments
+  - method: GET
+    path: /segments/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Get the segment tags
+  name: get_segments_tags
+  operations:
+  - method: GET
+    path: /segments/{id}/tags
+  - method: GET
+    path: /segments/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The segment API now supports project scope and default roles.
+    deprecated_since: W
+    name: update_segment
+  description: Update a segment
+  name: update_segment
+  operations:
+  - method: PUT
+    path: /segments/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Update the segment tags
+  name: update_segments_tags
+  operations:
+  - method: PUT
+    path: /segments/{id}/tags
+  - method: PUT
+    path: /segments/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The segment API now supports project scope and default roles.
+    deprecated_since: W
+    name: delete_segment
+  description: Delete a segment
+  name: delete_segment
+  operations:
+  - method: DELETE
+    path: /segments/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  description: Delete the segment tags
+  name: delete_segments_tags
+  operations:
+  - method: DELETE
+    path: /segments/{id}/tags
+  - method: DELETE
+    path: /segments/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: role:reader
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The Service Providers API now supports project scope and default
+      roles.
+    deprecated_since: W
+    name: get_service_provider
+  description: Get service providers
+  name: get_service_provider
+  operations:
+  - method: GET
+    path: /service-providers
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner)
+  deprecated_rule:
+    check_str: rule:admin_or_network_owner
+    deprecated_reason: The subnet API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_subnet
+  description: Create a subnet
+  name: create_subnet
+  operations: &id010
+  - method: POST
+    path: /subnets
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The subnet API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_subnet:segment_id
+  description: Specify ``segment_id`` attribute when creating a subnet
+  name: create_subnet:segment_id
+  operations: *id010
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The subnet API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_subnet:service_types
+  description: Specify ``service_types`` attribute when creating a subnet
+  name: create_subnet:service_types
+  operations: *id010
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner) or role:reader
+    and project_id:%(project_id)s or rule:shared
+  deprecated_rule:
+    check_str: rule:admin_or_owner or rule:shared
+    deprecated_reason: The subnet API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_subnet
+  description: Get a subnet
+  name: get_subnet
+  operations: &id011
+  - method: GET
+    path: /subnets
+  - method: GET
+    path: /subnets/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The subnet API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_subnet:segment_id
+  description: Get ``segment_id`` attribute of a subnet
+  name: get_subnet:segment_id
+  operations: *id011
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner) or role:reader
+    and project_id:%(project_id)s or rule:shared
+  description: Get the subnet tags
+  name: get_subnets_tags
+  operations:
+  - method: GET
+    path: /subnets/{id}/tags
+  - method: GET
+    path: /subnets/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner) or role:member
+    and project_id:%(project_id)s
+  deprecated_rule:
+    check_str: rule:admin_or_network_owner
+    deprecated_reason: The subnet API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_subnet
+  description: Update a subnet
+  name: update_subnet
+  operations: &id012
+  - method: PUT
+    path: /subnets/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The subnet API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_subnet:segment_id
+  description: Update ``segment_id`` attribute of a subnet
+  name: update_subnet:segment_id
+  operations: *id012
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The subnet API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_subnet:service_types
+  description: Update ``service_types`` attribute of a subnet
+  name: update_subnet:service_types
+  operations: *id012
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner) or role:member
+    and project_id:%(project_id)s
+  description: Update the subnet tags
+  name: update_subnets_tags
+  operations:
+  - method: PUT
+    path: /subnets/{id}/tags
+  - method: PUT
+    path: /subnets/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner) or role:member
+    and project_id:%(project_id)s
+  deprecated_rule:
+    check_str: rule:admin_or_network_owner
+    deprecated_reason: The subnet API now supports system scope and default roles.
+    deprecated_since: W
+    name: delete_subnet
+  description: Delete a subnet
+  name: delete_subnet
+  operations:
+  - method: DELETE
+    path: /subnets/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and rule:network_owner) or role:member
+    and project_id:%(project_id)s
+  description: Delete the subnet tags
+  name: delete_subnets_tags
+  operations:
+  - method: DELETE
+    path: /subnets/{id}/tags
+  - method: DELETE
+    path: /subnets/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: field:subnetpools:shared=True
+  description: Definition of a shared subnetpool
+  name: shared_subnetpools
+  operations: []
+  scope_types: null
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_subnetpool
+  description: Create a subnetpool
+  name: create_subnetpool
+  operations:
+  - method: POST
+    path: /subnetpools
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_subnetpool:shared
+  description: Create a shared subnetpool
+  name: create_subnetpool:shared
+  operations:
+  - method: POST
+    path: /subnetpools
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_subnetpool:is_default
+  description: Specify ``is_default`` attribute when creating a subnetpool
+  name: create_subnetpool:is_default
+  operations:
+  - method: POST
+    path: /subnetpools
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:shared_subnetpools
+  deprecated_rule:
+    check_str: rule:admin_or_owner or rule:shared_subnetpools
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_subnetpool
+  description: Get a subnetpool
+  name: get_subnetpool
+  operations:
+  - method: GET
+    path: /subnetpools
+  - method: GET
+    path: /subnetpools/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s) or rule:shared_subnetpools
+  description: Get the subnetpool tags
+  name: get_subnetpools_tags
+  operations:
+  - method: GET
+    path: /subnetpools/{id}/tags
+  - method: GET
+    path: /subnetpools/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_subnetpool
+  description: Update a subnetpool
+  name: update_subnetpool
+  operations:
+  - method: PUT
+    path: /subnetpools/{id}
+  scope_types:
+  - project
+- check_str: rule:admin_only
+  deprecated_rule:
+    check_str: rule:admin_only
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_subnetpool:is_default
+  description: Update ``is_default`` attribute of a subnetpool
+  name: update_subnetpool:is_default
+  operations:
+  - method: PUT
+    path: /subnetpools/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Update the subnetpool tags
+  name: update_subnetpools_tags
+  operations:
+  - method: PUT
+    path: /subnetpools/{id}/tags
+  - method: PUT
+    path: /subnetpools/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: delete_subnetpool
+  description: Delete a subnetpool
+  name: delete_subnetpool
+  operations:
+  - method: DELETE
+    path: /subnetpools/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Delete the subnetpool tags
+  name: delete_subnetpools_tags
+  operations:
+  - method: DELETE
+    path: /subnetpools/{id}/tags
+  - method: DELETE
+    path: /subnetpools/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: onboard_network_subnets
+  description: Onboard existing subnet into a subnetpool
+  name: onboard_network_subnets
+  operations:
+  - method: PUT
+    path: /subnetpools/{id}/onboard_network_subnets
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: add_prefixes
+  description: Add prefixes to a subnetpool
+  name: add_prefixes
+  operations:
+  - method: PUT
+    path: /subnetpools/{id}/add_prefixes
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The subnet pool API now supports system scope and default roles.
+    deprecated_since: W
+    name: remove_prefixes
+  description: Remove unallocated prefixes from a subnetpool
+  name: remove_prefixes
+  operations:
+  - method: PUT
+    path: /subnetpools/{id}/remove_prefixes
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The trunks API now supports system scope and default roles.
+    deprecated_since: W
+    name: create_trunk
+  description: Create a trunk
+  name: create_trunk
+  operations:
+  - method: POST
+    path: /trunks
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The trunks API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_trunk
+  description: Get a trunk
+  name: get_trunk
+  operations:
+  - method: GET
+    path: /trunks
+  - method: GET
+    path: /trunks/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  description: Get the trunk tags
+  name: get_trunks_tags
+  operations:
+  - method: GET
+    path: /trunks/{id}/tags
+  - method: GET
+    path: /trunks/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The trunks API now supports system scope and default roles.
+    deprecated_since: W
+    name: update_trunk
+  description: Update a trunk
+  name: update_trunk
+  operations:
+  - method: PUT
+    path: /trunks/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Update the trunk tags
+  name: update_trunks_tags
+  operations:
+  - method: PUT
+    path: /trunks/{id}/tags
+  - method: PUT
+    path: /trunks/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The trunks API now supports system scope and default roles.
+    deprecated_since: W
+    name: delete_trunk
+  description: Delete a trunk
+  name: delete_trunk
+  operations:
+  - method: DELETE
+    path: /trunks/{id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  description: Delete a trunk
+  name: delete_trunks_tags
+  operations:
+  - method: DELETE
+    path: /trunks/{id}/tags
+  - method: DELETE
+    path: /trunks/{id}/tags/{tag_id}
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:reader and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:regular_user
+    deprecated_reason: The trunks API now supports system scope and default roles.
+    deprecated_since: W
+    name: get_subports
+  description: List subports attached to a trunk
+  name: get_subports
+  operations:
+  - method: GET
+    path: /trunks/{id}/get_subports
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The trunks API now supports system scope and default roles.
+    deprecated_since: W
+    name: add_subports
+  description: Add subports to a trunk
+  name: add_subports
+  operations:
+  - method: PUT
+    path: /trunks/{id}/add_subports
+  scope_types:
+  - project
+- check_str: (rule:admin_only) or (role:member and project_id:%(project_id)s)
+  deprecated_rule:
+    check_str: rule:admin_or_owner
+    deprecated_reason: The trunks API now supports system scope and default roles.
+    deprecated_since: W
+    name: remove_subports
+  description: Delete subports from a trunk
+  name: remove_subports
+  operations:
+  - method: PUT
+    path: /trunks/{id}/remove_subports
+  scope_types:
+  - project

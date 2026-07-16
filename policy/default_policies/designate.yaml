@@ -1,0 +1,6 @@
+# STUB: replace with the real designate default policies.
+# Generate on a host with designate installed:
+#   python manage.py dump_default_policies --namespace designate \
+#     --output-file designate.yaml
+# Must remain a YAML list ([] when empty) - Horizon iterates over it.
+[]
