@@ -846,6 +846,19 @@ class GrantForm(NectarBaseModelForm):
     class Meta(NectarBaseModelForm.Meta):
         model = models.Grant
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # 'nhmrc-mrff' is retired (MRFF is now a grant type): only a
+        # grant that already has it keeps it as a choice, so existing
+        # records still display and re-save while no other grant can
+        # select it.
+        if self.instance.grant_subtype != 'nhmrc-mrff':
+            self.fields['grant_subtype'].choices = [
+                choice
+                for choice in self.fields['grant_subtype'].choices
+                if choice[0] != 'nhmrc-mrff'
+            ]
+
     def clean(self):
         cleaned_data = super().clean()
         grant_type = cleaned_data.get('grant_type', '')
@@ -877,6 +890,19 @@ class GrantForm(NectarBaseModelForm):
                 self.add_error(
                     'grant_id',
                     ValidationError('Enter the NHMRC grant id for this grant'),
+                )
+        elif grant_type == 'mrff':
+            if not grant_subtype.startswith('mrff-'):
+                self.add_error(
+                    'grant_subtype',
+                    ValidationError(
+                        'Select an MRFF grant subtype for this grant'
+                    ),
+                )
+            if not grant_subtype == 'mrff-other' and not grant_id:
+                self.add_error(
+                    'grant_id',
+                    ValidationError('Enter the MRFF grant id for this grant'),
                 )
         elif grant_type == 'rdc':
             if not grant_subtype.startswith('rdc-'):
@@ -915,8 +941,9 @@ class GrantForm(NectarBaseModelForm):
                     ValidationError('Inappropriate subtype for this grant'),
                 )
 
-        if grant_type not in ['arc', 'nhmrc', 'rdc', ''] or (
-            grant_type in ['arc', 'nhmrc'] and grant_subtype.endswith('-other')
+        if grant_type not in ['arc', 'nhmrc', 'mrff', 'rdc', ''] or (
+            grant_type in ['arc', 'nhmrc', 'mrff']
+            and grant_subtype.endswith('-other')
         ):
             if not funding_body_scheme:
                 self.add_error(
