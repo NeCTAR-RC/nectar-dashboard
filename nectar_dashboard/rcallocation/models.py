@@ -826,8 +826,14 @@ class AllocationRequest(models.Model):
             return utils.sites_from_email(self.contact_email)
 
     def send_email_notification(self, template, extra_context={}):
+        """Render the given template and email it to the contact.
+
+        Returns True unless the attempt to send the email failed.
+        Failures are logged rather than raised so that a notification
+        problem cannot abort the state change that triggered it.
+        """
         if not self.notifications:
-            return
+            return True
 
         notifier = create_notifier(self)
 
@@ -852,15 +858,27 @@ class AllocationRequest(models.Model):
         # Render template, separate body and subject, and send email
         text = render_to_string(template_name, context)
         subject, _, body = text.partition('\n\n')
-        notifier.send_email(
-            email=self.contact_email, subject=subject, body=body
-        )
+        try:
+            notifier.send_email(
+                email=self.contact_email, subject=subject, body=body
+            )
+        except Exception:
+            LOG.exception(
+                "Allocation %s: failed to send '%s' notification to '%s'",
+                self.id,
+                template,
+                self.contact_email,
+            )
+            return False
+        return True
 
     def send_notifications(self, extra_context={}):
         if self.status in [self.NEW, self.SUBMITTED, self.UPDATE_PENDING]:
             template = 'alert_acknowledge'
-            self.send_email_notification(template, extra_context=extra_context)
-            if self.status == self.NEW:
+            sent = self.send_email_notification(
+                template, extra_context=extra_context
+            )
+            if self.status == self.NEW and sent:
                 # N is a special state showing that the
                 # request has been created but no email has
                 # been sent. Progress it once it's been sent.

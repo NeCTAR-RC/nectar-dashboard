@@ -11,6 +11,8 @@
 #   under the License.
 #
 
+from unittest import mock
+
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
@@ -316,6 +318,62 @@ class AllocationModelTestCase(base.BaseTestCase):
         with self.assertRaises(ValidationError):
             allocation.data_classification_level = ''
             allocation.full_clean()
+
+
+@mock.patch(
+    'nectar_dashboard.rcallocation.notifier.FreshdeskNotifier',
+    new=base.FAKE_FD_NOTIFIER_CLASS,
+)
+class SendNotificationsTestCase(base.BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        base.FAKE_FD_NOTIFIER.send_email.reset_mock(side_effect=True)
+        self.addCleanup(
+            base.FAKE_FD_NOTIFIER.send_email.reset_mock, side_effect=True
+        )
+
+    def test_new_progresses_to_submitted_when_email_sent(self):
+        allocation = factories.AllocationFactory.create(
+            create_quotas=False, status=models.AllocationRequest.NEW
+        )
+        allocation.send_notifications()
+        base.FAKE_FD_NOTIFIER.send_email.assert_called_once()
+        allocation.refresh_from_db()
+        self.assertEqual(models.AllocationRequest.SUBMITTED, allocation.status)
+
+    def test_new_stays_new_when_email_fails(self):
+        base.FAKE_FD_NOTIFIER.send_email.side_effect = Exception('boom')
+        allocation = factories.AllocationFactory.create(
+            create_quotas=False, status=models.AllocationRequest.NEW
+        )
+        with self.assertLogs(
+            'nectar_dashboard.rcallocation.models', level='ERROR'
+        ):
+            allocation.send_notifications()
+        allocation.refresh_from_db()
+        self.assertEqual(models.AllocationRequest.NEW, allocation.status)
+
+    def test_notification_failure_is_not_fatal(self):
+        base.FAKE_FD_NOTIFIER.send_email.side_effect = Exception('boom')
+        allocation = factories.AllocationFactory.create(
+            create_quotas=False, status=models.AllocationRequest.DECLINED
+        )
+        with self.assertLogs(
+            'nectar_dashboard.rcallocation.models', level='ERROR'
+        ):
+            allocation.send_notifications()
+        base.FAKE_FD_NOTIFIER.send_email.assert_called_once()
+
+    def test_notifications_disabled_still_progresses(self):
+        allocation = factories.AllocationFactory.create(
+            create_quotas=False,
+            status=models.AllocationRequest.NEW,
+            notifications=False,
+        )
+        allocation.send_notifications()
+        base.FAKE_FD_NOTIFIER.send_email.assert_not_called()
+        allocation.refresh_from_db()
+        self.assertEqual(models.AllocationRequest.SUBMITTED, allocation.status)
 
 
 class QuotaGroupModelTestCase(base.BaseTestCase):

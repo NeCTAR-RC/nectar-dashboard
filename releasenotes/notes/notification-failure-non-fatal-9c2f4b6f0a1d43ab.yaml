@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    Email notification failures (for example, Freshdesk rejecting a
+    ``contact_email`` that is not a valid email address) no longer abort
+    the allocation state change that triggered the notification. The
+    failure is now logged and the state change is saved as normal. A new
+    allocation request is only progressed from ``New`` to ``Submitted``
+    once its acknowledgement email has been sent successfully.
