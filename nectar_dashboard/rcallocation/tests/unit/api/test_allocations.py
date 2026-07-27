@@ -275,6 +275,30 @@ class AllocationTests(base.AllocationAPITest):
         )
         self.assertEqual(self.allocation.status, allocation.status)
 
+    def test_update_allocation_read_only_fields_admin(self):
+        self.client.force_authenticate(user=self.admin_user)
+        parent = factories.AllocationFactory.create(
+            contact_email='other@example.com'
+        )
+        response = self.client.patch(
+            '/rest_api/allocations/1/',
+            {
+                'status': models.AllocationRequest.APPROVED,
+                'approver_email': 'approver@example.com',
+                'parent_request': parent.id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # It returns 200 but the values don't change
+        allocation = models.AllocationRequest.objects.get(
+            id=self.allocation.id
+        )
+        self.assertEqual(self.allocation.status, allocation.status)
+        self.assertEqual(
+            self.allocation.approver_email, allocation.approver_email
+        )
+        self.assertIsNone(allocation.parent_request)
+
     def test_update_national(self):
         # Checking my assumptions ....
         self.assertFalse(self.allocation.national)

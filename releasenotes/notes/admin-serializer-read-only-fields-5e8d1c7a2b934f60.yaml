@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    The admin allocation API serializer declared its read-only fields
+    incorrectly, so ``parent_request``, ``approver_email`` and ``status``
+    were silently writable by admin API clients on create and update.
+    These fields are now read-only as intended. Status changes must be
+    made through the ``approve``, ``amend`` and ``delete`` actions.

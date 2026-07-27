@@ -142,7 +142,7 @@ class AdminAllocationSerializer(AllocationSerializer):
     class Meta:
         model = models.AllocationRequest
         exclude = ('created_by',)
-        read_only_fields = (('parent_request', 'approver_email', 'status'),)
+        read_only_fields = ('parent_request', 'approver_email', 'status')
 
 
 class AllocationFilter(filters.FilterSet):
