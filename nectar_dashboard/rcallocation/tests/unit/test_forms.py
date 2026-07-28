@@ -92,6 +92,18 @@ class BaseAllocationFormTestCase(FormsTestCase):
             list(form.fields.keys()),
         )
 
+    def test_usage_types_options_have_labels(self):
+        # Each checkbox option must be wrapped in a <label for=...> so
+        # that clicking the option text toggles its checkbox.
+        html = str(forms.BaseAllocationForm()['usage_types'])
+        count = models.UsageType.objects.filter(enabled=True).count()
+        self.assertTrue(count > 0)
+        self.assertEqual(
+            count,
+            html.count('<label class="checkbox-inline" for="id_usage_types_'),
+        )
+        self.assertEqual(count, html.count('</label>'))
+
     def test_validating_base_allocation_form(self):
         form = forms.BaseAllocationForm(data={})
         self.assertFalse(form.is_valid())

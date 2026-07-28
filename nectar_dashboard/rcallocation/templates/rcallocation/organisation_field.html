@@ -2,8 +2,10 @@
 {% block field %}
 {{ field }}
 <div id="id_{{ field_marker }}_filter">
-  <input type="checkbox" name="anz" checked id="id_{{ field_marker }}_anz"/>
-  <label for="anz">Show only Australia and New Zealand organisations</label>
+  <label class="checkbox-inline" for="id_{{ field_marker }}_anz">
+    <input type="checkbox" name="anz" checked id="id_{{ field_marker }}_anz"/>
+    Show only Australia and New Zealand organisations
+  </label>
 </div>
 <div>
   <p>If the Organisation you are trying to enter is not listed, you can

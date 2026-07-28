@@ -27,7 +27,7 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>
+                      <label for="id_dns_domain">
                         Generated project DNS zone name
                         <img class="help-popover" src="/static/rcportal/img/help.png" data-content="This will be the Nectar DNS zone name that will be created for your project. This is based on the project identifier value. See our <a href='https://support.ehelp.edu.au/support/solutions/articles/6000201311' target='_blank'>support documentation</a> for more information." data-original-title="Generated project DNS zone name" data-html="true">
                       </label>
@@ -47,7 +47,7 @@
                 </div>
                 <div class="row step-nav">
                   <div class="col-xs-12 text-center">
-                    <p>Step 1 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                    <p>Step 1 out of {% if not object or not object.can_have_publications %}8{% else %}9{% endif %}</p>
                     <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelTwo">Next <i class="fa fa-chevron-right"></i></a>
                   </div>
                 </div>
@@ -132,7 +132,7 @@
               </div>
               <div class="row step-nav">
                 <div class="col-xs-12 text-center">
-                  <p>Step 2 out of {% if not object or not object.can_have_publications %}9{% else %}10{% endif %}</p>
+                  <p>Step 2 out of {% if not object or not object.can_have_publications %}8{% else %}9{% endif %}</p>
                   <a class="btn btn-sm btn-default" data-toggle="collapse" data-parent="#request_accordion" href="#panelOne"><i class="fa fa-chevron-left"></i> Previous</a>
                   <a class="btn btn-sm btn-success btn-next-step" data-toggle="collapse" data-parent="#request_accordion" href="#panelThree">Next <i class="fa fa-chevron-right"></i></a>
                 </div>
@@ -174,7 +174,9 @@
                   <div class="form-group">
                     {% for field in group %}
                       {% if forloop.first %}
-                        <label>{{ field.label }}</label>
+                        <label for="id_{{ field.html_name }}">{{ field.label }}</label>
+                      {% else %}
+                        <label class="sr-only" for="id_{{ field.html_name }}">Percentage for {{ group.0.label }}</label>
                       {% endif %}
                       <div class="controls">
                         {% if field.errors %}

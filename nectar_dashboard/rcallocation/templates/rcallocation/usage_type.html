@@ -1,1 +1,1 @@
-{% include "django/forms/widgets/input.html" %} {{ widget.label }}
+<label class="checkbox-inline"{% if widget.attrs.id %} for="{{ widget.attrs.id }}"{% endif %}>{% include "django/forms/widgets/input.html" %} {{ widget.label }}</label>
