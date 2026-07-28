@@ -4,7 +4,7 @@
     var leaving = false;
 
     function leaveWarning(event) {
-        if($.browser.mozilla) { event.preventDefault(); }
+        event.preventDefault();
         warning_timeout = setTimeout(function() {
             if(leaving === false) { hideLoadingModal() };
         }, 3000);
@@ -93,6 +93,30 @@
         });
     }
 
+    // The nectar theme sets overflow:hidden on html/body - on dashboard
+    // pages the element that actually scrolls is #content_body, not the
+    // window. Fall back to the window for other layouts.
+    function scrollFormToTop() {
+        var $scroller = $('#content_body');
+        if ($scroller.length) {
+            $scroller.scrollTop(0);
+        }
+        $(window).scrollTop(0);
+    }
+
+    function scrollFormToElement($el, delta) {
+        var padding = 20;
+        var $scroller = $('#content_body');
+        if ($scroller.length) {
+            $scroller.scrollTop(Math.max(
+                $scroller.scrollTop() + $el.offset().top
+                - $scroller.offset().top - delta - padding, 0));
+        } else {
+            window.scrollTo(0,
+                Math.max($el.offset().top - delta - padding, 0));
+        }
+    }
+
     function showFormStep(formSectionId) {
         if(formSectionId == 2) {
             $('section#form-step1').hide();
@@ -146,6 +170,13 @@
                 showFormStep(1);
             }
         }
+        else if($('#form-step2 .has-error').length
+                && !$('#form-step1 .has-error').length) {
+            // After a failed submit, open the step containing the
+            // validation errors - they would otherwise stay hidden
+            // inside the collapsed second step.
+            showFormStep(2);
+        }
         else {
             showFormStep(1);
         }
@@ -162,13 +193,33 @@
                     });
                 }
             }
-            $(window).scrollTop(0);
+            scrollFormToTop();
             showFormStep(2);
         });
 
         $('.show-form1-button').on('click', function() {
-            $(window).scrollTop(0);
+            scrollFormToTop();
             showFormStep(1);
+        });
+
+        // Keep the newly-opened panel in view when using the in-panel
+        // Next/Previous buttons. Scroll immediately to where the target
+        // panel will sit once the accordion transition finishes -
+        // waiting for the transition instead lets the browser jump
+        // around while the old (tall) panel collapses.
+        $('.step-nav a[data-toggle="collapse"]').on('click', function() {
+            var $target = $($(this).attr('href'));
+            var $panel = $target.closest('.panel');
+            var $open = $panel.parent().find('.request-collapse.in');
+            // Panels above the target that are open now will have
+            // collapsed by the end of the transition. Compare the
+            // (always visible) panel frames - the target's collapse
+            // div is still display:none here, so its own offset is 0.
+            var delta = ($open.length
+                         && $open.closest('.panel').offset().top
+                            < $panel.offset().top)
+                ? $open.outerHeight() : 0;
+            scrollFormToElement($panel, delta);
         });
 
         $('.bundle > .btn').on('click', function(e) {
@@ -1344,10 +1395,20 @@ $(function() {
     populate_dns_service_name();
 });
 
+var submit_ignore_in_progress = false;
+
 function submit_ignore() {
     // Submit the allocation form with the hidden field set to tell the
     // server side to not to check for quota sanity and other warnings.
+    // The in-progress flag stops a double-click sending the form twice
+    // (this path bypasses horizon.forms.handle_submit's guard because
+    // it submits natively rather than via a submit event).
+    if (submit_ignore_in_progress) { return; }
+    submit_ignore_in_progress = true;
     document.getElementById("id_ignore_warnings").value = '1';
+    document.querySelectorAll('.submit-form-button').forEach(function(b) {
+        b.disabled = true;
+    });
     document.getElementById("new-allocation").submit();   // sic
 }
 
