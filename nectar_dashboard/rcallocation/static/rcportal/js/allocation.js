@@ -201,6 +201,51 @@
         });
     }
 
+    function updateCharCounter($input, $counter) {
+        var max = parseInt($input.attr('maxlength'), 10);
+        var len = $input.val().length;
+        if (len >= max) {
+            $counter.text('Character limit reached');
+        } else {
+            $counter.text(len + ' / ' + max);
+        }
+        if (max - len <= Math.ceil(max / 10)) {
+            $counter.addClass('char-counter-warning');
+        } else {
+            $counter.removeClass('char-counter-warning');
+        }
+    }
+
+    // Show a live character counter under every size-limited textarea, so
+    // users can see the limit before the browser silently stops their input.
+    function initCharCounters() {
+        $('textarea[maxlength]').each(function() {
+            var $input = $(this);
+            if ($input.next('.char-counter').length === 0) {
+                var $counter = $(
+                    '<small class="char-counter" aria-live="polite" ' +
+                    'title="Characters entered / maximum allowed"></small>');
+                $input.after($counter);
+                updateCharCounter($input, $counter);
+            }
+        });
+    }
+
+    initCharCounters();
+    $(document).on('input', 'textarea[maxlength]', function() {
+        var $input = $(this);
+        var $counter = $input.next('.char-counter');
+        if ($counter.length === 0) {
+            initCharCounters();
+            $counter = $input.next('.char-counter');
+        }
+        updateCharCounter($input, $counter);
+    });
+    // Rows added by the publication/grant formsets are built after page load
+    $('.publication_formset, .grant_formset').on('click', 'button', function() {
+        setTimeout(initCharCounters, 0);
+    });
+
 }(jQuery));
 
 function apply_popover() {
@@ -421,7 +466,7 @@ $(function(){
         new_row += create_input_field_label(opts, 'funding_body_scheme', 'Other funding source details', row_index, false, 'For example, details of a state government grant scheme, or an industry funding source.');
         new_row += "<div class='controls'>";
         new_row += "<div class='input-g'>";
-        new_row += create_input_field(opts, 'funding_body_scheme', 'Funding body and scheme', row_index);
+        new_row += create_input_field(opts, 'funding_body_scheme', 'Funding body and scheme', row_index, 255);
         new_row += "</div>";
         new_row += "</div>";
         new_row += "</div>";
@@ -498,8 +543,9 @@ $(function(){
         return help_span;
     };
 
-    function create_input_field(opts, field_name, field_label, row_index){
-        return "<input type='text' name='" + opts.prefix + "-" + row_index + "-" + field_name + "' maxlength='200' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' class='form-control'>";
+    function create_input_field(opts, field_name, field_label, row_index, maxlength){
+        maxlength = maxlength || 200;
+        return "<input type='text' name='" + opts.prefix + "-" + row_index + "-" + field_name + "' maxlength='" + maxlength + "' id='id_" + opts.prefix + "-" + row_index + "-" + field_name + "' class='form-control'>";
     };
 
     function create_number_input_field(opts, field_name, default_value, row_index){

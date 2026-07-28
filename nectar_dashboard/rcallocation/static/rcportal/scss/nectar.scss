@@ -469,3 +469,12 @@ fieldset.boxed-field {
 .select2-drop-active {
   border: 1px solid $brand-info !important;
 }
+
+.char-counter {
+  display: block;
+  text-align: right;
+  color: $text-muted;
+  &.char-counter-warning {
+    color: $brand-danger;
+  }
+}
