@@ -320,32 +320,52 @@ var dashboardHome = (function() {
         resolvedPrefix = "(Completed)&nbsp;";
       }
 
-      var timesHtml = "";
-      var startDate = outage.start ? new Date(outage.start) : null;
-      var hasStarted = startDate && !isNaN(startDate.getTime()) && startDate <= new Date();
-      if (outage.start) {
-        var startSuffix = hasStarted ? "" : " (scheduled)";
-        timesHtml += `<strong>Start:</strong> ${escapeHtml(formatRfc2822(outage.start))}${startSuffix}`;
+      // News is a lifecycle-free post; notices share the outage
+      // lifecycle but are labelled as notices.
+      var heading;
+      var detailsHtml;
+      if (outage.category === "news") {
+        heading = "News";
+        detailsHtml = `<strong>Published:</strong> ${escapeHtml(formatRfc2822(outage.start))}`;
+      } else {
+        if (outage.category === "notice") {
+          heading = `${resolvedPrefix}Notice`;
+        } else {
+          heading = `${resolvedPrefix}${escapeHtml(outage.scheduled_display)} Outage`;
+        }
+        var timesHtml = "";
+        var startDate = outage.start ? new Date(outage.start) : null;
+        var hasStarted = startDate && !isNaN(startDate.getTime()) && startDate <= new Date();
+        if (outage.start) {
+          var startSuffix = hasStarted ? "" : " (scheduled)";
+          timesHtml += `<strong>Start:</strong> ${escapeHtml(formatRfc2822(outage.start))}${startSuffix}`;
+        }
+        if (outage.end) {
+          timesHtml += ` <strong>End:</strong> ${escapeHtml(formatRfc2822(outage.end))}`;
+        } else if (outage.planned_end) {
+          timesHtml += ` <strong>End:</strong> ${escapeHtml(formatRfc2822(outage.planned_end))} (scheduled).`;
+        }
+        detailsHtml = `<strong>Status:</strong> ${escapeHtml(outage.status_display)} ${timesHtml}`;
       }
-      if (outage.end) {
-        timesHtml += ` <strong>End:</strong> ${escapeHtml(formatRfc2822(outage.end))}`;
-      } else if (outage.planned_end) {
-        timesHtml += ` <strong>End:</strong> ${escapeHtml(formatRfc2822(outage.planned_end))} (scheduled).`;
+
+      // News has no severity, so no dial.
+      var severityHtml = "";
+      if (outage.severity) {
+        severityHtml = `<img class="severity-dial" src="/static/img/severity${escapeHtml(outage.severity)}.svg" />`;
       }
 
       listHtml += `
         <li class="d-flex py-4">
           <div class="announcement-severity">
-            <img class="severity-dial" src="/static/img/severity${escapeHtml(outage.severity)}.svg" />
+            ${severityHtml}
           </div>
           <div class="announcement-details pl-4">
             <h5 class="text-uppercase">
-              ${resolvedPrefix}${escapeHtml(outage.scheduled_display)} Outage
+              ${heading}
             </h5>
             <h4>${escapeHtml(outage.title)}</h4>
             <p>
-              <strong>Status:</strong> ${escapeHtml(outage.status_display)}
-              ${timesHtml}
+              ${detailsHtml}
             </p>
             <a href="${escapeHtml(outageBaseUrl + outage.id)}" target="_blank">View Announcement <i class="fa fa-external-link"></i></a>
           </div>
