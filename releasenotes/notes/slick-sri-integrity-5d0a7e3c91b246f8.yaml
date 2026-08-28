@@ -1,0 +1,7 @@
+---
+security:
+  - |
+    The slick-carousel assets on the dashboard home page are now loaded
+    over explicit HTTPS with subresource integrity hashes, matching the
+    other CDN-loaded assets. Previously they were loaded from a
+    protocol-relative URL with no integrity check.
