@@ -4,6 +4,12 @@
  * ========================================================================
  * Copyright 2014 Min Hur, The New York Times Company
  * Licensed under MIT
+ * ========================================================================
+ * NECTAR LOCAL PATCH: the .toggle.btn[readonly] rule at the bottom is a
+ * local addition matching ../js/bootstrap-toggle.min.js, which is patched
+ * to use 'readonly' instead of 'disabled' (see Change-Id
+ * I7214f15e64732859c58eff7f033fd1e4f46428d6). Do not replace this file
+ * with the upstream CSS.
  * ======================================================================== */
 
 
