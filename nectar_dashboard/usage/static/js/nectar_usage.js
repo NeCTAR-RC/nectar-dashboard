@@ -236,7 +236,7 @@ var usageTrend = (function() {
       options: {
         responsive: true,
         scales: {
-          xAxis: {
+          x: {
             type: 'time',
             time: {
               unit: 'day',
@@ -249,7 +249,7 @@ var usageTrend = (function() {
               text: 'Date',
             }
           },
-          yAxis: {
+          y: {
             suggestedMin: 0,
             title: {
               display: true,
@@ -286,7 +286,7 @@ var usageTrend = (function() {
             display: true,
             text: 'There were ' + instance_total + ' instances running',
             font: {
-              size: "14px"
+              size: 14
             }
           },
           legend: {
@@ -553,7 +553,7 @@ var usageOverview = (function() {
       options: {
         responsive: true,
         scales: {
-          xAxis: {
+          x: {
             type: 'time',
             time: {
               unit: 'day',
@@ -566,7 +566,7 @@ var usageOverview = (function() {
               text: 'Date',
             }
           },
-          yAxis: {
+          y: {
             suggestedMin: 0,
             title: {
               display: true,
@@ -662,7 +662,7 @@ var usageAllocation = (function() {
           }
         },
         scales: {
-          xAxis: {
+          x: {
             display: true,
             type: 'time',
             time: {
@@ -674,7 +674,7 @@ var usageAllocation = (function() {
               weight: "bold"
             }
           },
-          yAxis: {
+          y: {
             display: true,
             suggestedMin: 0,
             title: {

@@ -1,0 +1,8 @@
+---
+upgrade:
+  - |
+    The usage panels now load Chart.js 4.5.1 (with chartjs-adapter-moment
+    1.0.1 and chartjs-plugin-datalabels 2.2.0) from the CDN instead of
+    Chart.js 3.7.1. The chart configurations were updated for Chart.js 4,
+    which no longer treats scales named ``xAxis``/``yAxis`` as overrides
+    of the default axes.
