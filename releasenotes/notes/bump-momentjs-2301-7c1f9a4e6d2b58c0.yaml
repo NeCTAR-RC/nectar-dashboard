@@ -1,0 +1,6 @@
+---
+security:
+  - |
+    The usage panels now load moment.js 2.30.1 from the CDN instead of
+    2.29.1, which predated the fixes for CVE-2022-24785 (path traversal)
+    and CVE-2022-31129 (ReDoS in string-to-date parsing).
