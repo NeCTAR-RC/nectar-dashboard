@@ -1,0 +1,8 @@
+---
+upgrade:
+  - |
+    The vendored DataTables bundle used by the usage trend panel has been
+    upgraded from DataTables 1.11.5 with Responsive 2.2.9 to DataTables
+    2.3.8 with Responsive 3.0.8 (Bootstrap 3 styling). The unused DateTime
+    extension and the unreferenced unpacked extension directories have
+    been removed from the bundle.
