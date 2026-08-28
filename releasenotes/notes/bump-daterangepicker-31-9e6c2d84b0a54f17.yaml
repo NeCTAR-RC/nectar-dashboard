@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    The usage trend page now loads daterangepicker 3.1.0 from jsDelivr
+    instead of bootstrap-daterangepicker 3.0.5 from cdnjs, which never
+    packaged a newer release. The 3.1 release contains bug fixes only
+    and the stylesheet is unchanged.
