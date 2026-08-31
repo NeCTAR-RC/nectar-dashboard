@@ -42,6 +42,32 @@ class AllocationTests(base.AllocationAPITest):
         response = self.client.get('/rest_api/allocations/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_list_allocations_unauthenticated_filtered(self):
+        # An unauthenticated list request used to get no filtering at all,
+        # so it silently returned every allocation, history records
+        # included, whatever the caller asked for.
+        factories.AllocationFactory.create(parent_request=self.allocation)
+
+        response = self.client.get('/rest_api/allocations/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(2, response.data['count'])
+
+        response = self.client.get(
+            '/rest_api/allocations/?parent_request__isnull=True'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(1, response.data['count'])
+        self.assertEqual(1, len(response.data['results']))
+
+    def test_list_allocations_unauthenticated_filter_project_name(self):
+        factories.AllocationFactory.create(project_name='findme')
+
+        response = self.client.get(
+            '/rest_api/allocations/?project_name=findme'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(1, response.data['count'])
+
     def test_list_allocations_negative(self):
         self.client.force_authenticate(user=self.user)
         factories.AllocationFactory.create(contact_email='other@example.com')

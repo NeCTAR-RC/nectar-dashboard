@@ -15,7 +15,6 @@ from django.conf import settings
 from django.contrib import auth
 
 from openstack_auth import exceptions as oa_exceptions
-from openstack_auth import user as auth_user
 from openstack_auth import utils as auth_utils
 
 from rest_framework import authentication
@@ -35,7 +34,7 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
 
         try:
             auth_ref = auth_utils.validate_token(token, remote_addr)
-            request.user = auth.authenticate(
+            user = auth.authenticate(
                 request=request,
                 auth_url=None,
                 auth_ref=auth_ref,
@@ -45,14 +44,38 @@ class KeystoneAuthentication(authentication.BaseAuthentication):
         except oa_exceptions.KeystoneAuthException:
             raise exceptions.AuthenticationFailed()
 
-        auth_user.set_session_from_user(request, request.user)
-        auth.login(request, request.user)
-        return (request.user, None)
+        if user is None:
+            raise exceptions.AuthenticationFailed()
+
+        # NOTE: deliberately no auth.login() here.  Token authentication is
+        # stateless, and logging the user in hands the API client a Django
+        # session cookie.  Clients built on keystoneauth keep cookies for the
+        # life of the process and would then be authenticated by that session
+        # rather than by the token they send, which leaves them silently
+        # unauthenticated once the token held in the session expires.
+        request.user = user
+        return (user, None)
 
 
 class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
     def enforce_csrf(self, request):
         return  # To not perform the csrf check previously happening
+
+    def authenticate(self, request):
+        result = super().authenticate(request)
+        if result is None:
+            return None
+
+        # An openstack_auth user stays 'active' once its keystone token has
+        # expired, so DRF would accept the stale session and hand back a user
+        # whose is_authenticated is False.  Views branch on is_authenticated,
+        # so the request is silently treated as anonymous, and the other
+        # authenticators never get a turn.  Ignore the stale session instead.
+        user, _auth = result
+        if not user.is_authenticated:
+            return None
+
+        return result
 
 
 class Permission(permissions.BasePermission):

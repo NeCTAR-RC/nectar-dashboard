@@ -225,6 +225,51 @@ class AllocationFilter(filters.FilterSet):
         }
 
 
+class PublicAllocationFilter(filters.FilterSet):
+    """The filters an unauthenticated caller may use.
+
+    Restricted to the fields PublicAllocationSerializer exposes, plus
+    parent_request__isnull so history records can be excluded.  An
+    unauthenticated list request used to get no filtering at all, which
+    silently returned every allocation ever recorded, history records
+    included, whatever the caller asked for.
+    """
+
+    parent_request__isnull = filters.BooleanFilter(
+        field_name='parent_request', lookup_expr='isnull'
+    )
+
+    class Meta:
+        model = models.AllocationRequest
+
+        fields = {
+            'project_name': [
+                'exact',
+                'contains',
+                'icontains',
+                'startswith',
+                'istartswith',
+                'endswith',
+                'iendswith',
+            ],
+            'field_of_research_1': ['exact'],
+            'field_of_research_2': ['exact'],
+            'field_of_research_3': ['exact'],
+            'start_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'year'],
+            'end_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'year'],
+            'modified_time': [
+                'exact',
+                'lt',
+                'gt',
+                'gte',
+                'lte',
+                'date',
+                'year',
+            ],
+            'submit_date': ['exact', 'lt', 'gt', 'gte', 'lte', 'date', 'year'],
+        }
+
+
 class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     queryset = models.AllocationRequest.objects.prefetch_related(
         'quotas',
@@ -244,7 +289,7 @@ class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
     def filterset_class(self):
         if self.request.user.is_authenticated:
             return AllocationFilter
-        return None
+        return PublicAllocationFilter
 
     def get_queryset(self):
         if not self.request.user.is_authenticated:

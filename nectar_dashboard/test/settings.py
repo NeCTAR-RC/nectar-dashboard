@@ -470,8 +470,8 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'nectar_dashboard.rest_auth.CsrfExemptSessionAuthentication',
         'nectar_dashboard.rest_auth.KeystoneAuthentication',
+        'nectar_dashboard.rest_auth.CsrfExemptSessionAuthentication',
     ),
 }
 

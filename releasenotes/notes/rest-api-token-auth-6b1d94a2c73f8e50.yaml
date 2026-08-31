@@ -1,0 +1,30 @@
+---
+fixes:
+  - |
+    The REST API no longer creates a Django session when a request is
+    authenticated by an ``X-Auth-Token`` header. Authenticating used to
+    return a ``sessionid`` cookie, and clients built on keystoneauth keep
+    cookies for the life of the process, so those clients were then
+    authenticated by the Django session rather than by the token they sent.
+    Once the keystone token held inside that session expired, every later
+    request was silently served as anonymous, and only restarting the client
+    process recovered.
+  - |
+    A session whose keystone token has expired is no longer accepted by the
+    REST API. An ``openstack_auth`` user stays 'active' after its token
+    expires, so the session authenticator handed back a user whose
+    ``is_authenticated`` was false. Views branch on ``is_authenticated``, so
+    the request was silently treated as anonymous and token authentication
+    never got a turn.
+  - |
+    Unauthenticated allocation list requests are now filtered. They
+    previously ignored every filter in the query string and returned all
+    allocations, history records included.
+upgrade:
+  - |
+    ``KeystoneAuthentication`` now comes before
+    ``CsrfExemptSessionAuthentication`` in
+    ``REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES']``, so a request
+    carrying an ``X-Auth-Token`` header is always authenticated by that
+    token rather than by a session cookie it happens to be holding.
+    Deployments that override this setting should make the same change.

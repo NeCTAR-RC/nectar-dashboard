@@ -47,9 +47,12 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    # Token authentication comes first so that a client sending an
+    # X-Auth-Token is always authenticated by that token, never by a stale
+    # Django session cookie it happens to be holding.
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'nectar_dashboard.rest_auth.CsrfExemptSessionAuthentication',
         'nectar_dashboard.rest_auth.KeystoneAuthentication',
+        'nectar_dashboard.rest_auth.CsrfExemptSessionAuthentication',
     ),
 }
 
