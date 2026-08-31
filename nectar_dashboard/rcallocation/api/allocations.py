@@ -335,7 +335,7 @@ class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
         return serializer.save(**kwargs)
 
     def perform_create(self, serializer):
-        kwargs = {'created_by': self.request.user.token.project['id']}
+        kwargs = {'created_by': self.request.user.id}
         if not serializer.validated_data.get('contact_email'):
             kwargs['contact_email'] = self.request.user.username
         allocation = self._perform_create_or_update(serializer, kwargs)

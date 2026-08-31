@@ -14,42 +14,50 @@
 from django.conf import settings
 
 
-class PermissionMixin:
-    def is_read_admin(self):
-        if self.request.user.is_authenticated:
-            roles = set(
-                [role['name'].lower() for role in self.request.user.roles]
-            )
-            required = set(
-                settings.ALLOCATION_GLOBAL_ADMIN_ROLES
-                + settings.ALLOCATION_APPROVER_ROLES
-                + settings.ALLOCATION_GLOBAL_READ_ROLES
-            )
-            if required & roles:
-                return True
-        return False
+def has_roles(user, project_roles, system_roles):
+    """Check a user's token roles against the lists for its token scope.
 
-    def is_write_admin(self):
-        if self.request.user.is_authenticated:
-            roles = set(
-                [role['name'].lower() for role in self.request.user.roles]
-            )
-            required = set(
-                settings.ALLOCATION_GLOBAL_ADMIN_ROLES
-                + settings.ALLOCATION_APPROVER_ROLES
-            )
-            if required & roles:
-                return True
+    A system-scoped keystone token is checked against system_roles;
+    any other (project-scoped) token against project_roles.  The two
+    lists are kept separate because keystone's role inference hands
+    every project user implied roles like 'reader', which must not
+    grant API-wide access when carried by a project-scoped token.
+    """
+    if not user.is_authenticated:
         return False
+    if getattr(user, 'system_scoped', False):
+        required = {role.lower() for role in system_roles}
+    else:
+        required = {role.lower() for role in project_roles}
+    roles = {role['name'].lower() for role in user.roles}
+    return bool(required & roles)
+
+
+def is_read_admin(user):
+    return has_roles(
+        user,
+        settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+        + settings.ALLOCATION_APPROVER_ROLES
+        + settings.ALLOCATION_GLOBAL_READ_ROLES,
+        settings.ALLOCATION_SYSTEM_ADMIN_ROLES
+        + settings.ALLOCATION_SYSTEM_APPROVER_ROLES
+        + settings.ALLOCATION_SYSTEM_READ_ROLES,
+    )
 
 
 def is_write_admin(user):
-    if user.is_authenticated:
-        roles = set([role['name'].lower() for role in user.roles])
-        required = set(
-            settings.ALLOCATION_GLOBAL_ADMIN_ROLES
-            + settings.ALLOCATION_APPROVER_ROLES
-        )
-        if required & roles:
-            return True
-    return False
+    return has_roles(
+        user,
+        settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+        + settings.ALLOCATION_APPROVER_ROLES,
+        settings.ALLOCATION_SYSTEM_ADMIN_ROLES
+        + settings.ALLOCATION_SYSTEM_APPROVER_ROLES,
+    )
+
+
+class PermissionMixin:
+    def is_read_admin(self):
+        return is_read_admin(self.request.user)
+
+    def is_write_admin(self):
+        return is_write_admin(self.request.user)

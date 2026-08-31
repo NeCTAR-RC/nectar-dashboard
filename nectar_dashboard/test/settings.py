@@ -397,6 +397,12 @@ ALLOCATION_GLOBAL_READ_ROLES = ['read_only']
 ALLOCATION_GLOBAL_ADMIN_ROLES = ['admin']
 ALLOCATION_APPROVER_ROLES = ['tenantmanager']
 
+# Roles carried by a system-scoped keystone token that grant the
+# equivalent access to the project-scoped role settings above.
+ALLOCATION_SYSTEM_READ_ROLES = ['reader']
+ALLOCATION_SYSTEM_ADMIN_ROLES = ['admin']
+ALLOCATION_SYSTEM_APPROVER_ROLES = ['allocationapprover']
+
 # The service type the allocation API is registered as in the Keystone
 # catalogue. Application credential access rules are matched against this.
 ALLOCATION_API_SERVICE_TYPE = 'allocations'

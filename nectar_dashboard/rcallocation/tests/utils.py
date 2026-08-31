@@ -18,6 +18,28 @@ from django.conf import settings
 from openstack_auth import user
 
 
+def get_system_user(id='123', username='service', roles=['reader']):
+    """A user as built from a system-scoped keystone token.
+
+    Such tokens carry no project, and their roles are system role
+    assignments.
+    """
+    roles = [{'name': role} for role in roles]
+    token = mock.Mock(project={'id': None}, tenant={'id': None})
+    return user.User(
+        id=id,
+        token=token,
+        user=username,
+        domain_id='default',
+        user_domain_name='Default',
+        service_catalog={},
+        roles=roles,
+        enabled=True,
+        system_scoped=True,
+        endpoint=settings.OPENSTACK_KEYSTONE_URL,
+    )
+
+
 def get_user(id='123', username='bob', project_name='foo', roles=['member']):
     roles = [{'name': role} for role in roles]
     project_id = 'id' + project_name

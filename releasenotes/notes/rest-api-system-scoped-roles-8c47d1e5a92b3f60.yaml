@@ -1,0 +1,20 @@
+---
+features:
+  - |
+    The allocation REST API now supports system-scoped keystone tokens.
+    Roles carried by a system-scoped token are matched against the new
+    ``ALLOCATION_SYSTEM_ADMIN_ROLES`` (default ``['admin']``),
+    ``ALLOCATION_SYSTEM_APPROVER_ROLES`` (default ``[]``) and
+    ``ALLOCATION_SYSTEM_READ_ROLES`` (default ``['reader']``) settings,
+    and grant the same access as the corresponding project-scoped
+    ``ALLOCATION_GLOBAL_ADMIN_ROLES``, ``ALLOCATION_APPROVER_ROLES`` and
+    ``ALLOCATION_GLOBAL_READ_ROLES`` settings. The system-scope lists are
+    kept separate from the project-scope ones because keystone role
+    inference gives every project user an implied ``reader`` role, which
+    must not grant API-wide read access.
+fixes:
+  - |
+    An allocation's ``created_by`` field now records the keystone user
+    id of the creator, as the model has always documented. It was
+    previously set to the creating token's project id, which a
+    system-scoped token does not have.

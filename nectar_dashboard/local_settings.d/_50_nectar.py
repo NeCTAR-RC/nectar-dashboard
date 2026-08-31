@@ -45,6 +45,17 @@ WEBSSO_USE_HTTP_REFERER = False
 # catalogue. Application credential access rules are matched against this.
 ALLOCATION_API_SERVICE_TYPE = 'allocations'
 
+# Roles carried by a system-scoped keystone token that grant the
+# equivalent allocation API access to the project-scoped
+# ALLOCATION_GLOBAL_READ_ROLES / ALLOCATION_GLOBAL_ADMIN_ROLES /
+# ALLOCATION_APPROVER_ROLES.  Kept separate from those settings
+# because keystone role inference hands every project user implied
+# roles (member implies reader), so a name like 'reader' is only safe
+# to honour when the token is system-scoped.
+ALLOCATION_SYSTEM_READ_ROLES = ['reader']
+ALLOCATION_SYSTEM_ADMIN_ROLES = ['admin']
+ALLOCATION_SYSTEM_APPROVER_ROLES = []
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',  # noqa
     'PAGE_SIZE': 1000,

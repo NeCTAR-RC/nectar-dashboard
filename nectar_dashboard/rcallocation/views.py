@@ -479,7 +479,7 @@ class BaseAllocationView(
         allocation = form.save(commit=False)
         assert self.editor_attr
         if not allocation.created_by:
-            allocation.created_by = self.request.user.token.tenant['id']
+            allocation.created_by = self.request.user.id
 
         # Set the editor attribute
         setattr(allocation, self.editor_attr, self.request.user.username)

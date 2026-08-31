@@ -27,6 +27,7 @@ from rest_framework import authentication
 from rest_framework import exceptions
 from rest_framework import permissions
 
+from nectar_dashboard.rcallocation.api import auth as api_auth
 from nectar_dashboard.rcallocation import models
 
 
@@ -162,22 +163,20 @@ class CsrfExemptSessionAuthentication(authentication.SessionAuthentication):
 
 class Permission(permissions.BasePermission):
     message = 'Permission denied or allocation in wrong state.'
+    # Role names granting the permission to a project-scoped token
     roles = []
+    # Role names granting the permission to a system-scoped token
+    system_roles = []
     states = []
     invalid_states = []
 
-    def has_role(self, user, required):
-        if user.is_authenticated:
-            roles = set([role['name'].lower() for role in user.roles])
-            required = set(required)
-            if required & roles:
-                return True
-        return False
+    def has_role(self, user, required, system_required):
+        return api_auth.has_roles(user, required, system_required)
 
     def has_permission(self, request, view):
-        if not self.roles:
+        if not self.roles and not self.system_roles:
             return True
-        return self.has_role(request.user, self.roles)
+        return self.has_role(request.user, self.roles, self.system_roles)
 
     def has_object_permission(self, request, view, obj):
         if self.states:
@@ -191,7 +190,9 @@ class Permission(permissions.BasePermission):
 
     def is_admin(self, request):
         return self.has_role(
-            request.user, settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+            request.user,
+            settings.ALLOCATION_GLOBAL_ADMIN_ROLES,
+            settings.ALLOCATION_SYSTEM_ADMIN_ROLES,
         )
 
     def get_allocation(self, obj):
@@ -210,10 +211,12 @@ class IsAdmin(Permission):
     """Global permission check for admins role"""
 
     roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+    system_roles = settings.ALLOCATION_SYSTEM_ADMIN_ROLES
 
 
 class ApproverOrOwner(Permission):
     roles = settings.ALLOCATION_APPROVER_ROLES
+    system_roles = settings.ALLOCATION_SYSTEM_APPROVER_ROLES
 
     def has_permission(self, request, view):
         if request.user.is_authenticated:
@@ -230,13 +233,21 @@ class ApproverOrOwner(Permission):
         if allocation and allocation.contact_email == request.user.username:
             owner = True
 
-        if owner or self.has_role(request.user, self.roles):
+        if owner or self.has_role(request.user, self.roles, self.system_roles):
             return True
         return False
 
 
 class ReadOrAdmin(Permission):
+    """Anyone may read; only admins may write.
+
+    Safe methods are allowed unconditionally, so the role lists gate
+    writes only: the reference-data viewsets (NoDestroyViewSet) this
+    protects are world readable, and modifying them needs admin.
+    """
+
     roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+    system_roles = settings.ALLOCATION_SYSTEM_ADMIN_ROLES
 
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
@@ -258,6 +269,7 @@ class ModifyPermission(Permission):
 
 class CanApprove(ModifyPermission):
     roles = settings.ALLOCATION_APPROVER_ROLES
+    system_roles = settings.ALLOCATION_SYSTEM_APPROVER_ROLES
     states = [
         models.AllocationRequest.SUBMITTED,
         models.AllocationRequest.UPDATE_PENDING,
@@ -266,6 +278,7 @@ class CanApprove(ModifyPermission):
 
 class CanDelete(ModifyPermission):
     roles = settings.ALLOCATION_GLOBAL_ADMIN_ROLES
+    system_roles = settings.ALLOCATION_SYSTEM_ADMIN_ROLES
 
 
 class CanUpdate(ModifyPermission):
@@ -286,4 +299,8 @@ class IsAdminOrApprover(Permission):
     roles = (
         settings.ALLOCATION_GLOBAL_ADMIN_ROLES
         + settings.ALLOCATION_APPROVER_ROLES
+    )
+    system_roles = (
+        settings.ALLOCATION_SYSTEM_ADMIN_ROLES
+        + settings.ALLOCATION_SYSTEM_APPROVER_ROLES
     )

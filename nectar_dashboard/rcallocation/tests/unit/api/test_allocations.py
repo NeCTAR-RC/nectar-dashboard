@@ -747,9 +747,7 @@ class AllocationTests(base.AllocationAPITest):
         allocation = models.AllocationRequest.objects.get(
             project_name='test-project'
         )
-        self.assertEqual(
-            self.admin_user.token.project['id'], allocation.created_by
-        )
+        self.assertEqual(self.admin_user.id, allocation.created_by)
         self.assertEqual('test-project', response.data['project_name'])
         self.assertEqual(
             self.admin_user.username, response.data['contact_email']
@@ -770,7 +768,7 @@ class AllocationTests(base.AllocationAPITest):
         allocation = models.AllocationRequest.objects.get(
             project_name='test-project'
         )
-        self.assertEqual(self.user.token.project['id'], allocation.created_by)
+        self.assertEqual(self.user.id, allocation.created_by)
         self.assertEqual('test-project', response.data['project_name'])
         self.assertEqual(self.user.username, response.data['contact_email'])
         self.assertIsNone(response.data['associated_site'])
@@ -811,9 +809,7 @@ class AllocationTests(base.AllocationAPITest):
         allocation = models.AllocationRequest.objects.get(
             project_name='test-project'
         )
-        self.assertEqual(
-            self.admin_user.token.project['id'], allocation.created_by
-        )
+        self.assertEqual(self.admin_user.id, allocation.created_by)
         self.assertEqual('test-project', response.data['project_name'])
         self.assertEqual(
             self.admin_user.username, response.data['contact_email']
@@ -851,9 +847,7 @@ class AllocationTests(base.AllocationAPITest):
         allocation = models.AllocationRequest.objects.get(
             project_name='test-project'
         )
-        self.assertEqual(
-            self.admin_user.token.project['id'], allocation.created_by
-        )
+        self.assertEqual(self.admin_user.id, allocation.created_by)
         self.assertEqual('test-project', response.data['project_name'])
         self.assertEqual(
             self.admin_user.username, response.data['contact_email']
@@ -880,9 +874,7 @@ class AllocationTests(base.AllocationAPITest):
         allocation = models.AllocationRequest.objects.get(
             project_name='test-project'
         )
-        self.assertEqual(
-            self.admin_user.token.project['id'], allocation.created_by
-        )
+        self.assertEqual(self.admin_user.id, allocation.created_by)
         self.assertEqual('test-project', response.data['project_name'])
         self.assertEqual(
             'test_override@example.com', response.data['contact_email']
