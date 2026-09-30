@@ -130,8 +130,16 @@
       showSurveyInviteModal(userIsLoggedIn);
     </script>
 
+    {% comment %}
+      The ?v query on the footer loader is a one-time cache bust. Until
+      18 Sep 2026 Marameo served this loader with a one-year max-age, so
+      browsers that cached it before the Turnstile z-index fix (14 Sep 2026)
+      never asked for it again and kept running the old footer. The loader
+      is now served no-store, so this value does not need bumping for future
+      footer updates. See NECTAR-16797.
+    {% endcomment %}
     <script
-      src="https://ardc.edu.au/wp-content/plugins/ardc-custom-web-components/dist/loaders/footer.min.js"
+      src="https://ardc.edu.au/wp-content/plugins/ardc-custom-web-components/dist/loaders/footer.min.js?v=20260930"
       defer
       data-no-optimize
     ></script>
