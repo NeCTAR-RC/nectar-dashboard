@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    The allocation REST API now lets a project member read the approved
+    allocation (and its quotas) of the project their token is scoped to,
+    in addition to the requests they are the contact for. Pending requests
+    and other projects' allocations stay private, and write access is
+    unchanged. This lets the new dashboard show the resource bundle, SU
+    budget and quotas to every member of a project using the member's own
+    token.

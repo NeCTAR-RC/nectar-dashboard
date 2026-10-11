@@ -297,7 +297,7 @@ class AllocationViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
         if self.is_read_admin():
             return self.queryset
         return models.AllocationRequest.objects.filter(
-            contact_email=self.request.user.username
+            auth.visible_allocations(self.request.user)
         ).prefetch_related(
             'quotas',
             'quotas__quota_set',

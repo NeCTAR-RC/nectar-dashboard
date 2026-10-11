@@ -12,6 +12,9 @@
 #
 
 from django.conf import settings
+from django.db.models import Q
+
+from nectar_dashboard.rcallocation import models
 
 
 def has_roles(user, project_roles, system_roles):
@@ -53,6 +56,28 @@ def is_write_admin(user):
         settings.ALLOCATION_SYSTEM_ADMIN_ROLES
         + settings.ALLOCATION_SYSTEM_APPROVER_ROLES,
     )
+
+
+def visible_allocations(user, prefix=''):
+    """The allocations a non-admin user may read, as a Q object.
+
+    Their own requests (they are the contact), plus the approved
+    allocation of the project their token is scoped to, so that every
+    member of a project can see its resource bundle, SU budget and
+    quotas with their own token.  Pending requests and other projects'
+    allocations stay private.  ``prefix`` relates the lookups to the
+    allocation from another model (e.g. ``group__allocation__``).
+    """
+    visible = Q(**{f'{prefix}contact_email': user.username})
+    project_id = getattr(user, 'project_id', None)
+    if project_id:
+        visible |= Q(
+            **{
+                f'{prefix}project_id': project_id,
+                f'{prefix}status': models.AllocationRequest.APPROVED,
+            }
+        )
+    return visible
 
 
 class PermissionMixin:

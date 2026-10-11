@@ -130,7 +130,9 @@ class QuotaViewSet(viewsets.ModelViewSet, auth.PermissionMixin):
         if self.is_read_admin():
             return self.queryset
         return models.Quota.objects.filter(
-            group__allocation__contact_email=self.request.user.username
+            auth.visible_allocations(
+                self.request.user, prefix='group__allocation__'
+            )
         )
 
     def get_permissions(self):
