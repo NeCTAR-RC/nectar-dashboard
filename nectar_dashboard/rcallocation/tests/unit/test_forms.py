@@ -1024,3 +1024,39 @@ class QuotaMixinTestCase(FormsTestCase):
         self.assertEqual('compute', compute_st.catalog_name)
         # Should be cores and instances (ram) is not requestable in tests
         self.assertEqual(2, len(fields))
+
+    def test_quota_field_rejects_value_above_column_range(self):
+        # Quota columns are 32-bit integers; anything larger used to pass
+        # form validation and blow up with a DataError on save.
+        field_name = 'quota-compute.cores__nectar'
+        data = DUMMY_ALLOC_DATA.copy()
+        data[field_name] = forms.QUOTA_MAX_VALUE + 1
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            [
+                'Ensure this value is less than or equal to '
+                f'{forms.QUOTA_MAX_VALUE}.'
+            ],
+            form.errors[field_name],
+        )
+
+    def test_quota_field_accepts_value_at_column_range(self):
+        field_name = 'quota-compute.cores__nectar'
+        data = DUMMY_ALLOC_DATA.copy()
+        data[field_name] = forms.QUOTA_MAX_VALUE
+        form = forms.AllocationRequestForm(data=data)
+        form.is_valid()
+        self.assertNotIn(field_name, form.errors)
+        self.assertEqual(forms.QUOTA_MAX_VALUE, form.cleaned_data[field_name])
+
+    def test_quota_field_rejects_negative_value(self):
+        field_name = 'quota-compute.cores__nectar'
+        data = DUMMY_ALLOC_DATA.copy()
+        data[field_name] = -1
+        form = forms.AllocationRequestForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            ['Ensure this value is greater than or equal to 0.'],
+            form.errors[field_name],
+        )

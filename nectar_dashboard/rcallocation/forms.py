@@ -456,10 +456,17 @@ class IntegerCheckboxInput(forms.CheckboxInput):
         return int(value)
 
 
+# Quota.requested_quota and Quota.quota are 32-bit IntegerField columns.
+# Bound the form fields to match so an absurd value is rejected with a
+# form error instead of a database DataError on save.
+QUOTA_MAX_VALUE = 2**31 - 1
+
+
 class QuotaIntegerField(forms.IntegerField):
     def __init__(self, resource, zone, *args, **kwargs):
         self.resource = resource
         self.zone = zone
+        kwargs.setdefault('max_value', QUOTA_MAX_VALUE)
         super().__init__(*args, **kwargs)
 
     def widget_attrs(self, widget):

@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    Quota fields on the allocation request and amend forms now reject
+    values larger than the 32-bit integer range of the quota columns.
+    Previously a request such as a budget of ``9999999999`` passed form
+    validation and failed with a database ``DataError`` on save, which
+    showed the user a 500 error instead of a validation message.
