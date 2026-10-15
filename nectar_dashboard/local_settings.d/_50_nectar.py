@@ -41,6 +41,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # as opposed to referrer.
 WEBSSO_USE_HTTP_REFERER = False
 
+# Nectar network classification, handled in horizon's
+# openstack_dashboard.api.neutron. The classic placeholder network is a
+# real neutron network nova swaps for a site provider network at boot; it
+# leads the launch and attach interface network lists. Shared networks
+# carrying the bootable tag (provider networks RBAC-shared to a project)
+# may be booted on; untagged shared networks are never offered.
+# NECTAR_FLOATING_NETWORK_TAG (floating IP pools and router gateways) is
+# set per deployment.
+NECTAR_CLASSIC_NETWORK_ID = '00000000-0000-0000-0000-000000000000'
+NECTAR_BOOTABLE_NETWORK_TAG = 'nectar:bootable'
+
 # The service type the allocation API is registered as in the Keystone
 # catalogue. Application credential access rules are matched against this.
 ALLOCATION_API_SERVICE_TYPE = 'allocations'

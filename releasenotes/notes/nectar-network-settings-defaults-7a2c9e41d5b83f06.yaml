@@ -1,0 +1,10 @@
+---
+upgrade:
+  - |
+    ``NECTAR_CLASSIC_NETWORK_ID`` and ``NECTAR_BOOTABLE_NETWORK_TAG`` are
+    now set as Nectar defaults in ``local_settings.d/_50_nectar.py``. They
+    are read by the matching horizon change that reworks which neutron
+    networks a project user is offered: the classic placeholder network
+    leads the launch and attach interface lists, and shared networks
+    tagged ``nectar:bootable`` may be booted on. Operators must tag any
+    provider network RBAC-shared to a project with ``nectar:bootable``.
