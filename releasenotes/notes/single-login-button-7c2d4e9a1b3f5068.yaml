@@ -1,0 +1,8 @@
+---
+upgrade:
+  - |
+    The login page now shows a single login button. Selecting between AAF
+    and Tuakiri now happens in the login service, so the separate Tuakiri
+    button has been removed and the ``rcshibboleth_url_nz`` entry in
+    ``HORIZON_CONFIG`` is no longer used and can be removed from deployment
+    configuration.
