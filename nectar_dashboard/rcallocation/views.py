@@ -233,8 +233,10 @@ class QuotaFormMixin:
 
 
 class BaseAllocationView(
-    UpdateView,
+    # UserPassesTestMixin must come first so its dispatch() runs
+    # test_func() before UpdateView's dispatch() handles the request.
     mixins.UserPassesTestMixin,
+    UpdateView,
     horizon_views.PageTitleMixin,
     QuotaFormMixin,
 ):

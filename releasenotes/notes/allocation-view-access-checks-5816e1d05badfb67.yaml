@@ -1,0 +1,13 @@
+---
+fixes:
+  - |
+    The allocation request edit, amend, approve, decline and admin edit
+    views now enforce their access checks. A base class ordering error
+    meant these checks never ran, so any logged-in user could view and
+    submit ``user_requests/edit_request/<id>/`` and
+    ``user_requests/edit_change_request/<id>/`` for any allocation,
+    including historical records. These views now return HTTP 403 unless
+    the user is the allocation's contact, a TenantManager of its project
+    or an allocation admin, and historical records can no longer be
+    edited. The admin views are limited to allocation admins by the view
+    itself, not only by the Horizon panel permission.
