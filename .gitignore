@@ -22,3 +22,10 @@ coverage.xml
 .tox/
 nectar_dashboard.egg-info/*
 .eggs/
+# Playwright end-to-end tests
+/node_modules/
+/e2e/.auth/
+/e2e/test-results/
+/e2e/playwright-report/
+/.playwright-mcp/
+/pt.openrc

@@ -1,0 +1,14 @@
+{
+  "name": "nectar-dashboard-e2e",
+  "private": true,
+  "description": "Playwright end-to-end tests for the Nectar dashboard",
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright show-report e2e/playwright-report",
+    "cleanup": "e2e/tools/cleanup.sh"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "22.20.5"
+  }
+}
