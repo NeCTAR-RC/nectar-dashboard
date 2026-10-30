@@ -304,6 +304,13 @@ export async function declineFixture(page: Page, id: number, reason: string) {
   // The Location header is relative ('../../').
   const target = new URL(response.headers()['location'] ?? '', response.url());
   expect(target.pathname).toBe('/allocation/requests/');
+  // Let the browser commit the redirect, without waiting for the slow
+  // Pending list to load.  Otherwise the redirect can interrupt the
+  // caller's next page.goto().
+  await page.waitForURL('**/allocation/requests/', {
+    waitUntil: 'commit',
+    timeout: 120_000,
+  });
 }
 
 // Add a custom (non-bundle) quota to a Submitted allocation through the
