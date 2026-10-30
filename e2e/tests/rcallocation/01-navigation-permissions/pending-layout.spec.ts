@@ -2,6 +2,7 @@ import { test, expect } from '../../../support/fixtures';
 import {
   TABLE,
   acceptDialogsOnce,
+  clickAndWaitForURL,
   columnHeaders,
   parseDjangoDate,
   readTable,
@@ -12,10 +13,13 @@ test.beforeEach(({ page }) => acceptDialogsOnce(page));
 test.describe('Navigation & permissions: Pending Requests', () => {
   test('1.4 Pending Requests table layout and headings', async ({ page }) => {
     await page.goto('/allocation/');
-    await page
-      .locator('#sidebar-accordion-allocation')
-      .getByRole('link', { name: 'Pending Requests' })
-      .click();
+    await clickAndWaitForURL(
+      page,
+      page
+        .locator('#sidebar-accordion-allocation')
+        .getByRole('link', { name: 'Pending Requests' }),
+      '/allocation/requests/',
+    );
     await expect(page).toHaveURL('/allocation/requests/');
     await expect(page).toHaveTitle('Allocation Requests - Nectar Dashboard');
     await expect(page.locator('h1')).toHaveText(['Allocation Requests']);

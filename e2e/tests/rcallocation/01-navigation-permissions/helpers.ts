@@ -1,5 +1,11 @@
-import { Page, Response } from '@playwright/test';
+import {
+  Locator,
+  Page,
+  Response,
+  request as playwrightRequest,
+} from '@playwright/test';
 
+import { BASE_URL } from '../../../support/env';
 import { expect } from '../../../support/fixtures';
 
 // Local helpers for suite 01.  Kept here rather than in e2e/support so the
@@ -16,6 +22,67 @@ export function acceptDialogsOnce(page: Page): void {
   page.on('dialog', (d) => {
     d.accept().catch(() => {});
   });
+}
+
+// A slow page load after a click can outlast the 15 s action timeout,
+// which a click also spends waiting for the navigation it starts.  Click
+// without that wait and wait for the URL, by default with the navigation
+// timeout.
+export async function clickAndWaitForURL(
+  page: Page,
+  target: Locator,
+  url: string | RegExp | ((url: URL) => boolean),
+  timeout?: number,
+) {
+  await Promise.all([
+    page.waitForURL(url, { timeout }),
+    target.click({ noWaitAfter: true }),
+  ]);
+}
+
+// A form POST that saves an allocation (decline, user edit) sends
+// notifications and has taken over 90 s on dev while other suites load
+// it.  A test making N such saves should allow N * SAVE_TIMEOUT.
+export const SAVE_TIMEOUT = 240_000;
+
+// declineViaUi from support/allocations, with clickAndWaitForURL and
+// SAVE_TIMEOUT.  Status becomes R for a new request and J for a pending
+// amendment.
+export async function decline(page: Page, id: number, reason: string) {
+  await page.goto(`/allocation/requests/reject_request/${id}/`);
+  await page.locator('#id_status_explanation').fill(reason);
+  await clickAndWaitForURL(
+    page,
+    page.locator('input[type=submit]').first(),
+    /\/allocation\/requests\/$/,
+    SAVE_TIMEOUT,
+  );
+}
+
+// The same Chief Investigator suite 03 uses.  The user edit form rejects
+// an allocation without one, and the allocations fixture creates none.
+const CHIEF_INVESTIGATOR = {
+  title: 'Dr',
+  given_name: 'Pw',
+  surname: 'Tester',
+  email: 'pw@example.edu.au',
+  // Monash University
+  primary_organisation: 'https://ror.org/02bfwt286',
+  additional_researchers: '',
+};
+
+// Add a Chief Investigator through the REST API with the given token
+// (the non-admin user's for their own allocation).
+export async function addInvestigator(token: string, id: number) {
+  const api = await playwrightRequest.newContext({
+    baseURL: BASE_URL,
+    extraHTTPHeaders: { 'X-Auth-Token': token },
+  });
+  const r = await api.post('/rest_api/chiefinvestigators/', {
+    data: { allocation: id, ...CHIEF_INVESTIGATOR },
+  });
+  expect(r.status(), await r.text()).toBe(201);
+  await api.dispose();
 }
 
 // Navigate and return the main response, failing if there was none.
@@ -38,6 +105,23 @@ export async function expectForbidden(page: Page, url: string) {
   await expect(page).toHaveTitle('- Forbidden - Nectar Dashboard');
   await expect(page.getByRole('heading', { name: 'Forbidden' })).toBeVisible();
   await expect(page.getByText(FORBIDDEN_TEXT)).toBeVisible();
+}
+
+// Horizon's NotAuthorized page (horizon/templates/not_authorized.html),
+// served with HTTP 403 and no redirect when a user lacks a panel's
+// permissions.  Non-admins get it for every /allocation/requests/ and
+// /allocation/approved_requests/ URL (observed live).
+export async function expectNotAuthorized(page: Page, url: string) {
+  const response = await open(page, url);
+  expect(response.status(), url).toBe(403);
+  await expect(page).toHaveURL(url);
+  await expect(page).toHaveTitle(
+    'Unauthorized. Please try logging in again. - Nectar Dashboard',
+  );
+  await expect(
+    page.getByText('You are not authorized to access this page'),
+  ).toBeVisible();
+  await expect(page.locator('.breadcrumb li')).toHaveCount(0);
 }
 
 // The plain-text 400 bodies returned by the approve and reject guards.
@@ -68,9 +152,9 @@ export async function expectNotFound(page: Page, url: string) {
 export const TABLE = '#datatableoptions';
 
 // The Approved Requests list renders ~1600 rows.  It takes about 30 s
-// alone and well over the default 90 s navigation timeout while other
-// suites load the dev server, so allow longer.
-export const APPROVED_LOAD_TIMEOUT = 240_000;
+// alone, and has taken over 240 s while other suites load the dev
+// server, so allow much longer than the 90 s navigation timeout.
+export const APPROVED_LOAD_TIMEOUT = 480_000;
 
 export async function openApproved(page: Page): Promise<void> {
   await page.goto('/allocation/approved_requests/', {

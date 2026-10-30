@@ -1,9 +1,11 @@
 import { test, expect } from '../../../support/fixtures';
-import { declineViaUi } from '../../../support/allocations';
 import {
   TABLE,
+  SAVE_TIMEOUT,
   acceptDialogsOnce,
+  clickAndWaitForURL,
   columnHeaders,
+  decline,
   readTable,
 } from './helpers';
 
@@ -14,18 +16,23 @@ test.describe('Navigation & permissions: My Requests', () => {
     page,
     allocations,
   }) => {
+    // Two declines, each of which can be slow under load.
+    test.setTimeout(2 * SAVE_TIMEOUT + 120_000);
     const submitted = await allocations.create();
     const approved = await allocations.createApproved();
     const amendment = await allocations.createAmendmentPending();
     const declined = await allocations.create();
-    await declineViaUi(page, declined.id, 'Playwright 01 My Requests');
+    await decline(page, declined.id, 'Playwright 01 My Requests');
     const amendDeclined = await allocations.createAmendmentPending();
-    await declineViaUi(page, amendDeclined.id, 'Playwright 01 My Requests');
+    await decline(page, amendDeclined.id, 'Playwright 01 My Requests');
 
-    await page
-      .locator('#sidebar-accordion-allocation')
-      .getByRole('link', { name: 'My Requests' })
-      .click();
+    await clickAndWaitForURL(
+      page,
+      page
+        .locator('#sidebar-accordion-allocation')
+        .getByRole('link', { name: 'My Requests' }),
+      '/allocation/user_requests/',
+    );
     await expect(page).toHaveURL('/allocation/user_requests/');
     await expect(page).toHaveTitle('Allocation Requests - Nectar Dashboard');
     await expect(page.locator('h1')).toHaveText(['My Requests']);

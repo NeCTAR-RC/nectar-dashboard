@@ -1,36 +1,62 @@
 import { test, expect } from '../../../support/fixtures';
-import { acceptDialogsOnce, expectForbidden, open, readTable } from './helpers';
+import {
+  acceptDialogsOnce,
+  expectNotAuthorized,
+  open,
+  readTable,
+} from './helpers';
 
-test.beforeEach(({ page }) => acceptDialogsOnce(page));
+test.beforeEach(({ userPage }) => acceptDialogsOnce(userPage));
 
-// Derived from code, not verified live.  MANAGED_ID must be an allocation
-// for a project the user is TenantManager of, with a different contact.
-const MANAGED_ID = Number(process.env.TENANTMANAGER_ALLOCATION ?? 0);
+const OTHER_CONTACT = 'pwtest-other@example.org';
 
+// Verified live with the non-admin e2e user, who is TenantManager of its
+// project.  The admin creates an allocation for that project with someone
+// else as the contact.
 test.describe('Navigation & permissions: TenantManager', () => {
-  test('1.22 TenantManager access', async ({ page }) => {
-    test.fixme(
-      true,
-      'needs a non-admin TenantManager login: the test user is an allocation admin',
-    );
+  test('1.22 TenantManager access', async ({
+    userPage: page,
+    user,
+    allocations,
+  }) => {
+    const managed = await allocations.create({
+      project_id: user.project_id,
+      contact_email: OTHER_CONTACT,
+    });
 
     // check_tm_or_alloc_admin uses manuka users.projects(user, 'TenantManager').
-    await open(page, '/allocation/user_requests/');
+    const response = await open(page, '/allocation/user_requests/');
+    expect(response.status()).toBe(200);
     const rows = await readTable(page);
-    const managed = rows.find((r) => r.id === String(MANAGED_ID));
-    expect(managed, 'managed allocation listed').toBeDefined();
+    const row = rows.find((r) => r.id === String(managed.id));
+    expect(row, 'managed allocation listed').toBeDefined();
+    expect(row!.cells[0]).toBe('E');
+    expect(row!.cells[4]).toBe(OTHER_CONTACT);
+    expect(row!.nameHref).toBe(`/allocation/user_requests/view/${managed.id}/`);
+    expect(row!.actions).toEqual([
+      {
+        text: 'Edit request',
+        href: `/allocation/user_requests/edit_request/${managed.id}/`,
+      },
+    ]);
 
-    for (const view of ['view', 'edit_request', 'edit_change_request']) {
-      const url = `/allocation/user_requests/${view}/${MANAGED_ID}/`;
-      const response = await open(page, url);
-      expect(response.status(), url).toBe(200);
+    for (const [view, title] of [
+      ['view', 'View allocation request - Nectar Dashboard'],
+      ['edit_request', 'Edit Allocation Request - Nectar Dashboard'],
+      ['edit_change_request', 'Request Allocation Extension - Nectar Dashboard'],
+    ]) {
+      const url = `/allocation/user_requests/${view}/${managed.id}/`;
+      const r = await open(page, url);
+      expect(r.status(), url).toBe(200);
+      await expect(page).toHaveTitle(title);
     }
 
-    // The admin-only requests/* URLs stay denied.
-    await expectForbidden(page, `/allocation/requests/view/${MANAGED_ID}/`);
-    await expectForbidden(
+    // The admin-only requests/* URLs stay denied, with Horizon's
+    // NotAuthorized page.
+    await expectNotAuthorized(page, `/allocation/requests/view/${managed.id}/`);
+    await expectNotAuthorized(
       page,
-      `/allocation/requests/edit_request/${MANAGED_ID}/`,
+      `/allocation/requests/edit_request/${managed.id}/`,
     );
   });
 });

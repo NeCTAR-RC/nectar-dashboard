@@ -1,6 +1,11 @@
 import { test, expect } from '../../../support/fixtures';
-import { declineViaUi } from '../../../support/allocations';
-import { acceptDialogsOnce, expectGuarded400, open } from './helpers';
+import {
+  SAVE_TIMEOUT,
+  acceptDialogsOnce,
+  decline,
+  expectGuarded400,
+  open,
+} from './helpers';
 
 test.beforeEach(({ page }) => acceptDialogsOnce(page));
 
@@ -12,11 +17,13 @@ test.describe('Navigation & permissions: guarded pages', () => {
     page,
     allocations,
   }) => {
+    // Two declines, each of which can be slow under load.
+    test.setTimeout(2 * SAVE_TIMEOUT + 120_000);
     const approved = await allocations.createApproved();
     const declined = await allocations.create();
-    await declineViaUi(page, declined.id, 'Playwright 01 guarded pages');
+    await decline(page, declined.id, 'Playwright 01 guarded pages');
     const amendDeclined = await allocations.createAmendmentPending();
-    await declineViaUi(page, amendDeclined.id, 'Playwright 01 guarded pages');
+    await decline(page, amendDeclined.id, 'Playwright 01 guarded pages');
     expect((await allocations.get(declined.id)).status).toBe('R');
     expect((await allocations.get(amendDeclined.id)).status).toBe('J');
 
