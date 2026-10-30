@@ -44,11 +44,21 @@ if [ -z "$ids" ]; then
     exit 0
 fi
 
-echo "pwtest- allocations: $ids"
+echo "pwtest- allocations: $(echo "$ids" | wc -w)"
+dry_run=True
+if [ -n "$delete_flag" ]; then
+    dry_run=False
+fi
+# Run every delete in one Django process: starting Horizon once per
+# allocation takes several seconds each.
+script="from nectar_dashboard.rcallocation.management.commands.hard_delete_allocation import Command
+cmd = Command()
+for i in '$ids'.split():
+    cmd.delete_allocation(int(i), dry_run=$dry_run)"
 # shellcheck disable=SC2086
 ssh ${E2E_SSH_OPTS:-} "$ssh_host" \
-    "cd $horizon_dir && for id in $ids; do DJANGO_SETTINGS_MODULE=openstack_dashboard.settings $python manage.py hard_delete_allocation \$id $delete_flag; done" \
-    2>&1 | grep -v '^DEBUG '
+    "cd $horizon_dir && DJANGO_SETTINGS_MODULE=openstack_dashboard.settings $python manage.py shell -c \"\$(cat)\"" \
+    <<< "$script" 2>&1 | grep -v '^DEBUG '
 
 if [ -z "$delete_flag" ]; then
     echo "Dry run only; rerun with --delete to delete these allocations"
