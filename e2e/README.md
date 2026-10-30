@@ -53,6 +53,25 @@ e2e/tools/cleanup.sh            # dry run
 e2e/tools/cleanup.sh --delete   # hard-delete over ssh
 ```
 
+The cleanup needs ssh access to the dashboard host. Each full run creates
+about 250 allocations, so run it after every full run; a backlog makes
+the shared lists, and so the tests, much slower.
+
+## Baseline
+
+Recorded on 2026-10-31 against dashboard-s running the change "test: wait
+for the decline redirect in the history e2e suite" (Change-Id
+Icfb7f1590b8d259520fab7c5491def1b54b956b0), with nothing else using the
+server: 171 passed, 8 skipped (test.fixme) and 0 failed, in 30 minutes. The tests marked fixme need data the fixtures
+cannot create (status N, a disabled organisation, a soft-deleted record,
+a stale modified time, an approver registered for a site).
+
+To check a change for UI regressions, deploy it to dashboard-s, clean
+up, run the whole suite with nothing else using the server, and compare
+with this result. A failure means the UI now behaves differently from
+the baseline: either a regression, or an intended change that needs the
+test and its plan in `specs/` updating.
+
 ## Writing tests
 
 - Import `test` and `expect` from `support/fixtures`, never from
