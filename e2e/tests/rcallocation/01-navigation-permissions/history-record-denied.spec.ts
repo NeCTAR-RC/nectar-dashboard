@@ -19,7 +19,7 @@ test.describe('Navigation & permissions: history records', () => {
       page.locator('h2', { hasText: 'Assimilated responsive archive' }),
     ).toBeVisible();
 
-    // Since the access-check fix (75886a2), the user edit views deny
+    // Since the access-check fix (NECTAR-17317), the user edit views deny
     // history records too, even for an allocation admin.  Before it, both
     // returned 200.
     await expectForbidden(page, '/allocation/user_requests/edit_request/146946/');

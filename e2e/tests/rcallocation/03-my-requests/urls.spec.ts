@@ -36,7 +36,7 @@ test.describe('My Requests URL guards', () => {
 
     for (const id of [...HISTORY, ...own]) {
       await expectForbidden(page, viewUrl(id));
-      // Since the access-check fix (75886a2) the edit views deny history
+      // Since the access-check fix (NECTAR-17317) the edit views deny history
       // records too; before it they returned 200.
       await expectForbidden(page, editUrl(id));
       await expectForbidden(page, amendUrl(id));

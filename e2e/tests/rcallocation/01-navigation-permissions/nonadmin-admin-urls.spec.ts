@@ -11,7 +11,7 @@ test.describe('Navigation & permissions: regular user and admin URLs', () => {
     // Every admin URL, the panel lists included, returns 403 with Horizon's
     // NotAuthorized page rather than the 'Forbidden' page of the user
     // views: the Horizon panel permission denies the request before the
-    // view's test_func runs.  Since the access-check fix (75886a2) the
+    // view's test_func runs.  Since the access-check fix (NECTAR-17317) the
     // edit, approve and reject views also deny non-admins in the view
     // itself, which this does not reach.
     const submitted = 137133;

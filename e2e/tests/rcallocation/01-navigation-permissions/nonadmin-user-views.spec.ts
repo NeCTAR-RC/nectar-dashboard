@@ -59,7 +59,7 @@ test.describe('Navigation & permissions: regular user views', () => {
     await expectForbidden(page, `/allocation/user_requests/view/${OTHER_ID}/`);
     await expectForbidden(page, `/allocation/user_requests/view/${HISTORY_ID}/`);
 
-    // Step 3: since the access-check fix (75886a2), the edit views deny
+    // Step 3: since the access-check fix (NECTAR-17317), the edit views deny
     // another user's allocation.  Before it, any logged-in user got 200
     // and could save.  The POST half of this step (403, no history record
     // created) is covered by the unit tests; it is not repeated here
