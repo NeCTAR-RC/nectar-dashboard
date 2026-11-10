@@ -128,7 +128,10 @@ def save_allocation_without_updating_timestamps(allocation):
 
 def is_project_name_available(project_name, allocation=None):
     manager = models.AllocationRequest.objects
-    if allocation:
+    # Only exclude the allocation's own chain once it has been saved.
+    # For an unsaved instance, exclude(parent_request_id=None) would
+    # drop every current request and leave only history rows.
+    if allocation is not None and allocation.pk is not None:
         manager = manager.exclude(id=allocation.id).exclude(
             parent_request_id=allocation.id
         )

@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    The new allocation request form now rejects a project identifier that
+    is already used by another request awaiting approval. Previously the
+    check only matched allocations that had been approved or edited at
+    least once, so two pending requests could share an identifier and
+    clash when the second was approved.

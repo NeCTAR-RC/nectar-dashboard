@@ -1,5 +1,6 @@
 import os
 
+from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import common
 from nectar_dashboard.rcallocation.tests import factories
@@ -41,6 +42,23 @@ class UtilsTest(base.BaseTestCase):
 
         self.assertFalse(utils.is_project_name_available('Fake_project1'))
         self.assertTrue(utils.is_project_name_available('Fake_project2'))
+
+    def test_is_project_name_available_unsaved_allocation(self):
+        # The new request form passes an unsaved instance (id None).
+        # A pending request with no history rows must still clash.
+        factories.AllocationFactory.create(
+            project_name='pending-project',
+            status=models.AllocationRequest.SUBMITTED,
+        )
+        new = models.AllocationRequest()
+
+        self.assertFalse(
+            utils.is_project_name_available('pending-project', new)
+        )
+        self.assertFalse(
+            utils.is_project_name_available('Pending_Project', new)
+        )
+        self.assertTrue(utils.is_project_name_available('other-project', new))
 
     def test_get_member_map(self):
         member_map = utils.get_member_map()
