@@ -28,6 +28,11 @@ class RestrictedAllocationsEditView(BaseAllocationUpdateView):
     form_class = forms.UserAllocationRequestForm
     success_url = "../../"
 
+    def check_state(self, allocation):
+        if not allocation.can_user_edit():
+            return 'Allocation request cannot be edited in its current state'
+        return None
+
     def get_initial(self):
         initial = super().get_initial()
         if self.object.can_be_amended():
@@ -41,6 +46,18 @@ class RestrictedAllocationsEditView(BaseAllocationUpdateView):
                 self.object.estimated_service_active_users
             )
         return initial
+
+
+class RestrictedAllocationsAmendView(RestrictedAllocationsEditView):
+    page_title = 'Request Allocation Extension'
+    template_name = 'rcallocation/allocationrequest_extend.html'
+    form_class = forms.UserAllocationRequestAmendForm
+
+    def check_state(self, allocation):
+        # Start an amendment, or edit one that is pending or declined
+        if allocation.can_be_amended() or allocation.can_user_edit_amendment():
+            return None
+        return 'Allocation cannot be amended in its current state'
 
 
 class RestrictedAllocationsDetailsView(views.AllocationDetailView):

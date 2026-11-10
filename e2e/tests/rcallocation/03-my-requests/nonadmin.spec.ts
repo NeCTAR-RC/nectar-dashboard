@@ -2,18 +2,18 @@ import { Page } from '@playwright/test';
 
 import { test, expect } from '../../../support/fixtures';
 import {
-  AMEND_TITLE,
+  AMEND_STATE_TEXT,
   EDIT_TITLE,
   LIST_URL,
   acceptDialogsOnce,
   amendUrl,
-  closeNags,
   createEditable,
   detailButtons,
   detailTables,
   editUrl,
   expandPanel,
   expectForbidden,
+  expectGuarded400,
   findRow,
   gotoDetail,
   gotoList,
@@ -151,7 +151,7 @@ test.describe('My Requests as a non-admin user', () => {
     }
   });
 
-  test('1.11 (3.1) Edit and amend forms of own and TenantManager allocations open', async ({
+  test('1.11 (3.1) Edit forms of own and TenantManager allocations open', async ({
     userPage,
     user,
     userAllocations,
@@ -163,7 +163,7 @@ test.describe('My Requests as a non-admin user', () => {
       contact_email: OTHER_CONTACT,
     });
     for (const alloc of [own, managed]) {
-      let response = await open(userPage, editUrl(alloc.id));
+      const response = await open(userPage, editUrl(alloc.id));
       expect(response.status(), `edit ${alloc.id}`).toBe(200);
       await expect(userPage).toHaveTitle(EDIT_TITLE);
       await expect(userPage.locator('form#new-allocation')).toHaveAttribute(
@@ -175,13 +175,9 @@ test.describe('My Requests as a non-admin user', () => {
         alloc.contact_email as string,
       );
       await expectNoOrcidBlock(userPage);
-      // Status-agnostic (1.21): the amend view opens for an E record too.
-      response = await open(userPage, amendUrl(alloc.id));
-      expect(response.status(), `amend ${alloc.id}`).toBe(200);
-      await expect(userPage).toHaveTitle(AMEND_TITLE);
-      // The amend form opens the nags modal for these records too.
-      await closeNags(userPage);
-      await expectNoOrcidBlock(userPage);
+      // The amend view refuses an E record (1.21, NECTAR-17320); access
+      // is checked first, so the 400 also confirms the user is allowed.
+      await expectGuarded400(userPage, amendUrl(alloc.id), AMEND_STATE_TEXT);
     }
   });
 

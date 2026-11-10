@@ -1,6 +1,7 @@
 import { test, expect } from '../../../support/fixtures';
 import {
   acceptDialogsOnce,
+  expectGuarded400,
   expectNotAuthorized,
   open,
   readTable,
@@ -43,13 +44,20 @@ test.describe('Navigation & permissions: TenantManager', () => {
     for (const [view, title] of [
       ['view', 'View allocation request - Nectar Dashboard'],
       ['edit_request', 'Edit Allocation Request - Nectar Dashboard'],
-      ['edit_change_request', 'Request Allocation Extension - Nectar Dashboard'],
     ]) {
       const url = `/allocation/user_requests/${view}/${managed.id}/`;
       const r = await open(page, url);
       expect(r.status(), url).toBe(200);
       await expect(page).toHaveTitle(title);
     }
+    // The TenantManager passes the access check for the amend view, but
+    // since the allocation status fix (NECTAR-17320) it only opens for A,
+    // X and J; before it this returned 200 for this Submitted allocation.
+    await expectGuarded400(
+      page,
+      `/allocation/user_requests/edit_change_request/${managed.id}/`,
+      'Allocation cannot be amended in its current state',
+    );
 
     // The admin-only requests/* URLs stay denied, with Horizon's
     // NotAuthorized page.

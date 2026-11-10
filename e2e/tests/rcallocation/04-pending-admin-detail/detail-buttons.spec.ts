@@ -386,17 +386,11 @@ test.describe('Admin detail buttons and blocks', () => {
     expect((await allocations.get(x.id)).status).toBe('J');
     expect((await allocations.get(e.id)).status).toBe('R');
 
-    // J follows X: can_approve_change and can_reject_change.
+    // J: no approve or decline buttons; the change waits for the user.
+    // Before the allocation status fix (NECTAR-17320) J offered the X
+    // buttons, although J records are not on the Pending list.
     await gotoDetail(page, x.id);
-    expect((await detailButtons(page)).map((b) => b.text)).toEqual(X_BUTTONS);
-    await expect(page.getByRole('link', { name: 'Approve changes' })).toHaveAttribute(
-      'href',
-      `/allocation/requests/approve_change_request/${x.id}/`,
-    );
-    await expect(page.getByRole('link', { name: 'Decline changes' })).toHaveAttribute(
-      'href',
-      `/allocation/requests/reject_request/${x.id}/`,
-    );
+    expect((await detailButtons(page)).map((b) => b.text)).toEqual(A_BUTTONS);
     await expect(detail(page).locator('table').nth(1).locator('tr').first())
       .toContainText('Update declined');
 

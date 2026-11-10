@@ -332,9 +332,26 @@ class BaseAllocationView(
         # Uses of this view needs alloc admin access ... unless overridden
         return utils.user_is_allocation_admin(self.request.user)
 
+    def check_state(self, allocation):
+        """Return a message if this view must not act on the allocation
+        in its current state, or None if it may.  Views override this
+        to match the action buttons offered for the allocation.
+        """
+        return None
+
+    def _state_error(self):
+        message = self.object and self.check_state(self.object)
+        if message:
+            return http.HttpResponseBadRequest(message)
+        return None
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         approving = self.editor_attr == 'approver_email'
+
+        error = self._state_error()
+        if error:
+            return error
 
         if self.object:
             # Ensure old projects have to set an investigator
@@ -398,6 +415,11 @@ class BaseAllocationView(
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         approving = self.editor_attr == 'approver_email'
+
+        # Check the stored state before the form can modify self.object
+        error = self._state_error()
+        if error:
+            return error
 
         # Create / assemble the form and non-quota formsets.  Note that
         # form instantiation may modify the state of self.object; e.g.

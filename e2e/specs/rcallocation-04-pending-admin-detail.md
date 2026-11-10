@@ -112,7 +112,7 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
 
 **Steps:**
   1. [derived from code; allocation/tables.py get_highlight_attribute] Review the class rules. Unparenthesised cells need an approver whose site matches a pending request; not reproduced live.
-    - expect: Value starting with '(' gets no class (attribute dict empty). Live: all cells have class 'sortable normal_column' only
+    - expect: Value starting with '(' gets no class (attribute dict empty). Live: all cells have only the classes 'sortable' and 'normal_column', in either order (Horizon builds cell classes from a set, so the order varies between server processes)
     - expect: 'Danger' maps to pending_warn_level_4
     - expect: 'Stopped', 'Archived', 'Expired', 'Overdue', 'Unknown' map to pending_warn_level_3
     - expect: 'Warning' maps to pending_warn_level_2
@@ -323,7 +323,7 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
 **Steps:**
   1. [derived from code, not verified live; no N record exists and J records (132752, 22462, 1516) were not opened in this run] Open /allocation/requests/view/132752/ (J) when ready. For N, a new record would be needed; do not create one in this suite.
     - expect: N follows E: 'Review & Approve' and 'Decline with Reason' (can_be_approved, can_be_rejected)
-    - expect: J follows X: 'Approve changes' and 'Decline changes' (can_approve_change, can_reject_change)
+    - expect: J shows no approve or decline buttons, the same as R (since NECTAR-17320, can_approve_change and can_reject_change are true only for X; before it J showed the X buttons)
     - expect: The exact gating comes from AllocationRequest.can_be_approved, can_be_rejected, can_approve_change and can_reject_change in models.py; confirm the J result on the first run and record it. 'View History' and 'Related tickets' always appear
 
 #### 1.22. 4.22 Missing id on admin detail returns 404 and nothing is submitted

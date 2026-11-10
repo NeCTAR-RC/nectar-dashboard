@@ -1,0 +1,17 @@
+---
+fixes:
+  - |
+    The allocation request edit, amend, approve, decline and admin edit
+    views now check the allocation's status, and return HTTP 400 when the
+    action does not apply to it. Each view accepts the statuses for which
+    its action is offered in the dashboard. For example, the user edit page
+    no longer opens for approved allocations, and the amend page no longer
+    opens for new or submitted requests. Admins can no longer open the
+    decline form for an approved allocation. The admin edit view no
+    longer fails with an HTTP 500 error for approved, declined or deleted
+    allocations.
+  - |
+    "Approve changes" and "Decline changes" are no longer offered for an
+    allocation whose change request has been declined (status "Update
+    declined"), and the approve view now refuses it. The declined change
+    waits for the user to edit and resubmit it, as before.

@@ -3,9 +3,12 @@ import {
   AMEND_TITLE,
   EDIT_TITLE,
   acceptDialogsOnce,
+  AMEND_STATE_TEXT,
   amendUrl,
+  EDIT_STATE_TEXT,
   editUrl,
   expectForbidden,
+  expectGuarded400,
   expectNotFound,
   open,
   viewUrl,
@@ -43,26 +46,26 @@ test.describe('My Requests URL guards', () => {
     }
   });
 
-  test('1.21 (5.2) Edit URLs do not check the status; a missing id is 404', async ({
+  test('1.21 (5.2) Edit URLs check the status; a missing id is 404', async ({
     page,
     allocations,
   }) => {
     const a = await allocations.createApproved();
     const e = await allocations.create();
 
-    // The list offers only the action matching the status, but both views
-    // accept any status.
-    const cases: [string, string][] = [
-      [editUrl(a.id), EDIT_TITLE],
-      [amendUrl(e.id), AMEND_TITLE],
+    // Each view opens only for the status whose list action links to it.
+    // Before the allocation status fix (NECTAR-17320) both views accepted
+    // any status.
+    for (const [url, title] of [
       [editUrl(e.id), EDIT_TITLE],
       [amendUrl(a.id), AMEND_TITLE],
-    ];
-    for (const [url, title] of cases) {
+    ]) {
       const response = await open(page, url);
       expect(response.status(), url).toBe(200);
       await expect(page).toHaveTitle(title);
     }
+    await expectGuarded400(page, editUrl(a.id), EDIT_STATE_TEXT);
+    await expectGuarded400(page, amendUrl(e.id), AMEND_STATE_TEXT);
 
     await expectNotFound(page, viewUrl(99999999));
   });

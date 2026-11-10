@@ -764,7 +764,14 @@ class AllocationRequest(models.Model):
         return self.is_active() and not self.is_history() and self.managed
 
     def can_be_edited(self):
-        return not self.is_active() and not self.is_history() and self.managed
+        """Return True if an approver can edit the request; i.e. a
+        request or amendment that has not been decided on.
+        """
+        return (
+            (self.is_requested() or self.amendment_requested())
+            and not self.is_history()
+            and self.managed
+        )
 
     def can_user_edit(self):
         return (
@@ -790,7 +797,13 @@ class AllocationRequest(models.Model):
         return self.can_approve_change()
 
     def can_approve_change(self):
-        return self.amendment_requested() and not self.is_history()
+        """Return True if there is a pending change request; a declined
+        change waits for the user to edit or resubmit it.
+        """
+        return (
+            self.status.upper() == self.UPDATE_PENDING
+            and not self.is_history()
+        )
 
     def can_have_publications(self):
         return self.status.upper() not in (

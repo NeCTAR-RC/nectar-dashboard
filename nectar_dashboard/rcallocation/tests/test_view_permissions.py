@@ -37,6 +37,23 @@ EDIT_URLS = (
     'horizon:allocation:user_requests:edit_change_request',
 )
 
+# A status in which each user edit view will act on an allocation
+EDIT_URL_STATUS = {
+    'horizon:allocation:user_requests:edit_request': (
+        models.AllocationRequest.SUBMITTED
+    ),
+    'horizon:allocation:user_requests:edit_change_request': (
+        models.AllocationRequest.APPROVED
+    ),
+}
+
+
+def get_in_editable_state(client, name, allocation):
+    """GET a user edit view with the allocation in a state it accepts."""
+    allocation.status = EDIT_URL_STATUS[name]
+    allocation.save()
+    return client.get(reverse(name, args=(allocation.id,)))
+
 
 def mock_get_user(self):
     return mock.Mock()
@@ -70,6 +87,7 @@ class DispatchOrderTestCase(base.BaseTestCase):
             request_views.AllocationCreateView,
             ua_views.BaseAllocationUpdateView,
             ua_views.RestrictedAllocationsEditView,
+            ua_views.RestrictedAllocationsAmendView,
             ua_views.RestrictedAllocationsDetailsView,
             ua_views.UserAllocationsListView,
         ):
@@ -136,8 +154,8 @@ class UserEditPermissionTestCase(base.BaseTestCase):
         self.allocation.save()
         with mock_manuka([]) as manuka:
             for name in EDIT_URLS:
-                response = self.client.get(
-                    reverse(name, args=(self.allocation.id,))
+                response = get_in_editable_state(
+                    self.client, name, self.allocation
                 )
                 self.assertStatusCode(response, 200)
             # The contact check short-circuits the TenantManager lookup
@@ -146,8 +164,8 @@ class UserEditPermissionTestCase(base.BaseTestCase):
     def test_tenant_manager_allowed(self):
         with mock_manuka([MANAGED_PROJECT_ID]):
             for name in EDIT_URLS:
-                response = self.client.get(
-                    reverse(name, args=(self.allocation.id,))
+                response = get_in_editable_state(
+                    self.client, name, self.allocation
                 )
                 self.assertStatusCode(response, 200)
 
@@ -199,9 +217,7 @@ class AdminUserEditPermissionTestCase(base.BaseApproverTestCase):
         )
         with mock_manuka([]) as manuka:
             for name in EDIT_URLS:
-                response = self.client.get(
-                    reverse(name, args=(allocation.id,))
-                )
+                response = get_in_editable_state(self.client, name, allocation)
                 self.assertStatusCode(response, 200)
             manuka.assert_not_called()
 

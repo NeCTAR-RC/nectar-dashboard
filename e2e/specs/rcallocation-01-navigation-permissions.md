@@ -32,9 +32,9 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
 5. /allocation/request/ returns 404. The New Request panel is served at /allocation/ and the sidebar link is /allocation/.
 6. Urgency values are the words "(Overdue)" and "(Danger)", all in parentheses, with no pending_warn_level cell class. All 31 pending rows were parenthesised. pending_warn_level_0 to 4 were not observed.
 7. The Pending "Edit request" row action appears on both E and X rows. No row lacked it.
-8. requests/edit_request/<id>/ for an Approved record (152179, 146946) returns HTTP 500 (TypeError "'NoneType' object is not callable"). It returns 200 for E record 137133. Record as current behaviour and flag to the developer.
+8. ~~requests/edit_request/<id>/ for an Approved record (152179, 146946) returns HTTP 500 (TypeError "'NoneType' object is not callable").~~ **Fixed by the allocation status fix (NECTAR-17320); not yet verified live.** It now returns HTTP 400 'Allocation cannot be edited in its current state'. It returns 200 for E record 137133. Scenario 1.15 is updated.
 9. ~~user_requests/edit_request/146946/ and edit_change_request/146946/ return 200 for a history record, although user_requests/view/146946/ returns 403.~~ **Fixed, deployed to dashboard-s and verified live on 2026-10-30.** Cause: `BaseAllocationView` listed `UpdateView` before `UserPassesTestMixin`, so `test_func()` never ran for any of its subclasses. The fix puts the mixin first (see `releasenotes/notes/allocation-view-access-checks-*.yaml`). Expected after the fix: these URLs return 403 for history records for every user, and 403 for any allocation where the user is not the contact, a TenantManager of its project or an allocation admin. Scenarios 1.16, 1.20 and 1.21 are updated accordingly.
-10. reject_request on an Approved record (152179) returns 200 (only R/J are guarded). approve_request and approve_change_request on Approved record 152179 return 400 "Allocation already approved".
+10. ~~reject_request on an Approved record (152179) returns 200 (only R/J are guarded).~~ **Fixed by the allocation status fix (NECTAR-17320); not yet verified live.** It now returns HTTP 400 'Allocation is not awaiting approval'. approve_request and approve_change_request on Approved record 152179 return 400 "Allocation already approved".
 11. The Pending name filter is client-side (typing filters rows in place, no reload) and matches text in any column (for example "Intersect" matches the site column).
 12. The reject page title is "Decline or Request Amendment from User", while the code page_title says "Decline or Request Changes from User".
 
@@ -113,7 +113,7 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
 **Steps:**
   1. [verified live] Read the Urgency cell of every row.
     - expect: All E rows show '(Overdue)'; all X rows show '(Danger)' (31 of 31 parenthesised)
-    - expect: Cells have no pending_warn_level_N class (class attribute is 'sortable normal_column')
+    - expect: Cells have no pending_warn_level_N class (class attribute holds only 'sortable' and 'normal_column', in either order: Horizon builds cell classes from a set, so the order varies between server processes)
     - expect: pending_warn_level_0 to 4 and unparenthesised values were NOT observed; covering them needs a record relevant to the approver's site (none found)
 
 #### 1.7. Pending Requests name filter is client-side and matches any column
@@ -195,9 +195,10 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
     - expect: 200; title 'Allocation Requests - Nectar Dashboard'; heading 'History'
     - expect: Columns: Project name, Approver, Bundle, SUs, Cores, RAM, Object Storage, Volume Storage, Status, Modification time
     - expect: 135408 history has 8 rows; the first is 135408 itself; statuses include 'Update requested' and 'Approved'; Project name links go to /allocation/requests/view/<id>/
-  3. GET /allocation/requests/edit_notes/152179/ and /allocation/requests/reject_request/152179/ (do not submit).
+  3. GET /allocation/requests/edit_notes/152179/ and /allocation/requests/reject_request/137133/ (do not submit).
     - expect: edit_notes: 200, title 'Edit allocation Admin notes - Nectar Dashboard'
     - expect: reject_request: 200, title 'Decline or Request Amendment from User - Nectar Dashboard'
+    - note: This step used reject_request/152179/ (Approved) until NECTAR-17320, which returns 400 for it (see 1.14 step 4)
   4. GET /allocation/requests/approve_request/137133/ and /allocation/requests/approve_change_request/135408/ (E and X records).
     - expect: 200, title 'Approve Request - Nectar Dashboard'
   5. GET /allocation/requests/edit_request/137133/ (E record).
@@ -215,15 +216,15 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
   3. GET /allocation/requests/reject_request/132752/ (status J) and /allocation/requests/reject_request/63117/ (status R history record).
     - expect: HTTP 400, body 'Allocation already declined'
   4. GET /allocation/requests/reject_request/152179/ (Approved record).
-    - expect: HTTP 200 (not guarded for A), title 'Decline or Request Amendment from User - Nectar Dashboard'
+    - expect: HTTP 400, body 'Allocation is not awaiting approval' (guarded since NECTAR-17320; before it, HTTP 200 with the decline form)
 
-#### 1.15. Admin edit_request on an Approved record currently returns 500
+#### 1.15. Admin edit_request on an Approved record returns 400
 
 **File:** `tests/rcallocation/01-navigation-permissions/admin-edit-approved-500.spec.ts`
 
 **Steps:**
   1. [verified live] GET /allocation/requests/edit_request/152179/ and /allocation/requests/edit_request/146946/.
-    - expect: HTTP 500; title 'TypeError at /allocation/requests/edit_request/<id>/'; exception value "'NoneType' object is not callable". Current baseline, which looks like a pre-existing bug. The 'Edit request' row action is not offered for Approved rows, so it is unreachable from the UI. Flag any change after the refactor.
+    - expect: HTTP 400; body 'Allocation cannot be edited in its current state'. Before NECTAR-17320 this was HTTP 500 (TypeError "'NoneType' object is not callable"). The 'Edit request' row action is not offered for Approved rows.
 
 #### 1.16. User view denied for a history record (403 look)
 
@@ -294,7 +295,7 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
     - expect: History record: 403 Forbidden
   3. [after permission fix, derived from code and unit tests; not yet verified live] GET user_requests/edit_request/<id>/ and edit_change_request/<id>/ for another user's allocation (user is not contact or TenantManager), then POST a valid form to each.
     - expect: GET returns 403 'Forbidden'; POST returns 403 and creates no history record
-    - expect: For the user's own (contact) allocation, both URLs return 200
+    - expect: For the user's own (contact) Submitted allocation, edit_request returns 200 and edit_change_request returns HTTP 400 'Allocation cannot be amended in its current state' (the amend view only opens for A, X and J since NECTAR-17320; before it, 200)
     - note: Before the fix, any logged-in user got 200 on GET and could save via POST (unit test confirmed a history record was created).
 
 #### 1.22. TenantManager access
@@ -303,4 +304,5 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
 
 **Steps:**
   1. [derived from code, not verified live] As a TenantManager of a project whose allocation has a different contact, open My Requests, then user_requests/view/<id>/, edit_request/<id>/ and edit_change_request/<id>/.
-    - expect: Allocation appears in My Requests; view and edit pages return 200 (check_tm_or_alloc_admin uses manuka users.projects(user.id, 'TenantManager')). Admin-only requests/* URLs remain denied.
+    - expect: Allocation appears in My Requests; view and edit_request return 200 (check_tm_or_alloc_admin uses manuka users.projects(user.id, 'TenantManager')). Admin-only requests/* URLs remain denied.
+    - expect: edit_change_request returns HTTP 400 'Allocation cannot be amended in its current state' for this Submitted allocation (since NECTAR-17320; before it, 200)

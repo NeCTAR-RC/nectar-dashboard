@@ -30,7 +30,7 @@ CHANGES MADE TO ALLOCATIONS DURING EXPLORATION
 OBSERVED DISCREPANCIES AND ODDITIES (live results are the baseline)
 1. The page title of the amend form is "Request Allocation Extension" but its visible h3 is "Edit Allocation Request: About the Project" (same h3 as the edit form). The amend breadcrumb ends in "None".
 2. ~~user_requests/edit_request/<history id>/ and edit_change_request/<history id>/ return 200 while user_requests/view/<history id>/ returns 403.~~ **Fixed, deployed to dashboard-s and verified live on 2026-10-30:** the views' access check now runs, so both URLs return 403 for history records. See scenario 1.20 and suite 01 discrepancy 9.
-3. user_requests/edit_request/152179/ (status A) returns 200, and edit_change_request/152182/ and 152181/ (status E) return 200. The view does not guard by status, even though the list only offers the matching action.
+3. ~~user_requests/edit_request/152179/ (status A) returns 200, and edit_change_request/152182/ and 152181/ (status E) return 200. The view does not guard by status, even though the list only offers the matching action.~~ **Fixed by the allocation status fix (NECTAR-17320); not yet verified live.** edit_request opens only for N, E and R; edit_change_request only for A, X and J. Other statuses return HTTP 400 ('Allocation request cannot be edited in its current state' or 'Allocation cannot be amended in its current state'). Scenario 5.2 and the non-admin edit test in `nonadmin.spec.ts` are updated.
 4. The amend form (152179) shows "Grant Type", "Grant Subtype" and "Total funding (AUD)" required errors in panel 7 on any invalid submit, because the grant row has years prefilled (2026, 2027) but no type or amount.
 5. Time zone rendering is inconsistent within the session: the 152182 history showed "3:49 a.m." on one run and "2:49 p.m." on a later load of the same record (about an 11 hour offset), and the detail page showed 6:01 a.m. for 152179 where history showed 4:01 p.m. Assert dates only, or compare times within a single page.
 6. The detail page for 152182 shows no success message after an edit. The redirect target list has an empty hidden "messages" container.
@@ -315,12 +315,14 @@ NOTES FOR TEST GENERATION (accordion panels, hangs)
     - expect: [verified live after permission fix] edit_change_request/<id>/ returns 403 with title '- Forbidden - Nectar Dashboard'
     - note: Before the fix (verified live 2026-10-30), edit_request returned 200 ('Edit Allocation Request - Nectar Dashboard') and edit_change_request returned 200 ('Request Allocation Extension - Nectar Dashboard').
 
-#### 1.21. 5.2 Status-agnostic edit URLs and missing id
+#### 1.21. 5.2 Status-guarded edit URLs and missing id
 
-**File:** `tests/rcallocation/03-my-requests/edit-url-guards.spec.ts`
+**File:** `tests/rcallocation/03-my-requests/urls.spec.ts`
 
 **Steps:**
-  1. GET (no submit) user_requests/edit_request/152179/, edit_change_request/152182/, edit_change_request/152181/ and edit_request/152181/. [verified live]
-    - expect: All four return 200 with titles 'Edit Allocation Request - Nectar Dashboard' (edit_request) or 'Request Allocation Extension - Nectar Dashboard' (edit_change_request). The views do not enforce the status that the list uses to choose between them
+  1. GET (no submit) user_requests/edit_request/<E id>/ and edit_change_request/<A id>/. [derived from code and unit tests; not yet verified live]
+    - expect: Both return 200 with titles 'Edit Allocation Request - Nectar Dashboard' (edit_request) or 'Request Allocation Extension - Nectar Dashboard' (edit_change_request)
+  2. GET (no submit) user_requests/edit_request/<A id>/ and edit_change_request/<E id>/. [derived from code and unit tests; not yet verified live]
+    - expect: HTTP 400 with the plain-text body 'Allocation request cannot be edited in its current state' (edit_request) or 'Allocation cannot be amended in its current state' (edit_change_request). Before NECTAR-17320 both returned 200: the views did not enforce the status that the list uses to choose between them
   2. GET /allocation/user_requests/view/99999999/. [verified live]
     - expect: HTTP 404, title 'Page not found at /allocation/user_requests/view/99999999/', heading 'Page not found (404)' (Django debug page on dev)

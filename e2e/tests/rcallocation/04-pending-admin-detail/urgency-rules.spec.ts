@@ -117,18 +117,22 @@ test.describe('Urgency rules', () => {
     await gotoPending(page);
 
     // Values starting with '(' get no extra attributes: only the column's
-    // own classes.
+    // own classes.  Horizon builds cell classes from a set, so their order
+    // varies between server processes.
+    const columnClasses = ['normal_column', 'sortable'];
     const cells = page.locator('#datatableoptions tbody td:nth-child(9)');
     const classes = await cells.evaluateAll((tds) =>
       tds.map((td) => td.className),
     );
     expect(classes.length).toBeGreaterThan(0);
     for (const c of classes) {
-      expect(c).toBe('sortable normal_column');
+      expect(c.split(' ').sort()).toEqual(columnClasses);
     }
-    await expect(pendingRow(page, e.id).locator('td').nth(8)).toHaveClass(
-      'sortable normal_column',
-    );
+    const own = await pendingRow(page, e.id)
+      .locator('td')
+      .nth(8)
+      .evaluate((td) => td.className);
+    expect(own.split(' ').sort()).toEqual(columnClasses);
   });
 
   test('4.6 Urgency cell CSS class: unparenthesised mapping', async ({ page }) => {

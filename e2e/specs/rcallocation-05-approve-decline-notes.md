@@ -37,7 +37,7 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
 7. Approve changes: the page at approve_change_request/152181/ posts to action '/allocation/requests/approve_request/152181/'. The warning re-render therefore appears at the approve_request URL, not approve_change_request. After 'Approve ignoring warnings' the redirect is to /allocation/requests/.
 8. The amend form (edit_change_request) submitted with NO required-field errors and NO warnings on 152181, so the 'fill required past-year usage and grant fields' step was not needed. The 'Attention Required' modal does auto-open. Submitting while the modal is closed redirects straight to /allocation/user_requests/.
 9. After an amendment (X) the history row shows deltas of 0 in all five numeric columns, because nothing changed in the request.
-10. A J record (Update declined) still shows 'Approve changes' and 'Decline changes' on the admin detail page, but is not listed on the Pending list. GET approve_change_request/152181/ on the J record returned HTTP 200 (a form), with no guard.
+10. ~~A J record (Update declined) still shows 'Approve changes' and 'Decline changes' on the admin detail page, but is not listed on the Pending list. GET approve_change_request/152181/ on the J record returned HTTP 200 (a form), with no guard.~~ **Fixed by the allocation status fix (NECTAR-17320); not yet verified live.** A J record shows neither button, and approve_request and approve_change_request return HTTP 400 'Allocation is not awaiting approval'. Scenarios 1.14 and 1.15 are updated.
 11. After resubmit (R to E), 152182 keeps the previous approver sorrison@gmail.com in the Approver column and the user detail still renders a 'Reviewer Comment' heading (see 5.6).
 12. The My Requests row for an R record still offers 'Edit request', as expected.
 13. A user-edit submit that returns warnings does NOT change the URL (POST re-render at the same URL) and creates no history row. Only the 'ignoring warnings' submit saves.
@@ -254,12 +254,12 @@ TEST DATA
   3. Fill 'Reason' with 'PW decline changes reason G1' and click 'Decline Request'.
     - expect: Redirect to /allocation/requests/; 152181 not on the Pending list
     - expect: Admin detail: State 'Update declined' (letter J); Approver sorrison@gmail.com; Last updated 'Oct. 30, 2026, 4:22 a.m.'; h3 includes 'Requested Resources', 'Current Resources', 'Reviewer Comment' (text 'PW decline changes reason G1'), 'Allocation admin notes'
-    - expect: Admin detail buttons: 'Add/edit admin notes', 'Approve changes', 'Decline changes', 'View History', 'Related tickets' (the J record still offers both change buttons)
+    - expect: Admin detail buttons: 'Add/edit admin notes', 'View History', 'Related tickets' (no change buttons for J since NECTAR-17320)
     - expect: My Requests row: State 'J', Actions primary link 'Edit amend/extend request' (/allocation/user_requests/edit_change_request/152181/)
     - expect: User detail: State 'Update declined', Reviewer Comment 'PW decline changes reason G1', button 'Edit change request' (same href), no 'Request amendment'
     - expect: One new history record: 152191 (Update requested, 4:22 a.m., 0/0/0/0/0)
 
-#### 1.15. 5.15 Decline guard on a J record, and approve_change GET on J
+#### 1.15. 5.15 Decline and approve guards on a J record
 
 **File:** `tests/rcallocation/05-approve-decline-notes/j-state-guards.spec.ts`
 
@@ -267,7 +267,7 @@ TEST DATA
   1. [verified live] With 152181 in status J, GET /allocation/requests/reject_request/152181/.
     - expect: HTTP 400; body 'Allocation already declined'
   2. [verified live] With 152181 in status J, GET /allocation/requests/approve_change_request/152181/ (read-only GET, do not submit).
-    - expect: HTTP 200 with the approve form (no 400 guard). Record as existing behaviour; do not submit it
+    - expect: HTTP 400; body 'Allocation is not awaiting approval' (guarded since NECTAR-17320; before it, HTTP 200 with the approve form). approve_request/152181/ returns the same
 
 #### 1.16. 5.16 Final history tables for 152181 and 152182
 

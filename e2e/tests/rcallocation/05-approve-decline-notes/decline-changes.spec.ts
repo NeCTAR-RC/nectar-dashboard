@@ -1,5 +1,6 @@
 import { test, expect } from '../../../support/fixtures';
 import {
+  A_BUTTONS,
   DECLINE_TITLE,
   X_BUTTONS,
   ZERO_DELTAS,
@@ -67,7 +68,8 @@ test.describe('Decline changes', () => {
     expect(j.status_explanation).toBe(REASON);
     expect(j.approver_email).toBe(admin);
 
-    // Admin detail: the J record still offers both change buttons.
+    // Admin detail: the J record offers no change buttons.  Before the
+    // allocation status fix (NECTAR-17320) it still offered both.
     await gotoDetail(page, x.id);
     await expect(stateRow(page)).toHaveText(/^\s*State\s+Update declined\s*$/);
     expect((await tableRows(page, 1))[1]).toBe(`Approver ${admin}`);
@@ -78,7 +80,7 @@ test.describe('Decline changes', () => {
     expect(h3.slice(0, 2)).toEqual(['Requested Resources', 'Current Resources']);
     expect(h3.slice(-2)).toEqual(['Reviewer Comment', 'Allocation admin notes']);
     await expect(afterHeading(page, 'Reviewer Comment')).toHaveText(REASON);
-    expect(await detailButtonTexts(page)).toEqual(X_BUTTONS);
+    expect(await detailButtonTexts(page)).toEqual(A_BUTTONS);
 
     // My Requests and the user detail page.
     const amendUrl = `/allocation/user_requests/edit_change_request/${x.id}/`;

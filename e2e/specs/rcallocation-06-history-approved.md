@@ -17,7 +17,7 @@ OBSERVED DISCREPANCIES FROM THE BRIEF (live results are the baseline)
 1. Approved list counts are 1576 A, 9 X and 16 J (1601 rows). The brief's earlier counts were 1576 A, 9 X and 15 J; the extra J row is pwtest-valid (152181).
 2. The Name cell is NOT a single string. It renders the project_name as the link text, then a line break, then the project_description in a <small class="muted"> element. Cell textContent therefore reads like 'pwtest-validPW validation test' (no separator). Ordering is by project_name only, not by the full cell text.
 3. The brief expected the base columns without detail. Actual headers: State, Name, Current Associated Site, National, Approver, Contact, Last Updated, Expiry Date, Actions. The State column shows the status letter (A, X or J) in a <strong> inside <p class="alloc-icon alloc-icon-ok" title="Approved">; the title attribute is the status display name.
-4. The approved_requests/edit_request/<id>/ GET for an A record (98355) returns HTTP 500, 'TypeError: NoneType object is not callable' raised in django/views/generic/edit.py get_form from nectar_dashboard.rcallocation.allocation.views.AllocationUpdateView. This matches suite 01's finding for requests/edit_request. It is existing behaviour; the refactor should preserve it, or the change must be deliberate.
+4. ~~The approved_requests/edit_request/<id>/ GET for an A record (98355) returns HTTP 500, 'TypeError: NoneType object is not callable' raised in django/views/generic/edit.py get_form from nectar_dashboard.rcallocation.allocation.views.AllocationUpdateView.~~ **Fixed by the allocation status fix (NECTAR-17320); not yet verified live.** It now returns HTTP 400 'Allocation cannot be edited in its current state', as suite 01 records for requests/edit_request.
 5. The NameFilter matches the project description as well as the project name (case-insensitive). 'validation' matched pwtest-valid, whose project_name does not contain it.
 6. Approved list ordering by project_name cannot be tested for case sensitivity on this data: every project_name is lowercase and no name starts with an upper-case letter, digit or symbol. Ties on equal names (1493 duplicates, for example many names of 'a') are in an undetermined order, so assert order by project_name only.
 7. The History table has a heading 'History' (h1), no per-row actions and no filter. The history of a non-existent ID (999999999) returns HTTP 200 with 'No items to display.' rather than a 404.
@@ -220,13 +220,11 @@ TEST DATA (live)
   5. [verified live] Clear the filter input.
     - expect: All 1601 rows are visible again in the original order; footer 'Displaying 1601 items'; first visible name 'aEnhanced mission-critical synergy'
 
-#### 1.10. 6.10 approved_requests/edit_request GET for an A record (existing 500)
+#### 1.10. 6.10 approved_requests/edit_request GET for an A record (400)
 
 **File:** `tests/rcallocation/06-history-approved/approved-edit-request.spec.ts`
 
 **Steps:**
   1. [verified live] Do not submit anything. GET /allocation/approved_requests/edit_request/98355/ with fetch (credentials same-origin, 20 s abort).
-    - expect: HTTP 500; document title 'TypeError at /allocation/approved_requests/edit_request/98355/'
-    - expect: The Django debug page names the exception 'TypeError: 'NoneType' object is not callable', raised in django/views/generic/edit.py, line 39, in get_form, for nectar_dashboard.rcallocation.allocation.views.AllocationUpdateView (Django 4.2.19, Python 3.12.3)
-    - expect: This is the same failure suite 01 recorded for /allocation/requests/edit_request/<id>/ on A records. The approved list does not offer an Edit action, so no UI link leads here
-    - expect: The refactor must keep this unchanged, or the change must be agreed and this scenario updated
+    - expect: HTTP 400; plain-text body 'Allocation cannot be edited in its current state' (plus a trailing HTML comment token)
+    - expect: Before NECTAR-17320 this was HTTP 500, 'TypeError: 'NoneType' object is not callable' from AllocationUpdateView.get_form. The approved list does not offer an Edit action, so no UI link leads here

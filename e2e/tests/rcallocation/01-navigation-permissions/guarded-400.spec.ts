@@ -4,7 +4,6 @@ import {
   acceptDialogsOnce,
   decline,
   expectGuarded400,
-  open,
 } from './helpers';
 
 test.beforeEach(({ page }) => acceptDialogsOnce(page));
@@ -40,12 +39,10 @@ test.describe('Navigation & permissions: guarded pages', () => {
         `/allocation/requests/reject_request/${id}/`, DECLINED);
     }
 
-    // Step 4: declining an Approved allocation is not guarded.
-    const url = `/allocation/requests/reject_request/${approved.id}/`;
-    const response = await open(page, url);
-    expect(response.status()).toBe(200);
-    await expect(page).toHaveTitle(
-      'Decline or Request Amendment from User - Nectar Dashboard',
-    );
+    // Step 4: declining an Approved allocation is guarded too since the
+    // allocation status fix (NECTAR-17320); before it the form opened.
+    await expectGuarded400(page,
+      `/allocation/requests/reject_request/${approved.id}/`,
+      'Allocation is not awaiting approval');
   });
 });

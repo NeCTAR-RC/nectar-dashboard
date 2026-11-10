@@ -66,6 +66,26 @@ export async function expectForbidden(page: Page, url: string) {
   await expect(page.getByText(FORBIDDEN_TEXT)).toBeVisible();
 }
 
+export const EDIT_STATE_TEXT =
+  'Allocation request cannot be edited in its current state';
+export const AMEND_STATE_TEXT =
+  'Allocation cannot be amended in its current state';
+
+// A view refusing an allocation in the wrong status: HTTP 400 with a
+// plain-text message (NECTAR-17320).
+export async function expectGuarded400(
+  page: Page,
+  url: string,
+  message: string,
+) {
+  const response = await open(page, url);
+  expect(response.status(), url).toBe(400);
+  expect(await response.text()).toMatch(
+    new RegExp(`^${message}<!-- \\S+ -->$`),
+  );
+  await expect(page.locator('#sidebar')).toHaveCount(0);
+}
+
 // The Django debug 404 page (the dev deployment runs with DEBUG on).
 export async function expectNotFound(page: Page, url: string) {
   const response = await open(page, url);

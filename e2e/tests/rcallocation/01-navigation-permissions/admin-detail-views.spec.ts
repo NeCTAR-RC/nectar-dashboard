@@ -76,7 +76,10 @@ test.describe('Navigation & permissions: admin views', () => {
     // Step 3: notes and decline pages (GET only, never submitted).
     await expectPage(page, '/allocation/requests/edit_notes/152179/',
       'Edit allocation Admin notes');
-    await expectPage(page, '/allocation/requests/reject_request/152179/',
+    // Since the allocation status fix (NECTAR-17320) the decline page only
+    // opens for requests awaiting approval, so use the Submitted 137133
+    // rather than the Approved 152179 (guarded-400.spec.ts covers that).
+    await expectPage(page, '/allocation/requests/reject_request/137133/',
       'Decline or Request Amendment from User');
 
     // Steps 4 and 5: approve and edit pages for Submitted and Update

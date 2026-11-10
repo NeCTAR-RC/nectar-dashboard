@@ -21,6 +21,11 @@ class AllocationUpdateView(views.BaseAllocationView):
     success_url = "../../"
     page_title = 'Update'
 
+    def check_state(self, allocation):
+        if not allocation.can_be_edited():
+            return 'Allocation cannot be edited in its current state'
+        return None
+
     def get_form_class(self):
         allocation = self.get_object()
         if allocation.is_requested():
@@ -65,11 +70,13 @@ class AllocationApproveView(views.BaseAllocationView):
     formset_publication_class = None
     formset_grant_class = None
 
-    def get(self, request, *args, **kwargs):
-        allocation = self.get_object()
+    def check_state(self, allocation):
+        # One view serves both "Review & Approve" and "Approve changes"
+        if allocation.can_be_approved() or allocation.can_approve_change():
+            return None
         if allocation.is_active():
-            return http.HttpResponseBadRequest('Allocation already approved')
-        return super().get(request, *args, **kwargs)
+            return 'Allocation already approved'
+        return 'Allocation is not awaiting approval'
 
 
 class AllocationRejectView(views.BaseAllocationView):
@@ -86,8 +93,10 @@ class AllocationRejectView(views.BaseAllocationView):
     formset_publication_class = None
     formset_grant_class = None
 
-    def get(self, request, *args, **kwargs):
-        allocation = self.get_object()
+    def check_state(self, allocation):
+        # One view serves both "Decline with Reason" and "Decline changes"
+        if allocation.can_be_rejected() or allocation.can_reject_change():
+            return None
         if allocation.is_rejected():
-            return http.HttpResponseBadRequest('Allocation already declined')
-        return super().get(request, *args, **kwargs)
+            return 'Allocation already declined'
+        return 'Allocation is not awaiting approval'

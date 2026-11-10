@@ -17,11 +17,12 @@ test.describe('Navigation & permissions: Pending Requests', () => {
 
     // The test user is not an approver for any site these allocations
     // relate to, so every value is parenthesised ('not relevant') and no
-    // cell gets a pending_warn_level_N class.
+    // cell gets a pending_warn_level_N class.  Horizon builds cell classes
+    // from a set, so their order varies between server processes.
     for (const r of rows) {
       expect(r.cells[URGENCY], `row ${r.id}`).toMatch(/^\(\w+\)$/);
-      expect(r.cellClasses[URGENCY], `row ${r.id}`).toBe(
-        'sortable normal_column',
+      expect(r.cellClasses[URGENCY].split(' ').sort(), `row ${r.id}`).toEqual(
+        ['normal_column', 'sortable'],
       );
     }
     await expect(

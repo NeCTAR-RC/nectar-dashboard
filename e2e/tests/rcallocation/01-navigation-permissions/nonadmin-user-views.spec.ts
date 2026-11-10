@@ -5,6 +5,7 @@ import {
   addInvestigator,
   clickAndWaitForURL,
   expectForbidden,
+  expectGuarded400,
   open,
   readTable,
 } from './helpers';
@@ -73,19 +74,23 @@ test.describe('Navigation & permissions: regular user views', () => {
       `/allocation/user_requests/edit_change_request/${OTHER_ID}/`,
     );
 
-    // The user's own allocation opens in both edit views.  The e2e user
-    // has an ORCID linked, so the 'You must connect to ORCID' modal, which
-    // is always in the page, stays closed.
-    for (const [view, title] of [
-      ['edit_change_request', 'Request Allocation Extension - Nectar Dashboard'],
-      ['edit_request', 'Edit Allocation Request - Nectar Dashboard'],
-    ]) {
-      const r = await open(page, `/allocation/user_requests/${view}/${own.id}/`);
-      expect(r.status(), view).toBe(200);
-      await expect(page).toHaveTitle(title);
-      await expect(page.locator('#orcid_modal')).toBeAttached();
-      await expect(page.locator('#orcid_modal')).toBeHidden();
-    }
+    // Since the allocation status fix (NECTAR-17320) the amend view only
+    // opens for A, X and J, matching the list's actions; before it this
+    // returned 200.
+    await expectGuarded400(
+      page,
+      `/allocation/user_requests/edit_change_request/${own.id}/`,
+      'Allocation cannot be amended in its current state',
+    );
+
+    // The user's own Submitted allocation opens in the edit view.  The e2e
+    // user has an ORCID linked, so the 'You must connect to ORCID' modal,
+    // which is always in the page, stays closed.  Step 4 uses this page.
+    const r = await open(page, `/allocation/user_requests/edit_request/${own.id}/`);
+    expect(r.status(), 'edit_request').toBe(200);
+    await expect(page).toHaveTitle('Edit Allocation Request - Nectar Dashboard');
+    await expect(page.locator('#orcid_modal')).toBeAttached();
+    await expect(page.locator('#orcid_modal')).toBeHidden();
 
     // Step 4: the user can save a valid edit of their own allocation
     // (verified live): the POST redirects to My Requests, stores the
