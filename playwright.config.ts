@@ -17,6 +17,10 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['html', { outputFolder: 'e2e/playwright-report', open: 'never' }],
+    // Jenkins publishes the JUnit results of CI runs.
+    ...(process.env.CI
+      ? [['junit', { outputFile: 'e2e/junit.xml' }] as const]
+      : []),
   ],
   use: {
     baseURL: BASE_URL,

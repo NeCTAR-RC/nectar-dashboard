@@ -34,12 +34,45 @@ npx playwright test
 npm run report
 ```
 
-Credentials come from `OS_TOKEN`, or from the openrc file named by `OPENRC`
-(default `pt.openrc` in the repository root, which is git-ignored). The
-user must be an allocation admin. Set `DASHBOARD_URL` to test a different
-deployment.
+Or, as CI does: `tox -e e2e` (extra arguments go to `playwright test`).
+
+Credentials come from `OS_TOKEN` (with `OS_USERNAME`), or from the openrc
+file named by `OPENRC` (default `pt.openrc` in the repository root, which
+is git-ignored). The user must be an allocation admin. The token is
+requested from Keystone directly with the openrc's password credentials,
+so the openstack CLI is not needed; the openrc is parsed, not sourced, and
+must use literal `export KEY=VALUE` lines. Set `DASHBOARD_URL` to test a
+different deployment.
 
 Tests run serially because they share one dev database.
+
+## CI
+
+Each nectar-dashboard patchset gets its own dev env,
+`https://review-<change>-<patchset>.rcdev.nectar.org.au`, from the
+Jenkins job `dashboard-devenv-create` (nectar-ci `data/dashboard.yaml`).
+Once the env is deployed, that job starts `dashboard-devenv-e2e`, which:
+
+1. checks out the patchset and skips if `tox.ini` has no `e2e` env;
+2. waits up to 40 minutes for `/auth/login/` on the env to return 200;
+3. runs `tox -e e2e` with `CI=true` and `DASHBOARD_URL` set to the env,
+   and `OPENRC` and `E2E_USER_OPENRC` from the Jenkins file credentials
+   `dashboard-e2e-admin-openrc` and `dashboard-e2e-user-openrc`;
+4. publishes `e2e/junit.xml` (written only when `CI` is set), archives
+   the HTML report and traces, and comments the result on the review.
+
+The comment does not vote. Review envs are deleted with their namespace,
+so CI runs need no cleanup.
+
+To reproduce a CI run locally:
+
+```
+DASHBOARD_URL=https://review-<change>-<patchset>.rcdev.nectar.org.au CI=1 tox -e e2e
+```
+
+Review envs load the same Faker-generated `dev.sql` as dashboard-s, but
+not the data created on dashboard-s since, so tests that rely on that data
+can fail there.
 
 ## Test data
 

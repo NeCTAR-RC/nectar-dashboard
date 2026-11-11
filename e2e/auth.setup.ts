@@ -29,14 +29,14 @@ async function login(page: Page, token: string, storageState: string) {
 }
 
 setup('authenticate', async ({ page }) => {
-  const token = issueToken();
+  const token = await issueToken();
   saveToken(token);
-  await login(page, token, STORAGE_STATE);
+  await login(page, token.id, STORAGE_STATE);
 });
 
 setup('authenticate non-admin user', async ({ page }) => {
   setup.skip(!hasUser(), `no non-admin openrc at ${USER_OPENRC}`);
-  const token = tokenFromOpenrc(USER_OPENRC);
+  const token = await tokenFromOpenrc(USER_OPENRC);
   saveUserToken(token);
   await login(page, token.id, USER_STORAGE_STATE);
 });

@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -33,16 +32,8 @@ export const BLOCKED_URLS = [
   '*://survey.rc.nectar.org.au/**',
 ];
 
-// Issue a Keystone token for the test user.  OS_TOKEN wins if set;
-// otherwise source the openrc file named by OPENRC (default pt.openrc in
-// the repository root) and ask the openstack CLI for one.
-export function issueToken(): string {
-  if (process.env.OS_TOKEN) {
-    return process.env.OS_TOKEN;
-  }
-  const openrc = process.env.OPENRC ?? path.join(REPO_ROOT, 'pt.openrc');
-  return tokenFromOpenrc(openrc).id;
-}
+export const ADMIN_OPENRC =
+  process.env.OPENRC ?? path.join(REPO_ROOT, 'pt.openrc');
 
 // username is the Keystone user name, which the dashboard compares with an
 // allocation's contact_email.
@@ -53,28 +44,98 @@ export type IssuedToken = {
   username: string;
 };
 
-export function tokenFromOpenrc(openrc: string): IssuedToken {
-  const run = (cmd: string) =>
-    execSync(`bash -c 'source "${openrc}" && ${cmd}'`, {
-      encoding: 'utf-8',
-    });
-  const token = JSON.parse(run('openstack token issue -f json'));
+// Read the `export KEY=VALUE` lines of an openrc file.  Only literal
+// values are supported; nothing in the file is executed.
+export function parseOpenrc(openrc: string): Record<string, string> {
+  const vars: Record<string, string> = {};
+  for (const line of fs.readFileSync(openrc, 'utf-8').split('\n')) {
+    const m = line.match(/^\s*(?:export\s+)?([A-Z_][A-Z0-9_]*)=(.*)$/);
+    if (!m) continue;
+    let value = m[2].trim();
+    const quoted = value.match(/^"(.*)"$/) ?? value.match(/^'(.*)'$/);
+    if (quoted) value = quoted[1];
+    vars[m[1]] = value;
+  }
+  return vars;
+}
+
+// Ask Keystone for a project-scoped token with the openrc's password
+// credentials.  This needs no openstack CLI on the test host.
+export async function tokenFromOpenrc(openrc: string): Promise<IssuedToken> {
+  const env = parseOpenrc(openrc);
+  for (const key of ['OS_AUTH_URL', 'OS_USERNAME', 'OS_PASSWORD']) {
+    if (!env[key]) throw new Error(`${key} is not set in ${openrc}`);
+  }
+  const userDomain = env.OS_USER_DOMAIN_NAME ?? 'Default';
+  const projectDomain = env.OS_PROJECT_DOMAIN_NAME ?? 'Default';
+  const project = env.OS_PROJECT_ID
+    ? { id: env.OS_PROJECT_ID }
+    : { name: env.OS_PROJECT_NAME, domain: { name: projectDomain } };
+  const authUrl = env.OS_AUTH_URL.replace(/\/+$/, '').replace(/\/v3$/, '');
+  const response = await fetch(`${authUrl}/v3/auth/tokens`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      auth: {
+        identity: {
+          methods: ['password'],
+          password: {
+            user: {
+              name: env.OS_USERNAME,
+              domain: { name: userDomain },
+              password: env.OS_PASSWORD,
+            },
+          },
+        },
+        scope: { project },
+      },
+    }),
+  });
+  if (response.status !== 201) {
+    throw new Error(
+      `Keystone token request for ${env.OS_USERNAME} failed: ` +
+        `${response.status} ${await response.text()}`,
+    );
+  }
+  const body = await response.json();
   return {
-    id: token.id,
-    user_id: token.user_id,
-    project_id: token.project_id,
-    username: run('echo "$OS_USERNAME"').trim(),
+    id: response.headers.get('x-subject-token')!,
+    user_id: body.token.user.id,
+    project_id: body.token.project.id,
+    username: env.OS_USERNAME,
   };
 }
 
-export function saveToken(token: string): void {
-  fs.mkdirSync(AUTH_DIR, { recursive: true });
-  fs.writeFileSync(TOKEN_FILE, JSON.stringify({ token }));
+// Issue a Keystone token for the allocation admin.  OS_TOKEN wins if set
+// (with OS_USERNAME giving the admin's user name); otherwise use the
+// openrc file named by OPENRC (default pt.openrc in the repository root).
+export async function issueToken(): Promise<IssuedToken> {
+  if (process.env.OS_TOKEN) {
+    return {
+      id: process.env.OS_TOKEN,
+      user_id: '',
+      project_id: '',
+      username: process.env.OS_USERNAME ?? '',
+    };
+  }
+  return tokenFromOpenrc(ADMIN_OPENRC);
 }
 
-// The token saved by the auth setup project, for REST API calls.
+export function saveToken(token: IssuedToken): void {
+  fs.mkdirSync(AUTH_DIR, { recursive: true });
+  fs.writeFileSync(TOKEN_FILE, JSON.stringify(token));
+}
+
+// The admin token saved by the auth setup project, for REST API calls.
 export function savedToken(): string {
-  return JSON.parse(fs.readFileSync(TOKEN_FILE, 'utf-8')).token;
+  return savedAdminToken().id;
+}
+
+// The admin's token and Keystone user name.  The user name is the
+// admin's email address: the contact on requests the admin creates and
+// the approver recorded when the admin approves.
+export function savedAdminToken(): IssuedToken {
+  return JSON.parse(fs.readFileSync(TOKEN_FILE, 'utf-8'));
 }
 
 export function saveUserToken(token: IssuedToken): void {
