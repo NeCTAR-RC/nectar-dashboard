@@ -26,6 +26,10 @@ LOG = logging.getLogger('nectar_dashboard.rcallocation')
 
 FOR_CODES = forcodes.FOR_CODES[forcodes.FOR_SERIES]
 
+# The research grant types that qualify a request as National.
+# Industry, state, institutional, external and NZ grants do not.
+NATIONAL_GRANT_TYPES = ('arc', 'nhmrc', 'mrff', 'comp', 'govt', 'rdc')
+
 
 # The following warning code strings will used as anchors in the
 # support page that contains "more information" about the errors.
@@ -38,6 +42,7 @@ APPROVER_NOT_AUTHORIZED = 'APPROVER_NOT_AUTHORIZED'
 APPROVER_DISABLED_ORGANISATION = 'APPROVER_DISABLED_ORGANISATION'
 APPROVER_UNVETTED_ORGANISATION = 'APPROVER_UNVETTED_ORGANISATION'
 NO_VALID_GRANTS = 'NO_VALID_GRANTS'
+NATIONAL_NOT_FLAGGED = 'NATIONAL_NOT_FLAGGED'
 REENTER_FOR_CODES = 'REENTER_FOR_CODES'
 DATA_SENSITIVITY = 'DATA_SENSITIVITY'
 NO_PUBLICATIONS = 'NO_PUBLICATIONS'
@@ -153,6 +158,33 @@ def approver_checks(context):
     ]
 
 
+def meets_national_criteria(allocation):
+    """Tell whether an allocation has grounds to be approved as National.
+
+    True when the request has any ARDC support, any NCRIS facility, or a
+    research grant of a qualifying type (see NATIONAL_GRANT_TYPES) that is
+    current, meaning its last funded year is this year or later.
+
+    This is the shared test behind both National warnings, so that
+    `grant_checks` (National ticked without grounds) and
+    `national_not_flagged_check` (grounds without National ticked) can
+    never disagree about what counts as grounds.
+    """
+    if (
+        allocation.ardc_support.get_queryset().count()
+        or allocation.ncris_facilities.get_queryset().count()
+    ):
+        return True
+    this_year = datetime.now().year
+    for g in allocation.grants.get_queryset():
+        if (
+            g.grant_type in NATIONAL_GRANT_TYPES
+            and g.last_year_funded >= this_year
+        ):
+            return True
+    return False
+
+
 def grant_checks(context):
     if not context.approving:
         # These are approver-only checks.  When we look at the form
@@ -160,25 +192,56 @@ def grant_checks(context):
         # if warnings about grants, etc are relevant.
         return None
 
-    this_year = datetime.now().year
     if (
         not context.get_field('national')
         or context.get_field('special_approval')
-        or context.allocation.ardc_support.get_queryset().count()
-        or context.allocation.ncris_facilities.get_queryset().count()
+        or meets_national_criteria(context.allocation)
     ):
         return None
-    for g in context.allocation.grants.get_queryset():
-        if (
-            g.grant_type in ('arc', 'nhmrc', 'mrff', 'comp', 'govt', 'rdc')
-            and g.last_year_funded >= this_year
-        ):
-            return None
     return [
         (
             NO_VALID_GRANTS,
             "There are no current competitive grants for this request. "
             "Either approve it as Local, or add a Special approval reason.",
+        )
+    ]
+
+
+def national_not_flagged_check(context):
+    """Warn when a request that looks National is about to be approved Local.
+
+    The mirror of `grant_checks`.  It is a prompt, not an automatic
+    change, because grant details have grey areas that an approver has to
+    read: for example NCRIS support versus merely using an NCRIS facility.
+
+    Only Green data triggers it, because it is not yet decided whether
+    Yellow data can go on the national node.  The classification comes from
+    the stored request (the approve form does not carry it), while National
+    reflects what the approver is about to submit.
+    """
+    if not (context.approving and context.approve_action):
+        # Only the Approve page carries the National checkbox.  The
+        # approver's Edit page posts National as False, so this check
+        # would nag there with nothing to tick.
+        return None
+
+    if context.get_field('national'):
+        return None
+    if (
+        context.get_field('data_classification_level')
+        != models.AllocationRequest.GREEN
+    ):
+        return None
+    if not meets_national_criteria(context.allocation):
+        return None
+    return [
+        (
+            NATIONAL_NOT_FLAGGED,
+            "This request is not currently flagged as National, but it has a "
+            "current research grant or ARDC/NCRIS support and a "
+            '"Green" data classification, so it may qualify as National. '
+            "Check the grant or support details and, if the criteria are "
+            "met, set the National flag.",
         )
     ]
 
@@ -228,6 +291,7 @@ class Checker:
         approver_checks,
         organisation_checks,
         grant_checks,
+        national_not_flagged_check,
     ]
 
     def __init__(self, form=None, user=None, allocation=None):
@@ -255,6 +319,17 @@ class Checker:
 
 
 class QuotaSanityChecker(Checker):
+    """Checker for the allocation request views.
+
+    Two flags say who is acting and where:
+
+    - `approving`: the editor is an approver. True on the approver's Edit
+      page and on the Approve page.
+    - `approve_action`: the page is the Approve page itself. It is the
+      only page that carries the National checkbox, so it is the only one
+      where checks about that flag make sense.
+    """
+
     def __init__(
         self,
         form=None,
@@ -263,9 +338,11 @@ class QuotaSanityChecker(Checker):
         quotas=[],
         approving=False,
         allocation=None,
+        approve_action=False,
     ):
         super().__init__(form=form, user=user, allocation=allocation)
         self.approving = approving
+        self.approve_action = approve_action
 
 
 NO_SURVEY = 'NO_SURVEY'

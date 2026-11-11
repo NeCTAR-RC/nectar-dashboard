@@ -36,13 +36,21 @@ class FakeForm:
 DUMMY_FORM = FakeForm({})
 
 
-def build_checker(form=DUMMY_FORM, approver=None, allocation=None):
+def build_checker(
+    form=DUMMY_FORM, approver=None, allocation=None, approve_action=False
+):
     if approver is None:
-        return checkers.QuotaSanityChecker(form=form, allocation=allocation)
+        return checkers.QuotaSanityChecker(
+            form=form, allocation=allocation, approve_action=approve_action
+        )
     else:
         user = auth_models.User(username=approver)
         return checkers.QuotaSanityChecker(
-            form=form, allocation=allocation, user=user, approving=True
+            form=form,
+            allocation=allocation,
+            user=user,
+            approving=True,
+            approve_action=approve_action,
         )
 
 
@@ -319,6 +327,181 @@ class QuotaSanityApproverChecksTest(base.BaseTestCase):
             [], approver='test_user', allocation=allocation
         )
         self.assertIsNone(checkers.grant_checks(checker))
+
+    def build_green_allocation(self, **kwargs):
+        """Create an allocation that is Green and not flagged National."""
+        values = {
+            'project_name': 'fun',
+            'national': False,
+            'data_classification_level': models.AllocationRequest.GREEN,
+        }
+        values.update(kwargs)
+        return factories.AllocationFactory.create(**values)
+
+    def test_national_not_flagged_not_approving(self):
+        allocation = self.build_green_allocation()
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='arc',
+            last_year_funded=20000,
+        )
+        checker = build_checker([], allocation=allocation, approve_action=True)
+        self.assertIsNone(checkers.national_not_flagged_check(checker))
+
+    def test_national_not_flagged_approver_edit_page(self):
+        allocation = self.build_green_allocation()
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='arc',
+            last_year_funded=20000,
+        )
+        checker = build_checker(
+            [], approver='test_user', allocation=allocation
+        )
+        self.assertIsNone(checkers.national_not_flagged_check(checker))
+
+    def test_national_not_flagged_already_national(self):
+        allocation = self.build_green_allocation(national=True)
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='arc',
+            last_year_funded=20000,
+        )
+        checker = build_checker(
+            [],
+            approver='test_user',
+            allocation=allocation,
+            approve_action=True,
+        )
+        self.assertIsNone(checkers.national_not_flagged_check(checker))
+
+    def test_national_not_flagged_no_grants_or_support(self):
+        allocation = self.build_green_allocation()
+        checker = build_checker(
+            [],
+            approver='test_user',
+            allocation=allocation,
+            approve_action=True,
+        )
+        self.assertIsNone(checkers.national_not_flagged_check(checker))
+
+    def test_national_not_flagged_current_grant_of_each_type(self):
+        for grant_type in checkers.NATIONAL_GRANT_TYPES:
+            with self.subTest(grant_type=grant_type):
+                allocation = self.build_green_allocation()
+                factories.GrantFactory.create(
+                    allocation_id=allocation.id,
+                    grant_type=grant_type,
+                    last_year_funded=20000,
+                )
+                checker = build_checker(
+                    [],
+                    approver='test_user',
+                    allocation=allocation,
+                    approve_action=True,
+                )
+                res = checkers.national_not_flagged_check(checker)
+                self.assertEqual(1, len(res))
+                self.assertEqual(checkers.NATIONAL_NOT_FLAGGED, res[0][0])
+
+    def test_national_not_flagged_industry_grant(self):
+        allocation = self.build_green_allocation()
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='industry',
+            last_year_funded=20000,
+        )
+        checker = build_checker(
+            [],
+            approver='test_user',
+            allocation=allocation,
+            approve_action=True,
+        )
+        self.assertIsNone(checkers.national_not_flagged_check(checker))
+
+    def test_national_not_flagged_old_grant(self):
+        allocation = self.build_green_allocation()
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='arc',
+            last_year_funded=2000,
+        )
+        checker = build_checker(
+            [],
+            approver='test_user',
+            allocation=allocation,
+            approve_action=True,
+        )
+        self.assertIsNone(checkers.national_not_flagged_check(checker))
+
+    def test_national_not_flagged_ardc_support(self):
+        allocation = self.build_green_allocation()
+        allocation.ardc_support.add(factories.ARDCSupportFactory.create())
+        checker = build_checker(
+            [],
+            approver='test_user',
+            allocation=allocation,
+            approve_action=True,
+        )
+        res = checkers.national_not_flagged_check(checker)
+        self.assertEqual(1, len(res))
+        self.assertEqual(checkers.NATIONAL_NOT_FLAGGED, res[0][0])
+
+    def test_national_not_flagged_ncris_facility(self):
+        allocation = self.build_green_allocation()
+        allocation.ncris_facilities.add(
+            factories.NCRISFacilityFactory.create()
+        )
+        checker = build_checker(
+            [],
+            approver='test_user',
+            allocation=allocation,
+            approve_action=True,
+        )
+        res = checkers.national_not_flagged_check(checker)
+        self.assertEqual(1, len(res))
+        self.assertEqual(checkers.NATIONAL_NOT_FLAGGED, res[0][0])
+
+    def test_national_not_flagged_other_classifications(self):
+        levels = [
+            models.AllocationRequest.YELLOW,
+            models.AllocationRequest.ORANGE,
+            models.AllocationRequest.RED,
+            models.AllocationRequest.NOT_SURE,
+            None,
+        ]
+        for level in levels:
+            with self.subTest(level=level):
+                allocation = self.build_green_allocation(
+                    data_classification_level=level
+                )
+                factories.GrantFactory.create(
+                    allocation_id=allocation.id,
+                    grant_type='arc',
+                    last_year_funded=20000,
+                )
+                checker = build_checker(
+                    [],
+                    approver='test_user',
+                    allocation=allocation,
+                    approve_action=True,
+                )
+                self.assertIsNone(checkers.national_not_flagged_check(checker))
+
+    def test_national_not_flagged_form_sets_national(self):
+        allocation = self.build_green_allocation()
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='arc',
+            last_year_funded=20000,
+        )
+        checker = build_checker(
+            FakeForm({'national': True}),
+            approver='test_user',
+            allocation=allocation,
+            approve_action=True,
+        )
+        self.assertIsNone(checkers.national_not_flagged_check(checker))
 
     def test_std_organisation(self):
         allocation = factories.AllocationFactory.create(project_name='fun')

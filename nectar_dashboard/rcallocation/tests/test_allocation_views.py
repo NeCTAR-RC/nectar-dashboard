@@ -2,6 +2,7 @@ from unittest import mock
 
 from django.urls import reverse
 
+from nectar_dashboard.rcallocation import checkers
 from nectar_dashboard.rcallocation import models
 from nectar_dashboard.rcallocation.tests import base
 from nectar_dashboard.rcallocation.tests import common
@@ -227,6 +228,54 @@ class ApproverRequestTestCase(base.BaseApproverTestCase):
         self.assertIn(
             'in this case your request has been declined', call_kwargs['body']
         )
+
+    def post_green_arc_request(self, url_name, **extra_form_values):
+        """Post an approver form for a Green request with a current ARC
+        grant and National unset, without ignoring warnings.
+
+        Returns the warning codes shown by the view, empty when the view
+        accepted the form without warnings.
+        """
+        allocation = factories.AllocationFactory.create(
+            contact_email=self.user.name,
+            national=False,
+            data_classification_level=models.AllocationRequest.GREEN,
+        )
+        factories.GrantFactory.create(
+            allocation_id=allocation.id,
+            grant_type='arc',
+            last_year_funded=20000,
+        )
+        url = reverse(
+            f'horizon:allocation:requests:{url_name}', args=(allocation.id,)
+        )
+        model, form = common.request_allocation(
+            user=self.user,
+            model=allocation,
+            approving=(url_name == 'approve_request'),
+        )
+        form.update(extra_form_values)
+        response = self.client.post(url, form)
+        if response.context is None:
+            # No page was rendered, so the view must have accepted the
+            # form and redirected; anything else is a failure, not "no
+            # warnings".
+            self.assertStatusCode(response, 302)
+            return []
+        # Guard against a vacuous pass: the form must have reached the
+        # warning checks rather than failing validation.
+        self.assertFalse(response.context['form'].errors)
+        return [w[0] for w in response.context['warnings']]
+
+    def test_approver_edit_page_does_not_warn_national_not_flagged(self):
+        codes = self.post_green_arc_request('edit_request')
+        self.assertNotIn(checkers.NATIONAL_NOT_FLAGGED, codes)
+
+    def test_approve_page_warns_national_not_flagged(self):
+        codes = self.post_green_arc_request(
+            'approve_request', associated_site=common.get_site('uom').id
+        )
+        self.assertIn(checkers.NATIONAL_NOT_FLAGGED, codes)
 
     def test_pending_list(self):
         factories.AllocationFactory.create(

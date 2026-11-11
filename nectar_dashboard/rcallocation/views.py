@@ -458,6 +458,7 @@ class BaseAllocationView(
             form=form,
             user=self.request.user,
             approving=approving,
+            approve_action=self.APPROVING,
         )
 
         valid = all(map(methodcaller('is_valid'), form_dict.values()))
